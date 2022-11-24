@@ -1,15 +1,12 @@
 package com.starry.myne.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.ViewCompat
+import androidx.compose.ui.unit.dp
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val LightColors = lightColorScheme(
     onErrorContainer = md_theme_light_onErrorContainer,
@@ -70,7 +67,7 @@ private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
 )
 
-    /* Other default colors to override
+/* Other default colors to override
 background = Color(0xFFFFFBFE),
 surface = Color(0xFFFFFBFE),
 onPrimary = Color.White,
@@ -95,6 +92,8 @@ fun MyneTheme(
         darkTheme -> DarkColors
         else -> LightColors
     }
+
+    /*
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -102,6 +101,7 @@ fun MyneTheme(
             ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = darkTheme
         }
     }
+    */
 
     MaterialTheme(
         colorScheme = colorScheme,

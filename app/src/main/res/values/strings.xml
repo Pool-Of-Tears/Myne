@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Myne</string>
+    <!-- Books card -->
+    <string name="cover_image_desc">Book cover image</string>
 </resources>

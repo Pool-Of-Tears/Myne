@@ -1,6 +1,7 @@
 package com.starry.myne.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -15,12 +16,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.ui.components.BottomBarScreen
 import com.starry.myne.ui.components.BottomNavGraph
 
@@ -29,6 +32,12 @@ import com.starry.myne.ui.components.BottomNavGraph
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setSystemBarsColor(
+        color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp), darkIcons = !isSystemInDarkTheme()
+    )
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -36,14 +45,17 @@ fun MainScreen() {
                     Text(
                         "Good Morning!",
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 20.sp
                     )
                 },
                 actions = {
                     IconButton(onClick = { /* doSomething() */ }) {
                         Icon(
                             imageVector = Icons.Filled.Search,
-                            contentDescription = "Localized description"
+                            contentDescription = "Localized description",
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
