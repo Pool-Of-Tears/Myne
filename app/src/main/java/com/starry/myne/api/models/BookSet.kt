@@ -3,7 +3,7 @@ package com.starry.myne.api.models
 
 import com.google.gson.annotations.SerializedName
 
-data class AllBooks(
+data class BookSet(
     @SerializedName("count")
     val count: Int,
     @SerializedName("next")
@@ -11,5 +11,5 @@ data class AllBooks(
     @SerializedName("previous")
     val previous: Any,
     @SerializedName("results")
-    val results: List<Book>
+    val books: List<Book>
 )

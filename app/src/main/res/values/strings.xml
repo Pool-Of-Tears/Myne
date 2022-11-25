@@ -2,4 +2,5 @@
     <string name="app_name">Myne</string>
     <!-- Books card -->
     <string name="cover_image_desc">Book cover image</string>
+    <string name="download_count_desc">Total number of downloads</string>
 </resources>

@@ -25,5 +25,5 @@ data class Book(
     @SerializedName("formats")
     val formats: Formats,
     @SerializedName("download_count")
-    val downloadCount: Int
+    val downloadCount: Long
 )
