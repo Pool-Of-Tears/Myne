@@ -1,24 +1,31 @@
 package com.starry.myne.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -35,7 +42,8 @@ fun MainScreen() {
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(
-        color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp), darkIcons = !isSystemInDarkTheme()
+        color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp),
+        darkIcons = !isSystemInDarkTheme()
     )
 
     Scaffold(
@@ -53,12 +61,13 @@ fun MainScreen() {
                 actions = {
                     IconButton(onClick = { /* doSomething() */ }) {
                         Icon(
-                            imageVector = Icons.Filled.Search,
+                            imageVector = Icons.Filled.Star,
                             contentDescription = "Localized description",
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
+
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
                 )
@@ -74,47 +83,69 @@ fun MainScreen() {
 fun BottomBar(navController: NavHostController) {
     val screens = listOf(
         BottomBarScreen.Home,
+        BottomBarScreen.Search,
         BottomBarScreen.Library,
         BottomBarScreen.Settings,
     )
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    NavigationBar {
+    Row(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
+            .padding(8.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
         screens.forEach { screen ->
-            AddItem(
+            CustomBottomNavigationItem(
                 screen = screen,
-                currentDestination = currentDestination,
-                navController = navController
-            )
+                isSelected = screen.route == currentDestination?.route
+            ) {
+                navController.navigate(screen.route) {
+                    popUpTo(navController.graph.findStartDestination().id)
+                    launchSingleTop = true
+                }
+            }
         }
     }
 }
 
 @Composable
-fun RowScope.AddItem(
-    screen: BottomBarScreen,
-    currentDestination: NavDestination?,
-    navController: NavHostController
-) {
-    NavigationBarItem(
-        label = {
-            Text(text = screen.title, color = MaterialTheme.colorScheme.onSurface)
-        },
-        icon = {
+fun CustomBottomNavigationItem(screen: BottomBarScreen, isSelected: Boolean, onClick: () -> Unit) {
+    val background =
+        if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent
+    val contentColor =
+        if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+
+    Box(
+        modifier = Modifier
+            .clip(CircleShape)
+            .background(background)
+            .clickable(onClick = onClick)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+
             Icon(
                 imageVector = ImageVector.vectorResource(id = screen.icon),
-                contentDescription = "Navigation Icon", tint = MaterialTheme.colorScheme.onSurface
+                contentDescription = null,
+                tint = contentColor
             )
-        },
-        selected = currentDestination?.hierarchy?.any {
-            it.route == screen.route
-        } == true,
-        onClick = {
-            navController.navigate(screen.route) {
-                popUpTo(navController.graph.findStartDestination().id)
-                launchSingleTop = true
+
+            AnimatedVisibility(visible = isSelected) {
+                Text(
+                    text = stringResource(id = screen.title),
+                    color = contentColor
+                )
             }
         }
-    )
+    }
 }

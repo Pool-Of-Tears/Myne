@@ -1,14 +1,12 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.starry.myne.ui.components
 
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.starry.myne.ui.screens.HomeScreen
 import com.starry.myne.ui.screens.LibraryScreen
+import com.starry.myne.ui.screens.SearchScreen
 import com.starry.myne.ui.screens.SettingsScreen
 
 @Composable
@@ -19,6 +17,9 @@ fun BottomNavGraph(navController: NavHostController) {
     ) {
         composable(route = BottomBarScreen.Home.route) {
             HomeScreen()
+        }
+        composable(route = BottomBarScreen.Search.route) {
+            SearchScreen()
         }
         composable(route = BottomBarScreen.Library.route) {
             LibraryScreen()
