@@ -5,17 +5,21 @@ import java.util.*
 
 object Utils {
     fun getAuthorsAsString(authors: List<Author>): String {
-        var result: String
-        if (authors.size > 1) {
-            result = authors.first().name
-            authors.slice(1 until authors.size).forEach { author ->
-                if (author.name != "N/A")
-                    result += ", ${author.name}"
+        return if (authors.isNotEmpty()) {
+            var result: String
+            if (authors.size > 1) {
+                result = authors.first().name
+                authors.slice(1 until authors.size).forEach { author ->
+                    if (author.name != "N/A")
+                        result += ", ${author.name}"
+                }
+            } else {
+                result = authors.first().name
             }
+            result
         } else {
-            result = authors.first().name
+            "Unknown Author"
         }
-        return result
     }
 
     fun getLanguagesAsString(languages: List<String>): String {
@@ -41,7 +45,12 @@ object Utils {
                 allSubjects.add(subject)
             }
         }
-        return allSubjects.toSet().joinToString(limit = limit, separator = ", ") {
+        val truncatedSubs: List<String> = if (allSubjects.size > limit) {
+            allSubjects.toSet().toList().subList(0, limit)
+        } else {
+            allSubjects.toSet().toList()
+        }
+        return truncatedSubs.joinToString(separator = ", ") {
             return@joinToString it.trim()
         }
     }

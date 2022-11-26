@@ -6,6 +6,7 @@
     <string name="navigation_library">Library</string>
     <string name="navigation_settings">Settings</string>
     <!-- Books card -->
+    <string name="home_header_icon_desc">Categories</string>
     <string name="cover_image_desc">Book cover image</string>
     <string name="download_count_desc">Total number of downloads</string>
 </resources>

@@ -11,8 +11,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,41 +34,60 @@ fun HomeScreen() {
     val viewModel = viewModel<HomeViewModel>()
     val state = viewModel.state
 
-    LazyColumn(
-        modifier = Modifier
+    Column(
+        Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(top = 6.dp)
     ) {
-        items(state.items.size) { i ->
-            val item = state.items[i]
-            if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
-                viewModel.loadNextItems()
-            }
-            Box(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .fillMaxWidth(), contentAlignment = Alignment.Center
-            ) {
-                BookItemCard(
-                    title = item.title,
-                    author = Utils.getAuthorsAsString(item.authors),
-                    language = Utils.getLanguagesAsString(item.languages),
-                    subjects = Utils.getSubjectsAsString(item.subjects, 3),
-                    coverImageUrl = item.formats.imagejpeg
-                )
-            }
-
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(20.dp)
+        ) {
+            TopAppBar()
+            Divider(
+                color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+                thickness = 2.dp,
+                // modifier = Modifier.padding(vertical = 2.dp)
+            )
         }
-        item {
-            if (state.isLoading) {
-                Row(
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(start = 8.dp, end = 8.dp)
+        ) {
+            items(state.items.size) { i ->
+                val item = state.items[i]
+                if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
+                    viewModel.loadNextItems()
+                }
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.Center
+                        .padding(4.dp)
+                        .fillMaxWidth(), contentAlignment = Alignment.Center
                 ) {
-                    ProgressDots()
+                    BookItemCard(
+                        title = item.title,
+                        author = Utils.getAuthorsAsString(item.authors),
+                        language = Utils.getLanguagesAsString(item.languages),
+                        subjects = Utils.getSubjectsAsString(item.subjects, 3),
+                        coverImageUrl = item.formats.imagejpeg
+                    )
+                }
+
+            }
+            item {
+                if (state.isLoading) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        ProgressDots()
+                    }
                 }
             }
         }
@@ -74,20 +97,50 @@ fun HomeScreen() {
 
 
 @Composable
+fun TopAppBar() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 7.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "Most Popular",
+            fontSize = 40.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontFamily = FontFamily.Cursive
+        )
+        IconButton(onClick = { /*TODO*/ }) {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_home_header),
+                contentDescription = stringResource(id = R.string.home_header_icon_desc),
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(30.dp)
+            )
+        }
+    }
+}
+
+@Composable
 fun BookItemCard(
     title: String,
     author: String,
     language: String,
     subjects: String,
-    coverImageUrl: String
+    coverImageUrl: String?
 ) {
     Card(
         modifier = Modifier
             .width(380.dp)
             .height(200.dp),
         onClick = { /*TODO*/ },
-        colors = CardDefaults.elevatedCardColors(),
-        elevation = CardDefaults.elevatedCardElevation(4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                2.dp
+            )
+        ),
         shape = RoundedCornerShape(6.dp)
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
@@ -162,11 +215,14 @@ fun BookItemCard(
 @Composable
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
-    BookItemCard(
+    /*
+     BookItemCard(
         title = "Crime and Punishment",
         author = "Dostoyevsky, Fyodor",
         language = "English, Russian",
         subjects = "Crime, Psychological aspects, Fiction",
         coverImageUrl = "https://www.gutenberg.org/cache/epub/2554/pg2554.cover.medium.jpg"
     )
+     */
+    HomeScreen()
 }
