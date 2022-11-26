@@ -1,4 +1,4 @@
-package com.starry.myne.ui.components
+package com.starry.myne.navigation
 
 import com.starry.myne.R
 

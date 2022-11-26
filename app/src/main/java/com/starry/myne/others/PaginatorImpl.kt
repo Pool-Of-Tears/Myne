@@ -1,4 +1,4 @@
-package com.starry.myne.common.libs
+package com.starry.myne.others
 
 class PaginatorImpl<Page, BookSet>(
     private val initialPage: Page,

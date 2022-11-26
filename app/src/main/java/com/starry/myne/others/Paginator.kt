@@ -1,4 +1,4 @@
-package com.starry.myne.common.libs
+package com.starry.myne.others
 
 interface Paginator<Page, BookSet> {
     suspend fun loadNextItems()

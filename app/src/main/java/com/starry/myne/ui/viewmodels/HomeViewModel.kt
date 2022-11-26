@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.api.BooksApi
 import com.starry.myne.api.models.Book
-import com.starry.myne.common.libs.PaginatorImpl
+import com.starry.myne.others.PaginatorImpl
 import kotlinx.coroutines.launch
 
 data class ScreenState(

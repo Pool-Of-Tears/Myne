@@ -11,11 +11,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,8 +21,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.starry.myne.R
-import com.starry.myne.common.compose.ProgressDots
+import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.viewmodels.HomeViewModel
+import com.starry.myne.utils.Utils
 
 @Composable
 fun HomeScreen() {
@@ -36,6 +34,7 @@ fun HomeScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .padding(top = 6.dp)
     ) {
         items(state.items.size) { i ->
             val item = state.items[i]
@@ -44,15 +43,14 @@ fun HomeScreen() {
             }
             Box(
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(4.dp)
                     .fillMaxWidth(), contentAlignment = Alignment.Center
             ) {
                 BookItemCard(
                     title = item.title,
-                    author = "Fyodor Dostoyevsky", //item.authors.first().name,
-                    language = "English", // item.languages.first(),
-                    subjects = "Crime, Drama, Psychological Thriller", // item.subjects.first(),
-                    downloadCount = item.downloadCount,
+                    author = Utils.getAuthorsAsString(item.authors),
+                    language = Utils.getLanguagesAsString(item.languages),
+                    subjects = Utils.getSubjectsAsString(item.subjects, 3),
                     coverImageUrl = item.formats.imagejpeg
                 )
             }
@@ -81,17 +79,16 @@ fun BookItemCard(
     author: String,
     language: String,
     subjects: String,
-    downloadCount: Long,
     coverImageUrl: String
 ) {
     Card(
         modifier = Modifier
-            .height(210.dp)
-            .width(385.dp),
+            .width(380.dp)
+            .height(200.dp),
         onClick = { /*TODO*/ },
         colors = CardDefaults.elevatedCardColors(),
         elevation = CardDefaults.elevatedCardElevation(4.dp),
-        shape = RoundedCornerShape(4.dp)
+        shape = RoundedCornerShape(6.dp)
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
             Box(
@@ -119,7 +116,7 @@ fun BookItemCard(
                     text = title,
                     modifier = Modifier
                         .padding(
-                            start = 12.dp, top = 6.dp, bottom = 6.dp, end = 8.dp
+                            start = 12.dp, top = 8.dp, end = 8.dp
                         )
                         .fillMaxWidth(),
                     fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
@@ -132,42 +129,31 @@ fun BookItemCard(
                 Text(
                     text = author,
                     modifier = Modifier.padding(start = 12.dp, end = 8.dp),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 2,
+                    fontStyle = MaterialTheme.typography.bodySmall.fontStyle
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = language,
                     modifier = Modifier.padding(start = 12.dp, end = 8.dp),
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 15.sp
+                    fontSize = 18.sp,
+                    fontStyle = MaterialTheme.typography.bodyMedium.fontStyle
                 )
 
                 Text(
                     text = subjects,
-                    modifier = Modifier.padding(start = 12.dp, end = 8.dp),
+                    modifier = Modifier.padding(start = 12.dp, end = 8.dp, bottom = 2.dp),
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontStyle = FontStyle.Italic
+                    maxLines = 2, overflow = TextOverflow.Ellipsis,
+                    fontStyle = MaterialTheme.typography.bodySmall.fontStyle
+                    // fontStyle = FontStyle.Italic
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Row(
-                    modifier = Modifier.padding(start = 12.dp, end = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_bookcard_downloads),
-                        contentDescription = stringResource(id = R.string.download_count_desc),
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-
-                    Text(
-                        text = downloadCount.toString(),
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
-                }
+                Spacer(modifier = Modifier.weight(1f))
             }
         }
     }
@@ -176,5 +162,11 @@ fun BookItemCard(
 @Composable
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
-    HomeScreen()
+    BookItemCard(
+        title = "Crime and Punishment",
+        author = "Dostoyevsky, Fyodor",
+        language = "English, Russian",
+        subjects = "Crime, Psychological aspects, Fiction",
+        coverImageUrl = "https://www.gutenberg.org/cache/epub/2554/pg2554.cover.medium.jpg"
+    )
 }

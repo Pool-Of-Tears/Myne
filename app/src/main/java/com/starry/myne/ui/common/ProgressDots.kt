@@ -1,4 +1,4 @@
-package com.starry.myne.common.compose
+package com.starry.myne.ui.common
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background

@@ -12,7 +12,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,8 +31,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.starry.myne.ui.components.BottomBarScreen
-import com.starry.myne.ui.components.BottomNavGraph
+import com.starry.myne.navigation.BottomBarScreen
+import com.starry.myne.navigation.BottomNavGraph
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
@@ -51,7 +51,7 @@ fun MainScreen() {
             TopAppBar(
                 title = {
                     Text(
-                        "Good Morning!",
+                        "All Books",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -61,7 +61,7 @@ fun MainScreen() {
                 actions = {
                     IconButton(onClick = { /* doSomething() */ }) {
                         Icon(
-                            imageVector = Icons.Filled.Star,
+                            imageVector = Icons.Outlined.Star,
                             contentDescription = "Localized description",
                             tint = MaterialTheme.colorScheme.onSurface
                         )
@@ -75,7 +75,7 @@ fun MainScreen() {
         },
         bottomBar = { BottomBar(navController = navController) }
     ) {
-        BottomNavGraph(navController = navController)
+        BottomNavGraph(navController = navController, it)
     }
 }
 
@@ -94,12 +94,11 @@ fun BottomBar(navController: NavHostController) {
     Row(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
-            .padding(8.dp)
+            .padding(12.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-
         screens.forEach { screen ->
             CustomBottomNavigationItem(
                 screen = screen,
@@ -143,7 +142,8 @@ fun CustomBottomNavigationItem(screen: BottomBarScreen, isSelected: Boolean, onC
             AnimatedVisibility(visible = isSelected) {
                 Text(
                     text = stringResource(id = screen.title),
-                    color = contentColor
+                    color = contentColor,
+                    modifier = Modifier.padding(start = 4.dp)
                 )
             }
         }
