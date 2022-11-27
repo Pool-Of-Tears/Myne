@@ -1,38 +1,60 @@
-@file:OptIn(ExperimentalCoilApi::class, ExperimentalMaterial3Api::class)
+@file:OptIn(
+    ExperimentalCoilApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalComposeUiApi::class
+)
 
 package com.starry.myne.ui.screens
 
-import androidx.compose.foundation.Image
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
 import com.starry.myne.R
+import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.ProgressDots
+import com.starry.myne.ui.theme.comfortFont
 import com.starry.myne.ui.viewmodels.HomeViewModel
+import com.starry.myne.ui.viewmodels.UserAction
 import com.starry.myne.utils.Utils
 
+@ExperimentalComposeUiApi
 @Composable
 fun HomeScreen() {
     val viewModel = viewModel<HomeViewModel>()
     val state = viewModel.state
+    val topBarState = viewModel.topBarState
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     Column(
         Modifier
@@ -45,48 +67,118 @@ fun HomeScreen() {
                 .background(MaterialTheme.colorScheme.background)
                 .padding(20.dp)
         ) {
-            TopAppBar()
+            Crossfade(
+                targetState = topBarState.isSearchBarVisible,
+                animationSpec = tween(durationMillis = 200)
+            ) {
+                if (it) {
+                    SearchAppBar(
+                        onCloseIconClicked = {
+                            viewModel.onAction(UserAction.CloseIconClicked)
+                        },
+                        onInputValueChange = { newText ->
+                            viewModel.onAction(
+                                UserAction.TextFieldInput(newText)
+                            )
+                        },
+                        text = topBarState.searchText,
+                        onSearchClicked = {
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
+                        }
+                    )
+                } else {
+                    TopAppBar(
+                        onSearchIconClicked = {
+                            viewModel.onAction(UserAction.SearchIconClicked)
+                        },
+                    )
+                }
+            }
             Divider(
                 color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
                 thickness = 2.dp,
                 // modifier = Modifier.padding(vertical = 2.dp)
             )
         }
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(start = 8.dp, end = 8.dp)
-        ) {
-            items(state.items.size) { i ->
-                val item = state.items[i]
-                if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
-                    viewModel.loadNextItems()
+
+        // If search text is empty show list of all books.
+        if (topBarState.searchText.isBlank()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(start = 8.dp, end = 8.dp)
+            ) {
+                items(state.items.size) { i ->
+                    val item = state.items[i]
+                    if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
+                        viewModel.loadNextItems()
+                    }
+                    Box(
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .fillMaxWidth(), contentAlignment = Alignment.Center
+                    ) {
+                        BookItemCard(
+                            title = item.title,
+                            author = Utils.getAuthorsAsString(item.authors),
+                            language = Utils.getLanguagesAsString(item.languages),
+                            subjects = Utils.getSubjectsAsString(item.subjects, 3),
+                            coverImageUrl = item.formats.imagejpeg
+                        )
+                    }
+
                 }
-                Box(
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .fillMaxWidth(), contentAlignment = Alignment.Center
-                ) {
-                    BookItemCard(
-                        title = item.title,
-                        author = Utils.getAuthorsAsString(item.authors),
-                        language = Utils.getLanguagesAsString(item.languages),
-                        subjects = Utils.getSubjectsAsString(item.subjects, 3),
-                        coverImageUrl = item.formats.imagejpeg
-                    )
+                item {
+                    if (state.isLoading) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            ProgressDots()
+                        }
+                    }
+                }
+            }
+
+        // Else show the search results.
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(start = 8.dp, end = 8.dp)
+            ) {
+                item {
+                    if (topBarState.isSearching) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            ProgressDots()
+                        }
+                    }
                 }
 
-            }
-            item {
-                if (state.isLoading) {
-                    Row(
+                items(topBarState.searchResults.size) { i ->
+                    val item = topBarState.searchResults[i]
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.Center
+                            .padding(4.dp)
+                            .fillMaxWidth(), contentAlignment = Alignment.Center
                     ) {
-                        ProgressDots()
+                        BookItemCard(
+                            title = item.title,
+                            author = Utils.getAuthorsAsString(item.authors),
+                            language = Utils.getLanguagesAsString(item.languages),
+                            subjects = Utils.getSubjectsAsString(item.subjects, 3),
+                            coverImageUrl = item.formats.imagejpeg
+                        )
                     }
                 }
             }
@@ -97,7 +189,9 @@ fun HomeScreen() {
 
 
 @Composable
-fun TopAppBar() {
+fun TopAppBar(
+    onSearchIconClicked: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -106,15 +200,15 @@ fun TopAppBar() {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "Most Popular",
+            text = stringResource(id = R.string.home_header),
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground,
             fontFamily = FontFamily.Cursive
         )
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = onSearchIconClicked) {
             Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_home_header),
+                imageVector = Icons.Outlined.Search,
                 contentDescription = stringResource(id = R.string.home_header_icon_desc),
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(30.dp)
@@ -124,105 +218,77 @@ fun TopAppBar() {
 }
 
 @Composable
-fun BookItemCard(
-    title: String,
-    author: String,
-    language: String,
-    subjects: String,
-    coverImageUrl: String?
+fun SearchAppBar(
+    onCloseIconClicked: () -> Unit,
+    onInputValueChange: (String) -> Unit,
+    text: String,
+    onSearchClicked: () -> Unit
 ) {
-    Card(
+    val focusRequester = remember { FocusRequester() }
+    OutlinedTextField(
         modifier = Modifier
-            .width(380.dp)
-            .height(200.dp),
-        onClick = { /*TODO*/ },
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                2.dp
-            )
+            .fillMaxWidth()
+            .focusRequester(focusRequester),
+        value = text,
+        onValueChange = {
+            onInputValueChange(it)
+        },
+        textStyle = TextStyle(
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = 18.sp
         ),
-        shape = RoundedCornerShape(6.dp)
-    ) {
-        Row(modifier = Modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier.weight(1.8f)
+        placeholder = {
+            Text(
+                text = "Search...",
+                fontFamily = comfortFont,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium)
+            )
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Filled.Search,
+                contentDescription = "Search Icon",
+                tint = MaterialTheme.colorScheme.onBackground.copy(
+                    alpha = ContentAlpha.medium
+                )
+            )
+        },
+        trailingIcon = {
+            IconButton(
+                onClick = {
+                    if (text.isNotEmpty()) {
+                        onInputValueChange("")
+                    } else {
+                        onCloseIconClicked()
+                    }
+                }
             ) {
-                val painter = rememberImagePainter(data = coverImageUrl, builder = {
-                    placeholder(R.drawable.placeholder_cat)
-                    error(R.drawable.placeholder_cat)
-                    crossfade(800)
-                })
-                Image(
-                    painter = painter,
-                    contentDescription = stringResource(id = R.string.cover_image_desc),
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Close Icon",
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
-
-            Column(
-                modifier = Modifier
-                    .weight(3f)
-                    .fillMaxHeight()
-            ) {
-                Text(
-                    text = title,
-                    modifier = Modifier
-                        .padding(
-                            start = 12.dp, top = 8.dp, end = 8.dp
-                        )
-                        .fillMaxWidth(),
-                    fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
-                    fontSize = 22.sp,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-
-                Text(
-                    text = author,
-                    modifier = Modifier.padding(start = 12.dp, end = 8.dp),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2,
-                    fontStyle = MaterialTheme.typography.bodySmall.fontStyle
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = language,
-                    modifier = Modifier.padding(start = 12.dp, end = 8.dp),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 18.sp,
-                    fontStyle = MaterialTheme.typography.bodyMedium.fontStyle
-                )
-
-                Text(
-                    text = subjects,
-                    modifier = Modifier.padding(start = 12.dp, end = 8.dp, bottom = 2.dp),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2, overflow = TextOverflow.Ellipsis,
-                    fontStyle = MaterialTheme.typography.bodySmall.fontStyle
-                    // fontStyle = FontStyle.Italic
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-            }
-        }
+        },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(
+                alpha = ContentAlpha.medium
+            ),
+            focusedBorderColor = MaterialTheme.colorScheme.onBackground,
+            cursorColor = MaterialTheme.colorScheme.onBackground,
+        ),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = { onSearchClicked() }
+        )
+    )
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 }
 
 @Composable
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
-    /*
-     BookItemCard(
-        title = "Crime and Punishment",
-        author = "Dostoyevsky, Fyodor",
-        language = "English, Russian",
-        subjects = "Crime, Psychological aspects, Fiction",
-        coverImageUrl = "https://www.gutenberg.org/cache/epub/2554/pg2554.cover.medium.jpg"
-    )
-     */
     HomeScreen()
 }

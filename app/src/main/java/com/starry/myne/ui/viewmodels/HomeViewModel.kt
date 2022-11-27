@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.starry.myne.api.BooksApi
 import com.starry.myne.api.models.Book
 import com.starry.myne.others.PaginatorImpl
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 data class ScreenState(
@@ -18,9 +20,26 @@ data class ScreenState(
     val page: Long = 1L
 )
 
+data class TopBarState(
+    val searchText: String = "",
+    val isSearchBarVisible: Boolean = false,
+    val isSortMenuVisible: Boolean = false,
+    val isSearching: Boolean = false,
+    val searchResults: List<Book> = emptyList()
+)
+
+sealed class UserAction {
+    object SearchIconClicked : UserAction()
+    object CloseIconClicked : UserAction()
+    object SortIconClicked : UserAction()
+    object SortMenuDismiss : UserAction()
+    data class TextFieldInput(val text: String) : UserAction()
+}
+
 class HomeViewModel : ViewModel() {
     private val bookApi = BooksApi()
     var state by mutableStateOf(ScreenState())
+    var topBarState by mutableStateOf(TopBarState())
 
     private val paginator = PaginatorImpl(
         initialPage = state.page,
@@ -53,5 +72,41 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch {
             paginator.loadNextItems()
         }
+    }
+
+    private var searchJob: Job? = null
+
+    fun onAction(userAction: UserAction) {
+        when (userAction) {
+            UserAction.CloseIconClicked -> {
+                topBarState = topBarState.copy(isSearchBarVisible = false)
+            }
+            UserAction.SearchIconClicked -> {
+                topBarState = topBarState.copy(isSearchBarVisible = true)
+            }
+            is UserAction.TextFieldInput -> {
+                topBarState = topBarState.copy(searchText = userAction.text)
+                searchJob?.cancel()
+                searchJob = viewModelScope.launch {
+                    if (userAction.text.isNotBlank()) {
+                        topBarState = topBarState.copy(isSearching = true)
+                    }
+                    delay(500L)
+                    searchBooks(userAction.text)
+                }
+            }
+            UserAction.SortIconClicked -> {
+                topBarState = topBarState.copy(isSortMenuVisible = true)
+            }
+            UserAction.SortMenuDismiss -> {
+                topBarState = topBarState.copy(isSortMenuVisible = false)
+            }
+        }
+    }
+
+    private suspend fun searchBooks(query: String) {
+        val bookSet = bookApi.searchBooks(query)
+        topBarState =
+            topBarState.copy(searchResults = bookSet.getOrNull()!!.books, isSearching = false)
     }
 }

@@ -17,7 +17,7 @@ fun LibraryScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Blue),
+            .background(Color.DarkGray),
         contentAlignment = Alignment.Center
     ) {
         Text(

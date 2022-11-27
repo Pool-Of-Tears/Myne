@@ -14,9 +14,9 @@ sealed class BottomBarScreen(
     )
 
     object Search : BottomBarScreen(
-        route = "search",
-        title = R.string.navigation_search,
-        icon = R.drawable.ic_nav_search
+        route = "categories",
+        title = R.string.navigation_categories,
+        icon = R.drawable.ic_nav_categories
     )
 
     object Library : BottomBarScreen(

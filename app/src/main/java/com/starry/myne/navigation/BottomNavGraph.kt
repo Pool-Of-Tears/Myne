@@ -7,9 +7,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.starry.myne.ui.screens.CategoriesScreen
 import com.starry.myne.ui.screens.HomeScreen
 import com.starry.myne.ui.screens.LibraryScreen
-import com.starry.myne.ui.screens.SearchScreen
 import com.starry.myne.ui.screens.SettingsScreen
 
 @Composable
@@ -23,7 +23,7 @@ fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValue
             HomeScreen()
         }
         composable(route = BottomBarScreen.Search.route) {
-            SearchScreen()
+            CategoriesScreen()
         }
         composable(route = BottomBarScreen.Library.route) {
             LibraryScreen()

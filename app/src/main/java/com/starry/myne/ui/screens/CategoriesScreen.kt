@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun SearchScreen() {
+fun CategoriesScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -21,7 +21,7 @@ fun SearchScreen() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "SEARCH",
+            text = "CATEGORIES",
             fontSize = MaterialTheme.typography.h3.fontSize,
             fontWeight = FontWeight.Bold,
             color = Color.White
@@ -31,6 +31,6 @@ fun SearchScreen() {
 
 @Composable
 @Preview
-fun SearchScreenPreview() {
-    SearchScreen()
+fun CategoriesScreenPreview() {
+    CategoriesScreen()
 }

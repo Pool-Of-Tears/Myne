@@ -35,4 +35,27 @@ labelSmall = TextStyle(
 */
 )
 
-val cairoFont = FontFamily(Font(R.font.cairo))
+val comfortFont = FontFamily(
+    fonts = listOf(
+        Font(
+            resId = R.font.comfortaa_bold,
+            weight = FontWeight.Bold
+        ),
+        Font(
+            resId = R.font.comfortaa_light,
+            weight = FontWeight.Light
+        ),
+        Font(
+            resId = R.font.comfortaa_medium,
+            weight = FontWeight.Medium
+        ),
+        Font(
+            resId = R.font.comfortaa_regular,
+            weight = FontWeight.Normal
+        ),
+        Font(
+            resId = R.font.comfortaa_semibold,
+            weight = FontWeight.SemiBold
+        ),
+    )
+)

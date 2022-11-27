@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.navigation.BottomBarScreen
 import com.starry.myne.navigation.BottomNavGraph
+import com.starry.myne.ui.theme.comfortFont
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
@@ -112,6 +113,7 @@ fun CustomBottomNavigationItem(screen: BottomBarScreen, isSelected: Boolean, onC
                 Text(
                     text = stringResource(id = screen.title),
                     color = contentColor,
+                    fontFamily = comfortFont,
                     modifier = Modifier.padding(start = 4.dp)
                 )
             }

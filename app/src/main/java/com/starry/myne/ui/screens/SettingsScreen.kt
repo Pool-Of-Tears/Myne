@@ -17,7 +17,7 @@ fun SettingsScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Red),
+            .background(Color.DarkGray),
         contentAlignment = Alignment.Center
     ) {
         Text(
