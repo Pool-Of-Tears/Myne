@@ -25,13 +25,14 @@ fun BookItemCard(
     author: String,
     language: String,
     subjects: String,
-    coverImageUrl: String?
+    coverImageUrl: String?,
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .width(380.dp)
             .height(200.dp),
-        onClick = { /*TODO*/ },
+        onClick = onClick,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
                 2.dp

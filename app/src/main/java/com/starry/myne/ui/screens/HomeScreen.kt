@@ -1,8 +1,3 @@
-@file:OptIn(
-    ExperimentalCoilApi::class, ExperimentalMaterial3Api::class,
-    ExperimentalComposeUiApi::class
-)
-
 package com.starry.myne.ui.screens
 
 import androidx.compose.animation.Crossfade
@@ -10,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ContentAlpha
@@ -46,6 +42,8 @@ import com.starry.myne.ui.viewmodels.HomeViewModel
 import com.starry.myne.ui.viewmodels.UserAction
 import com.starry.myne.utils.Utils
 
+@ExperimentalCoilApi
+@ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
 @Composable
 fun HomeScreen() {
@@ -104,41 +102,50 @@ fun HomeScreen() {
 
         // If search text is empty show list of all books.
         if (topBarState.searchText.isBlank()) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(start = 8.dp, end = 8.dp)
-            ) {
-                items(state.items.size) { i ->
-                    val item = state.items[i]
-                    if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
-                        viewModel.loadNextItems()
-                    }
-                    Box(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxWidth(), contentAlignment = Alignment.Center
-                    ) {
-                        BookItemCard(
-                            title = item.title,
-                            author = Utils.getAuthorsAsString(item.authors),
-                            language = Utils.getLanguagesAsString(item.languages),
-                            subjects = Utils.getSubjectsAsString(item.subjects, 3),
-                            coverImageUrl = item.formats.imagejpeg
-                        )
-                    }
-
+            // show fullscreen progress indicator when loading the first page.
+            if (state.page == 1L && state.isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
-                item {
-                    if (state.isLoading) {
-                        Row(
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(start = 8.dp, end = 8.dp)
+                ) {
+                    items(state.items.size) { i ->
+                        val item = state.items[i]
+                        if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
+                            viewModel.loadNextItems()
+                        }
+                        Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            horizontalArrangement = Arrangement.Center
+                                .padding(4.dp)
+                                .fillMaxWidth(), contentAlignment = Alignment.Center
                         ) {
-                            ProgressDots()
+                            BookItemCard(
+                                title = item.title,
+                                author = Utils.getAuthorsAsString(item.authors),
+                                language = Utils.getLanguagesAsString(item.languages),
+                                subjects = Utils.getSubjectsAsString(item.subjects, 3),
+                                coverImageUrl = item.formats.imagejpeg
+                            ) {
+                                //TODO: Handle book item clicks.
+                            }
+                        }
+
+                    }
+                    item {
+                        if (state.isLoading) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                ProgressDots()
+                            }
                         }
                     }
                 }
@@ -178,13 +185,14 @@ fun HomeScreen() {
                             language = Utils.getLanguagesAsString(item.languages),
                             subjects = Utils.getSubjectsAsString(item.subjects, 3),
                             coverImageUrl = item.formats.imagejpeg
-                        )
+                        ) {
+                            //TODO: Handle book item clicks.
+                        }
                     }
                 }
             }
         }
     }
-
 }
 
 
@@ -217,6 +225,7 @@ fun TopAppBar(
     }
 }
 
+@ExperimentalMaterial3Api
 @Composable
 fun SearchAppBar(
     onCloseIconClicked: () -> Unit,
@@ -280,13 +289,17 @@ fun SearchAppBar(
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(
             onSearch = { onSearchClicked() }
-        )
+        ),
+        shape = RoundedCornerShape(16.dp)
     )
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
 }
 
+@ExperimentalCoilApi
+@ExperimentalComposeUiApi
+@ExperimentalMaterial3Api
 @Composable
 @Preview(showBackground = true)
 fun HomeScreenPreview() {

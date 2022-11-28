@@ -14,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -25,11 +26,14 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.navigation.BottomBarScreen
 import com.starry.myne.navigation.BottomNavGraph
 import com.starry.myne.ui.theme.comfortFont
 
+@ExperimentalCoilApi
+@ExperimentalComposeUiApi
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
 @Composable
@@ -53,7 +57,7 @@ fun MainScreen() {
 fun BottomBar(navController: NavHostController) {
     val screens = listOf(
         BottomBarScreen.Home,
-        BottomBarScreen.Search,
+        BottomBarScreen.Categories,
         BottomBarScreen.Library,
         BottomBarScreen.Settings,
     )
