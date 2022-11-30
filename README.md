@@ -5,6 +5,6 @@
 This app is currently in very early stage and is under active development.
 
 ##### Preview
-![](https://telegra.ph/file/f04f897e0d9042e62cc1e.jpg)
+![](https://telegra.ph/file/8e034908ce02d98daa7fc.png)
 
 **Note**: Since the app is currently in very early stage, the UI might change significantly and app can look totally different from this preview when finished.
