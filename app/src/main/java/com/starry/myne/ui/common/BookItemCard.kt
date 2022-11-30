@@ -30,8 +30,8 @@ fun BookItemCard(
 ) {
     Card(
         modifier = Modifier
-            .width(380.dp)
-            .height(200.dp),
+            .height(200.dp)
+            .fillMaxWidth(),
         onClick = onClick,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(

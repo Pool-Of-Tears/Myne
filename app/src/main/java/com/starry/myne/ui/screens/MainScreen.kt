@@ -29,7 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.navigation.BottomBarScreen
-import com.starry.myne.navigation.BottomNavGraph
+import com.starry.myne.navigation.NavGraph
 import com.starry.myne.ui.theme.comfortFont
 
 @ExperimentalCoilApi
@@ -49,7 +49,7 @@ fun MainScreen() {
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }
     ) {
-        BottomNavGraph(navController = navController, it)
+        NavGraph(navController = navController, it)
     }
 }
 
@@ -64,23 +64,26 @@ fun BottomBar(navController: NavHostController) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val bottomBarDestination = screens.any { it.route == currentDestination?.route }
 
-    Row(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
-            .padding(12.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        screens.forEach { screen ->
-            CustomBottomNavigationItem(
-                screen = screen,
-                isSelected = screen.route == currentDestination?.route
-            ) {
-                navController.navigate(screen.route) {
-                    popUpTo(navController.graph.findStartDestination().id)
-                    launchSingleTop = true
+    if (bottomBarDestination) {
+        Row(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
+                .padding(12.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            screens.forEach { screen ->
+                CustomBottomNavigationItem(
+                    screen = screen,
+                    isSelected = screen.route == currentDestination?.route
+                ) {
+                    navController.navigate(screen.route) {
+                        popUpTo(navController.graph.findStartDestination().id)
+                        launchSingleTop = true
+                    }
                 }
             }
         }

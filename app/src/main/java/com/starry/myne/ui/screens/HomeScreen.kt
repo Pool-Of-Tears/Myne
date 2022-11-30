@@ -33,8 +33,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.R
+import com.starry.myne.navigation.Screens
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.theme.comfortFont
@@ -46,9 +49,9 @@ import com.starry.myne.utils.Utils
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     val viewModel = viewModel<HomeViewModel>()
-    val state = viewModel.state
+    val allBooksState = viewModel.allBooksState
     val topBarState = viewModel.topBarState
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -103,7 +106,7 @@ fun HomeScreen() {
         // If search text is empty show list of all books.
         if (topBarState.searchText.isBlank()) {
             // show fullscreen progress indicator when loading the first page.
-            if (state.page == 1L && state.isLoading) {
+            if (allBooksState.page == 1L && allBooksState.isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
@@ -114,9 +117,9 @@ fun HomeScreen() {
                         .background(MaterialTheme.colorScheme.background)
                         .padding(start = 8.dp, end = 8.dp)
                 ) {
-                    items(state.items.size) { i ->
-                        val item = state.items[i]
-                        if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
+                    items(allBooksState.items.size) { i ->
+                        val item = allBooksState.items[i]
+                        if (i >= allBooksState.items.size - 1 && !allBooksState.endReached && !allBooksState.isLoading) {
                             viewModel.loadNextItems()
                         }
                         Box(
@@ -131,13 +134,13 @@ fun HomeScreen() {
                                 subjects = Utils.getSubjectsAsString(item.subjects, 3),
                                 coverImageUrl = item.formats.imagejpeg
                             ) {
-                                //TODO: Handle book item clicks.
+                                navController.navigate(Screens.BookDetailScreen.withBookId(item.id))
                             }
                         }
 
                     }
                     item {
-                        if (state.isLoading) {
+                        if (allBooksState.isLoading) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -151,7 +154,7 @@ fun HomeScreen() {
                 }
             }
 
-        // Else show the search results.
+            // Else show the search results.
         } else {
             LazyColumn(
                 modifier = Modifier
@@ -186,7 +189,7 @@ fun HomeScreen() {
                             subjects = Utils.getSubjectsAsString(item.subjects, 3),
                             coverImageUrl = item.formats.imagejpeg
                         ) {
-                            //TODO: Handle book item clicks.
+                            navController.navigate(Screens.BookDetailScreen.withBookId(item.id))
                         }
                     }
                 }
@@ -303,5 +306,5 @@ fun SearchAppBar(
 @Composable
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
-    HomeScreen()
+    HomeScreen(navController = rememberNavController())
 }

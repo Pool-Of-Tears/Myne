@@ -12,7 +12,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-data class ScreenState(
+data class AllBooksState(
     val isLoading: Boolean = false,
     val items: List<Book> = emptyList(),
     val error: String? = null,
@@ -38,26 +38,26 @@ sealed class UserAction {
 
 class HomeViewModel : ViewModel() {
     private val bookApi = BooksApi()
-    var state by mutableStateOf(ScreenState())
+    var allBooksState by mutableStateOf(AllBooksState())
     var topBarState by mutableStateOf(TopBarState())
 
     private val paginator = PaginatorImpl(
-        initialPage = state.page,
+        initialPage = allBooksState.page,
         onLoadUpdated = {
-            state = state.copy(isLoading = it)
+            allBooksState = allBooksState.copy(isLoading = it)
         },
         onRequest = { nextPage ->
             bookApi.getAllBooks(nextPage)
         },
         getNextPage = {
-            state.page + 1L
+            allBooksState.page + 1L
         },
         onError = {
-            state = state.copy(error = it?.localizedMessage)
+            allBooksState = allBooksState.copy(error = it?.localizedMessage)
         },
         onSuccess = { bookSet, newPage ->
-            state = state.copy(
-                items = (state.items + bookSet.books),
+            allBooksState = allBooksState.copy(
+                items = (allBooksState.items + bookSet.books),
                 page = newPage,
                 endReached = bookSet.books.isEmpty()
             )
