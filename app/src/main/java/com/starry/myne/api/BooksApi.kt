@@ -33,6 +33,10 @@ class BooksApi {
         return makeApiRequest(request)
     }
 
+    suspend fun getBookDescription(bookName: String) {
+        TODO("Not Yet Implemented.")
+    }
+
     private suspend fun makeApiRequest(request: Request): Result<BookSet> =
         suspendCoroutine { continuation ->
             okHttpClient.newCall(request).enqueue(object : Callback {

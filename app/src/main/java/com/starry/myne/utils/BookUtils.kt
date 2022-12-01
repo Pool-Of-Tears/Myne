@@ -3,7 +3,7 @@ package com.starry.myne.utils
 import com.starry.myne.api.models.Author
 import java.util.*
 
-object Utils {
+object BookUtils {
     fun getAuthorsAsString(authors: List<Author>): String {
         return if (authors.isNotEmpty()) {
             var result: String
@@ -11,14 +11,27 @@ object Utils {
                 result = authors.first().name
                 authors.slice(1 until authors.size).forEach { author ->
                     if (author.name != "N/A")
-                        result += ", ${author.name}"
+                        result += ", ${fixAuthorName(author.name)}"
                 }
             } else {
-                result = authors.first().name
+                result = fixAuthorName(authors.first().name)
             }
             result
         } else {
             "Unknown Author"
+        }
+    }
+
+    /**
+     * For some weird reasons, gutenberg gives name of authors in
+     * reversed, where first name and last are separated by a comma
+     * Eg: "Fyodor Dostoyevsky" becomes "Dostoyevsky, Fyodor", This
+     * function fixes that and returns name in correct format.
+     */
+    private fun fixAuthorName(name: String): String {
+        val reversed = name.split(",").reversed()
+        return reversed.joinToString(separator = " ") {
+            return@joinToString it.trim()
         }
     }
 

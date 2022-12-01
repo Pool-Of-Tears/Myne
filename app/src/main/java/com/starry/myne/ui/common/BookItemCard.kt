@@ -6,10 +6,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
@@ -30,7 +32,7 @@ fun BookItemCard(
 ) {
     Card(
         modifier = Modifier
-            .height(200.dp)
+            .height(185.dp)
             .fillMaxWidth(),
         onClick = onClick,
         colors = CardDefaults.cardColors(
@@ -42,12 +44,15 @@ fun BookItemCard(
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
             Box(
-                modifier = Modifier.weight(1.8f)
+                modifier = Modifier
+                    .weight(1.8f)
+                    .padding(8.dp)
+                    .clip(RoundedCornerShape(6.dp))
             ) {
                 val painter = rememberImagePainter(data = coverImageUrl, builder = {
                     placeholder(R.drawable.placeholder_cat)
                     error(R.drawable.placeholder_cat)
-                    crossfade(800)
+                    crossfade(500)
                 })
                 Image(
                     painter = painter,
@@ -62,15 +67,17 @@ fun BookItemCard(
                     .weight(3f)
                     .fillMaxHeight()
             ) {
+                Spacer(modifier = Modifier.weight(1f))
+
                 Text(
                     text = title,
                     modifier = Modifier
                         .padding(
-                            start = 12.dp, top = 8.dp, end = 8.dp
+                            start = 12.dp, end = 8.dp
                         )
                         .fillMaxWidth(),
                     fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
-                    fontSize = 22.sp,
+                    fontSize = 20.sp,
                     fontFamily = comfortFont,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
@@ -84,7 +91,8 @@ fun BookItemCard(
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
                     fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
-                    fontFamily = comfortFont
+                    fontFamily = comfortFont,
+                    fontSize = 14.sp,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -93,7 +101,7 @@ fun BookItemCard(
                     text = language,
                     modifier = Modifier.padding(start = 12.dp, end = 8.dp),
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
                     fontFamily = comfortFont
@@ -105,10 +113,28 @@ fun BookItemCard(
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2, overflow = TextOverflow.Ellipsis,
                     fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
-                    fontFamily = comfortFont
-                    // fontStyle = FontStyle.Italic
+                    fontFamily = comfortFont,
+                    fontSize = 13.sp
                 )
+
+                Spacer(modifier = Modifier.weight(1f))
             }
         }
+    }
+}
+
+@ExperimentalCoilApi
+@ExperimentalMaterial3Api
+@Preview
+@Composable
+fun BookCardPreview() {
+    BookItemCard(
+        title = "Crime and Punishment",
+        author = "Fyodor Dostoyevsky",
+        language = "English",
+        subjects = "Crime, Psychological aspects, Fiction",
+        coverImageUrl = "https://www.gutenberg.org/cache/epub/2554/pg2554.cover.medium.jpg"
+    ) {
+        TODO()
     }
 }

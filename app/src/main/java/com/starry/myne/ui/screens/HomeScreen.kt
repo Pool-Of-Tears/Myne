@@ -43,7 +43,7 @@ import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.theme.comfortFont
 import com.starry.myne.ui.viewmodels.HomeViewModel
 import com.starry.myne.ui.viewmodels.UserAction
-import com.starry.myne.utils.Utils
+import com.starry.myne.utils.BookUtils
 
 @ExperimentalCoilApi
 @ExperimentalMaterial3Api
@@ -129,9 +129,9 @@ fun HomeScreen(navController: NavController) {
                         ) {
                             BookItemCard(
                                 title = item.title,
-                                author = Utils.getAuthorsAsString(item.authors),
-                                language = Utils.getLanguagesAsString(item.languages),
-                                subjects = Utils.getSubjectsAsString(item.subjects, 3),
+                                author = BookUtils.getAuthorsAsString(item.authors),
+                                language = BookUtils.getLanguagesAsString(item.languages),
+                                subjects = BookUtils.getSubjectsAsString(item.subjects, 3),
                                 coverImageUrl = item.formats.imagejpeg
                             ) {
                                 navController.navigate(Screens.BookDetailScreen.withBookId(item.id))
@@ -184,9 +184,9 @@ fun HomeScreen(navController: NavController) {
                     ) {
                         BookItemCard(
                             title = item.title,
-                            author = Utils.getAuthorsAsString(item.authors),
-                            language = Utils.getLanguagesAsString(item.languages),
-                            subjects = Utils.getSubjectsAsString(item.subjects, 3),
+                            author = BookUtils.getAuthorsAsString(item.authors),
+                            language = BookUtils.getLanguagesAsString(item.languages),
+                            subjects = BookUtils.getSubjectsAsString(item.subjects, 3),
                             coverImageUrl = item.formats.imagejpeg
                         ) {
                             navController.navigate(Screens.BookDetailScreen.withBookId(item.id))
@@ -220,7 +220,7 @@ fun TopAppBar(
         IconButton(onClick = onSearchIconClicked) {
             Icon(
                 imageVector = Icons.Outlined.Search,
-                contentDescription = stringResource(id = R.string.home_header_icon_desc),
+                contentDescription = stringResource(id = R.string.home_search_icon_desc),
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(30.dp)
             )

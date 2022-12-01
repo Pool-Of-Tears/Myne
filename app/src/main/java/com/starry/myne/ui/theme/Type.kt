@@ -59,3 +59,5 @@ val comfortFont = FontFamily(
         ),
     )
 )
+
+val pacificoFont = FontFamily(Font(R.font.pacifico_regular))
