@@ -1,12 +1,7 @@
 package com.starry.myne.ui.screens
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -17,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -50,7 +46,7 @@ fun BookDetailScreen(bookId: Int) {
         Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .scrollable(scrollState, Orientation.Vertical)
+            .verticalScroll(scrollState)
     ) {
         TopAppBar(
             onBackClicked = {
@@ -88,7 +84,7 @@ fun BookDetailScreen(bookId: Int) {
                 //TODO
                 val painter =
                     rememberImagePainter(
-                        data = "https://www.gutenberg.org/cache/epub/2554/pg2554.cover.medium.jpg",
+                        data = "https://books.google.com/books/content?id=70x4y1IPzEoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
                         builder = {
                             placeholder(R.drawable.book_details_bg)
                             error(R.drawable.placeholder_cat)
@@ -101,13 +97,15 @@ fun BookDetailScreen(bookId: Int) {
                         .padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painter, contentDescription = "", modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .width(118.dp)
-                            .height(169.dp),
-                        contentScale = ContentScale.Crop
-                    )
+                    Box(modifier = Modifier.shadow(24.dp)) {
+                        Image(
+                            painter = painter, contentDescription = "", modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .width(118.dp)
+                                .height(169.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
 
                 //TODO
@@ -119,7 +117,7 @@ fun BookDetailScreen(bookId: Int) {
                         text = "Crime and Punishment",
                         modifier = Modifier
                             .padding(
-                                start = 12.dp, end = 8.dp
+                                start = 12.dp, end = 8.dp, top = 20.dp
                             )
                             .fillMaxWidth(),
                         fontSize = 24.sp,
@@ -141,6 +139,17 @@ fun BookDetailScreen(bookId: Int) {
                         color = MaterialTheme.colorScheme.onBackground,
                     )
 
+                    Text(
+                        text = "69.5K Downloads",
+                        modifier = Modifier.padding(start = 12.dp, end = 8.dp, top = 8.dp),
+                        fontSize = 14.sp,
+                        fontFamily = comfortFont,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+
                     Spacer(modifier = Modifier.height(50.dp))
                 }
             }
@@ -148,6 +157,25 @@ fun BookDetailScreen(bookId: Int) {
         MiddleBar {
             //TODO: Handle download button click.
         }
+
+        Text(
+            text = stringResource(id = R.string.book_synopsis),
+            modifier = Modifier.padding(start = 12.dp, end = 8.dp),
+            fontSize = 20.sp,
+            fontFamily = comfortFont,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+
+        Text(
+            text = stringResource(id = R.string.sample_desc),
+            modifier = Modifier.padding(14.dp),
+            fontFamily = comfortFont,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+
+
     }
 }
 
@@ -169,22 +197,38 @@ fun MiddleBar(onDownloadButtonClick: () -> Unit) {
             Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f)
+                        .fillMaxHeight(),
+                    contentAlignment = Alignment.Center
                 ) {
+
+                    Text(
+                        text = "English",
+                        modifier = Modifier.padding(14.dp),
+                        fontSize = 18.sp,
+                        fontFamily = comfortFont,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
 
                 }
                 Divider(
                     modifier = Modifier
-                        .fillMaxHeight(0.8f)
+                        .fillMaxHeight(0.6f)
                         .width(2.dp)
                 )
                 Box(
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f)
+                        .fillMaxHeight(),
+                    contentAlignment = Alignment.Center
                 ) {
-
+                    Text(
+                        text = "420 Pages",
+                        modifier = Modifier.padding(14.dp),
+                        fontSize = 18.sp,
+                        fontFamily = comfortFont,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
                 }
             }
         }
@@ -197,14 +241,14 @@ fun MiddleBar(onDownloadButtonClick: () -> Unit) {
                 .padding(top = 12.dp, bottom = 12.dp, end = 12.dp, start = 4.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
-            )
+            ), shape = CircleShape
         ) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_download),
                     contentDescription = stringResource(id = R.string.download_button_desc),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(30.dp)
+                    modifier = Modifier.size(26.dp)
                 )
             }
         }

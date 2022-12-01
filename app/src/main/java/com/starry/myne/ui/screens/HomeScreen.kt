@@ -154,7 +154,7 @@ fun HomeScreen(navController: NavController) {
                 }
             }
 
-            // Else show the search results.
+        // Else show the search results.
         } else {
             LazyColumn(
                 modifier = Modifier

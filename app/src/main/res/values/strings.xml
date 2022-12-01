@@ -15,4 +15,8 @@
     <string name="back_button_desc">Go back.</string>
     <string name="share_button_desc">Share this book.</string>
     <string name="download_button_desc">Download this book.</string>
+    <string name="book_synopsis">Synopsis</string>
+
+    <!-- TODO: For testing purpose -->
+    <string name="sample_desc">Inspired by an image of Christ\'s suffering, Dostoyevsky set out to create a protagonist with \"a truly beautiful soul\" and to trace the fate of such an individual as he comes into contact with the brutal reality of contemporary society. The novel begins when the innocent epileptic Prince Myshkin - the \'idiot\' - arrives in St Petersburg and finds himself drawn into a web of violent and passionate relationships that leads to blackmail, betrayal and eventually murder.</string>
 </resources>
