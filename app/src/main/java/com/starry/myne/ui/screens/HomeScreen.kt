@@ -134,7 +134,7 @@ fun HomeScreen(navController: NavController) {
                                 subjects = BookUtils.getSubjectsAsString(item.subjects, 3),
                                 coverImageUrl = item.formats.imagejpeg
                             ) {
-                                navController.navigate(Screens.BookDetailScreen.withBookId(item.id))
+                                navController.navigate(Screens.BookDetailScreen.withBookId(item.id.toString()))
                             }
                         }
 
@@ -189,7 +189,7 @@ fun HomeScreen(navController: NavController) {
                             subjects = BookUtils.getSubjectsAsString(item.subjects, 3),
                             coverImageUrl = item.formats.imagejpeg
                         ) {
-                            navController.navigate(Screens.BookDetailScreen.withBookId(item.id))
+                            navController.navigate(Screens.BookDetailScreen.withBookId(item.id.toString()))
                         }
                     }
                 }

@@ -6,6 +6,7 @@ import com.starry.myne.api.models.ExtraInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.*
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.net.URLEncoder
@@ -13,13 +14,12 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class BooksApi {
+object BooksApi {
 
-    companion object {
-        const val BASE_URL = "https://gutendex.com/books"
-        const val GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes"
-        const val GOOGLE_API_KEY = "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE"
-    }
+    private const val BASE_URL = "https://gutendex.com/books"
+    private const val GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes"
+    private const val GOOGLE_API_KEY = "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE"
+
 
     private val okHttpClient = OkHttpClient()
     private val gsonClient = Gson()
@@ -34,6 +34,11 @@ class BooksApi {
             URLEncoder.encode(query, "UTF-8")
         }
         val request = Request.Builder().get().url("${BASE_URL}?search=$encodedString").build()
+        return makeApiRequest(request)
+    }
+
+    suspend fun getBookById(bookId: String): Result<BookSet> {
+        val request = Request.Builder().get().url("${BASE_URL}?ids=$bookId").build()
         return makeApiRequest(request)
     }
 
@@ -85,15 +90,19 @@ class BooksApi {
         val jsonObj = JSONObject(jsonString)
         val totalItems = jsonObj.getInt("totalItems")
         return if (totalItems != 0) {
-            val items = jsonObj.getJSONArray("items")
-            val item = items.getJSONObject(0)
-            val volumeInfo = item.getJSONObject("volumeInfo")
-            val imageLinks = volumeInfo.getJSONObject("imageLinks")
-            // Build Extra info.
-            val coverImage = imageLinks.getString("thumbnail")
-            val pageCount = volumeInfo.getInt("pageCount")
-            val description = volumeInfo.getString("description")
-            ExtraInfo(coverImage, pageCount, description)
+            try {
+                val items = jsonObj.getJSONArray("items")
+                val item = items.getJSONObject(0)
+                val volumeInfo = item.getJSONObject("volumeInfo")
+                val imageLinks = volumeInfo.getJSONObject("imageLinks")
+                // Build Extra info.
+                val coverImage = imageLinks.getString("thumbnail")
+                val pageCount = volumeInfo.getInt("pageCount")
+                val description = volumeInfo.getString("description")
+                ExtraInfo(coverImage, pageCount, description)
+            } catch (exc: JSONException) {
+                null
+            }
         } else {
             null
         }

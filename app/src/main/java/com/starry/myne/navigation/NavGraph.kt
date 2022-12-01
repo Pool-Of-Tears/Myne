@@ -46,12 +46,12 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
         composable(
             route = Screens.BookDetailScreen.route, arguments = listOf(
                 navArgument(BOOK_DETAIL_ARG_KEY) {
-                    type = NavType.IntType
+                    type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
-            val bookId = backStackEntry.arguments!!.getInt(BOOK_DETAIL_ARG_KEY)
-            BookDetailScreen(bookId)
+            val bookId = backStackEntry.arguments!!.getString(BOOK_DETAIL_ARG_KEY)!!
+            BookDetailScreen(bookId, navController)
         }
     }
 }
