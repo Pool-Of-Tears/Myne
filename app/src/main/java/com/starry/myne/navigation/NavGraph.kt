@@ -14,13 +14,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
+import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.screens.*
 
 @ExperimentalCoilApi
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
 @Composable
-fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
+fun NavGraph(
+    navController: NavHostController,
+    paddingValues: PaddingValues,
+    networkStatus: NetworkObserver.Status,
+) {
     NavHost(
         navController = navController,
         startDestination = BottomBarScreen.Home.route,
@@ -30,7 +35,7 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
     ) {
         // Bottom Navigation Screens
         composable(route = BottomBarScreen.Home.route) {
-            HomeScreen(navController)
+            HomeScreen(navController, networkStatus)
         }
         composable(route = BottomBarScreen.Categories.route) {
             CategoriesScreen()
@@ -51,7 +56,7 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
             )
         ) { backStackEntry ->
             val bookId = backStackEntry.arguments!!.getString(BOOK_DETAIL_ARG_KEY)!!
-            BookDetailScreen(bookId, navController)
+            BookDetailScreen(bookId, navController, networkStatus)
         }
     }
 }

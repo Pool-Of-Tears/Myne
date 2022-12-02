@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.navigation.BottomBarScreen
 import com.starry.myne.navigation.NavGraph
+import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.theme.comfortFont
 
 @ExperimentalCoilApi
@@ -35,12 +36,12 @@ import com.starry.myne.ui.theme.comfortFont
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
 @Composable
-fun MainScreen() {
+fun MainScreen(networkStatus: NetworkObserver.Status) {
     val navController = rememberNavController()
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }
     ) {
-        NavGraph(navController = navController, it)
+        NavGraph(navController = navController, it, networkStatus)
     }
 }
 

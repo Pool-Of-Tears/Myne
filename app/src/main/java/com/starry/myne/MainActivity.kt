@@ -6,15 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.screens.MainScreen
-import com.starry.myne.ui.screens.NoInternetScreen
 import com.starry.myne.ui.theme.MyneTheme
-import kotlinx.coroutines.delay
 
 @ExperimentalCoilApi
 @ExperimentalMaterial3Api
@@ -39,23 +38,7 @@ class MainActivity : ComponentActivity() {
                 val status by networkObserver.observe().collectAsState(
                     initial = NetworkObserver.Status.Unavailable
                 )
-                if (status == NetworkObserver.Status.Available) {
-                    MainScreen()
-                } else {
-                    /*
-                    Show no internet screen with some delay to avoid flashing
-                    it for a moment when app was launched and internet connection
-                    was available.
-                    */
-                    var showNoInternet by remember { mutableStateOf(false) }
-                    LaunchedEffect(key1 = Unit) {
-                        delay(250)
-                        showNoInternet = true
-                    }
-                    if (showNoInternet) {
-                        NoInternetScreen()
-                    }
-                }
+                MainScreen(status)
             }
         }
     }

@@ -14,9 +14,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -38,78 +36,126 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.R
 import com.starry.myne.navigation.Screens
+import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.theme.comfortFont
 import com.starry.myne.ui.viewmodels.HomeViewModel
 import com.starry.myne.ui.viewmodels.UserAction
 import com.starry.myne.utils.BookUtils
+import kotlinx.coroutines.delay
 
 @ExperimentalCoilApi
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
 @Composable
-fun HomeScreen(navController: NavController) {
-    val viewModel = viewModel<HomeViewModel>()
-    val allBooksState = viewModel.allBooksState
-    val topBarState = viewModel.topBarState
-
+fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Status) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(20.dp)
-        ) {
-            Crossfade(
-                targetState = topBarState.isSearchBarVisible,
-                animationSpec = tween(durationMillis = 200)
-            ) {
-                if (it) {
-                    SearchAppBar(
-                        onCloseIconClicked = {
-                            viewModel.onAction(UserAction.CloseIconClicked)
-                        },
-                        onInputValueChange = { newText ->
-                            viewModel.onAction(
-                                UserAction.TextFieldInput(newText)
-                            )
-                        },
-                        text = topBarState.searchText,
-                        onSearchClicked = {
-                            keyboardController?.hide()
-                            focusManager.clearFocus()
-                        }
-                    )
-                } else {
-                    TopAppBar(
-                        onSearchIconClicked = {
-                            viewModel.onAction(UserAction.SearchIconClicked)
-                        },
-                    )
-                }
-            }
-            Divider(
-                color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-                thickness = 2.dp,
-                // modifier = Modifier.padding(vertical = 2.dp)
-            )
-        }
+    if (networkStatus == NetworkObserver.Status.Available) {
+        val viewModel = viewModel<HomeViewModel>()
+        val allBooksState = viewModel.allBooksState
+        val topBarState = viewModel.topBarState
 
-        // If search text is empty show list of all books.
-        if (topBarState.searchText.isBlank()) {
-            // show fullscreen progress indicator when loading the first page.
-            if (allBooksState.page == 1L && allBooksState.isLoading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+        Column(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(20.dp)
+            ) {
+                Crossfade(
+                    targetState = topBarState.isSearchBarVisible,
+                    animationSpec = tween(durationMillis = 200)
+                ) {
+                    if (it) {
+                        SearchAppBar(
+                            onCloseIconClicked = {
+                                viewModel.onAction(UserAction.CloseIconClicked)
+                            },
+                            onInputValueChange = { newText ->
+                                viewModel.onAction(
+                                    UserAction.TextFieldInput(newText)
+                                )
+                            },
+                            text = topBarState.searchText,
+                            onSearchClicked = {
+                                keyboardController?.hide()
+                                focusManager.clearFocus()
+                            }
+                        )
+                    } else {
+                        TopAppBar(
+                            onSearchIconClicked = {
+                                viewModel.onAction(UserAction.SearchIconClicked)
+                            },
+                        )
+                    }
                 }
+                Divider(
+                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+                    thickness = 2.dp,
+                    // modifier = Modifier.padding(vertical = 2.dp)
+                )
+            }
+
+            // If search text is empty show list of all books.
+            if (topBarState.searchText.isBlank()) {
+                // show fullscreen progress indicator when loading the first page.
+                if (allBooksState.page == 1L && allBooksState.isLoading) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background)
+                            .padding(start = 8.dp, end = 8.dp)
+                    ) {
+                        items(allBooksState.items.size) { i ->
+                            val item = allBooksState.items[i]
+                            if (i >= allBooksState.items.size - 1 && !allBooksState.endReached && !allBooksState.isLoading) {
+                                viewModel.loadNextItems()
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .fillMaxWidth(), contentAlignment = Alignment.Center
+                            ) {
+                                BookItemCard(
+                                    title = item.title,
+                                    author = BookUtils.getAuthorsAsString(item.authors),
+                                    language = BookUtils.getLanguagesAsString(item.languages),
+                                    subjects = BookUtils.getSubjectsAsString(item.subjects, 3),
+                                    coverImageUrl = item.formats.imagejpeg
+                                ) {
+                                    navController.navigate(Screens.BookDetailScreen.withBookId(item.id.toString()))
+                                }
+                            }
+
+                        }
+                        item {
+                            if (allBooksState.isLoading) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    ProgressDots()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Else show the search results.
             } else {
                 LazyColumn(
                     modifier = Modifier
@@ -117,11 +163,21 @@ fun HomeScreen(navController: NavController) {
                         .background(MaterialTheme.colorScheme.background)
                         .padding(start = 8.dp, end = 8.dp)
                 ) {
-                    items(allBooksState.items.size) { i ->
-                        val item = allBooksState.items[i]
-                        if (i >= allBooksState.items.size - 1 && !allBooksState.endReached && !allBooksState.isLoading) {
-                            viewModel.loadNextItems()
+                    item {
+                        if (topBarState.isSearching) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                ProgressDots()
+                            }
                         }
+                    }
+
+                    items(topBarState.searchResults.size) { i ->
+                        val item = topBarState.searchResults[i]
                         Box(
                             modifier = Modifier
                                 .padding(4.dp)
@@ -137,63 +193,23 @@ fun HomeScreen(navController: NavController) {
                                 navController.navigate(Screens.BookDetailScreen.withBookId(item.id.toString()))
                             }
                         }
-
-                    }
-                    item {
-                        if (allBooksState.isLoading) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                ProgressDots()
-                            }
-                        }
                     }
                 }
             }
-
-        // Else show the search results.
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(start = 8.dp, end = 8.dp)
-            ) {
-                item {
-                    if (topBarState.isSearching) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            ProgressDots()
-                        }
-                    }
-                }
-
-                items(topBarState.searchResults.size) { i ->
-                    val item = topBarState.searchResults[i]
-                    Box(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxWidth(), contentAlignment = Alignment.Center
-                    ) {
-                        BookItemCard(
-                            title = item.title,
-                            author = BookUtils.getAuthorsAsString(item.authors),
-                            language = BookUtils.getLanguagesAsString(item.languages),
-                            subjects = BookUtils.getSubjectsAsString(item.subjects, 3),
-                            coverImageUrl = item.formats.imagejpeg
-                        ) {
-                            navController.navigate(Screens.BookDetailScreen.withBookId(item.id.toString()))
-                        }
-                    }
-                }
-            }
+        }
+    } else {
+        /*
+        Show no internet screen with some delay to avoid flashing
+        it for a moment when app was launched and internet connection
+        was available.
+        */
+        var showNoInternet by remember { mutableStateOf(false) }
+        LaunchedEffect(key1 = Unit) {
+            delay(250)
+            showNoInternet = true
+        }
+        if (showNoInternet) {
+            NoInternetScreen()
         }
     }
 }
@@ -306,5 +322,5 @@ fun SearchAppBar(
 @Composable
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
-    HomeScreen(navController = rememberNavController())
+    HomeScreen(navController = rememberNavController(), NetworkObserver.Status.Unavailable)
 }
