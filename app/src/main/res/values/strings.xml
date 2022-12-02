@@ -2,6 +2,7 @@
     <string name="app_name">Myne</string>
     <!-- Others Strings -->
     <string name="not_applicable">N/A</string>
+    <string name="woops">"Whoops!!"</string>
     <!-- Navigation titles -->
     <string name="navigation_home">Home</string>
     <string name="navigation_categories">Categories</string>
@@ -22,5 +23,7 @@
     <string name="book_page_count">%s Pages</string>
     <string name="book_synopsis">Synopsis</string>
     <string name="book_synopsis_not_found">Not available</string>
+    <!-- No Internet Screen -->
+    <string name="no_internet_connection">No Internet connection was found. Please check your connection and try again.</string>
 
 </resources>

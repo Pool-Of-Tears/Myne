@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -27,7 +26,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.navigation.BottomBarScreen
 import com.starry.myne.navigation.NavGraph
 import com.starry.myne.ui.theme.comfortFont
@@ -39,13 +37,6 @@ import com.starry.myne.ui.theme.comfortFont
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setSystemBarsColor(
-        color = MaterialTheme.colorScheme.background,
-        darkIcons = !isSystemInDarkTheme()
-    )
-
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }
     ) {
