@@ -3,6 +3,8 @@
     <!-- Others Strings -->
     <string name="not_applicable">N/A</string>
     <string name="woops">"Whoops!!"</string>
+    <string name="storage_perm_error">Please grant storage permission!</string>
+    <string name="downloading">Download Started!\nSee notification for details.</string>
     <!-- Navigation titles -->
     <string name="navigation_home">Home</string>
     <string name="navigation_categories">Categories</string>

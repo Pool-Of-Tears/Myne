@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.ProgressDots
@@ -41,6 +42,7 @@ import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.ui.viewmodels.BookDetailViewModel
 import com.starry.myne.utils.BookUtils
 import com.starry.myne.utils.Utils
+import com.starry.myne.utils.getActivity
 
 
 @ExperimentalComposeUiApi
@@ -221,7 +223,7 @@ fun BookDetailScreen(
                         bookLang = BookUtils.getLanguagesAsString(state.item.books.first().languages),
                         pageCount = pageCount
                     ) {
-                        //TODO: Handle download button click.
+                        viewModel.downloadBook(state.item.books.first(), (context.getActivity() as MainActivity))
                     }
 
                     Text(
