@@ -29,7 +29,7 @@ import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.navigation.BottomBarScreen
 import com.starry.myne.navigation.NavGraph
 import com.starry.myne.others.NetworkObserver
-import com.starry.myne.ui.theme.comfortFont
+import com.starry.myne.ui.theme.figeronaFont
 
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
@@ -112,7 +112,7 @@ fun CustomBottomNavigationItem(screen: BottomBarScreen, isSelected: Boolean, onC
                 Text(
                     text = stringResource(id = screen.title),
                     color = contentColor,
-                    fontFamily = comfortFont,
+                    fontFamily = figeronaFont,
                     modifier = Modifier.padding(start = 4.dp)
                 )
             }

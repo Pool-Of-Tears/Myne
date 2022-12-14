@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.starry.myne.R
-import com.starry.myne.ui.theme.comfortFont
+import com.starry.myne.ui.theme.figeronaFont
 
 @ExperimentalCoilApi
 @ExperimentalMaterial3Api
@@ -86,7 +86,7 @@ fun BookItemCard(
                         .fillMaxWidth(),
                     fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
                     fontSize = 20.sp,
-                    fontFamily = comfortFont,
+                    fontFamily = figeronaFont,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -99,7 +99,7 @@ fun BookItemCard(
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
                     fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
-                    fontFamily = comfortFont,
+                    fontFamily = figeronaFont,
                     fontSize = 14.sp,
                 )
 
@@ -112,7 +112,7 @@ fun BookItemCard(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
-                    fontFamily = comfortFont
+                    fontFamily = figeronaFont
                 )
 
                 Text(
@@ -121,7 +121,7 @@ fun BookItemCard(
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2, overflow = TextOverflow.Ellipsis,
                     fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
-                    fontFamily = comfortFont,
+                    fontFamily = figeronaFont,
                     fontSize = 13.sp
                 )
 

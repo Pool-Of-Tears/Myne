@@ -35,27 +35,43 @@ labelSmall = TextStyle(
 */
 )
 
-val comfortFont = FontFamily(
+val figeronaFont = FontFamily(
     fonts = listOf(
         Font(
-            resId = R.font.comfortaa_bold,
+            resId = R.font.figerona_black,
+            weight = FontWeight.Black
+        ),
+        Font(
+            resId = R.font.figerona_bold,
             weight = FontWeight.Bold
         ),
         Font(
-            resId = R.font.comfortaa_light,
+            resId = R.font.figerona_extrabold,
+            weight = FontWeight.ExtraBold
+        ),
+        Font(
+            resId = R.font.figerona_extralight,
+            weight = FontWeight.ExtraLight
+        ),
+        Font(
+            resId = R.font.figerona_light,
             weight = FontWeight.Light
         ),
         Font(
-            resId = R.font.comfortaa_medium,
+            resId = R.font.figerona_medium,
             weight = FontWeight.Medium
         ),
         Font(
-            resId = R.font.comfortaa_regular,
+            resId = R.font.figerona_regular,
             weight = FontWeight.Normal
         ),
         Font(
-            resId = R.font.comfortaa_semibold,
+            resId = R.font.figerona_semibold,
             weight = FontWeight.SemiBold
+        ),
+        Font(
+            resId = R.font.figerona_thin,
+            weight = FontWeight.Thin
         ),
     )
 )

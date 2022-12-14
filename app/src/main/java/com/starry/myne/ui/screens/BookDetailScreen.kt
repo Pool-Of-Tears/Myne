@@ -37,7 +37,7 @@ import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.ProgressDots
-import com.starry.myne.ui.theme.comfortFont
+import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.ui.viewmodels.BookDetailViewModel
 import com.starry.myne.utils.BookUtils
@@ -174,7 +174,7 @@ fun BookDetailScreen(
                                         )
                                         .fillMaxWidth(),
                                     fontSize = 24.sp,
-                                    fontFamily = comfortFont,
+                                    fontFamily = figeronaFont,
                                     fontWeight = FontWeight.Bold,
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis,
@@ -185,7 +185,7 @@ fun BookDetailScreen(
                                     text = BookUtils.getAuthorsAsString(state.item.books.first().authors),
                                     modifier = Modifier.padding(start = 12.dp, end = 8.dp),
                                     fontSize = 18.sp,
-                                    fontFamily = comfortFont,
+                                    fontFamily = figeronaFont,
                                     fontWeight = FontWeight.SemiBold,
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis,
@@ -202,7 +202,7 @@ fun BookDetailScreen(
                                         top = 8.dp
                                     ),
                                     fontSize = 14.sp,
-                                    fontFamily = comfortFont,
+                                    fontFamily = figeronaFont,
                                     fontWeight = FontWeight.Medium,
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis,
@@ -230,7 +230,7 @@ fun BookDetailScreen(
                         text = stringResource(id = R.string.book_synopsis),
                         modifier = Modifier.padding(start = 12.dp, end = 8.dp),
                         fontSize = 20.sp,
-                        fontFamily = comfortFont,
+                        fontFamily = figeronaFont,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
@@ -242,7 +242,7 @@ fun BookDetailScreen(
                     Text(
                         text = synopsis,
                         modifier = Modifier.padding(14.dp),
-                        fontFamily = comfortFont,
+                        fontFamily = figeronaFont,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
@@ -282,7 +282,7 @@ fun MiddleBar(bookLang: String, pageCount: String, onDownloadButtonClick: () -> 
                         text = bookLang,
                         modifier = Modifier.padding(14.dp),
                         fontSize = 18.sp,
-                        fontFamily = comfortFont,
+                        fontFamily = figeronaFont,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
@@ -302,7 +302,7 @@ fun MiddleBar(bookLang: String, pageCount: String, onDownloadButtonClick: () -> 
                         text = stringResource(id = R.string.book_page_count).format(pageCount),
                         modifier = Modifier.padding(14.dp),
                         fontSize = 18.sp,
-                        fontFamily = comfortFont,
+                        fontFamily = figeronaFont,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onBackground,
                     )

@@ -20,9 +20,11 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -39,7 +41,8 @@ import com.starry.myne.navigation.Screens
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.ProgressDots
-import com.starry.myne.ui.theme.comfortFont
+import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.ui.viewmodels.HomeViewModel
 import com.starry.myne.ui.viewmodels.UserAction
 import com.starry.myne.utils.BookUtils
@@ -228,14 +231,13 @@ fun TopAppBar(
     ) {
         Text(
             text = stringResource(id = R.string.home_header),
-            fontSize = 40.sp,
-            fontWeight = FontWeight.Bold,
+            fontSize = 28.sp,
             color = MaterialTheme.colorScheme.onBackground,
-            fontFamily = FontFamily.Cursive
+            fontFamily = pacificoFont
         )
         IconButton(onClick = onSearchIconClicked) {
             Icon(
-                imageVector = Icons.Outlined.Search,
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_search),
                 contentDescription = stringResource(id = R.string.home_search_icon_desc),
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(30.dp)
@@ -268,7 +270,7 @@ fun SearchAppBar(
         placeholder = {
             Text(
                 text = "Search...",
-                fontFamily = comfortFont,
+                fontFamily = figeronaFont,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium)
             )
         },
