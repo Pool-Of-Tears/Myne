@@ -65,7 +65,7 @@ fun BookDetailScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            TopAppBar(
+            BookDetailTopBar(
                 onBackClicked = {
                     navController.navigateUp()
                 }, onShareClicked = {
@@ -223,7 +223,10 @@ fun BookDetailScreen(
                         bookLang = BookUtils.getLanguagesAsString(state.item.books.first().languages),
                         pageCount = pageCount
                     ) {
-                        viewModel.downloadBook(state.item.books.first(), (context.getActivity() as MainActivity))
+                        viewModel.downloadBook(
+                            state.item.books.first(),
+                            (context.getActivity() as MainActivity)
+                        )
                     }
 
                     Text(
@@ -333,7 +336,7 @@ fun MiddleBar(bookLang: String, pageCount: String, onDownloadButtonClick: () -> 
 }
 
 @Composable
-fun TopAppBar(
+fun BookDetailTopBar(
     onBackClicked: () -> Unit,
     onShareClicked: () -> Unit
 ) {

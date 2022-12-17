@@ -42,6 +42,11 @@ object BooksApi {
         return makeApiRequest(request)
     }
 
+    suspend fun getBooksByCategory(category: String, page: Long): Result<BookSet> {
+        val request = Request.Builder().get().url("${BASE_URL}?page=$page&topic=$category").build()
+        return makeApiRequest(request)
+    }
+
     private suspend fun makeApiRequest(request: Request): Result<BookSet> =
         suspendCoroutine { continuation ->
             okHttpClient.newCall(request).enqueue(object : Callback {

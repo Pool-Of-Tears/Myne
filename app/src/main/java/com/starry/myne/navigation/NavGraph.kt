@@ -38,7 +38,7 @@ fun NavGraph(
             HomeScreen(navController, networkStatus)
         }
         composable(route = BottomBarScreen.Categories.route) {
-            CategoriesScreen()
+            CategoriesScreen(navController)
         }
         composable(route = BottomBarScreen.Library.route) {
             LibraryScreen()
@@ -57,6 +57,17 @@ fun NavGraph(
         ) { backStackEntry ->
             val bookId = backStackEntry.arguments!!.getString(BOOK_DETAIL_ARG_KEY)!!
             BookDetailScreen(bookId, navController, networkStatus)
+        }
+
+        composable(
+            route = Screens.CategoryDetailScreen.route, arguments = listOf(
+                navArgument(CATEGORY_DETAIL_ARG_KEY) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val category = backStackEntry.arguments!!.getString(CATEGORY_DETAIL_ARG_KEY)!!
+            CategoryDetailScreen(category, navController, networkStatus)
         }
     }
 }
