@@ -5,11 +5,16 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarHost
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -43,7 +48,7 @@ import com.starry.myne.ui.viewmodels.BookDetailViewModel
 import com.starry.myne.utils.BookUtils
 import com.starry.myne.utils.Utils
 import com.starry.myne.utils.getActivity
-
+import kotlinx.coroutines.launch
 
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
@@ -59,203 +64,230 @@ fun BookDetailScreen(
     val state = viewModel.state
     val context = LocalContext.current
 
-    if (networkStatus == NetworkObserver.Status.Available) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            BookDetailTopBar(
-                onBackClicked = {
-                    navController.navigateUp()
-                }, onShareClicked = {
-                    val intent = Intent(Intent.ACTION_SEND)
-                    intent.type = "text/plain"
-                    intent.putExtra(Intent.EXTRA_TEXT, "https://www.gutenberg.org/ebooks/$bookId")
-                    val chooser = Intent.createChooser(
-                        intent,
-                        context.getString(R.string.share_intent_header)
-                    )
-                    context.startActivity(chooser)
-                })
+    val scaffoldState = rememberScaffoldState()
+    val coroutineScope = rememberCoroutineScope()
 
-            if (state.isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 65.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    ProgressDots()
-                }
-            } else {
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
-                        .verticalScroll(rememberScrollState())
-                ) {
+    Scaffold(
+        scaffoldState = scaffoldState,
+        snackbarHost = {
+            SnackbarHost(hostState = it) { data ->
+                Snackbar(
+                    backgroundColor = MaterialTheme.colorScheme.inverseSurface,
+                    contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                    snackbarData = data,
+                )
+            }
+        },
+    ) { paddingValues ->
+        if (networkStatus == NetworkObserver.Status.Available) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                BookDetailTopBar(
+                    onBackClicked = {
+                        navController.navigateUp()
+                    }, onShareClicked = {
+                        val intent = Intent(Intent.ACTION_SEND)
+                        intent.type = "text/plain"
+                        intent.putExtra(
+                            Intent.EXTRA_TEXT,
+                            "https://www.gutenberg.org/ebooks/$bookId"
+                        )
+                        val chooser = Intent.createChooser(
+                            intent,
+                            context.getString(R.string.share_intent_header)
+                        )
+                        context.startActivity(chooser)
+                    })
+
+                if (state.isLoading) {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(260.dp)
+                            .fillMaxSize()
+                            .padding(bottom = 65.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.book_details_bg),
-                            contentDescription = "",
-                            alpha = 0.2f,
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
+                        ProgressDots()
+                    }
+                } else {
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background)
+                            .verticalScroll(rememberScrollState())
+                    ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    Brush.verticalGradient(
-                                        colors = listOf(
-                                            MaterialTheme.colorScheme.background,
-                                            Color.Transparent,
-                                            MaterialTheme.colorScheme.background
-                                        ), startY = 15f
-                                    )
-                                )
-                        )
-
-                        Row(modifier = Modifier.fillMaxSize()) {
-                            val imageUrl = state.extraInfo.coverImage.ifEmpty {
-                                state.item.books.first().formats.imagejpeg
-                            }
-                            val painter =
-                                rememberImagePainter(
-                                    data = imageUrl,
-                                    builder = {
-                                        placeholder(R.drawable.placeholder_cat)
-                                        error(R.drawable.placeholder_cat)
-                                        crossfade(500)
-                                    })
-
+                                .fillMaxWidth()
+                                .height(260.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.book_details_bg),
+                                contentDescription = "",
+                                alpha = 0.2f,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
                             Box(
                                 modifier = Modifier
-                                    .fillMaxHeight()
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                val imageBackground = if (isSystemInDarkTheme()) {
-                                    MaterialTheme.colorScheme.onSurface
-                                } else {
-                                    MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
+                                    .fillMaxSize()
+                                    .background(
+                                        Brush.verticalGradient(
+                                            colors = listOf(
+                                                MaterialTheme.colorScheme.background,
+                                                Color.Transparent,
+                                                MaterialTheme.colorScheme.background
+                                            ), startY = 15f
+                                        )
+                                    )
+                            )
+
+                            Row(modifier = Modifier.fillMaxSize()) {
+                                val imageUrl = state.extraInfo.coverImage.ifEmpty {
+                                    state.item.books.first().formats.imagejpeg
                                 }
+                                val painter =
+                                    rememberImagePainter(
+                                        data = imageUrl,
+                                        builder = {
+                                            placeholder(R.drawable.placeholder_cat)
+                                            error(R.drawable.placeholder_cat)
+                                            crossfade(500)
+                                        })
+
                                 Box(
                                     modifier = Modifier
-                                        .shadow(24.dp)
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(imageBackground)
+                                        .fillMaxHeight()
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
                                 ) {
-                                    Image(
-                                        painter = painter,
-                                        contentDescription = "",
+                                    val imageBackground = if (isSystemInDarkTheme()) {
+                                        MaterialTheme.colorScheme.onSurface
+                                    } else {
+                                        MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
+                                    }
+                                    Box(
                                         modifier = Modifier
-                                            .width(118.dp)
-                                            .height(169.dp),
-                                        contentScale = ContentScale.Crop
+                                            .shadow(24.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(imageBackground)
+                                    ) {
+                                        Image(
+                                            painter = painter,
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .width(118.dp)
+                                                .height(169.dp),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    }
+                                }
+
+                                Column(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = state.item.books.first().title,
+                                        modifier = Modifier
+                                            .padding(
+                                                start = 12.dp, end = 8.dp, top = 20.dp
+                                            )
+                                            .fillMaxWidth(),
+                                        fontSize = 24.sp,
+                                        fontFamily = figeronaFont,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        color = MaterialTheme.colorScheme.onBackground,
                                     )
+
+                                    Text(
+                                        text = BookUtils.getAuthorsAsString(state.item.books.first().authors),
+                                        modifier = Modifier.padding(start = 12.dp, end = 8.dp),
+                                        fontSize = 18.sp,
+                                        fontFamily = figeronaFont,
+                                        fontWeight = FontWeight.SemiBold,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                    )
+
+                                    Text(
+                                        text = stringResource(id = R.string.book_download_count).format(
+                                            Utils.prettyCount(state.item.books.first().downloadCount)
+                                        ),
+                                        modifier = Modifier.padding(
+                                            start = 12.dp,
+                                            end = 8.dp,
+                                            top = 8.dp
+                                        ),
+                                        fontSize = 14.sp,
+                                        fontFamily = figeronaFont,
+                                        fontWeight = FontWeight.Medium,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                    )
+
+                                    Spacer(modifier = Modifier.height(50.dp))
                                 }
                             }
+                        }
 
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = state.item.books.first().title,
-                                    modifier = Modifier
-                                        .padding(
-                                            start = 12.dp, end = 8.dp, top = 20.dp
-                                        )
-                                        .fillMaxWidth(),
-                                    fontSize = 24.sp,
-                                    fontFamily = figeronaFont,
-                                    fontWeight = FontWeight.Bold,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis,
-                                    color = MaterialTheme.colorScheme.onBackground,
+                        val pageCount = if (state.extraInfo.pageCount > 0) {
+                            state.extraInfo.pageCount.toString()
+                        } else {
+                            stringResource(id = R.string.not_applicable)
+                        }
+                        MiddleBar(
+                            bookLang = BookUtils.getLanguagesAsString(state.item.books.first().languages),
+                            pageCount = pageCount
+                        ) {
+                            val message = viewModel.downloadBook(
+                                state.item.books.first(),
+                                (context.getActivity() as MainActivity)
+                            )
+
+                            coroutineScope.launch {
+                                scaffoldState.snackbarHostState.showSnackbar(
+                                    message = message,
                                 )
-
-                                Text(
-                                    text = BookUtils.getAuthorsAsString(state.item.books.first().authors),
-                                    modifier = Modifier.padding(start = 12.dp, end = 8.dp),
-                                    fontSize = 18.sp,
-                                    fontFamily = figeronaFont,
-                                    fontWeight = FontWeight.SemiBold,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                )
-
-                                Text(
-                                    text = stringResource(id = R.string.book_download_count).format(
-                                        Utils.prettyCount(state.item.books.first().downloadCount)
-                                    ),
-                                    modifier = Modifier.padding(
-                                        start = 12.dp,
-                                        end = 8.dp,
-                                        top = 8.dp
-                                    ),
-                                    fontSize = 14.sp,
-                                    fontFamily = figeronaFont,
-                                    fontWeight = FontWeight.Medium,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                )
-
-                                Spacer(modifier = Modifier.height(50.dp))
                             }
                         }
-                    }
 
-                    val pageCount = if (state.extraInfo.pageCount > 0) {
-                        state.extraInfo.pageCount.toString()
-                    } else {
-                        stringResource(id = R.string.not_applicable)
-                    }
-                    MiddleBar(
-                        bookLang = BookUtils.getLanguagesAsString(state.item.books.first().languages),
-                        pageCount = pageCount
-                    ) {
-                        viewModel.downloadBook(
-                            state.item.books.first(),
-                            (context.getActivity() as MainActivity)
+                        Text(
+                            text = stringResource(id = R.string.book_synopsis),
+                            modifier = Modifier.padding(start = 12.dp, end = 8.dp),
+                            fontSize = 20.sp,
+                            fontFamily = figeronaFont,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground,
                         )
+
+                        val synopsis = state.extraInfo.description.ifEmpty {
+                            stringResource(id = R.string.book_synopsis_not_found)
+                        }
+
+                        Text(
+                            text = synopsis,
+                            modifier = Modifier.padding(14.dp),
+                            fontFamily = figeronaFont,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+
                     }
-
-                    Text(
-                        text = stringResource(id = R.string.book_synopsis),
-                        modifier = Modifier.padding(start = 12.dp, end = 8.dp),
-                        fontSize = 20.sp,
-                        fontFamily = figeronaFont,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                    )
-
-                    val synopsis = state.extraInfo.description.ifEmpty {
-                        stringResource(id = R.string.book_synopsis_not_found)
-                    }
-
-                    Text(
-                        text = synopsis,
-                        modifier = Modifier.padding(14.dp),
-                        fontFamily = figeronaFont,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onBackground,
-                    )
-
                 }
             }
+        } else {
+            NoInternetScreen()
         }
-    } else {
-        NoInternetScreen()
     }
+
 
 }
 
@@ -360,7 +392,7 @@ fun BookDetailTopBar(
 
         Text(
             text = stringResource(id = R.string.book_detail_header),
-            modifier = Modifier.padding(bottom = 5.dp),
+            modifier = Modifier.padding(bottom = 2.dp),
             color = MaterialTheme.colorScheme.onBackground,
             fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
             fontFamily = pacificoFont,

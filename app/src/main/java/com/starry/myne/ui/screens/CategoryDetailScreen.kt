@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -53,9 +52,8 @@ fun CategoryDetailScreen(
         ) {
             CategoryDetailTopBar(
                 category = category,
-                onBackClicked = { /*TODO*/ },
-                onShareClicked = {/*TODO*/ })
-
+                onBackClicked = { navController.navigateUp() }
+            )
             if (state.page == 1L && state.isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
@@ -123,12 +121,10 @@ fun CategoryDetailScreen(
 fun CategoryDetailTopBar(
     category: String,
     onBackClicked: () -> Unit,
-    onShareClicked: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
-            //.background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -146,32 +142,15 @@ fun CategoryDetailTopBar(
             )
         }
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.width(4.dp))
 
         Text(
             text = category,
-            modifier = Modifier.padding(bottom = 5.dp),
+            modifier = Modifier.padding(bottom = 2.dp),
             color = MaterialTheme.colorScheme.onBackground,
             fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
             fontFamily = pacificoFont,
-            fontSize = 22.sp
+            fontSize = 28.sp
         )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Box(
-            modifier = Modifier
-                .padding(22.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
-                .clickable { onShareClicked() }
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Share,
-                contentDescription = stringResource(id = R.string.back_button_desc),
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(14.dp)
-            )
-        }
     }
 }
