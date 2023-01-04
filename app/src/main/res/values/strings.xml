@@ -12,10 +12,15 @@
     <string name="navigation_library">Library</string>
     <string name="navigation_settings">Settings</string>
 
-    <!-- Home screen header -->
+    <!-- Home screen. -->
     <string name="home_header">All Books</string>
-    <!-- Categories screen header. -->
+
+    <!-- Categories screen. -->
     <string name="categories_header">Categories</string>
+
+    <!-- Library screen. -->
+    <string name="library_header">Library</string>
+    <string name="empty_library">Nothing Here!</string>
 
     <!-- Books card -->
     <string name="home_search_icon_desc">Search books</string>

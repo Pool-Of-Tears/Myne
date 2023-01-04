@@ -1,7 +1,9 @@
 package com.starry.myne.ui.viewmodels
 
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,11 +20,14 @@ import com.starry.myne.api.BooksApi
 import com.starry.myne.api.models.Book
 import com.starry.myne.api.models.BookSet
 import com.starry.myne.api.models.ExtraInfo
+import com.starry.myne.database.LibraryDao
+import com.starry.myne.database.LibraryItem
 import com.starry.myne.others.Constants
 import com.starry.myne.utils.BookUtils
-import com.starry.myne.utils.toToast
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class ScreenState(
     val isLoading: Boolean = true,
@@ -33,7 +38,8 @@ data class ScreenState(
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
-class BookDetailViewModel : ViewModel() {
+@HiltViewModel
+class BookDetailViewModel @Inject constructor(private val libraryDao: LibraryDao) : ViewModel() {
     var state by mutableStateOf(ScreenState())
 
     fun getBookDetails(bookId: String) {
@@ -48,10 +54,11 @@ class BookDetailViewModel : ViewModel() {
         }
     }
 
+    @SuppressLint("Range")
     fun downloadBook(book: Book, activity: MainActivity): String {
         if (activity.checkStoragePermission()) {
             // setup download manager.
-            val filename = book.title.split(" ").joinToString(separator = "+")
+            val filename = book.title.split(" ").joinToString(separator = "+") + ".epub"
             val manager = activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             val uri = Uri.parse(book.formats.applicationepubzip)
             val request = DownloadManager.Request(uri)
@@ -62,13 +69,47 @@ class BookDetailViewModel : ViewModel() {
                 .setDescription(BookUtils.getAuthorsAsString(book.authors))
                 .setDestinationInExternalPublicDir(
                     Environment.DIRECTORY_DOWNLOADS,
-                    Constants.DOWNLOAD_DIR + "/" + "${filename}.epub"
+                    Constants.DOWNLOAD_DIR + "/" + filename
                 )
             // start downloading.
-            manager.enqueue(request)
+            val downloadId = manager.enqueue(request)
+            viewModelScope.launch(Dispatchers.IO) {
+                var isDownloadFinished = false
+                while (!isDownloadFinished) {
+                    val cursor: Cursor =
+                        manager.query(DownloadManager.Query().setFilterById(downloadId))
+                    if (cursor.moveToFirst()) {
+                        when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+                            DownloadManager.STATUS_SUCCESSFUL -> {
+                                insertIntoDB(book, filename)
+                                isDownloadFinished = true
+                            }
+                            DownloadManager.STATUS_PAUSED, DownloadManager.STATUS_PENDING -> {}
+                            DownloadManager.STATUS_FAILED -> {
+                                isDownloadFinished = true
+                            }
+                        }
+                    } else {
+                        // Download cancelled by the user.
+                        isDownloadFinished = true
+                    }
+                    cursor.close()
+                }
+            }
             return activity.getString(R.string.downloading)
         } else {
-           return activity.getString(R.string.storage_perm_error)
+            return activity.getString(R.string.storage_perm_error)
         }
+    }
+
+    private fun insertIntoDB(book: Book, filename: String) {
+        val libraryItem = LibraryItem(
+            book.id,
+            book.title,
+            BookUtils.getAuthorsAsString(book.authors),
+            "/storage/emulated/0/${Environment.DIRECTORY_DOWNLOADS}/${Constants.DOWNLOAD_DIR}/$filename",
+            System.currentTimeMillis()
+        )
+        libraryDao.insert(libraryItem)
     }
 }

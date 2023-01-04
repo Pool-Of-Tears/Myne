@@ -20,10 +20,12 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.screens.MainScreen
 import com.starry.myne.ui.theme.MyneTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalCoilApi
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var networkObserver: NetworkObserver
