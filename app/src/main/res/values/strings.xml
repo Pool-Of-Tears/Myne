@@ -5,6 +5,7 @@
     <string name="woops">"Whoops!!"</string>
     <string name="storage_perm_error">Please grant storage permission!</string>
     <string name="downloading">Download Started!\nSee notification for details.</string>
+    <string name="no_app_to_handle_epub">Cannot find any app to open epub file.</string>
 
     <!-- Navigation titles -->
     <string name="navigation_home">Home</string>

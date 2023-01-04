@@ -1,5 +1,6 @@
 package com.starry.myne.ui.screens
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -27,6 +28,7 @@ import com.starry.myne.R
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.ui.viewmodels.LibraryViewModel
+import com.starry.myne.utils.toToast
 
 @ExperimentalMaterial3Api
 @Composable
@@ -95,7 +97,11 @@ fun LibraryScreen() {
                         ) {
                             val intent = Intent(Intent.ACTION_VIEW)
                             intent.setDataAndType(Uri.parse(item.filePath), "application/epub+zip")
-                            context.startActivity(intent)
+                            try {
+                                context.startActivity(intent)
+                            } catch (exc: ActivityNotFoundException) {
+                                context.getString(R.string.no_app_to_handle_epub).toToast(context)
+                            }
                         }
                     } else {
                         viewModel.deleteItem(item)
@@ -123,7 +129,7 @@ fun LibraryTopAppBar() {
             fontFamily = pacificoFont
         )
         Icon(
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_nav_library),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_library_header),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.size(28.dp)
@@ -201,6 +207,7 @@ fun LibraryCard(
                         fontFamily = figeronaFont,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Light,
+                        fontSize = 14.sp,
                         modifier = Modifier.padding(end = 6.dp)
                     )
                     Divider(
@@ -215,6 +222,7 @@ fun LibraryCard(
                         fontFamily = figeronaFont,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Light,
+                        fontSize = 14.sp,
                         modifier = Modifier.padding(start = 6.dp)
                     )
                 }

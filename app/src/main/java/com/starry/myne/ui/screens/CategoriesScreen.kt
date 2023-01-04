@@ -92,7 +92,7 @@ fun CategoryTopAppBar(
             fontFamily = pacificoFont
         )
         Icon(
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_cat),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_category_header),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.size(28.dp)

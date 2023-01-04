@@ -28,11 +28,15 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = BottomBarScreen.Home.route,
+        startDestination = Screens.SplashScreen.route,
         modifier = Modifier
             .padding(paddingValues)
             .background(MaterialTheme.colorScheme.background)
     ) {
+        // Splash Screen.
+        composable(route = Screens.SplashScreen.route) {
+            SplashScreen(navController = navController)
+        }
         // Bottom Navigation Screens
         composable(route = BottomBarScreen.Home.route) {
             HomeScreen(navController, networkStatus)
