@@ -6,6 +6,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +36,7 @@ data class ScreenState(
     val extraInfo: ExtraInfo = ExtraInfo()
 )
 
+@ExperimentalMaterialApi
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api

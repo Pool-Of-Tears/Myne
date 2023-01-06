@@ -3,6 +3,7 @@ package com.starry.myne.navigation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -17,6 +18,7 @@ import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.screens.*
 
+@ExperimentalMaterialApi
 @ExperimentalCoilApi
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi

@@ -9,19 +9,25 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModelProvider
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.screens.MainScreen
 import com.starry.myne.ui.theme.MyneTheme
+import com.starry.myne.ui.viewmodels.ThemeMode
+import com.starry.myne.ui.viewmodels.ThemeViewModel
+import com.starry.myne.utils.PreferenceUtils
 import dagger.hilt.android.AndroidEntryPoint
 
+@ExperimentalMaterialApi
 @ExperimentalCoilApi
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
@@ -29,13 +35,23 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var networkObserver: NetworkObserver
+    lateinit var themeViewModel: ThemeViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        PreferenceUtils.initialize(this)
         networkObserver = NetworkObserver(applicationContext)
+        themeViewModel = ViewModelProvider(this)[ThemeViewModel::class.java]
+
+        when (PreferenceUtils.getInt(PreferenceUtils.APP_THEME, ThemeMode.Auto.ordinal)) {
+            ThemeMode.Auto.ordinal -> themeViewModel.setTheme(ThemeMode.Auto)
+            ThemeMode.Dark.ordinal -> themeViewModel.setTheme(ThemeMode.Dark)
+            ThemeMode.Light.ordinal -> themeViewModel.setTheme(ThemeMode.Dark)
+        }
 
         setContent {
-            MyneTheme {
+            MyneTheme(themeViewModel = themeViewModel) {
 
                 val systemUiController = rememberSystemUiController()
                 systemUiController.setSystemBarsColor(
@@ -49,7 +65,6 @@ class MainActivity : AppCompatActivity() {
                 MainScreen(status)
             }
         }
-
         checkStoragePermission()
     }
 

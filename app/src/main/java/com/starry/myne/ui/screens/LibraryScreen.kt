@@ -129,7 +129,7 @@ fun LibraryTopAppBar() {
             fontFamily = pacificoFont
         )
         Icon(
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_library_header),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_nav_library),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.size(28.dp)

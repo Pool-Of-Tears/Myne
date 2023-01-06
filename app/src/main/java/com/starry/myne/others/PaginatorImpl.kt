@@ -7,13 +7,13 @@ class PaginatorImpl<Page, BookSet>(
     private inline val getNextPage: suspend (BookSet) -> Page,
     private inline val onError: suspend (Throwable?) -> Unit,
     private inline val onSuccess: suspend (item: BookSet, newPage: Page) -> Unit
-): Paginator<Page, BookSet> {
+) : Paginator<Page, BookSet> {
 
     private var currentPage = initialPage
     private var isMakingRequest = false
 
     override suspend fun loadNextItems() {
-        if(isMakingRequest) {
+        if (isMakingRequest) {
             return
         }
         isMakingRequest = true

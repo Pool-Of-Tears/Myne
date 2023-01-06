@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -30,6 +31,7 @@ import com.starry.myne.navigation.NavGraph
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.theme.figeronaFont
 
+@ExperimentalMaterialApi
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")

@@ -23,6 +23,17 @@
     <string name="library_header">Library</string>
     <string name="empty_library">Nothing Here!</string>
 
+    <!-- Settings screen. -->
+    <string name="settings_header">Settings</string>
+    <string name="app_desc">Ebook Downloader</string>
+    <string name="made_by">Made with ❤ by starry69</string>
+    <string name="display_setting_header">Display</string>
+    <string name="theme_setting">Default Theme</string>
+    <string name="material_you_setting">Material You</string>
+    <string name="material_you_settings_disabled_desc">Enable Material You</string>
+    <string name="material_you_settings_enabled_desc">Disable Material You</string>
+    <string name="material_you_error">This feature is only for devices running Android 12 or above.</string>
+
     <!-- Books card -->
     <string name="home_search_icon_desc">Search books</string>
     <string name="cover_image_desc">Book cover image</string>

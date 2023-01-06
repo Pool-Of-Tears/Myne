@@ -4,9 +4,10 @@ import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.starry.myne.ui.viewmodels.ThemeMode
+import com.starry.myne.ui.viewmodels.ThemeViewModel
 
 private val LightColors = lightColorScheme(
     onErrorContainer = md_theme_light_onErrorContainer,
@@ -80,17 +81,25 @@ onSurface = Color(0xFF1C1B1F),
 @Composable
 fun MyneTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    themeViewModel: ThemeViewModel,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
+    val context = LocalContext.current
+    val themeState = themeViewModel.theme.observeAsState(initial = ThemeMode.Auto)
+    val materialYouState = themeViewModel.materialYou.observeAsState(initial = true)
+
+    val colorScheme = when (themeState.value) {
+        ThemeMode.Light -> if (materialYouState.value && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) dynamicLightColorScheme(
+            context
+        ) else LightColors
+        ThemeMode.Dark -> if (materialYouState.value && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) dynamicDarkColorScheme(
+            context
+        ) else DarkColors
+        ThemeMode.Auto -> if (materialYouState.value && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        } else {
+            if (darkTheme) DarkColors else LightColors
         }
-        darkTheme -> DarkColors
-        else -> LightColors
     }
 
     /*

@@ -5,14 +5,14 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Snackbar
-import androidx.compose.material.SnackbarHost
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -50,6 +50,7 @@ import com.starry.myne.utils.Utils
 import com.starry.myne.utils.getActivity
 import kotlinx.coroutines.launch
 
+@ExperimentalMaterialApi
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
 @ExperimentalCoilApi
@@ -418,6 +419,7 @@ fun BookDetailTopBar(
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
 @ExperimentalCoilApi
