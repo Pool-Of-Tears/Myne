@@ -47,16 +47,21 @@ class MainActivity : AppCompatActivity() {
         when (PreferenceUtils.getInt(PreferenceUtils.APP_THEME, ThemeMode.Auto.ordinal)) {
             ThemeMode.Auto.ordinal -> themeViewModel.setTheme(ThemeMode.Auto)
             ThemeMode.Dark.ordinal -> themeViewModel.setTheme(ThemeMode.Dark)
-            ThemeMode.Light.ordinal -> themeViewModel.setTheme(ThemeMode.Dark)
+            ThemeMode.Light.ordinal -> themeViewModel.setTheme(ThemeMode.Light)
         }
+
+        themeViewModel.setMaterialYou(
+            PreferenceUtils.getBoolean(
+                PreferenceUtils.MATERIAL_YOU, Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+            )
+        )
 
         setContent {
             MyneTheme(themeViewModel = themeViewModel) {
 
                 val systemUiController = rememberSystemUiController()
                 systemUiController.setSystemBarsColor(
-                    color = MaterialTheme.colorScheme.background,
-                    darkIcons = !isSystemInDarkTheme()
+                    color = MaterialTheme.colorScheme.background, darkIcons = !isSystemInDarkTheme()
                 )
 
                 val status by networkObserver.observe().collectAsState(
@@ -70,9 +75,7 @@ class MainActivity : AppCompatActivity() {
 
     fun checkStoragePermission(): Boolean {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED
-            ) {
+            if (checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 Log.d("MainActivity::Storage", "Permission is granted"); true
             } else {
                 Log.d("MainActivity::Storage", "Permission is revoked")

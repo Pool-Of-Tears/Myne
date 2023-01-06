@@ -50,7 +50,7 @@ fun NavGraph(
             LibraryScreen()
         }
         composable(route = BottomBarScreen.Settings.route) {
-            SettingsScreen()
+            SettingsScreen(navController)
         }
 
         // Other screens.
@@ -74,6 +74,10 @@ fun NavGraph(
         ) { backStackEntry ->
             val category = backStackEntry.arguments!!.getString(CATEGORY_DETAIL_ARG_KEY)!!
             CategoryDetailScreen(category, navController, networkStatus)
+        }
+
+        composable(route = Screens.OSLScreen.route) {
+            OSLScreen(navController = navController)
         }
     }
 }

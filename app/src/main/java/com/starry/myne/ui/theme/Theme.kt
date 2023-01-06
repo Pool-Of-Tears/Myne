@@ -86,7 +86,10 @@ fun MyneTheme(
 ) {
     val context = LocalContext.current
     val themeState = themeViewModel.theme.observeAsState(initial = ThemeMode.Auto)
-    val materialYouState = themeViewModel.materialYou.observeAsState(initial = true)
+    val materialYouState = themeViewModel.materialYou.observeAsState(
+        initial = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    )
+
 
     val colorScheme = when (themeState.value) {
         ThemeMode.Light -> if (materialYouState.value && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) dynamicLightColorScheme(

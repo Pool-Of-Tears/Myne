@@ -30,10 +30,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
+import com.starry.myne.navigation.Screens
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.ui.viewmodels.ThemeMode
@@ -46,7 +49,7 @@ import com.starry.myne.utils.toToast
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(navController: NavController) {
     val context = LocalContext.current
 
     Column(
@@ -71,6 +74,7 @@ fun SettingsScreen() {
         }
 
         DisplayOptionsUI(context)
+        InformationUI(navController, context)
     }
 }
 
@@ -327,6 +331,36 @@ fun DisplayOptionsUI(context: Context) {
 
 @ExperimentalMaterial3Api
 @Composable
+fun InformationUI(navController: NavController, context: Context) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 14.dp)
+            .padding(top = 10.dp)
+    ) {
+        Text(
+            text = stringResource(id = R.string.miscellaneous_setting_header),
+            fontFamily = figeronaFont,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+        SettingItem(icon = R.drawable.ic_settings_license,
+            mainText = stringResource(id = R.string.license_setting),
+            subText = stringResource(id = R.string.license_setting_desc),
+            onClick = { navController.navigate(Screens.OSLScreen.route) }
+        )
+        SettingItem(icon = R.drawable.ic_settings_update,
+            mainText = stringResource(id = R.string.update_setting),
+            subText = stringResource(id = R.string.update_setting_desc),
+            onClick = { "Soon...".toToast(context) }
+        )
+    }
+}
+
+
+@ExperimentalMaterial3Api
+@Composable
 fun SettingItem(icon: Int, mainText: String, subText: String, onClick: () -> Unit) {
     Card(
         onClick = { onClick() },
@@ -471,5 +505,5 @@ fun SettingItemWIthSwitch(
 @Composable
 @Preview
 fun SettingsScreenPreview() {
-    SettingsScreen()
+    SettingsScreen(rememberNavController())
 }
