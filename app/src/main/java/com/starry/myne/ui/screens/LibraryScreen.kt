@@ -18,7 +18,6 @@ package com.starry.myne.ui.screens
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -39,12 +38,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.starry.myne.BuildConfig
 import com.starry.myne.R
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.ui.viewmodels.LibraryViewModel
 import com.starry.myne.utils.toToast
+import java.io.File
+
 
 @ExperimentalMaterial3Api
 @Composable
@@ -111,10 +114,20 @@ fun LibraryScreen() {
                             item.getFileSize(),
                             item.getDownloadDate()
                         ) {
+                            val uri = FileProvider.getUriForFile(
+                                context,
+                                BuildConfig.APPLICATION_ID + ".provider",
+                                File(item.filePath)
+                            )
                             val intent = Intent(Intent.ACTION_VIEW)
-                            intent.setDataAndType(Uri.parse(item.filePath), "application/epub+zip")
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            intent.setDataAndType(uri, context.contentResolver.getType(uri))
+                            val chooser = Intent.createChooser(
+                                intent,
+                                context.getString(R.string.app_chooser)
+                            )
                             try {
-                                context.startActivity(intent)
+                                context.startActivity(chooser)
                             } catch (exc: ActivityNotFoundException) {
                                 context.getString(R.string.no_app_to_handle_epub).toToast(context)
                             }

@@ -80,7 +80,7 @@ class BookDetailViewModel @Inject constructor(private val libraryDao: LibraryDao
             val manager = activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             val uri = Uri.parse(book.formats.applicationepubzip)
             val request = DownloadManager.Request(uri)
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                 .setAllowedOverRoaming(true)
                 .setAllowedOverMetered(true)
                 .setTitle(book.title)

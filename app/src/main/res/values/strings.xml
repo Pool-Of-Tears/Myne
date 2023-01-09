@@ -22,6 +22,7 @@
     <!-- Library screen. -->
     <string name="library_header">Library</string>
     <string name="empty_library">Nothing Here!</string>
+    <string name="app_chooser">Open with…</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Settings</string>
