@@ -39,7 +39,6 @@ data class AllBooksState(
 data class TopBarState(
     val searchText: String = "",
     val isSearchBarVisible: Boolean = false,
-    val isSortMenuVisible: Boolean = false,
     val isSearching: Boolean = false,
     val searchResults: List<Book> = emptyList()
 )
@@ -47,8 +46,6 @@ data class TopBarState(
 sealed class UserAction {
     object SearchIconClicked : UserAction()
     object CloseIconClicked : UserAction()
-    object SortIconClicked : UserAction()
-    object SortMenuDismiss : UserAction()
     data class TextFieldInput(val text: String) : UserAction()
 }
 
@@ -109,12 +106,6 @@ class HomeViewModel : ViewModel() {
                     delay(500L)
                     searchBooks(userAction.text)
                 }
-            }
-            UserAction.SortIconClicked -> {
-                topBarState = topBarState.copy(isSortMenuVisible = true)
-            }
-            UserAction.SortMenuDismiss -> {
-                topBarState = topBarState.copy(isSortMenuVisible = false)
             }
         }
     }

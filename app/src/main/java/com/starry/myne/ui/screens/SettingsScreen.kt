@@ -36,11 +36,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,8 +51,8 @@ import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.navigation.Screens
+import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.ui.viewmodels.ThemeMode
 import com.starry.myne.utils.PreferenceUtils
 import com.starry.myne.utils.getActivity
@@ -78,7 +76,10 @@ fun SettingsScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp)
         ) {
-            SettingsTopAppBar()
+            CustomTopAppBar(
+                headerText = stringResource(id = R.string.settings_header),
+                icon = R.drawable.ic_nav_settings
+            )
             Divider(
                 color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
                 thickness = 2.dp,
@@ -86,35 +87,11 @@ fun SettingsScreen(navController: NavController) {
         }
 
         SettingsCard {
-            // TODO
+            navController.navigate(Screens.AboutScreen.route)
         }
 
         DisplayOptionsUI(context)
         InformationUI(navController, context)
-    }
-}
-
-@Composable
-fun SettingsTopAppBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 7.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = stringResource(id = R.string.settings_header),
-            fontSize = 28.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontFamily = pacificoFont
-        )
-        Icon(
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_nav_settings),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.size(28.dp)
-        )
     }
 }
 

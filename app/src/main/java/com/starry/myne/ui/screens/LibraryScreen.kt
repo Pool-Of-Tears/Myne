@@ -42,8 +42,8 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.starry.myne.BuildConfig
 import com.starry.myne.R
+import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.ui.viewmodels.LibraryViewModel
 import com.starry.myne.utils.toToast
 import java.io.File
@@ -66,7 +66,10 @@ fun LibraryScreen() {
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp)
         ) {
-            LibraryTopAppBar()
+            CustomTopAppBar(
+                headerText = stringResource(id = R.string.library_header),
+                icon = R.drawable.ic_nav_library
+            )
             Divider(
                 color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
                 thickness = 2.dp,
@@ -138,31 +141,6 @@ fun LibraryScreen() {
                 }
             }
         }
-    }
-}
-
-
-@Composable
-fun LibraryTopAppBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 7.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = stringResource(id = R.string.library_header),
-            fontSize = 28.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontFamily = pacificoFont
-        )
-        Icon(
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_nav_library),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.size(28.dp)
-        )
     }
 }
 

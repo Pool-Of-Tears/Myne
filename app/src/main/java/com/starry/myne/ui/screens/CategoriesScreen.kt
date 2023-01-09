@@ -25,9 +25,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,8 +35,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.starry.myne.R
 import com.starry.myne.navigation.Screens
+import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.ui.viewmodels.CategoryViewModel
 import java.util.*
 
@@ -55,7 +53,10 @@ fun CategoriesScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp)
         ) {
-            CategoryTopAppBar()
+            CustomTopAppBar(
+                headerText = stringResource(id = R.string.categories_header),
+                icon = R.drawable.ic_category_header
+            )
             Divider(
                 color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
                 thickness = 2.dp,
@@ -87,33 +88,6 @@ fun CategoriesScreen(navController: NavController) {
         }
     }
 
-}
-
-
-@Composable
-fun CategoryTopAppBar(
-) {
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 7.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = stringResource(id = R.string.categories_header),
-            fontSize = 28.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontFamily = pacificoFont
-        )
-        Icon(
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_category_header),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.size(28.dp)
-        )
-    }
 }
 
 

@@ -55,6 +55,13 @@
     <string name="book_synopsis">Synopsis</string>
     <string name="book_synopsis_not_found">Not available</string>
 
+    <!-- About Screen -->
+    <string name="about_header">About</string>
+    <string name="about_desc">A Free &amp; Open Source Android application to download ebooks from the Project GutenBerg.</string>
+    <string name="developed_by">Developed By</string>
+    <string name="dev_name">Starry Shivam</string>
+    <string name="dev_username">\@starry69</string>
+
     <!-- Open source libraries screen -->
     <string name="open_source_header">Open Source Libraries</string>
 

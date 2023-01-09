@@ -20,4 +20,6 @@ object Constants {
     const val DOWNLOAD_DIR = "MyneEbooks"
     const val DATABASE_NAME = "myne.db"
     const val REPO_URL = "https://github.com/Pool-Of-Tears/Myne"
+    const val DEV_GITHUB_URL = "https://github.com/starry69"
+    const val DEV_TELEGRAM_URL = "https://t.me/starryboi"
 }
