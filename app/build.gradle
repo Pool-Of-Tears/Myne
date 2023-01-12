@@ -100,6 +100,8 @@ dependencies {
     // Open Source Libraries Screen
     implementation "com.mikepenz:aboutlibraries-core:10.5.2"
     implementation "com.mikepenz:aboutlibraries-compose:10.5.2"
+    // Swipe actions.
+    implementation "me.saket.swipe:swipe:1.0.0"
     // Testing components.
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
