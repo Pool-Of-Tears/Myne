@@ -224,14 +224,14 @@ fun DisplayOptionsUI(context: Context) {
 
     if (materialYouSwitch.value) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            (context.getActivity() as MainActivity).themeViewModel.setMaterialYou(true)
+            (context.getActivity() as MainActivity).settingsViewModel.setMaterialYou(true)
             PreferenceUtils.putBoolean(PreferenceUtils.MATERIAL_YOU, true)
         } else {
             materialYouSwitch.value = false
             stringResource(id = R.string.material_you_error).toToast(context)
         }
     } else {
-        (context.getActivity() as MainActivity).themeViewModel.setMaterialYou(false)
+        (context.getActivity() as MainActivity).settingsViewModel.setMaterialYou(false)
         PreferenceUtils.putBoolean(PreferenceUtils.MATERIAL_YOU, false)
     }
 
@@ -285,7 +285,7 @@ fun DisplayOptionsUI(context: Context) {
 
                 when (selectedOption) {
                     "Light" -> {
-                        (context.getActivity() as MainActivity).themeViewModel.setTheme(
+                        (context.getActivity() as MainActivity).settingsViewModel.setTheme(
                             ThemeMode.Light
                         )
                         PreferenceUtils.putInt(
@@ -293,7 +293,7 @@ fun DisplayOptionsUI(context: Context) {
                         )
                     }
                     "Dark" -> {
-                        (context.getActivity() as MainActivity).themeViewModel.setTheme(
+                        (context.getActivity() as MainActivity).settingsViewModel.setTheme(
                             ThemeMode.Dark
                         )
                         PreferenceUtils.putInt(
@@ -301,7 +301,7 @@ fun DisplayOptionsUI(context: Context) {
                         )
                     }
                     "System" -> {
-                        (context.getActivity() as MainActivity).themeViewModel.setTheme(
+                        (context.getActivity() as MainActivity).settingsViewModel.setTheme(
                             ThemeMode.Auto
                         )
                         PreferenceUtils.putInt(

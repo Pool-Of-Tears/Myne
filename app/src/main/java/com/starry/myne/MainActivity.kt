@@ -42,7 +42,7 @@ import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.screens.MainScreen
 import com.starry.myne.ui.theme.MyneTheme
 import com.starry.myne.ui.viewmodels.ThemeMode
-import com.starry.myne.ui.viewmodels.ThemeViewModel
+import com.starry.myne.ui.viewmodels.SettingsViewModel
 import com.starry.myne.utils.PreferenceUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -54,29 +54,29 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var networkObserver: NetworkObserver
-    lateinit var themeViewModel: ThemeViewModel
+    lateinit var settingsViewModel: SettingsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         PreferenceUtils.initialize(this)
         networkObserver = NetworkObserver(applicationContext)
-        themeViewModel = ViewModelProvider(this)[ThemeViewModel::class.java]
+        settingsViewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
 
         when (PreferenceUtils.getInt(PreferenceUtils.APP_THEME, ThemeMode.Auto.ordinal)) {
-            ThemeMode.Auto.ordinal -> themeViewModel.setTheme(ThemeMode.Auto)
-            ThemeMode.Dark.ordinal -> themeViewModel.setTheme(ThemeMode.Dark)
-            ThemeMode.Light.ordinal -> themeViewModel.setTheme(ThemeMode.Light)
+            ThemeMode.Auto.ordinal -> settingsViewModel.setTheme(ThemeMode.Auto)
+            ThemeMode.Dark.ordinal -> settingsViewModel.setTheme(ThemeMode.Dark)
+            ThemeMode.Light.ordinal -> settingsViewModel.setTheme(ThemeMode.Light)
         }
 
-        themeViewModel.setMaterialYou(
+        settingsViewModel.setMaterialYou(
             PreferenceUtils.getBoolean(
                 PreferenceUtils.MATERIAL_YOU, Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
             )
         )
 
         setContent {
-            MyneTheme(themeViewModel = themeViewModel) {
+            MyneTheme(settingsViewModel = settingsViewModel) {
 
                 val systemUiController = rememberSystemUiController()
                 systemUiController.setSystemBarsColor(

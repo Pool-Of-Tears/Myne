@@ -20,6 +20,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.File
+import java.io.IOException
 import java.text.CharacterIterator
 import java.text.DateFormat
 import java.text.StringCharacterIterator
@@ -63,5 +64,14 @@ data class LibraryItem(
     fun getDownloadDate(): String {
         val date = Date(createdAt)
         return DateFormat.getDateInstance().format(date)
+    }
+
+    fun deleteFile(): Boolean {
+        val file = File(filePath)
+        return try {
+            file.delete()
+        } catch (exc: IOException) {
+            false
+        }
     }
 }

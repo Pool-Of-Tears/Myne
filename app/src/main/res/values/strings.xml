@@ -6,6 +6,7 @@
     <string name="storage_perm_error">Please grant storage permission!</string>
     <string name="downloading">Download Started!\nSee notification for details.</string>
     <string name="no_app_to_handle_epub">Cannot find any app to open epub file.</string>
+    <string name="error">Oops! Something went wrong.</string>
 
     <!-- Navigation titles -->
     <string name="navigation_home">Home</string>
@@ -22,7 +23,8 @@
     <!-- Library screen. -->
     <string name="library_header">Library</string>
     <string name="empty_library">Nothing Here!</string>
-    <string name="app_chooser">Open with…</string>
+    <string name="open_app_chooser">Open with…</string>
+    <string name="share_app_chooser">Share with…</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Settings</string>

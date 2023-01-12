@@ -23,7 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import com.starry.myne.ui.viewmodels.ThemeMode
-import com.starry.myne.ui.viewmodels.ThemeViewModel
+import com.starry.myne.ui.viewmodels.SettingsViewModel
 
 private val LightColors = lightColorScheme(
     onErrorContainer = md_theme_light_onErrorContainer,
@@ -97,12 +97,12 @@ onSurface = Color(0xFF1C1B1F),
 @Composable
 fun MyneTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    themeViewModel: ThemeViewModel,
+    settingsViewModel: SettingsViewModel,
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
-    val themeState = themeViewModel.theme.observeAsState(initial = ThemeMode.Auto)
-    val materialYouState = themeViewModel.materialYou.observeAsState(
+    val themeState = settingsViewModel.theme.observeAsState(initial = ThemeMode.Auto)
+    val materialYouState = settingsViewModel.materialYou.observeAsState(
         initial = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     )
 
