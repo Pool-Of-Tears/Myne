@@ -41,6 +41,9 @@
     <string name="license_setting_desc">Open source licenses.</string>
     <string name="update_setting">Check for Updates</string>
     <string name="update_setting_desc">Check for new app versions.</string>
+    <string name="update_available">New version available</string>
+    <string name="no_update_available">You are already running latest version!</string>
+    <string name="downloading_update">Downloading Update…</string>
 
     <!-- Books card -->
     <string name="home_search_icon_desc">Search books</string>
