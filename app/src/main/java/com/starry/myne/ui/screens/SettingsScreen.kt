@@ -27,10 +27,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -53,10 +50,12 @@ import com.starry.myne.R
 import com.starry.myne.navigation.Screens
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.viewmodels.SettingsViewModel
 import com.starry.myne.ui.viewmodels.ThemeMode
 import com.starry.myne.utils.PreferenceUtils
 import com.starry.myne.utils.getActivity
 import com.starry.myne.utils.toToast
+import kotlinx.coroutines.launch
 
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
@@ -65,6 +64,7 @@ import com.starry.myne.utils.toToast
 @Composable
 fun SettingsScreen(navController: NavController) {
     val context = LocalContext.current
+    val viewModel = (context.getActivity() as MainActivity).settingsViewModel
 
     Column(
         modifier = Modifier
@@ -90,8 +90,8 @@ fun SettingsScreen(navController: NavController) {
             navController.navigate(Screens.AboutScreen.route)
         }
 
-        DisplayOptionsUI(context)
-        InformationUI(navController, context)
+        DisplayOptionsUI(viewModel, context)
+        InformationUI(navController, viewModel, context)
     }
 }
 
@@ -172,7 +172,7 @@ fun SettingsCard(onClick: () -> Unit) {
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
-fun DisplayOptionsUI(context: Context) {
+fun DisplayOptionsUI(viewModel: SettingsViewModel, context: Context) {
     val displayValue =
         when (PreferenceUtils.getInt(PreferenceUtils.APP_THEME, ThemeMode.Auto.ordinal)) {
             ThemeMode.Light.ordinal -> "Light"
@@ -224,14 +224,14 @@ fun DisplayOptionsUI(context: Context) {
 
     if (materialYouSwitch.value) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            (context.getActivity() as MainActivity).settingsViewModel.setMaterialYou(true)
+            viewModel.setMaterialYou(true)
             PreferenceUtils.putBoolean(PreferenceUtils.MATERIAL_YOU, true)
         } else {
             materialYouSwitch.value = false
             stringResource(id = R.string.material_you_error).toToast(context)
         }
     } else {
-        (context.getActivity() as MainActivity).settingsViewModel.setMaterialYou(false)
+        viewModel.setMaterialYou(false)
         PreferenceUtils.putBoolean(PreferenceUtils.MATERIAL_YOU, false)
     }
 
@@ -285,7 +285,7 @@ fun DisplayOptionsUI(context: Context) {
 
                 when (selectedOption) {
                     "Light" -> {
-                        (context.getActivity() as MainActivity).settingsViewModel.setTheme(
+                        viewModel.setTheme(
                             ThemeMode.Light
                         )
                         PreferenceUtils.putInt(
@@ -293,7 +293,7 @@ fun DisplayOptionsUI(context: Context) {
                         )
                     }
                     "Dark" -> {
-                        (context.getActivity() as MainActivity).settingsViewModel.setTheme(
+                        viewModel.setTheme(
                             ThemeMode.Dark
                         )
                         PreferenceUtils.putInt(
@@ -301,7 +301,7 @@ fun DisplayOptionsUI(context: Context) {
                         )
                     }
                     "System" -> {
-                        (context.getActivity() as MainActivity).settingsViewModel.setTheme(
+                        viewModel.setTheme(
                             ThemeMode.Auto
                         )
                         PreferenceUtils.putInt(
@@ -322,32 +322,77 @@ fun DisplayOptionsUI(context: Context) {
     }
 }
 
+@ExperimentalCoilApi
+@ExperimentalComposeUiApi
+@ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
-fun InformationUI(navController: NavController, context: Context) {
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 14.dp)
-            .padding(top = 10.dp)
+fun InformationUI(navController: NavController, viewModel: SettingsViewModel, context: Context) {
+    val snackBarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
     ) {
-        Text(
-            text = stringResource(id = R.string.miscellaneous_setting_header),
-            fontFamily = figeronaFont,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
-        SettingItem(icon = R.drawable.ic_settings_license,
-            mainText = stringResource(id = R.string.license_setting),
-            subText = stringResource(id = R.string.license_setting_desc),
-            onClick = { navController.navigate(Screens.OSLScreen.route) }
-        )
-        SettingItem(icon = R.drawable.ic_settings_update,
-            mainText = stringResource(id = R.string.update_setting),
-            subText = stringResource(id = R.string.update_setting_desc),
-            onClick = { "Not Yet Implemented".toToast(context) }
-        )
+        Box(modifier = Modifier.padding(it)) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 14.dp)
+                    .padding(top = 10.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.miscellaneous_setting_header),
+                    fontFamily = figeronaFont,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                SettingItem(icon = R.drawable.ic_settings_license,
+                    mainText = stringResource(id = R.string.license_setting),
+                    subText = stringResource(id = R.string.license_setting_desc),
+                    onClick = { navController.navigate(Screens.OSLScreen.route) })
+                SettingItem(icon = R.drawable.ic_settings_update,
+                    mainText = stringResource(id = R.string.update_setting),
+                    subText = stringResource(id = R.string.update_setting_desc),
+                    onClick = {
+                        viewModel.checkForUpdates { updateAvailable, newReleaseLink, errorOnRequest ->
+                            if (errorOnRequest) {
+                                coroutineScope.launch {
+                                    snackBarHostState.showSnackbar(
+                                        message = context.getString(R.string.error),
+                                    )
+                                }
+                            }
+                            if (updateAvailable) {
+                                coroutineScope.launch {
+                                    val result = snackBarHostState.showSnackbar(
+                                        message = context.getString(R.string.update_available),
+                                        actionLabel = "UPDATE"
+                                    )
+
+                                    when (result) {
+                                        SnackbarResult.ActionPerformed -> {
+                                            viewModel.downloadUpdate(
+                                                newReleaseLink!!,
+                                                (context.getActivity() as MainActivity)
+                                            )
+                                        }
+                                        SnackbarResult.Dismissed -> {
+                                            /* dismissed, no action needed */
+                                        }
+                                    }
+                                }
+                            } else {
+                                coroutineScope.launch {
+                                    snackBarHostState.showSnackbar(
+                                        message = context.getString(R.string.no_update_available)
+                                    )
+                                }
+                            }
+                        }
+                    })
+            }
+        }
     }
 }
 
