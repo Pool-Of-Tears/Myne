@@ -53,7 +53,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.others.NetworkObserver
@@ -166,14 +167,6 @@ fun BookDetailScreen(
                                 val imageUrl = state.extraInfo.coverImage.ifEmpty {
                                     state.item.books.first().formats.imagejpeg
                                 }
-                                val painter =
-                                    rememberImagePainter(
-                                        data = imageUrl,
-                                        builder = {
-                                            placeholder(R.drawable.placeholder_cat)
-                                            error(R.drawable.placeholder_cat)
-                                            crossfade(500)
-                                        })
 
                                 Box(
                                     modifier = Modifier
@@ -192,9 +185,11 @@ fun BookDetailScreen(
                                             .clip(RoundedCornerShape(8.dp))
                                             .background(imageBackground)
                                     ) {
-                                        Image(
-                                            painter = painter,
-                                            contentDescription = "",
+                                        AsyncImage(
+                                            model = ImageRequest.Builder(context).data(imageUrl)
+                                                .crossfade(true).build(),
+                                            placeholder = painterResource(id = R.drawable.placeholder_cat),
+                                            contentDescription = null,
                                             modifier = Modifier
                                                 .width(118.dp)
                                                 .height(169.dp),

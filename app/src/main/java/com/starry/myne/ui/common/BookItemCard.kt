@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.starry.myne.ui.common
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -26,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,7 +34,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.starry.myne.R
 import com.starry.myne.ui.theme.figeronaFont
 
@@ -73,13 +75,10 @@ fun BookItemCard(
                     .clip(RoundedCornerShape(6.dp))
                     .background(imageBackground)
             ) {
-                val painter = rememberImagePainter(data = coverImageUrl, builder = {
-                    placeholder(R.drawable.placeholder_cat)
-                    error(R.drawable.placeholder_cat)
-                    crossfade(500)
-                })
-                Image(
-                    painter = painter,
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current).data(coverImageUrl)
+                        .crossfade(true).build(),
+                    placeholder = painterResource(id = R.drawable.placeholder_cat),
                     contentDescription = stringResource(id = R.string.cover_image_desc),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -135,7 +134,8 @@ fun BookItemCard(
                     text = subjects,
                     modifier = Modifier.padding(start = 12.dp, end = 8.dp, bottom = 2.dp),
                     color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2, overflow = TextOverflow.Ellipsis,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                     fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
                     fontFamily = figeronaFont,
                     fontSize = 13.sp
