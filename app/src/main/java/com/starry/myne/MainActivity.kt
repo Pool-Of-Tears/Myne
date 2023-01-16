@@ -24,6 +24,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
@@ -41,8 +42,8 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.screens.MainScreen
 import com.starry.myne.ui.theme.MyneTheme
-import com.starry.myne.ui.viewmodels.ThemeMode
 import com.starry.myne.ui.viewmodels.SettingsViewModel
+import com.starry.myne.ui.viewmodels.ThemeMode
 import com.starry.myne.utils.PreferenceUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var networkObserver: NetworkObserver
     lateinit var settingsViewModel: SettingsViewModel
 
+    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

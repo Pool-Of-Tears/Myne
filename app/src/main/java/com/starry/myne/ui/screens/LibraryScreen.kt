@@ -74,20 +74,10 @@ fun LibraryScreen() {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp)
-        ) {
-            CustomTopAppBar(
-                headerText = stringResource(id = R.string.library_header),
-                icon = R.drawable.ic_nav_library
-            )
-            Divider(
-                color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-                thickness = 2.dp,
-            )
-        }
+        CustomTopAppBar(
+            headerText = stringResource(id = R.string.library_header),
+            icon = R.drawable.ic_nav_library
+        )
 
         if (state.isEmpty()) {
             Box(
@@ -120,6 +110,7 @@ fun LibraryScreen() {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
+                    .padding(bottom = 70.dp)
             ) {
                 items(state.size) { i ->
                     val item = state[i]

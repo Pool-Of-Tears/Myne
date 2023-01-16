@@ -22,8 +22,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
-import com.starry.myne.ui.viewmodels.ThemeMode
 import com.starry.myne.ui.viewmodels.SettingsViewModel
+import com.starry.myne.ui.viewmodels.ThemeMode
 
 private val LightColors = lightColorScheme(
     onErrorContainer = md_theme_light_onErrorContainer,

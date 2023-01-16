@@ -21,24 +21,34 @@ import com.starry.myne.ui.theme.pacificoFont
 
 @Composable
 fun CustomTopAppBar(headerText: String, icon: Int) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 7.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp)
     ) {
-        Text(
-            text = headerText,
-            fontSize = 28.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontFamily = pacificoFont
-        )
-        Icon(
-            imageVector = ImageVector.vectorResource(id = icon),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.size(28.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 7.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = headerText,
+                fontSize = 28.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = pacificoFont
+            )
+            Icon(
+                imageVector = ImageVector.vectorResource(id = icon),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+        Divider(
+            color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+            thickness = 2.dp,
         )
     }
 }

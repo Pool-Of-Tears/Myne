@@ -1,8 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
     id "com.mikepenz.aboutlibraries.plugin" version "10.5.2"
 }
 
@@ -44,7 +44,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     lintOptions {
-        abortOnError false   
+        abortOnError false
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -75,8 +75,8 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.animation:animation:$compose_version"
+    implementation "com.google.accompanist:accompanist-navigation-animation:0.29.0-alpha"
     implementation "androidx.compose.material3:material3:1.1.0-alpha04"
-    implementation "androidx.navigation:navigation-compose:2.6.0-alpha04"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     // Material theme for main activity.

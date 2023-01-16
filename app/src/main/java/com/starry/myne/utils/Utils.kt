@@ -6,7 +6,6 @@ import kotlin.math.log10
 import kotlin.math.pow
 
 object Utils {
-
     fun prettyCount(number: Number): String? {
         val suffix = charArrayOf(' ', 'k', 'M', 'B', 'T', 'P', 'E')
         val numValue = number.toLong()

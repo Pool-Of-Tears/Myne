@@ -70,28 +70,19 @@ fun SettingsScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .padding(bottom = 70.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp)
-        ) {
-            CustomTopAppBar(
-                headerText = stringResource(id = R.string.settings_header),
-                icon = R.drawable.ic_nav_settings
-            )
-            Divider(
-                color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-                thickness = 2.dp,
-            )
-        }
-
-        SettingsCard {
+        CustomTopAppBar(
+            headerText = stringResource(id = R.string.settings_header),
+            icon = R.drawable.ic_nav_settings
+        )
+        SettingsCard(onClick = {
             navController.navigate(Screens.AboutScreen.route)
-        }
-
-        DisplayOptionsUI(viewModel, context)
-        InformationUI(navController, viewModel, context)
+        })
+        DisplayOptionsUI(viewModel = viewModel, context = context)
+        InformationUI(
+            navController = navController, viewModel = viewModel, context = context
+        )
     }
 }
 
