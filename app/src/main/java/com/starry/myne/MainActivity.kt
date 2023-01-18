@@ -42,6 +42,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.screens.MainScreen
 import com.starry.myne.ui.theme.MyneTheme
+import com.starry.myne.ui.viewmodels.DownloadInfo
 import com.starry.myne.ui.viewmodels.SettingsViewModel
 import com.starry.myne.ui.viewmodels.ThemeMode
 import com.starry.myne.utils.PreferenceUtils
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var networkObserver: NetworkObserver
     lateinit var settingsViewModel: SettingsViewModel
+    lateinit var runningDownloads: HashMap<Int, DownloadInfo>
 
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         PreferenceUtils.initialize(this)
         networkObserver = NetworkObserver(applicationContext)
         settingsViewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
+        runningDownloads = HashMap()
 
         when (PreferenceUtils.getInt(PreferenceUtils.APP_THEME, ThemeMode.Auto.ordinal)) {
             ThemeMode.Auto.ordinal -> settingsViewModel.setTheme(ThemeMode.Auto)

@@ -3,6 +3,7 @@
     <!-- Others Strings -->
     <string name="not_applicable">N/A</string>
     <string name="woops">"Whoops!!"</string>
+    <string name="cancel">Cancel</string>
     <string name="storage_perm_error">Please grant storage permission!</string>
     <string name="downloading">Download Started!\nSee notification for details.</string>
     <string name="no_app_to_handle_epub">Cannot find any app to open epub file.</string>
@@ -54,9 +55,8 @@
     <string name="back_button_desc">Go back.</string>
     <string name="share_button_desc">Share this book.</string>
     <string name="share_intent_header">Share this using…</string>
-    <string name="download_button_desc">Download this book.</string>
-    <string name="book_download_count">%s Downloads</string>
-    <string name="book_page_count">%s Pages</string>
+    <string name="read_book_button">Start Reading</string>
+    <string name="download_book_button">Download</string>
     <string name="book_synopsis">Synopsis</string>
     <string name="book_synopsis_not_found">Not available</string>
 
