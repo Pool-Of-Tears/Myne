@@ -4,9 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
@@ -45,171 +43,176 @@ fun AboutScreen(navController: NavController) {
             navController.navigateUp()
         }
 
-        Card(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 14.dp, end = 14.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                    4.dp
-                )
-            ),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            Box(
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(148.dp), contentAlignment = Alignment.Center
+                    .padding(start = 14.dp, end = 14.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                        4.dp
+                    )
+                ),
             ) {
                 Box(
                     modifier = Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surface)
+                        .fillMaxWidth()
+                        .height(148.dp), contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        modifier = Modifier.size(120.dp),
-                        painter = painterResource(id = R.drawable.ic_splash_screen),
-                        contentDescription = null
-                    )
-                }
-            }
-
-            Text(
-                text = stringResource(id = R.string.app_name),
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 26.sp,
-                fontFamily = figeronaFont,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = "Version ${BuildConfig.VERSION_NAME}",
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 14.sp,
-                fontFamily = figeronaFont,
-                fontWeight = FontWeight.Normal,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = stringResource(id = R.string.about_desc),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 22.dp, end = 22.dp),
-                fontSize = 14.sp,
-                fontFamily = figeronaFont,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Row {
-                    LinkButton(
-                        text = "Github",
-                        icon = ImageVector.vectorResource(id = R.drawable.ic_github_logo)
+                    Box(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surface)
                     ) {
-                        openWebLink(context, Constants.REPO_URL)
-                    }
-
-                    Spacer(modifier = Modifier.height(6.dp))
-
-                    LinkButton(
-                        text = "Telegram",
-                        icon = ImageVector.vectorResource(id = R.drawable.ic_telegram_logo)
-                    ) {
-                        openWebLink(context, Constants.TELEGRAM_GROUP_URL)
+                        Image(
+                            modifier = Modifier.size(120.dp),
+                            painter = painterResource(id = R.drawable.ic_splash_screen),
+                            contentDescription = null
+                        )
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(14.dp))
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Text(
-            text = stringResource(id = R.string.developed_by),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, bottom = 12.dp),
-            fontSize = 16.sp,
-            fontFamily = figeronaFont,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center
-        )
-
-
-        Card(
-            modifier = Modifier
-                .height(135.dp)
-                .fillMaxWidth()
-                .padding(start = 14.dp, end = 14.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                    2.dp
-                )
-            ),
-        ) {
-            Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(id = R.drawable.github_pfp),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(start = 12.dp)
-                        .size(90.dp)
-                        .clip(CircleShape)
+                Text(
+                    text = stringResource(id = R.string.app_name),
+                    modifier = Modifier.fillMaxWidth(),
+                    fontSize = 26.sp,
+                    fontFamily = figeronaFont,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center
                 )
 
-                Column(
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "Version ${BuildConfig.VERSION_NAME}",
+                    modifier = Modifier.fillMaxWidth(),
+                    fontSize = 14.sp,
+                    fontFamily = figeronaFont,
+                    fontWeight = FontWeight.Normal,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = stringResource(id = R.string.about_desc),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 14.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.dev_name),
-                        fontSize = 18.sp,
-                        fontFamily = figeronaFont,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                    )
+                        .padding(start = 22.dp, end = 22.dp),
+                    fontSize = 14.sp,
+                    fontFamily = figeronaFont,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center
+                )
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(
-                        text = stringResource(id = R.string.dev_username),
-                        fontSize = 16.sp,
-                        fontFamily = figeronaFont,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onBackground,
-                    )
-
-                    Spacer(modifier = Modifier.height(6.dp))
-
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Row {
                         LinkButton(
                             text = "Github",
                             icon = ImageVector.vectorResource(id = R.drawable.ic_github_logo)
                         ) {
-                            openWebLink(context, Constants.DEV_GITHUB_URL)
+                            openWebLink(context, Constants.REPO_URL)
                         }
-
-                        Spacer(modifier = Modifier.height(6.dp))
 
                         LinkButton(
                             text = "Telegram",
                             icon = ImageVector.vectorResource(id = R.drawable.ic_telegram_logo)
                         ) {
-                            openWebLink(context, Constants.DEV_TELEGRAM_URL)
+                            openWebLink(context, Constants.TELEGRAM_GROUP_URL)
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = stringResource(id = R.string.developed_by),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, bottom = 12.dp),
+                fontSize = 16.sp,
+                fontFamily = figeronaFont,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center
+            )
+
+
+            Card(
+                modifier = Modifier
+                    .height(135.dp)
+                    .fillMaxWidth()
+                    .padding(start = 14.dp, end = 14.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                        2.dp
+                    )
+                ),
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.github_pfp),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(start = 12.dp)
+                            .size(90.dp)
+                            .clip(CircleShape)
+                    )
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 14.dp)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.dev_name),
+                            fontSize = 18.sp,
+                            fontFamily = figeronaFont,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text(
+                            text = stringResource(id = R.string.dev_username),
+                            fontSize = 16.sp,
+                            fontFamily = figeronaFont,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Row {
+                            LinkButton(
+                                text = "Github",
+                                icon = ImageVector.vectorResource(id = R.drawable.ic_github_logo)
+                            ) {
+                                openWebLink(context, Constants.DEV_GITHUB_URL)
+                            }
+
+                            LinkButton(
+                                text = "Telegram",
+                                icon = ImageVector.vectorResource(id = R.drawable.ic_telegram_logo)
+                            ) {
+                                openWebLink(context, Constants.DEV_TELEGRAM_URL)
+                            }
                         }
                     }
                 }

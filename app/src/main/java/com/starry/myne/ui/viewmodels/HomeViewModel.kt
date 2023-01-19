@@ -23,7 +23,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.api.BooksApi
 import com.starry.myne.api.models.Book
-import com.starry.myne.others.PaginatorImpl
+import com.starry.myne.others.Paginator
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -53,7 +53,7 @@ class HomeViewModel : ViewModel() {
     var allBooksState by mutableStateOf(AllBooksState())
     var topBarState by mutableStateOf(TopBarState())
 
-    private val paginator = PaginatorImpl(
+    private val paginator = Paginator(
         initialPage = allBooksState.page,
         onLoadUpdated = {
             allBooksState = allBooksState.copy(isLoading = it)

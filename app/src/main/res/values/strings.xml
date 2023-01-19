@@ -3,8 +3,9 @@
     <!-- Others Strings -->
     <string name="not_applicable">N/A</string>
     <string name="woops">"Whoops!!"</string>
+    <string name="dialog_confirm_button">Confirm</string>
+    <string name="cancel">Cancel</string>
     <string name="storage_perm_error">Please grant storage permission!</string>
-    <string name="downloading">Download Started!\nSee notification for details.</string>
     <string name="no_app_to_handle_epub">Cannot find any app to open epub file.</string>
     <string name="error">Oops! Something went wrong.</string>
 
@@ -25,13 +26,18 @@
     <string name="empty_library">Nothing Here!</string>
     <string name="open_app_chooser">Open with…</string>
     <string name="share_app_chooser">Share with…</string>
+    <string name="library_read_button">Read</string>
+    <string name="library_delete_button">Delete</string>
+    <string name="library_delete_dialog_title">Are you sure about that?</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Settings</string>
     <string name="app_desc">Ebook Downloader</string>
-    <string name="made_by">Made with ❤ by starry69</string>
+    <string name="made_by">Made with ❤ by Shivam</string>
     <string name="display_setting_header">Display</string>
     <string name="theme_setting">Default Theme</string>
+    <string name="theme_dialog_title">Change Theme</string>
+    <string name="theme_dialog_apply_button">Apply</string>
     <string name="material_you_setting">Material You</string>
     <string name="material_you_settings_disabled_desc">Enable Material You</string>
     <string name="material_you_settings_enabled_desc">Disable Material You</string>
@@ -54,9 +60,9 @@
     <string name="back_button_desc">Go back.</string>
     <string name="share_button_desc">Share this book.</string>
     <string name="share_intent_header">Share this using…</string>
-    <string name="download_button_desc">Download this book.</string>
-    <string name="book_download_count">%s Downloads</string>
-    <string name="book_page_count">%s Pages</string>
+    <string name="read_book_button">Start Reading</string>
+    <string name="download_book_button">Download</string>
+    <string name="downloading_book">Download Started!</string>
     <string name="book_synopsis">Synopsis</string>
     <string name="book_synopsis_not_found">Not available</string>
 
@@ -65,7 +71,7 @@
     <string name="about_desc">A Free &amp; Open Source Android application to download ebooks from the Project GutenBerg.</string>
     <string name="developed_by">Developed By</string>
     <string name="dev_name">Starry Shivam</string>
-    <string name="dev_username">\@starry69</string>
+    <string name="dev_username">\@starry-shivam</string>
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Open Source Libraries</string>

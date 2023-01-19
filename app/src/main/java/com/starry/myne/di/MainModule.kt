@@ -18,6 +18,7 @@ limitations under the License.
 
 import android.content.Context
 import com.starry.myne.database.MyneDatabase
+import com.starry.myne.others.BookDownloader
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,4 +41,8 @@ class MainModule {
 
     @Provides
     fun provideLibraryDao(myneDatabase: MyneDatabase) = myneDatabase.getLibraryDao()
+
+    @Singleton
+    @Provides
+    fun provideBookDownloader(@ApplicationContext context: Context) = BookDownloader(context)
 }

@@ -78,6 +78,7 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
             Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
+                .padding(bottom = 70.dp)
         ) {
             Column(
                 modifier = Modifier

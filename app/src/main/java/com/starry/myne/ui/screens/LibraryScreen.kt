@@ -16,17 +16,22 @@ limitations under the License.
 
 package com.starry.myne.ui.screens
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -43,16 +48,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
+import com.starry.myne.navigation.Screens
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.viewmodels.LibraryViewModel
 import com.starry.myne.ui.viewmodels.ThemeMode
+import com.starry.myne.utils.Utils
 import com.starry.myne.utils.getActivity
 import com.starry.myne.utils.toToast
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 import java.io.File
@@ -63,7 +74,7 @@ import java.io.File
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
-fun LibraryScreen() {
+fun LibraryScreen(navController: NavController) {
     val viewModel: LibraryViewModel = hiltViewModel()
     val state = viewModel.allItems.observeAsState(listOf()).value
     val context = LocalContext.current
@@ -73,21 +84,12 @@ fun LibraryScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .padding(bottom = 70.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp)
-        ) {
-            CustomTopAppBar(
-                headerText = stringResource(id = R.string.library_header),
-                icon = R.drawable.ic_nav_library
-            )
-            Divider(
-                color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-                thickness = 2.dp,
-            )
-        }
+        CustomTopAppBar(
+            headerText = stringResource(id = R.string.library_header),
+            icon = R.drawable.ic_nav_library
+        )
 
         if (state.isEmpty()) {
             Box(
@@ -116,6 +118,7 @@ fun LibraryScreen() {
                 }
             }
         } else {
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -125,75 +128,79 @@ fun LibraryScreen() {
                     val item = state[i]
                     if (item.fileExist()) {
 
-                        val deleteAction =
-                            SwipeAction(icon = painterResource(
-                                id =
-                                if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_delete else R.drawable.ic_delete_white
-                            ),
-                                background = MaterialTheme.colorScheme.primary,
-                                onSwipe = {
+                        val openDeleteDialog = remember { mutableStateOf(false) }
+
+                        val detailsAction = SwipeAction(icon = painterResource(
+                            id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_info else R.drawable.ic_info_white
+                        ), background = MaterialTheme.colorScheme.primary, onSwipe = {
+                            viewModel.viewModelScope.launch {
+                                delay(250L)
+                                navController.navigate(Screens.BookDetailScreen.withBookId(item.bookId.toString()))
+                            }
+                        })
+
+                        val shareAction = SwipeAction(icon = painterResource(
+                            id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_share else R.drawable.ic_share_white
+                        ), background = MaterialTheme.colorScheme.primary, onSwipe = {
+                            val uri = FileProvider.getUriForFile(
+                                context,
+                                BuildConfig.APPLICATION_ID + ".provider",
+                                File(item.filePath)
+                            )
+                            val intent = Intent(Intent.ACTION_SEND)
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            intent.type = context.contentResolver.getType(uri)
+                            intent.putExtra(Intent.EXTRA_STREAM, uri)
+                            context.startActivity(
+                                Intent.createChooser(
+                                    intent, context.getString(R.string.share_app_chooser)
+                                )
+                            )
+                        })
+
+                        SwipeableActionsBox(
+                            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
+                            startActions = listOf(shareAction),
+                            endActions = listOf(detailsAction),
+                            swipeThreshold = 85.dp
+                        ) {
+                            LibraryCard(title = item.title,
+                                author = item.authors,
+                                item.getFileSize(),
+                                item.getDownloadDate(),
+                                onReadClick = { (Utils.openBookFile(context, item)) },
+                                onDeleteClick = { openDeleteDialog.value = true })
+                        }
+
+                        if (openDeleteDialog.value) {
+                            AlertDialog(onDismissRequest = {
+                                openDeleteDialog.value = false
+                            }, title = {
+                                Text(
+                                    text = stringResource(id = R.string.library_delete_dialog_title),
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                            }, confirmButton = {
+                                TextButton(onClick = {
+                                    openDeleteDialog.value = false
                                     val fileDeleted = item.deleteFile()
                                     if (fileDeleted) {
                                         viewModel.deleteItem(item)
                                     } else {
                                         context.getString(R.string.error).toToast(context)
                                     }
-                                })
-
-                        val shareAction =
-                            SwipeAction(icon = painterResource(
-                                id =
-                                if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_share else R.drawable.ic_share_white
-                            ),
-                                background = MaterialTheme.colorScheme.primary,
-                                onSwipe = {
-                                    val uri = FileProvider.getUriForFile(
-                                        context,
-                                        BuildConfig.APPLICATION_ID + ".provider",
-                                        File(item.filePath)
-                                    )
-                                    val intent = Intent(Intent.ACTION_SEND)
-                                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                    intent.type = context.contentResolver.getType(uri)
-                                    intent.putExtra(Intent.EXTRA_STREAM, uri)
-                                    context.startActivity(
-                                        Intent.createChooser(
-                                            intent, context.getString(R.string.share_app_chooser)
-                                        )
-                                    )
-                                })
-
-                        SwipeableActionsBox(
-                            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
-                            startActions = listOf(deleteAction),
-                            endActions = listOf(shareAction),
-                            swipeThreshold = 85.dp
-                        ) {
-                            LibraryCard(
-                                title = item.title,
-                                author = item.authors,
-                                item.getFileSize(),
-                                item.getDownloadDate()
-                            ) {
-                                val uri = FileProvider.getUriForFile(
-                                    context,
-                                    BuildConfig.APPLICATION_ID + ".provider",
-                                    File(item.filePath)
-                                )
-                                val intent = Intent(Intent.ACTION_VIEW)
-                                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                intent.setDataAndType(uri, context.contentResolver.getType(uri))
-                                val chooser = Intent.createChooser(
-                                    intent, context.getString(R.string.open_app_chooser)
-                                )
-                                try {
-                                    context.startActivity(chooser)
-                                } catch (exc: ActivityNotFoundException) {
-                                    context.getString(R.string.no_app_to_handle_epub)
-                                        .toToast(context)
+                                }) {
+                                    Text(stringResource(id = R.string.dialog_confirm_button))
                                 }
-                            }
+                            }, dismissButton = {
+                                TextButton(onClick = {
+                                    openDeleteDialog.value = false
+                                }) {
+                                    Text(stringResource(id = R.string.cancel))
+                                }
+                            })
                         }
+
                     } else {
                         viewModel.deleteItem(item)
                     }
@@ -203,19 +210,22 @@ fun LibraryScreen() {
     }
 }
 
-@ExperimentalMaterial3Api
 @Composable
 fun LibraryCard(
-    title: String, author: String, fileSize: String, date: String, onClick: () -> Unit
+    title: String,
+    author: String,
+    fileSize: String,
+    date: String,
+    onReadClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     Card(
-        onClick = { onClick() },
         modifier = Modifier
             .height(125.dp)
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                1.dp
+                3.dp
             )
         ),
         shape = RoundedCornerShape(0.dp)
@@ -228,8 +238,8 @@ fun LibraryCard(
         ) {
             Box(
                 modifier = Modifier
-                    .height(85.dp)
-                    .width(85.dp)
+                    .height(90.dp)
+                    .width(90.dp)
                     .padding(10.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primary),
@@ -239,7 +249,7 @@ fun LibraryCard(
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_library_item),
                     contentDescription = stringResource(id = R.string.back_button_desc),
                     tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(30.dp)
+                    modifier = Modifier.size(32.dp)
                 )
             }
 
@@ -292,7 +302,66 @@ fun LibraryCard(
                         modifier = Modifier.padding(start = 6.dp)
                     )
                 }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row {
+                    LibraryCardButton(
+                        text = stringResource(id = R.string.library_read_button),
+                        icon = ImageVector.vectorResource(id = R.drawable.ic_library_read),
+                        onClick = { onReadClick() }
+                    )
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    LibraryCardButton(
+                        text = stringResource(id = R.string.library_delete_button),
+                        icon = Icons.Outlined.Delete,
+                        onClick = { onDeleteClick() }
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
             }
+        }
+    }
+}
+
+@Composable
+fun LibraryCardButton(
+    text: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .clickable { onClick() }
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(6.dp)
+
+
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(size = 15.dp),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+
+            Text(
+                text = text,
+                fontWeight = FontWeight.Medium,
+                fontFamily = figeronaFont,
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(start = 2.dp, bottom = 1.dp),
+            )
         }
     }
 }
@@ -305,5 +374,6 @@ fun LibraryScreenPreview() {
         author = "Fyodor Dostoevsky",
         fileSize = "5.9MB",
         date = "01- Jan -2020",
-        onClick = {})
+        onReadClick = {},
+        onDeleteClick = {})
 }

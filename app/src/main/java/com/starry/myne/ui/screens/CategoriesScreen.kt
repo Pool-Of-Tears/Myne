@@ -48,25 +48,15 @@ fun CategoriesScreen(navController: NavController) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp)
-        ) {
-            CustomTopAppBar(
-                headerText = stringResource(id = R.string.categories_header),
-                icon = R.drawable.ic_category_header
-            )
-            Divider(
-                color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-                thickness = 2.dp,
-            )
-        }
+        CustomTopAppBar(
+            headerText = stringResource(id = R.string.categories_header),
+            icon = R.drawable.ic_category_header
+        )
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 10.dp, end = 10.dp)
+                .padding(start = 8.dp, end = 8.dp, bottom = 70.dp)
         ) {
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(168.dp),

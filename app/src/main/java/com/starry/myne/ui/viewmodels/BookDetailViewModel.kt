@@ -17,10 +17,6 @@ limitations under the License.
 package com.starry.myne.ui.viewmodels
 
 import android.annotation.SuppressLint
-import android.app.DownloadManager
-import android.content.Context
-import android.database.Cursor
-import android.net.Uri
 import android.os.Environment
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +35,7 @@ import com.starry.myne.api.models.BookSet
 import com.starry.myne.api.models.ExtraInfo
 import com.starry.myne.database.LibraryDao
 import com.starry.myne.database.LibraryItem
+import com.starry.myne.others.BookDownloader
 import com.starry.myne.others.Constants
 import com.starry.myne.utils.BookUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,10 +43,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class ScreenState(
+data class BookDetailScreenState(
     val isLoading: Boolean = true,
     val item: BookSet = BookSet(0, null, null, emptyList()),
-    val extraInfo: ExtraInfo = ExtraInfo()
+    val extraInfo: ExtraInfo = ExtraInfo(),
+    val bookLibraryItem: LibraryItem? = null
 )
 
 @ExperimentalMaterialApi
@@ -57,66 +55,39 @@ data class ScreenState(
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
 @HiltViewModel
-class BookDetailViewModel @Inject constructor(private val libraryDao: LibraryDao) : ViewModel() {
-    var state by mutableStateOf(ScreenState())
-
+class BookDetailViewModel @Inject constructor(
+    val libraryDao: LibraryDao, val bookDownloader: BookDownloader
+) : ViewModel() {
+    var state by mutableStateOf(BookDetailScreenState())
     fun getBookDetails(bookId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val bookItem = BooksApi.getBookById(bookId).getOrNull()!!
             val extraInfo = BooksApi.getExtraInfo(bookItem.books.first().title)
             state = if (extraInfo != null) {
-                state.copy(isLoading = false, item = bookItem, extraInfo = extraInfo)
+                state.copy(item = bookItem, extraInfo = extraInfo)
             } else {
-                state.copy(isLoading = false, item = bookItem)
+                state.copy(item = bookItem)
             }
+            state = state.copy(
+                bookLibraryItem = libraryDao.getItembyId(bookId.toInt()), isLoading = false
+            )
         }
     }
 
     @SuppressLint("Range")
-    fun downloadBook(book: Book, activity: MainActivity): String {
-        if (activity.checkStoragePermission()) {
-            // setup download manager.
-            val filename = book.title.split(" ").joinToString(separator = "+") + ".epub"
-            val manager = activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-            val uri = Uri.parse(book.formats.applicationepubzip)
-            val request = DownloadManager.Request(uri)
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setAllowedOverRoaming(true)
-                .setAllowedOverMetered(true)
-                .setTitle(book.title)
-                .setDescription(BookUtils.getAuthorsAsString(book.authors))
-                .setDestinationInExternalPublicDir(
-                    Environment.DIRECTORY_DOWNLOADS,
-                    Constants.DOWNLOAD_DIR + "/" + filename
-                )
-            // start downloading.
-            val downloadId = manager.enqueue(request)
-            viewModelScope.launch(Dispatchers.IO) {
-                var isDownloadFinished = false
-                while (!isDownloadFinished) {
-                    val cursor: Cursor =
-                        manager.query(DownloadManager.Query().setFilterById(downloadId))
-                    if (cursor.moveToFirst()) {
-                        when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
-                            DownloadManager.STATUS_SUCCESSFUL -> {
-                                insertIntoDB(book, filename)
-                                isDownloadFinished = true
-                            }
-                            DownloadManager.STATUS_PAUSED, DownloadManager.STATUS_PENDING -> {}
-                            DownloadManager.STATUS_FAILED -> {
-                                isDownloadFinished = true
-                            }
-                        }
-                    } else {
-                        // Download cancelled by the user.
-                        isDownloadFinished = true
-                    }
-                    cursor.close()
-                }
-            }
-            return activity.getString(R.string.downloading)
+    fun downloadBook(
+        book: Book, activity: MainActivity, downloadProgressListener: (Float, Int) -> Unit
+    ): String {
+        return if (activity.checkStoragePermission()) {
+            bookDownloader.downloadBook(book = book,
+                downloadProgressListener = downloadProgressListener,
+                onDownloadSuccess = {
+                    insertIntoDB(book, bookDownloader.getFilenameForBook(book))
+                    state = state.copy(bookLibraryItem = libraryDao.getItembyId(book.id))
+                })
+            activity.getString(R.string.downloading_book)
         } else {
-            return activity.getString(R.string.storage_perm_error)
+            activity.getString(R.string.storage_perm_error)
         }
     }
 
