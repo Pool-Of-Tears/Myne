@@ -1,6 +1,6 @@
 <div align="center">
 <img src="https://te.legra.ph/file/8234db16f1e9418b73005.png" align="center" style="width: 100%" />
-<h1>Myne: Ebook downloader</h1>
+<h1>Myne: Ebook Downloader</h1>
 </div>
 
 <p align="center">
@@ -51,7 +51,8 @@ If this project helped you a little bit, please consider donating a small amount
 <h2 align="center">Tech Stack</h2>
 
 - [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.
-- [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - To improve performance and overall user experience.
+- [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - To improve performance by doing I/O tasks out of main thread asynchronously.
+- [Flow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/) - A cold asynchronous data stream that sequentially emits values and completes normally or with an exception.
 - [Android Architecture Components](https://developer.android.com/topic/libraries/architecture) - Collection of libraries that help you design robust, testable, and maintainable apps.
   - [Jetpack Compose](https://developer.android.com/jetpack/compose?gclsrc=ds&gclsrc=ds) - Jetpack Compose is Android’s recommended modern toolkit for building native UI
   - [LiveData](https://developer.android.com/topic/libraries/architecture/livedata) - Data objects that notify views when the underlying database changes.
