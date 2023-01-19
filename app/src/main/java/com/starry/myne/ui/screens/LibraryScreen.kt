@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.starry.myne.ui.screens
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -51,6 +50,7 @@ import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.viewmodels.LibraryViewModel
 import com.starry.myne.ui.viewmodels.ThemeMode
+import com.starry.myne.utils.Utils
 import com.starry.myne.utils.getActivity
 import com.starry.myne.utils.toToast
 import me.saket.swipe.SwipeAction
@@ -116,43 +116,35 @@ fun LibraryScreen() {
                     val item = state[i]
                     if (item.fileExist()) {
 
-                        val deleteAction =
-                            SwipeAction(icon = painterResource(
-                                id =
-                                if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_delete else R.drawable.ic_delete_white
-                            ),
-                                background = MaterialTheme.colorScheme.primary,
-                                onSwipe = {
-                                    val fileDeleted = item.deleteFile()
-                                    if (fileDeleted) {
-                                        viewModel.deleteItem(item)
-                                    } else {
-                                        context.getString(R.string.error).toToast(context)
-                                    }
-                                })
+                        val deleteAction = SwipeAction(icon = painterResource(
+                            id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_delete else R.drawable.ic_delete_white
+                        ), background = MaterialTheme.colorScheme.primary, onSwipe = {
+                            val fileDeleted = item.deleteFile()
+                            if (fileDeleted) {
+                                viewModel.deleteItem(item)
+                            } else {
+                                context.getString(R.string.error).toToast(context)
+                            }
+                        })
 
-                        val shareAction =
-                            SwipeAction(icon = painterResource(
-                                id =
-                                if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_share else R.drawable.ic_share_white
-                            ),
-                                background = MaterialTheme.colorScheme.primary,
-                                onSwipe = {
-                                    val uri = FileProvider.getUriForFile(
-                                        context,
-                                        BuildConfig.APPLICATION_ID + ".provider",
-                                        File(item.filePath)
-                                    )
-                                    val intent = Intent(Intent.ACTION_SEND)
-                                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                    intent.type = context.contentResolver.getType(uri)
-                                    intent.putExtra(Intent.EXTRA_STREAM, uri)
-                                    context.startActivity(
-                                        Intent.createChooser(
-                                            intent, context.getString(R.string.share_app_chooser)
-                                        )
-                                    )
-                                })
+                        val shareAction = SwipeAction(icon = painterResource(
+                            id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_share else R.drawable.ic_share_white
+                        ), background = MaterialTheme.colorScheme.primary, onSwipe = {
+                            val uri = FileProvider.getUriForFile(
+                                context,
+                                BuildConfig.APPLICATION_ID + ".provider",
+                                File(item.filePath)
+                            )
+                            val intent = Intent(Intent.ACTION_SEND)
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            intent.type = context.contentResolver.getType(uri)
+                            intent.putExtra(Intent.EXTRA_STREAM, uri)
+                            context.startActivity(
+                                Intent.createChooser(
+                                    intent, context.getString(R.string.share_app_chooser)
+                                )
+                            )
+                        })
 
                         SwipeableActionsBox(
                             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
@@ -160,30 +152,11 @@ fun LibraryScreen() {
                             endActions = listOf(shareAction),
                             swipeThreshold = 85.dp
                         ) {
-                            LibraryCard(
-                                title = item.title,
+                            LibraryCard(title = item.title,
                                 author = item.authors,
                                 item.getFileSize(),
-                                item.getDownloadDate()
-                            ) {
-                                val uri = FileProvider.getUriForFile(
-                                    context,
-                                    BuildConfig.APPLICATION_ID + ".provider",
-                                    File(item.filePath)
-                                )
-                                val intent = Intent(Intent.ACTION_VIEW)
-                                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                intent.setDataAndType(uri, context.contentResolver.getType(uri))
-                                val chooser = Intent.createChooser(
-                                    intent, context.getString(R.string.open_app_chooser)
-                                )
-                                try {
-                                    context.startActivity(chooser)
-                                } catch (exc: ActivityNotFoundException) {
-                                    context.getString(R.string.no_app_to_handle_epub)
-                                        .toToast(context)
-                                }
-                            }
+                                item.getDownloadDate(),
+                                onClick = { (Utils.openBookFile(context, item)) })
                         }
                     } else {
                         viewModel.deleteItem(item)

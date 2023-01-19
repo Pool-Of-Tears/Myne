@@ -17,8 +17,6 @@ limitations under the License.
 package com.starry.myne.ui.screens
 
 import android.app.DownloadManager
-import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -36,7 +34,6 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -55,7 +52,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -63,10 +59,8 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
-import com.starry.myne.database.LibraryItem
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.theme.figeronaFont
@@ -75,11 +69,9 @@ import com.starry.myne.ui.viewmodels.BookDetailViewModel
 import com.starry.myne.utils.BookUtils
 import com.starry.myne.utils.Utils
 import com.starry.myne.utils.getActivity
-import com.starry.myne.utils.toToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import java.io.File
 
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
@@ -91,8 +83,6 @@ fun BookDetailScreen(
     bookId: String, navController: NavController, networkStatus: NetworkObserver.Status
 ) {
     val context = LocalContext.current
-    val activity = (context.getActivity() as MainActivity)
-
     val viewModel: BookDetailViewModel = hiltViewModel()
     viewModel.getBookDetails(bookId)
     val state = viewModel.state
@@ -254,17 +244,15 @@ fun BookDetailScreen(
                             stringResource(id = R.string.not_applicable)
                         }
 
-                        val isDownloadAlreadyRunning =
-                            activity.runningDownloads.containsKey(book.id)
-
                         // Check if this book is in downloadQueue.
-                        val buttonTextValue = if (isDownloadAlreadyRunning) {
-                            stringResource(id = R.string.cancel)
-                        } else {
-                            if (state.bookLibraryItem != null) stringResource(id = R.string.read_book_button) else stringResource(
-                                id = R.string.download_book_button
-                            )
-                        }
+                        val buttonTextValue =
+                            if (viewModel.bookDownloader.isBookCurrentlyDownloading(book.id)) {
+                                stringResource(id = R.string.cancel)
+                            } else {
+                                if (state.bookLibraryItem != null) stringResource(id = R.string.read_book_button) else stringResource(
+                                    id = R.string.download_book_button
+                                )
+                            }
 
                         var buttonText by remember { mutableStateOf(buttonTextValue) }
                         var progressState by remember { mutableStateOf(0f) }
@@ -285,11 +273,11 @@ fun BookDetailScreen(
                         }
 
                         // Check if this book is in downloadQueue.
-                        if (isDownloadAlreadyRunning) {
+                        if (viewModel.bookDownloader.isBookCurrentlyDownloading(book.id)) {
                             progressState =
-                                activity.runningDownloads[book.id]?.progress?.observeAsState()?.value!!
+                                viewModel.bookDownloader.getRunningDownload(book.id)?.progress?.collectAsState()?.value!!
                             LaunchedEffect(key1 = progressState, block = {
-                                updateBtnText(activity.runningDownloads[book.id]?.status)
+                                updateBtnText(viewModel.bookDownloader.getRunningDownload(book.id)?.status)
                             })
                         }
 
@@ -305,7 +293,7 @@ fun BookDetailScreen(
                                     val bookLibraryItem = state.bookLibraryItem
                                     /**
                                      *  Library item could be null if we reload the screen
-                                     *  while some download as running, in that case we'll
+                                     *  while some download was running, in that case we'll
                                      *  de-attach from our old state where download function
                                      *  will update library item and our new state will have
                                      *  no library item, i.e. null.
@@ -314,11 +302,10 @@ fun BookDetailScreen(
                                         viewModel.viewModelScope.launch(Dispatchers.IO) {
                                             val libraryItem =
                                                 viewModel.libraryDao.getItembyId(book.id)!!
-                                            openbookFile(context, libraryItem)
+                                            Utils.openBookFile(context, libraryItem)
                                         }
-
                                     } else {
-                                        openbookFile(context, bookLibraryItem)
+                                        Utils.openBookFile(context, bookLibraryItem)
                                     }
 
                                 }
@@ -337,9 +324,8 @@ fun BookDetailScreen(
                                     }
                                 }
                                 context.getString(R.string.cancel) -> {
-                                    viewModel.cancelDownload(
-                                        context,
-                                        activity.runningDownloads[book.id]?.downloadId
+                                    viewModel.bookDownloader.cancelDownload(
+                                        viewModel.bookDownloader.getRunningDownload(book.id)?.downloadId
                                     )
                                 }
                             }
@@ -565,27 +551,6 @@ fun BookDetailTopBar(
         }
     }
 }
-
-fun openbookFile(context: Context, item: LibraryItem) {
-    val uri = FileProvider.getUriForFile(
-        context,
-        BuildConfig.APPLICATION_ID + ".provider",
-        File(item.filePath)
-    )
-    val intent = Intent(Intent.ACTION_VIEW)
-    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    intent.setDataAndType(uri, context.contentResolver.getType(uri))
-    val chooser = Intent.createChooser(
-        intent, context.getString(R.string.open_app_chooser)
-    )
-    try {
-        context.startActivity(chooser)
-    } catch (exc: ActivityNotFoundException) {
-        context.getString(R.string.no_app_to_handle_epub)
-            .toToast(context)
-    }
-}
-
 
 @ExperimentalCoroutinesApi
 @ExperimentalCoilApi

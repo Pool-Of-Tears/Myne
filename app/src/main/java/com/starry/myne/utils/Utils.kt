@@ -1,5 +1,13 @@
 package com.starry.myne.utils
 
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import androidx.core.content.FileProvider
+import com.starry.myne.BuildConfig
+import com.starry.myne.R
+import com.starry.myne.database.LibraryItem
+import java.io.File
 import java.text.DecimalFormat
 import kotlin.math.floor
 import kotlin.math.log10
@@ -17,6 +25,23 @@ object Utils {
             ) + suffix[base]
         } else {
             DecimalFormat("#,##0").format(numValue)
+        }
+    }
+
+    fun openBookFile(context: Context, item: LibraryItem) {
+        val uri = FileProvider.getUriForFile(
+            context, BuildConfig.APPLICATION_ID + ".provider", File(item.filePath)
+        )
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.setDataAndType(uri, context.contentResolver.getType(uri))
+        val chooser = Intent.createChooser(
+            intent, context.getString(R.string.open_app_chooser)
+        )
+        try {
+            context.startActivity(chooser)
+        } catch (exc: ActivityNotFoundException) {
+            context.getString(R.string.no_app_to_handle_epub).toToast(context)
         }
     }
 }
