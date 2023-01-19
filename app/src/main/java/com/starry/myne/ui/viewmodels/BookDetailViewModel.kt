@@ -85,7 +85,7 @@ class BookDetailViewModel @Inject constructor(
                     insertIntoDB(book, bookDownloader.getFilenameForBook(book))
                     state = state.copy(bookLibraryItem = libraryDao.getItembyId(book.id))
                 })
-            activity.getString(R.string.downloading)
+            activity.getString(R.string.downloading_book)
         } else {
             activity.getString(R.string.storage_perm_error)
         }

@@ -16,15 +16,18 @@ limitations under the License.
 
 package com.starry.myne.ui.screens
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -55,8 +58,10 @@ import com.starry.myne.ui.viewmodels.ThemeMode
 import com.starry.myne.utils.PreferenceUtils
 import com.starry.myne.utils.getActivity
 import com.starry.myne.utils.toToast
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @ExperimentalMaterialApi
@@ -66,23 +71,36 @@ fun SettingsScreen(navController: NavController) {
     val context = LocalContext.current
     val viewModel = (context.getActivity() as MainActivity).settingsViewModel
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(bottom = 70.dp)
+    val snackBarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    Scaffold(
+        modifier = Modifier.padding(bottom = 70.dp),
+        snackbarHost = { SnackbarHost(snackBarHostState) },
     ) {
-        CustomTopAppBar(
-            headerText = stringResource(id = R.string.settings_header),
-            icon = R.drawable.ic_nav_settings
-        )
-        SettingsCard(onClick = {
-            navController.navigate(Screens.AboutScreen.route)
-        })
-        DisplayOptionsUI(viewModel = viewModel, context = context)
-        InformationUI(
-            navController = navController, viewModel = viewModel, context = context
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            CustomTopAppBar(
+                headerText = stringResource(id = R.string.settings_header),
+                icon = R.drawable.ic_nav_settings
+            )
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                SettingsCard(onClick = {
+                    navController.navigate(Screens.AboutScreen.route)
+                })
+                DisplayOptionsUI(viewModel = viewModel, context = context)
+                InformationUI(
+                    navController = navController,
+                    viewModel = viewModel,
+                    context = context,
+                    coroutineScope = coroutineScope,
+                    snackBarHostState = snackBarHostState
+                )
+            }
+        }
     }
 }
 
@@ -318,73 +336,75 @@ fun DisplayOptionsUI(viewModel: SettingsViewModel, context: Context) {
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
-fun InformationUI(navController: NavController, viewModel: SettingsViewModel, context: Context) {
-    val snackBarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackBarHostState) },
-    ) {
-        Box(modifier = Modifier.padding(it)) {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 14.dp)
-                    .padding(top = 10.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.miscellaneous_setting_header),
-                    fontFamily = figeronaFont,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-                SettingItem(icon = R.drawable.ic_settings_license,
-                    mainText = stringResource(id = R.string.license_setting),
-                    subText = stringResource(id = R.string.license_setting_desc),
-                    onClick = { navController.navigate(Screens.OSLScreen.route) })
-                SettingItem(icon = R.drawable.ic_settings_update,
-                    mainText = stringResource(id = R.string.update_setting),
-                    subText = stringResource(id = R.string.update_setting_desc),
-                    onClick = {
-                        viewModel.checkForUpdates { updateAvailable, newReleaseLink, errorOnRequest ->
-                            if (errorOnRequest) {
-                                coroutineScope.launch {
-                                    snackBarHostState.showSnackbar(
-                                        message = context.getString(R.string.error),
-                                    )
-                                }
-                            }
-                            if (updateAvailable) {
-                                coroutineScope.launch {
-                                    val result = snackBarHostState.showSnackbar(
-                                        message = context.getString(R.string.update_available),
-                                        actionLabel = "UPDATE"
-                                    )
+fun InformationUI(
+    viewModel: SettingsViewModel,
+    context: Context,
+    navController: NavController,
+    coroutineScope: CoroutineScope,
+    snackBarHostState: SnackbarHostState
+) {
 
-                                    when (result) {
-                                        SnackbarResult.ActionPerformed -> {
-                                            viewModel.downloadUpdate(
-                                                newReleaseLink!!,
-                                                (context.getActivity() as MainActivity)
-                                            )
-                                        }
-                                        SnackbarResult.Dismissed -> {
-                                            /* dismissed, no action needed */
-                                        }
-                                    }
-                                }
-                            } else {
-                                coroutineScope.launch {
-                                    snackBarHostState.showSnackbar(
-                                        message = context.getString(R.string.no_update_available)
-                                    )
-                                }
+    Box {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 14.dp)
+                .padding(top = 10.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.miscellaneous_setting_header),
+                fontFamily = figeronaFont,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            SettingItem(icon = R.drawable.ic_settings_license,
+                mainText = stringResource(id = R.string.license_setting),
+                subText = stringResource(id = R.string.license_setting_desc),
+                onClick = { navController.navigate(Screens.OSLScreen.route) })
+            SettingItem(icon = R.drawable.ic_settings_update,
+                mainText = stringResource(id = R.string.update_setting),
+                subText = stringResource(id = R.string.update_setting_desc),
+                onClick = {
+                    viewModel.checkForUpdates { updateAvailable, newReleaseLink, errorOnRequest ->
+                        if (errorOnRequest) {
+                            coroutineScope.launch {
+                                snackBarHostState.showSnackbar(
+                                    message = context.getString(R.string.error),
+                                )
                             }
                         }
-                    })
-            }
+                        if (updateAvailable) {
+                            coroutineScope.launch {
+                                val result = snackBarHostState.showSnackbar(
+                                    message = context.getString(R.string.update_available),
+                                    actionLabel = "UPDATE"
+                                )
+
+                                when (result) {
+                                    SnackbarResult.ActionPerformed -> {
+                                        viewModel.downloadUpdate(
+                                            newReleaseLink!!,
+                                            (context.getActivity() as MainActivity)
+                                        )
+                                    }
+                                    SnackbarResult.Dismissed -> {
+                                        /* dismissed, no action needed */
+                                    }
+                                }
+                            }
+                        } else {
+                            coroutineScope.launch {
+                                snackBarHostState.showSnackbar(
+                                    message = context.getString(R.string.no_update_available)
+                                )
+                            }
+                        }
+                    }
+                })
         }
     }
+
 }
 
 

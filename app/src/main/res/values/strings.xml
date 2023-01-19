@@ -6,7 +6,6 @@
     <string name="dialog_confirm_button">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="storage_perm_error">Please grant storage permission!</string>
-    <string name="downloading">Download Started!\nSee notification for details.</string>
     <string name="no_app_to_handle_epub">Cannot find any app to open epub file.</string>
     <string name="error">Oops! Something went wrong.</string>
 
@@ -63,6 +62,7 @@
     <string name="share_intent_header">Share this using…</string>
     <string name="read_book_button">Start Reading</string>
     <string name="download_book_button">Download</string>
+    <string name="downloading_book">Download Started!</string>
     <string name="book_synopsis">Synopsis</string>
     <string name="book_synopsis_not_found">Not available</string>
 

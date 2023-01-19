@@ -254,17 +254,21 @@ fun BookDetailScreen(
 
                         var buttonText by remember { mutableStateOf(buttonTextValue) }
                         var progressState by remember { mutableStateOf(0f) }
+                        var showProgressBar by remember { mutableStateOf(false) }
 
                         // Callable which updates book details screen button.
                         val updateBtnText: (Int?) -> Unit = { downloadStatus ->
                             buttonText = when (downloadStatus) {
                                 DownloadManager.STATUS_RUNNING -> {
+                                    showProgressBar = true
                                     context.getString(R.string.cancel)
                                 }
                                 DownloadManager.STATUS_SUCCESSFUL -> {
+                                    showProgressBar = false
                                     context.getString(R.string.read_book_button)
                                 }
                                 else -> {
+                                    showProgressBar = false
                                     context.getString(R.string.download_book_button)
                                 }
                             }
@@ -284,7 +288,8 @@ fun BookDetailScreen(
                             pageCount = pageCount,
                             downloadCount = Utils.prettyCount(book.downloadCount),
                             progressValue = progressState,
-                            buttonText = buttonText
+                            buttonText = buttonText,
+                            showProgressBar = showProgressBar
                         ) {
                             when (buttonText) {
                                 context.getString(R.string.read_book_button) -> {
@@ -313,7 +318,6 @@ fun BookDetailScreen(
                                     ) { downloadProgress, downloadStatus ->
                                         progressState = downloadProgress
                                         updateBtnText(downloadStatus)
-
                                     }
                                     coroutineScope.launch {
                                         scaffoldState.snackbarHostState.showSnackbar(
@@ -369,20 +373,34 @@ fun MiddleBar(
     downloadCount: String,
     progressValue: Float,
     buttonText: String,
+    showProgressBar: Boolean,
     onButtonClick: () -> Unit
 ) {
     val progress by animateFloatAsState(targetValue = progressValue)
     Column(modifier = Modifier.fillMaxWidth()) {
-        AnimatedVisibility(visible = progressValue > 0f && progressValue < 1f) {
-            LinearProgressIndicator(
-                progress = progress,
-                color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(16.dp)
-                    .padding(start = 14.dp, end = 14.dp, top = 6.dp)
-                    .clip(RoundedCornerShape(40.dp))
-            )
+        AnimatedVisibility(visible = showProgressBar) {
+            if (progressValue > 0f) {
+                // Determinate progress bar.
+                LinearProgressIndicator(
+                    progress = progress,
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(16.dp)
+                        .padding(start = 14.dp, end = 14.dp, top = 6.dp)
+                        .clip(RoundedCornerShape(40.dp))
+                )
+            } else {
+                // Indeterminate progress bar.
+                LinearProgressIndicator(
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(16.dp)
+                        .padding(start = 14.dp, end = 14.dp, top = 6.dp)
+                        .clip(RoundedCornerShape(40.dp))
+                )
+            }
         }
 
         Card(

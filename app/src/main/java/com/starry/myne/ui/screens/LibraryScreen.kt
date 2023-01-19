@@ -84,6 +84,7 @@ fun LibraryScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .padding(bottom = 70.dp)
     ) {
         CustomTopAppBar(
             headerText = stringResource(id = R.string.library_header),
@@ -122,7 +123,6 @@ fun LibraryScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(bottom = 70.dp)
             ) {
                 items(state.size) { i ->
                     val item = state[i]
@@ -238,8 +238,8 @@ fun LibraryCard(
         ) {
             Box(
                 modifier = Modifier
-                    .height(95.dp)
-                    .width(95.dp)
+                    .height(90.dp)
+                    .width(90.dp)
                     .padding(10.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primary),

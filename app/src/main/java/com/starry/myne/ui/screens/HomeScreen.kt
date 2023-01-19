@@ -78,6 +78,7 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
             Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
+                .padding(bottom = 70.dp)
         ) {
             Column(
                 modifier = Modifier
@@ -132,7 +133,7 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
                         modifier = Modifier
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.background)
-                            .padding(start = 8.dp, end = 8.dp, bottom = 70.dp)
+                            .padding(start = 8.dp, end = 8.dp)
                     ) {
                         items(allBooksState.items.size) { i ->
                             val item = allBooksState.items[i]
@@ -177,7 +178,7 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(start = 8.dp, end = 8.dp, bottom = 70.dp)
+                        .padding(start = 8.dp, end = 8.dp)
                 ) {
                     item {
                         if (topBarState.isSearching) {
