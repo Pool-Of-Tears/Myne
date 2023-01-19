@@ -37,6 +37,14 @@ metadata but the mapping is not 100% accurate and not all books available on Gut
 
 ------
 
+<h2 align="center">Translations</h2>
+
+If you want to make app available in your language, you're very welcome to create a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) with your translation file.
+The string resources can be found under `/app/src/main/res/values/strings.xml`. It is easiest to make a translation using the Android Studio XML editor, but you can always go with your favorite XML-text editor instead.
+Checkout this guide to learn more about translation strings from [Helpshift](https://developers.helpshift.com/android/i18n/) for Android.
+
+------
+
 <h2 align="center">Donations</h2>
 
 If this project helped you a little bit, please consider donating a small amount to support further development and ofcourse boosting morale :)
