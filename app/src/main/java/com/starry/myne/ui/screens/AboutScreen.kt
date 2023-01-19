@@ -120,8 +120,6 @@ fun AboutScreen(navController: NavController) {
                         openWebLink(context, Constants.REPO_URL)
                     }
 
-                    Spacer(modifier = Modifier.height(6.dp))
-
                     LinkButton(
                         text = "Telegram",
                         icon = ImageVector.vectorResource(id = R.drawable.ic_telegram_logo)
@@ -202,8 +200,6 @@ fun AboutScreen(navController: NavController) {
                         ) {
                             openWebLink(context, Constants.DEV_GITHUB_URL)
                         }
-
-                        Spacer(modifier = Modifier.height(6.dp))
 
                         LinkButton(
                             text = "Telegram",

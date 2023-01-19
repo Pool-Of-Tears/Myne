@@ -3,6 +3,7 @@
     <!-- Others Strings -->
     <string name="not_applicable">N/A</string>
     <string name="woops">"Whoops!!"</string>
+    <string name="dialog_confirm_button">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="storage_perm_error">Please grant storage permission!</string>
     <string name="downloading">Download Started!\nSee notification for details.</string>
@@ -26,6 +27,9 @@
     <string name="empty_library">Nothing Here!</string>
     <string name="open_app_chooser">Open with…</string>
     <string name="share_app_chooser">Share with…</string>
+    <string name="library_read_button">Read</string>
+    <string name="library_delete_button">Delete</string>
+    <string name="library_delete_dialog_title">Are you sure about that?</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Settings</string>
@@ -33,6 +37,8 @@
     <string name="made_by">Made with ❤ by Shivam</string>
     <string name="display_setting_header">Display</string>
     <string name="theme_setting">Default Theme</string>
+    <string name="theme_dialog_title">Change Theme</string>
+    <string name="theme_dialog_apply_button">Apply</string>
     <string name="material_you_setting">Material You</string>
     <string name="material_you_settings_disabled_desc">Enable Material You</string>
     <string name="material_you_settings_enabled_desc">Disable Material You</string>

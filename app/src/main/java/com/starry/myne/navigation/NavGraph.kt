@@ -80,6 +80,7 @@ fun NavGraph(
         ) {
             HomeScreen(navController, networkStatus)
         }
+
         composable(
             route = BottomBarScreen.Categories.route,
             exitTransition = {
@@ -103,9 +104,31 @@ fun NavGraph(
         ) {
             CategoriesScreen(navController)
         }
-        composable(route = BottomBarScreen.Library.route) {
-            LibraryScreen()
+
+        composable(
+            route = BottomBarScreen.Library.route,
+            exitTransition = {
+                if (initialState.destination.route == Screens.BookDetailScreen.route) {
+                    slideOutHorizontally(
+                        targetOffsetX = { -300 }, animationSpec = tween(
+                            durationMillis = 300, easing = FastOutSlowInEasing
+                        )
+                    ) + fadeOut(animationSpec = tween(300))
+                } else null
+            },
+            popEnterTransition = {
+                if (targetState.destination.route == BottomBarScreen.Library.route) {
+                    slideInHorizontally(
+                        initialOffsetX = { -300 }, animationSpec = tween(
+                            durationMillis = 300, easing = FastOutSlowInEasing
+                        )
+                    ) + fadeIn(animationSpec = tween(300))
+                } else null
+            },
+        ) {
+            LibraryScreen(navController)
         }
+
         composable(
             route = BottomBarScreen.Settings.route,
             exitTransition = {

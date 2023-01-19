@@ -231,7 +231,7 @@ fun DisplayOptionsUI(viewModel: SettingsViewModel, context: Context) {
             displayDialog.value = false
         }, title = {
             Text(
-                text = "Theme",
+                text = stringResource(id = R.string.theme_dialog_title),
                 color = MaterialTheme.colorScheme.onSurface,
             )
         }, text = {
@@ -301,13 +301,13 @@ fun DisplayOptionsUI(viewModel: SettingsViewModel, context: Context) {
                     }
                 }
             }) {
-                Text("Apply")
+                Text(stringResource(id = R.string.theme_dialog_apply_button))
             }
         }, dismissButton = {
             TextButton(onClick = {
                 displayDialog.value = false
             }) {
-                Text("Cancel")
+                Text(stringResource(id = R.string.cancel))
             }
         })
     }

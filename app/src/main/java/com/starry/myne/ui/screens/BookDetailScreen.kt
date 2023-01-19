@@ -70,10 +70,8 @@ import com.starry.myne.utils.BookUtils
 import com.starry.myne.utils.Utils
 import com.starry.myne.utils.getActivity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
-@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
@@ -552,7 +550,6 @@ fun BookDetailTopBar(
     }
 }
 
-@ExperimentalCoroutinesApi
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @ExperimentalMaterialApi
