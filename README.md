@@ -5,7 +5,7 @@
 
 <p align="center">
   <a href="https://www.android.com"><img src="https://forthebadge.com/images/badges/built-for-android.svg"></a>
-  <a href="https://www.github.com/starry69"><img src="https://forthebadge.com/images/badges/built-with-love.svg"/></a>
+  <a href="https://www.github.com/starry-shivam"><img src="https://forthebadge.com/images/badges/built-with-love.svg"/></a>
 </p>
 
 ------
@@ -19,11 +19,20 @@ metadata but the mapping is not 100% accurate and not all books available on Gut
 
 ------
 
+<div align="center">
+
+<a href='https://apt.izzysoft.de/fdroid/index/apk/com.starry.myne'><img alt='Get it on IzzyOnDroid' src='https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png' height='65'/></a>
+[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="65">](https://github.com/Pool-Of-Tears/Myne/releases/latest)
+
+</div>
+
+------
+
 <h2 align="center">Screenshots</h2>
 
-| ![](https://te.legra.ph/file/f80277d5ebb912d9f46ce.jpg) | ![](https://te.legra.ph/file/5ed804ec2ba37a412c24a.jpg) | ![](https://te.legra.ph/file/cca9c0e85c6b9be8885d7.jpg) | ![](https://te.legra.ph/file/d8178355c4d1c02f19046.jpg) |
+| ![](https://te.legra.ph/file/efaa1f70b56c2ce1af969.jpg) | ![](https://te.legra.ph/file/4344ce91092a05f2007f9.jpg) | ![](https://te.legra.ph/file/b1b1578b3b01436d80bba.jpg) | ![](https://te.legra.ph/file/4902644c0b32e1be4c9f0.jpg) |
 |--------------------------------------------------------|--------------------------------------------------------|--------------------------------------------------------|--------------------------------------------------------|
-| ![](https://te.legra.ph/file/f2375e1df6bda65436e82.jpg) | ![](https://te.legra.ph/file/40dcb912ed618f905330c.jpg) | ![](https://te.legra.ph/file/33f8a685536eacad0cd60.jpg) | ![](https://te.legra.ph/file/afa255c9d0c75cda0c735.jpg) |
+| ![](https://te.legra.ph/file/828b97b5b1bd5730d40f6.jpg) | ![](https://te.legra.ph/file/4898106707bf8b38403ab.jpg) | ![](https://te.legra.ph/file/655a59bb2537492730888.jpg) | ![](https://te.legra.ph/file/d7db728fa2201be8b31df.jpg) |
 
 ------
 

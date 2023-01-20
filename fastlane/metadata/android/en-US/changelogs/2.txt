@@ -1,0 +1,14 @@
+New features:
+
+- Redesigned book details screen, added a download progress bar and re-written book download backend.
+- Added swipe actions in the library and added buttons to open & delete the ebook file.
+- Added animations in the bottom navigation bar and improved animations when navigating between screens.
+- Added about screen in settings, click on the settings card to open it.
+- Implemented app updater functionality in settings.
+
+Improvements & Fixes:
+
+- Improved book opening intent, now it should correctly identify apps which are capable of opening epub file instead of saying couldn't find any app to handle EPUB file.
+- Added scrolling functionality in settings screen for phones with small screen size.
+- Code cleanups, bunch of under the hood fixes & stability improvements.
+- Upgraded kotlin & gradle version and updated almost all of the dependencies.
