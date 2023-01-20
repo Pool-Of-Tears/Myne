@@ -63,6 +63,12 @@ android {
     }
 }
 
+aboutLibraries {
+    // Remove the "generated" timestamp to allow for reproducible builds
+    excludeFields = ["generated"]
+}
+
+
 dependencies {
 
     // Android core components.
