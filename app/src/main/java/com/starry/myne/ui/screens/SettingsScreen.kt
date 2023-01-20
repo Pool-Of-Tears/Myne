@@ -148,7 +148,7 @@ fun SettingsCard(onClick: () -> Unit) {
                     contentPadding = PaddingValues(horizontal = 30.dp),
                 ) {
                     Text(
-                        text = "v${BuildConfig.VERSION_NAME}",
+                        text = "version-${BuildConfig.VERSION_NAME}",
                         fontFamily = figeronaFont,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 12.sp,
