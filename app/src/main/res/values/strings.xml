@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Myne</string>
+    <string name="app_name" translatable="false">Myne</string>
     <!-- Others Strings -->
     <string name="not_applicable">N/A</string>
     <string name="woops">"Whoops!!"</string>
@@ -38,7 +38,7 @@
     <string name="theme_setting">Default Theme</string>
     <string name="theme_dialog_title">Change Theme</string>
     <string name="theme_dialog_apply_button">Apply</string>
-    <string name="material_you_setting">Material You</string>
+    <string name="material_you_setting" translatable="false">Material You</string>
     <string name="material_you_settings_disabled_desc">Enable Material You</string>
     <string name="material_you_settings_enabled_desc">Disable Material You</string>
     <string name="material_you_error">This feature is only for devices running Android 12 or above.</string>
@@ -70,8 +70,8 @@
     <string name="about_header">About</string>
     <string name="about_desc">A Free &amp; Open Source Android application to download ebooks from the Project GutenBerg.</string>
     <string name="developed_by">Developed By</string>
-    <string name="dev_name">Starry Shivam</string>
-    <string name="dev_username">\@starry-shivam</string>
+    <string name="dev_name" translatable="false">Starry Shivam</string>
+    <string name="dev_username" translatable="false">\@starry-shivam</string>
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Open Source Libraries</string>
