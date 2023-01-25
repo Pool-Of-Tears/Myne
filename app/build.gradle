@@ -8,6 +8,10 @@ plugins {
 
 apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 
+def localPropertiesFile = rootProject.file("local.properties")
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(localPropertiesFile))
+
 android {
     namespace 'com.starry.myne'
     compileSdk 33
@@ -19,6 +23,7 @@ android {
         versionCode 3
         versionName "1.1.1"
 
+        buildConfigField "String", "GOOGLE_API_KEY", localProperties['GOOGLE_API_KEY']
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true

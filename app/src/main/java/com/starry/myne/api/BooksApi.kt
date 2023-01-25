@@ -17,6 +17,7 @@ limitations under the License.
 package com.starry.myne.api
 
 import com.google.gson.Gson
+import com.starry.myne.BuildConfig
 import com.starry.myne.api.models.BookSet
 import com.starry.myne.api.models.ExtraInfo
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +35,7 @@ object BooksApi {
 
     private const val BASE_URL = "https://gutendex.com/books"
     private const val GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes"
-    private const val GOOGLE_API_KEY = "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE"
+    private const val GOOGLE_API_KEY = BuildConfig.GOOGLE_API_KEY
 
 
     private val okHttpClient = OkHttpClient()
