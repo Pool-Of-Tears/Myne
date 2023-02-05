@@ -22,6 +22,7 @@ metadata but the mapping is not 100% accurate and not all books available on Gut
 <div align="center">
 
 <a href='https://f-droid.org/packages/com.starry.myne/'><img alt='Get it on F-Droid' src='https://fdroid.gitlab.io/artwork/badge/get-it-on.png' height='65'/></a>
+<a href='https://apt.izzysoft.de/fdroid/index/apk/com.starry.myne'><img alt='Get it on IzzyOnDroid' src='https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png' height='65'/></a>
 [<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="65">](https://github.com/Pool-Of-Tears/Myne/releases/latest)
 
 </div>
