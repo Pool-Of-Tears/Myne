@@ -58,6 +58,7 @@ import com.starry.myne.navigation.Screens
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.viewmodels.LibraryViewModel
+import com.starry.myne.ui.viewmodels.ReaderViewModel
 import com.starry.myne.ui.viewmodels.ThemeMode
 import com.starry.myne.utils.Utils
 import com.starry.myne.utils.getActivity
@@ -79,6 +80,9 @@ fun LibraryScreen(navController: NavController) {
     val state = viewModel.allItems.observeAsState(listOf()).value
     val context = LocalContext.current
     val settingsViewModel = (context.getActivity() as MainActivity).settingsViewModel
+
+    //
+    val readerVM: ReaderViewModel = hiltViewModel()
 
     Column(
         modifier = Modifier
@@ -168,7 +172,11 @@ fun LibraryScreen(navController: NavController) {
                                 author = item.authors,
                                 item.getFileSize(),
                                 item.getDownloadDate(),
-                                onReadClick = { (Utils.openBookFile(context, item)) },
+                                onReadClick = {
+                                    (Utils.openBookFile(context, item))
+
+                                    readerVM.parseEpubFile(item.filePath)
+                                },
                                 onDeleteClick = { openDeleteDialog.value = true })
                         }
 

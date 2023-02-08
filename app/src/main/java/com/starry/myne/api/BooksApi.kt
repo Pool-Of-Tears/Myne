@@ -32,7 +32,7 @@ import kotlin.coroutines.suspendCoroutine
 
 object BooksApi {
 
-    private const val BASE_URL = "https://gutendex.com/books"
+    private const val BASE_URL = "http://ec2-54-199-237-70.ap-northeast-1.compute.amazonaws.com/books"
     private const val GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes"
     private const val GOOGLE_API_KEY = "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE"
 
