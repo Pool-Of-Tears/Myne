@@ -34,6 +34,9 @@
     <string name="settings_header">Settings</string>
     <string name="app_desc">Ebook Downloader</string>
     <string name="made_by">Made with ❤ by Shivam</string>
+    <string name="general_settings_header">General</string>
+    <string name="default_reader_setting">Default Reader</string>
+    <string name="default_reader_dialog_title">Open ebooks with…</string>
     <string name="display_setting_header">Display</string>
     <string name="theme_setting">Default Theme</string>
     <string name="theme_dialog_title">Change Theme</string>

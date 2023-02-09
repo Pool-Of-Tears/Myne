@@ -53,6 +53,7 @@ import com.starry.myne.R
 import com.starry.myne.navigation.Screens
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.viewmodels.InternalReaderMode
 import com.starry.myne.ui.viewmodels.SettingsViewModel
 import com.starry.myne.ui.viewmodels.ThemeMode
 import com.starry.myne.utils.PreferenceUtils
@@ -91,6 +92,7 @@ fun SettingsScreen(navController: NavController) {
                 SettingsCard(onClick = {
                     navController.navigate(Screens.AboutScreen.route)
                 })
+                GeneralOptionsUI()
                 DisplayOptionsUI(viewModel = viewModel, context = context)
                 InformationUI(
                     navController = navController,
@@ -175,6 +177,114 @@ fun SettingsCard(onClick: () -> Unit) {
         }
     }
 }
+
+@ExperimentalMaterial3Api
+@Composable
+fun GeneralOptionsUI() {
+    val internalReaderValue = when (PreferenceUtils.getInt(
+        PreferenceUtils.INTERNAL_READER,
+        InternalReaderMode.Disabled.ordinal
+    )) {
+        InternalReaderMode.Disabled.ordinal -> "External Reader"
+        InternalReaderMode.Enabled.ordinal -> "Internal Reader"
+        else -> ""
+    }
+    val internalReaderDialog = remember { mutableStateOf(false) }
+    val radioOptions = listOf("External Reader", "Internal Reader")
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(internalReaderValue) }
+
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 14.dp)
+            .padding(top = 10.dp)
+    ) {
+        Text(
+            text = stringResource(id = R.string.general_settings_header),
+            fontFamily = figeronaFont,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+        SettingItem(icon = R.drawable.ic_settings_reader,
+            mainText = stringResource(id = R.string.default_reader_setting),
+            subText = internalReaderValue,
+            onClick = { internalReaderDialog.value = true })
+    }
+
+    if (internalReaderDialog.value) {
+        AlertDialog(onDismissRequest = {
+            internalReaderDialog.value = false
+        }, title = {
+            Text(
+                text = stringResource(id = R.string.default_reader_dialog_title),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }, text = {
+            Column(
+                modifier = Modifier.selectableGroup(),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                radioOptions.forEach { text ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(46.dp)
+                            .selectable(
+                                selected = (text == selectedOption),
+                                onClick = { onOptionSelected(text) },
+                                role = Role.RadioButton,
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(
+                            selected = (text == selectedOption),
+                            onClick = null,
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = MaterialTheme.colorScheme.primary,
+                                unselectedColor = MaterialTheme.colorScheme.inversePrimary,
+                                disabledSelectedColor = Color.Black,
+                                disabledUnselectedColor = Color.Black
+                            ),
+                        )
+                        Text(
+                            text = text,
+                            modifier = Modifier.padding(start = 16.dp),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontFamily = figeronaFont
+                        )
+                    }
+                }
+            }
+        }, confirmButton = {
+            TextButton(onClick = {
+                internalReaderDialog.value = false
+
+                when (selectedOption) {
+                    "External Reader" -> {
+                        PreferenceUtils.putInt(
+                            PreferenceUtils.INTERNAL_READER, InternalReaderMode.Disabled.ordinal
+                        )
+                    }
+                    "Internal Reader" -> {
+                        PreferenceUtils.putInt(
+                            PreferenceUtils.INTERNAL_READER, InternalReaderMode.Enabled.ordinal
+                        )
+                    }
+                }
+            }) {
+                Text(stringResource(id = R.string.dialog_confirm_button))
+            }
+        }, dismissButton = {
+            TextButton(onClick = {
+                internalReaderDialog.value = false
+            }) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        })
+    }
+}
+
 
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi

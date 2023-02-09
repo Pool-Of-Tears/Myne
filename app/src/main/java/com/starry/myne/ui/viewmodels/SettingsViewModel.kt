@@ -45,6 +45,10 @@ enum class ThemeMode {
     Light, Dark, Auto
 }
 
+enum class InternalReaderMode {
+    Enabled, Disabled
+}
+
 class SettingsViewModel : ViewModel() {
 
     private val okHttpClient = OkHttpClient()

@@ -25,7 +25,6 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
@@ -82,7 +81,8 @@ class MainActivity : AppCompatActivity() {
 
                 val systemUiController = rememberSystemUiController()
                 systemUiController.setSystemBarsColor(
-                    color = MaterialTheme.colorScheme.background, darkIcons = !isSystemInDarkTheme()
+                    color = MaterialTheme.colorScheme.background,
+                    darkIcons = settingsViewModel.getCurrentTheme() == ThemeMode.Light
                 )
 
                 val status by networkObserver.observe().collectAsState(

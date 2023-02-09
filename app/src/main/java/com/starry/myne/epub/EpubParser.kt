@@ -4,11 +4,20 @@ import com.starry.myne.epub.models.EpubBook
 import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.epub.models.EpubImage
 import java.io.File
-import java.io.InputStream
+import java.io.FileInputStream
 import java.util.zip.ZipInputStream
 
 
-fun createEpubBook(inputStream: InputStream): EpubBook {
+data class EpubManifestItem(
+    val id: String, val href: String, val mediaType: String, val properties: String
+)
+
+data class TempEpubChapter(
+    val url: String, val title: String?, val body: String, val chapterIndex: Int
+)
+
+fun createEpubBook(filePath: String): EpubBook {
+    val inputStream = FileInputStream(filePath)
     val zipFile = ZipInputStream(inputStream).use { zipInputStream ->
         zipInputStream.entries().filterNot { it.isDirectory }
             .associate { it.name to (it to zipInputStream.readBytes()) }
@@ -37,10 +46,6 @@ fun createEpubBook(inputStream: InputStream): EpubBook {
     val rootPath = File(opfFilePath).parentFile ?: File("")
     fun String.absPath() = File(rootPath, this).path.replace("""\""", "/").removePrefix("/")
 
-    data class EpubManifestItem(
-        val id: String, val href: String, val mediaType: String, val properties: String
-    )
-
     val items = manifest.selectChildTag("item").map {
         EpubManifestItem(
             id = it.getAttribute("id"),
@@ -51,10 +56,6 @@ fun createEpubBook(inputStream: InputStream): EpubBook {
     }.associateBy { it.id }
 
     val idRef = spine.selectChildTag("itemref").map { it.getAttribute("idref") }
-
-    data class TempEpubChapter(
-        val url: String, val title: String?, val body: String, val chapterIndex: Int
-    )
 
     var chapterIndex = 0
     val chapterExtensions = listOf("xhtml", "xml", "html").map { ".$it" }

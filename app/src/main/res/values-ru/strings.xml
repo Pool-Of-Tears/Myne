@@ -23,6 +23,9 @@
     <string name="settings_header">Настройки</string>
     <string name="app_desc">Установщик электронных книг</string>
     <string name="made_by">"Сделано Shivam, с любовью ❤"</string>
+    <string name="general_settings_header">General</string>
+    <string name="default_reader_setting">Default Reader</string>
+    <string name="default_reader_dialog_title">Open ebooks with…</string>
     <string name="display_setting_header">Дисплей</string>
     <string name="theme_setting">Тема по умолчанию</string>
     <string name="theme_dialog_title">Изменить тему</string>

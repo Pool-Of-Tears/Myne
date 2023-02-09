@@ -23,8 +23,10 @@ object PreferenceUtils {
     private lateinit var prefs: SharedPreferences
     private const val PREFS_NAME = "myne_settings"
 
+    // Preference keys
     const val APP_THEME = "theme_settings"
     const val MATERIAL_YOU = "material_you"
+    const val INTERNAL_READER = "internal_reader"
 
     fun initialize(context: Context) {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
