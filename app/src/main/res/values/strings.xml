@@ -30,6 +30,13 @@
     <string name="library_delete_button">Delete</string>
     <string name="library_delete_dialog_title">Are you sure about that?</string>
 
+    <!-- Reader Detail Screen -->
+    <string name="reader_detail_header">Ebook Reader</string>
+    <string name="start_reading_button">Start</string>
+    <string name="continue_reading_button">Resume</string>
+    <string name="reader_chapters_list">Chapters</string>
+    <string name="reader_file_not_found">Oops! File not found\nPlease re-download the book in case it is deleted.</string>
+
     <!-- Settings screen. -->
     <string name="settings_header">Settings</string>
     <string name="app_desc">Ebook Downloader</string>

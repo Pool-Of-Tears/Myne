@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.ui.viewmodels
+package com.starry.myne.ui.screens.home.viewmodels
 
 import android.annotation.SuppressLint
 import android.os.Environment
@@ -69,7 +69,7 @@ class BookDetailViewModel @Inject constructor(
                 state.copy(item = bookItem)
             }
             state = state.copy(
-                bookLibraryItem = libraryDao.getItembyId(bookId.toInt()), isLoading = false
+                bookLibraryItem = libraryDao.getItemById(bookId.toInt()), isLoading = false
             )
         }
     }
@@ -83,7 +83,7 @@ class BookDetailViewModel @Inject constructor(
                 downloadProgressListener = downloadProgressListener,
                 onDownloadSuccess = {
                     insertIntoDB(book, bookDownloader.getFilenameForBook(book))
-                    state = state.copy(bookLibraryItem = libraryDao.getItembyId(book.id))
+                    state = state.copy(bookLibraryItem = libraryDao.getItemById(book.id))
                 })
             activity.getString(R.string.downloading_book)
         } else {

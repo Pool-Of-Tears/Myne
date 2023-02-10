@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.ui.screens
+package com.starry.myne.ui.screens.settings.composables
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -52,10 +52,9 @@ import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.navigation.Screens
 import com.starry.myne.ui.common.CustomTopAppBar
+import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
+import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.ui.viewmodels.InternalReaderMode
-import com.starry.myne.ui.viewmodels.SettingsViewModel
-import com.starry.myne.ui.viewmodels.ThemeMode
 import com.starry.myne.utils.PreferenceUtils
 import com.starry.myne.utils.getActivity
 import com.starry.myne.utils.toToast
@@ -181,13 +180,11 @@ fun SettingsCard(onClick: () -> Unit) {
 @ExperimentalMaterial3Api
 @Composable
 fun GeneralOptionsUI() {
-    val internalReaderValue = when (PreferenceUtils.getInt(
-        PreferenceUtils.INTERNAL_READER,
-        InternalReaderMode.Disabled.ordinal
+    val internalReaderValue = when (PreferenceUtils.getBoolean(
+        PreferenceUtils.INTERNAL_READER, false
     )) {
-        InternalReaderMode.Disabled.ordinal -> "External Reader"
-        InternalReaderMode.Enabled.ordinal -> "Internal Reader"
-        else -> ""
+        true -> "Internal Reader"
+        false -> "External Reader"
     }
     val internalReaderDialog = remember { mutableStateOf(false) }
     val radioOptions = listOf("External Reader", "Internal Reader")
@@ -262,14 +259,10 @@ fun GeneralOptionsUI() {
 
                 when (selectedOption) {
                     "External Reader" -> {
-                        PreferenceUtils.putInt(
-                            PreferenceUtils.INTERNAL_READER, InternalReaderMode.Disabled.ordinal
-                        )
+                        PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER, false)
                     }
                     "Internal Reader" -> {
-                        PreferenceUtils.putInt(
-                            PreferenceUtils.INTERNAL_READER, InternalReaderMode.Enabled.ordinal
-                        )
+                        PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER, true)
                     }
                 }
             }) {

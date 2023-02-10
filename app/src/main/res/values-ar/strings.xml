@@ -21,6 +21,11 @@
     <string name="library_read_button">اقرأ</string>
     <string name="library_delete_button">امسح</string>
     <string name="library_delete_dialog_title">هل انت متأكد ؟</string>
+    <string name="reader_detail_header">Ebook Reader</string>
+    <string name="start_reading_button">Start</string>
+    <string name="continue_reading_button">Resume</string>
+    <string name="reader_chapters_list">Chapters</string>
+    <string name="reader_file_not_found">Oops! File not found \nPlease re-download the book in case it is deleted.</string>
     <string name="settings_header">الاعدادات</string>
     <string name="app_desc">محمل الكتب الالكترونية</string>
     <string name="made_by">"صنع ب  ❤ بواسطة Shivam  "</string>

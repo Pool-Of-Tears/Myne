@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.ui.screens
+package com.starry.myne.ui.screens.home.composables
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -54,10 +54,11 @@ import com.starry.myne.navigation.Screens
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.ProgressDots
+import com.starry.myne.ui.screens.NoInternetScreen
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
-import com.starry.myne.ui.viewmodels.HomeViewModel
-import com.starry.myne.ui.viewmodels.UserAction
+import com.starry.myne.ui.screens.home.viewmodels.HomeViewModel
+import com.starry.myne.ui.screens.home.viewmodels.UserAction
 import com.starry.myne.utils.BookUtils
 import kotlinx.coroutines.delay
 

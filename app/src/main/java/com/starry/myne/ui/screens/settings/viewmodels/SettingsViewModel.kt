@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.ui.viewmodels
+package com.starry.myne.ui.screens.settings.viewmodels
 
 import android.app.DownloadManager
 import android.content.Context
@@ -43,10 +43,6 @@ import java.io.IOException
 
 enum class ThemeMode {
     Light, Dark, Auto
-}
-
-enum class InternalReaderMode {
-    Enabled, Disabled
 }
 
 class SettingsViewModel : ViewModel() {

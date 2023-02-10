@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.ui.screens
+package com.starry.myne.ui.screens.library.composables
 
 import android.content.Intent
 import androidx.compose.foundation.background
@@ -56,10 +56,10 @@ import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.navigation.Screens
 import com.starry.myne.ui.common.CustomTopAppBar
+import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
+import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.ui.viewmodels.LibraryViewModel
-import com.starry.myne.ui.viewmodels.ReaderViewModel
-import com.starry.myne.ui.viewmodels.ThemeMode
+import com.starry.myne.utils.PreferenceUtils
 import com.starry.myne.utils.Utils
 import com.starry.myne.utils.getActivity
 import com.starry.myne.utils.toToast
@@ -80,9 +80,6 @@ fun LibraryScreen(navController: NavController) {
     val state = viewModel.allItems.observeAsState(listOf()).value
     val context = LocalContext.current
     val settingsViewModel = (context.getActivity() as MainActivity).settingsViewModel
-
-    //
-    val readerVM: ReaderViewModel = hiltViewModel()
 
     Column(
         modifier = Modifier
@@ -173,9 +170,19 @@ fun LibraryScreen(navController: NavController) {
                                 item.getFileSize(),
                                 item.getDownloadDate(),
                                 onReadClick = {
-                                    (Utils.openBookFile(context, item))
-
-                                    readerVM.parseEpubFile(item.filePath)
+                                    if (PreferenceUtils.getBoolean(
+                                            PreferenceUtils.INTERNAL_READER,
+                                            false
+                                        )
+                                    ) {
+                                        navController.navigate(
+                                            Screens.ReaderDetailScreen.withBookId(
+                                                item.bookId.toString()
+                                            )
+                                        )
+                                    } else {
+                                        Utils.openBookFile(context, item)
+                                    }
                                 },
                                 onDeleteClick = { openDeleteDialog.value = true })
                         }

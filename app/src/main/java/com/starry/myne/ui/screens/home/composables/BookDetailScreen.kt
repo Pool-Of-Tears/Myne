@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.ui.screens
+package com.starry.myne.ui.screens.home.composables
 
 import android.app.DownloadManager
 import android.content.Intent
@@ -63,9 +63,11 @@ import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.ProgressDots
+import com.starry.myne.ui.screens.NoInternetScreen
+import com.starry.myne.ui.screens.home.viewmodels.BookDetailViewModel
+import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
-import com.starry.myne.ui.viewmodels.BookDetailViewModel
 import com.starry.myne.utils.BookUtils
 import com.starry.myne.utils.Utils
 import com.starry.myne.utils.getActivity
@@ -80,10 +82,12 @@ import kotlinx.coroutines.launch
 fun BookDetailScreen(
     bookId: String, navController: NavController, networkStatus: NetworkObserver.Status
 ) {
-    val context = LocalContext.current
     val viewModel: BookDetailViewModel = hiltViewModel()
     viewModel.getBookDetails(bookId)
     val state = viewModel.state
+
+    val context = LocalContext.current
+    val settingsVM = (context.getActivity() as MainActivity).settingsViewModel
 
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
@@ -141,12 +145,12 @@ fun BookDetailScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(260.dp)
+                                .height(240.dp)
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.book_details_bg),
                                 contentDescription = "",
-                                alpha = 0.2f,
+                                alpha = 0.35f,
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
                             )
@@ -159,12 +163,13 @@ fun BookDetailScreen(
                                                 MaterialTheme.colorScheme.background,
                                                 Color.Transparent,
                                                 MaterialTheme.colorScheme.background
-                                            ), startY = 15f
+                                            ), startY = 8f
                                         )
                                     )
                             )
 
                             Row(modifier = Modifier.fillMaxSize()) {
+
                                 val imageUrl = state.extraInfo.coverImage.ifEmpty {
                                     book.formats.imagejpeg
                                 }
@@ -175,11 +180,12 @@ fun BookDetailScreen(
                                         .padding(16.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    val imageBackground = if (isSystemInDarkTheme()) {
-                                        MaterialTheme.colorScheme.onSurface
-                                    } else {
-                                        MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
-                                    }
+                                    val imageBackground =
+                                        if (settingsVM.getCurrentTheme() == ThemeMode.Dark) {
+                                            MaterialTheme.colorScheme.onSurface
+                                        } else {
+                                            MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
+                                        }
                                     Box(
                                         modifier = Modifier
                                             .shadow(24.dp)
@@ -187,7 +193,8 @@ fun BookDetailScreen(
                                             .background(imageBackground)
                                     ) {
                                         AsyncImage(
-                                            model = ImageRequest.Builder(context).data(imageUrl)
+                                            model = ImageRequest.Builder(context)
+                                                .data(imageUrl)
                                                 .crossfade(true).build(),
                                             placeholder = painterResource(id = R.drawable.placeholder_cat),
                                             contentDescription = null,
@@ -304,7 +311,7 @@ fun BookDetailScreen(
                                     if (bookLibraryItem == null) {
                                         viewModel.viewModelScope.launch(Dispatchers.IO) {
                                             val libraryItem =
-                                                viewModel.libraryDao.getItembyId(book.id)!!
+                                                viewModel.libraryDao.getItemById(book.id)!!
                                             Utils.openBookFile(context, libraryItem)
                                         }
                                     } else {

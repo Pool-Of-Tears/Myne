@@ -41,8 +41,8 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.screens.MainScreen
 import com.starry.myne.ui.theme.MyneTheme
-import com.starry.myne.ui.viewmodels.SettingsViewModel
-import com.starry.myne.ui.viewmodels.ThemeMode
+import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
+import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.utils.PreferenceUtils
 import dagger.hilt.android.AndroidEntryPoint
 
