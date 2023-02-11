@@ -1,5 +1,7 @@
 package com.starry.myne.epub
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.starry.myne.epub.models.EpubBook
 import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.epub.models.EpubImage
@@ -100,10 +102,16 @@ fun createEpubBook(filePath: String): EpubBook {
         .find { it.properties == "cover-image" }?.let { zipFile[it.href.absPath()] }
         ?.let { (entry, byteArray) -> EpubImage(path = entry.name, image = byteArray) }
 
+    val coverImageBm: Bitmap? = if (coverImage?.image != null) {
+        BitmapFactory.decodeByteArray(coverImage.image, 0, coverImage.image.size)
+    } else {
+        null
+    }
+
     return EpubBook(
         fileName = bookUrl,
         title = bookTitle,
-        coverImagePath = coverImage?.path ?: "",
+        coverImage = coverImageBm,
         chapters = chapters.toList(),
         images = images.toList()
     )

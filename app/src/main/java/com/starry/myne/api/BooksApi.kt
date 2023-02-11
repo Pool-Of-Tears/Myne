@@ -32,7 +32,8 @@ import kotlin.coroutines.suspendCoroutine
 
 object BooksApi {
 
-    private const val BASE_URL = "http://ec2-54-199-237-70.ap-northeast-1.compute.amazonaws.com/books"
+    private const val BASE_URL =
+        "http://ec2-54-199-237-70.ap-northeast-1.compute.amazonaws.com/books"
     private const val GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes"
     private const val GOOGLE_API_KEY = "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE"
 
@@ -76,8 +77,7 @@ object BooksApi {
                         continuation.resume(
                             Result.success(
                                 gsonClient.fromJson(
-                                    response.body!!.string(),
-                                    BookSet::class.java
+                                    response.body!!.string(), BookSet::class.java
                                 )
                             )
                         )
@@ -109,9 +109,9 @@ object BooksApi {
 
     fun parseExtraInfoJson(jsonString: String): ExtraInfo? {
         val jsonObj = JSONObject(jsonString)
-        val totalItems = jsonObj.getInt("totalItems")
-        return if (totalItems != 0) {
-            try {
+        return try {
+            val totalItems = jsonObj.getInt("totalItems")
+            if (totalItems != 0) {
                 val items = jsonObj.getJSONArray("items")
                 val item = items.getJSONObject(0)
                 val volumeInfo = item.getJSONObject("volumeInfo")
@@ -121,11 +121,12 @@ object BooksApi {
                 val pageCount = volumeInfo.getInt("pageCount")
                 val description = volumeInfo.getString("description")
                 ExtraInfo(coverImage, pageCount, description)
-            } catch (exc: JSONException) {
+            } else {
                 null
             }
-        } else {
+        } catch (exc: JSONException) {
             null
         }
     }
+
 }
