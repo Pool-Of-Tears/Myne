@@ -16,9 +16,8 @@ limitations under the License.
 
 package com.starry.myne.navigation
 
-const val BOOK_DETAIL_ARG_KEY = "bookId"
+const val BOOK_ID_ARG_KEY = "bookId"
 const val CATEGORY_DETAIL_ARG_KEY = "category"
-const val READER_DETAIL_ARG_KEY = "readBookId"
 
 sealed class Screens(val route: String) {
 
@@ -26,9 +25,9 @@ sealed class Screens(val route: String) {
     object OSLScreen : Screens("osl_screen")
     object AboutScreen : Screens("about_screen")
 
-    object BookDetailScreen : Screens("book_detail_screen/{$BOOK_DETAIL_ARG_KEY}") {
+    object BookDetailScreen : Screens("book_detail_screen/{$BOOK_ID_ARG_KEY}") {
         fun withBookId(id: String): String {
-            return this.route.replace("{$BOOK_DETAIL_ARG_KEY}", id)
+            return this.route.replace("{$BOOK_ID_ARG_KEY}", id)
         }
     }
 
@@ -38,9 +37,15 @@ sealed class Screens(val route: String) {
         }
     }
 
-    object ReaderDetailScreen : Screens("reader_detail_screen/{$READER_DETAIL_ARG_KEY}") {
+    object ReaderDetailScreen : Screens("reader_detail_screen/{$BOOK_ID_ARG_KEY}") {
         fun withBookId(id: String): String {
-            return this.route.replace("{$READER_DETAIL_ARG_KEY}", id)
+            return this.route.replace("{$BOOK_ID_ARG_KEY}", id)
+        }
+    }
+
+    object ReaderScreen : Screens("reader_screen/{$BOOK_ID_ARG_KEY}") {
+        fun withBookId(id: String): String {
+            return this.route.replace("{$BOOK_ID_ARG_KEY}", id)
         }
     }
 }

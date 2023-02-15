@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -37,6 +38,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.starry.myne.MainActivity
 import com.starry.myne.R
+import com.starry.myne.navigation.Screens
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.common.simpleVerticalScrollbar
@@ -55,7 +57,8 @@ import com.starry.myne.utils.toToast
 fun ReaderDetailScreen(bookId: String, navController: NavController) {
     val viewModel: ReaderDetailViewModel = hiltViewModel()
     val state = viewModel.state
-    viewModel.getEbookData(bookId)
+
+    LaunchedEffect(key1 = true) { viewModel.loadEbookData(bookId) }
 
     val context = LocalContext.current
     val settingsVM = (context.getActivity() as MainActivity).settingsViewModel
@@ -66,7 +69,7 @@ fun ReaderDetailScreen(bookId: String, navController: NavController) {
         }
     }, floatingActionButton = {
         ExtendedFloatingActionButton(text = { Text(text = stringResource(id = R.string.continue_reading_button)) },
-            onClick = {},
+            onClick = { navController.navigate(Screens.ReaderScreen.withBookId(bookId)) },
             icon = {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_fab_button),

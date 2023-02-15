@@ -93,3 +93,5 @@ val figeronaFont = FontFamily(
 )
 
 val pacificoFont = FontFamily(Font(R.font.pacifico_regular))
+
+val PTSeriFont = FontFamily(Font(R.font.pt_serif_regular))

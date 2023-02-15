@@ -22,7 +22,7 @@ data class EbookData(
     val epubBook: EpubBook,
 )
 
-data class EpubDetailScreenState(
+data class ReaderDetailScreenState(
     val isLoading: Boolean = true, val ebookData: EbookData? = null, val error: String? = null
 )
 
@@ -33,8 +33,8 @@ class ReaderDetailViewModel @Inject constructor(private val libraryDao: LibraryD
         const val FILE_NOT_FOUND = "epub_file_not_found"
     }
 
-    var state by mutableStateOf(EpubDetailScreenState())
-    fun getEbookData(bookId: String) {
+    var state by mutableStateOf(ReaderDetailScreenState())
+    fun loadEbookData(bookId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             // build EbookData.
             val libraryItem = libraryDao.getItemById(bookId.toInt())

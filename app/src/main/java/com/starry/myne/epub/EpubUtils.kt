@@ -31,4 +31,3 @@ fun Node.getAttributeValue(attribute: String): String? =
 
 val NodeList.elements get() = (0..length).asSequence().mapNotNull { item(it) as? Element }
 val Node.childElements get() = childNodes.elements
-

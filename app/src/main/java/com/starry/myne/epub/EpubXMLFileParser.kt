@@ -7,20 +7,20 @@ import java.io.File
 import java.util.zip.ZipEntry
 
 class EpubXMLFileParser(
-    val fileAbsolutePath: String,
+    fileAbsolutePath: String,
     val data: ByteArray,
-    val zipFile: Map<String, Pair<ZipEntry, ByteArray>>
+    private val zipFile: Map<String, Pair<ZipEntry, ByteArray>>
 ) {
     data class Output(val title: String?, val body: String)
 
-    val fileParentFolder: File = File(fileAbsolutePath).parentFile ?: File("")
+    private val fileParentFolder: File = File(fileAbsolutePath).parentFile ?: File("")
 
     // Make all local references absolute to the root of the epub for consistent references
-    val absBasePath: String = File("").canonicalPath
+    private val absBasePath: String = File("").canonicalPath
     fun parse(): Output {
         val body = Jsoup.parse(data.inputStream(), "UTF-8", "").body()
         val title = body.selectFirst("h1, h2, h3, h4, h5, h6")?.text()
-        body.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
+        // body.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
         return Output(
             title = title, body = getNodeStructuredText(body)
         )
