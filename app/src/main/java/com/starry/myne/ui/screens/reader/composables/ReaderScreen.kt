@@ -39,15 +39,16 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
+        bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
     )
 
-    BottomSheetScaffold(scaffoldState = bottomSheetScaffoldState,
+    BottomSheetScaffold(
+        scaffoldState = bottomSheetScaffoldState,
         sheetContent = {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(80.dp),
+                    .height(300.dp),
                 contentAlignment = Alignment.Center
             ) {
                 //TODO
@@ -80,7 +81,11 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
                                 textSize = 16.sp,
                                 onClick = {
                                     coroutineScope.launch {
-                                        bottomSheetScaffoldState.bottomSheetState.expand()
+                                        if (bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
+                                            bottomSheetScaffoldState.bottomSheetState.expand()
+                                        } else {
+                                            bottomSheetScaffoldState.bottomSheetState.collapse()
+                                        }
                                     }
                                 })
                         }

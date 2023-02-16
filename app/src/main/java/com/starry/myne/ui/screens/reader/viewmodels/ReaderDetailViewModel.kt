@@ -12,6 +12,7 @@ import com.starry.myne.epub.models.EpubBook
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.FileNotFoundException
 import javax.inject.Inject
 
 
@@ -38,13 +39,8 @@ class ReaderDetailViewModel @Inject constructor(private val libraryDao: LibraryD
         viewModelScope.launch(Dispatchers.IO) {
             // build EbookData.
             val libraryItem = libraryDao.getItemById(bookId.toInt())
-            state = if (libraryItem!!.fileExist()) {
-                val coverImage: String? = try {
-                    BooksApi.getExtraInfo(libraryItem.title)?.coverImage
-                } catch (exc: Exception) {
-                    println(exc.localizedMessage)
-                    null
-                }
+            state = try {
+                val coverImage: String? = BooksApi.getExtraInfo(libraryItem!!.title)?.coverImage
                 state.copy(
                     isLoading = false, ebookData = EbookData(
                         coverImage,
@@ -53,7 +49,7 @@ class ReaderDetailViewModel @Inject constructor(private val libraryDao: LibraryD
                         createEpubBook(libraryItem.filePath)
                     )
                 )
-            } else {
+            } catch (exc: FileNotFoundException) {
                 state.copy(isLoading = false, error = FILE_NOT_FOUND)
             }
         }

@@ -275,7 +275,7 @@ fun NavGraph(
             },
         ) { backStackEntry ->
             val bookId = backStackEntry.arguments!!.getString(BOOK_ID_ARG_KEY)!!
-            val chapterIdx = backStackEntry.arguments!!.getInt(READER_CHAPTER_INDEX_KEY)!!
+            val chapterIdx = backStackEntry.arguments!!.getInt(READER_CHAPTER_INDEX_KEY)
             ReaderScreen(bookId = bookId, chapterIdx)
         }
 
