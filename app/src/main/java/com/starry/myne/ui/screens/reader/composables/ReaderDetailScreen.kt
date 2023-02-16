@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -45,7 +44,6 @@ import com.starry.myne.ui.common.simpleVerticalScrollbar
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.utils.NumberToWord
 import com.starry.myne.utils.getActivity
 import com.starry.myne.utils.toToast
 
@@ -237,15 +235,14 @@ fun ReaderDetailScreen(bookId: String, navController: NavController) {
 
                 val lazyListState = rememberLazyListState()
                 LazyColumn(
-                    state = lazyListState,
-                    modifier = Modifier.simpleVerticalScrollbar(
-                        lazyListState,
-                        color = MaterialTheme.colorScheme.primary
+                    state = lazyListState, modifier = Modifier.simpleVerticalScrollbar(
+                        lazyListState, color = MaterialTheme.colorScheme.primary
                     )
                 ) {
-                    itemsIndexed(state.ebookData!!.epubBook.chapters) { idx, epubChapter ->
-                        ChapterItem(chapterNumber = NumberToWord.convertNumberToWord((idx + 1).toLong())) {
-                            "Meow >~< ${epubChapter.title}".toToast(context)
+                    items(state.ebookData!!.epubBook.chapters.size) { idx ->
+                        val chapter = state.ebookData.epubBook.chapters[idx]
+                        ChapterItem(chapterTitle = chapter.title) {
+                           navController.navigate(Screens.ReaderScreen.withBookId(bookId, idx = idx))
                         }
                     }
                 }
@@ -256,7 +253,7 @@ fun ReaderDetailScreen(bookId: String, navController: NavController) {
 
 @ExperimentalMaterial3Api
 @Composable
-fun ChapterItem(chapterNumber: String, onClick: () -> Unit) {
+fun ChapterItem(chapterTitle: String, onClick: () -> Unit) {
     Card(
         onClick = { onClick() },
         colors = CardDefaults.cardColors(
@@ -265,40 +262,34 @@ fun ChapterItem(chapterNumber: String, onClick: () -> Unit) {
             )
         ),
         modifier = Modifier
-            .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)
+            .padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
             .fillMaxWidth()
-            .height(58.dp),
     ) {
         Row(
-            modifier = Modifier
-                .padding(vertical = 10.dp, horizontal = 14.dp)
-                .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Spacer(modifier = Modifier.width(14.dp))
-                Column(
-                    modifier = Modifier.offset(y = (2).dp)
-                ) {
-                    Text(
-                        text = "Chapter $chapterNumber",
-                        fontFamily = figeronaFont,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
-            }
-            Icon(
-                painter = painterResource(id = R.drawable.ic_right_arrow),
-                contentDescription = "",
-                modifier = Modifier.size(15.dp),
-                tint = MaterialTheme.colorScheme.onSurface
+            Text(
+                modifier = Modifier.weight(3f).padding(start = 12.dp),
+                text = chapterTitle,
+                fontFamily = figeronaFont,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
             )
 
+            Icon(
+                modifier = Modifier
+                    .size(15.dp)
+                    .weight(0.4f),
+                painter = painterResource(id = R.drawable.ic_right_arrow),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
+
+
 }
 
 

@@ -18,6 +18,7 @@ package com.starry.myne.navigation
 
 const val BOOK_ID_ARG_KEY = "bookId"
 const val CATEGORY_DETAIL_ARG_KEY = "category"
+const val READER_CHAPTER_INDEX_KEY = "readerChapterIndex"
 
 sealed class Screens(val route: String) {
 
@@ -43,9 +44,10 @@ sealed class Screens(val route: String) {
         }
     }
 
-    object ReaderScreen : Screens("reader_screen/{$BOOK_ID_ARG_KEY}") {
-        fun withBookId(id: String): String {
+    object ReaderScreen : Screens("reader_screen/{$BOOK_ID_ARG_KEY}/{$READER_CHAPTER_INDEX_KEY}") {
+        fun withBookId(id: String, idx: Int = -1): String {
             return this.route.replace("{$BOOK_ID_ARG_KEY}", id)
+                .replace("{$READER_CHAPTER_INDEX_KEY}", idx.toString())
         }
     }
 }

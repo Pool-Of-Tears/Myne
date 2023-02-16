@@ -256,6 +256,8 @@ fun NavGraph(
                 BOOK_ID_ARG_KEY
             ) {
                 type = NavType.StringType
+            }, navArgument(READER_CHAPTER_INDEX_KEY) {
+                type = NavType.IntType
             }),
             enterTransition = {
                 slideInHorizontally(
@@ -273,7 +275,8 @@ fun NavGraph(
             },
         ) { backStackEntry ->
             val bookId = backStackEntry.arguments!!.getString(BOOK_ID_ARG_KEY)!!
-            ReaderScreen(bookId = bookId)
+            val chapterIdx = backStackEntry.arguments!!.getInt(READER_CHAPTER_INDEX_KEY)!!
+            ReaderScreen(bookId = bookId, chapterIdx)
         }
 
         /** Settings Screen */

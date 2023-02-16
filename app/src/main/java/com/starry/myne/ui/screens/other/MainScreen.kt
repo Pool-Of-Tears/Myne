@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.ui.screens
+package com.starry.myne.ui.screens.other
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
@@ -47,9 +47,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.accompanist.systemuicontroller.SystemUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.navigation.BottomBarScreen
 import com.starry.myne.navigation.NavGraph
 import com.starry.myne.others.NetworkObserver
+import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
+import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -59,18 +63,32 @@ import com.starry.myne.ui.theme.figeronaFont
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
 @Composable
-fun MainScreen(networkStatus: NetworkObserver.Status) {
+fun MainScreen(networkStatus: NetworkObserver.Status, settingsViewModel: SettingsViewModel) {
     val navController = rememberAnimatedNavController()
+    val systemUiController = rememberSystemUiController()
+
+    systemUiController.setStatusBarColor(
+        color = MaterialTheme.colorScheme.background,
+        darkIcons = settingsViewModel.getCurrentTheme() == ThemeMode.Light
+    )
+
     Scaffold(
-        bottomBar = { BottomBar(navController = navController) },
-        containerColor = MaterialTheme.colorScheme.background
+        bottomBar = {
+            BottomBar(
+                navController = navController, systemUiController, settingsViewModel
+            )
+        }, containerColor = MaterialTheme.colorScheme.background
     ) {
         NavGraph(navController = navController, networkStatus)
     }
 }
 
 @Composable
-fun BottomBar(navController: NavHostController) {
+fun BottomBar(
+    navController: NavHostController,
+    systemUiController: SystemUiController,
+    settingsViewModel: SettingsViewModel
+) {
     val screens = listOf(
         BottomBarScreen.Home,
         BottomBarScreen.Categories,
@@ -81,6 +99,19 @@ fun BottomBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val bottomBarDestination = screens.any { it.route == currentDestination?.route }
+
+    if (bottomBarDestination) {
+        systemUiController.setNavigationBarColor(
+            color = (MaterialTheme.colorScheme.surfaceColorAtElevation(
+                3.dp
+            )), darkIcons = settingsViewModel.getCurrentTheme() == ThemeMode.Light
+        )
+    } else {
+        systemUiController.setNavigationBarColor(
+            color = MaterialTheme.colorScheme.background,
+            darkIcons = settingsViewModel.getCurrentTheme() == ThemeMode.Light
+        )
+    }
 
     AnimatedVisibility(visible = bottomBarDestination,
         modifier = Modifier
@@ -112,7 +143,11 @@ fun BottomBar(navController: NavHostController) {
 }
 
 @Composable
-fun CustomBottomNavigationItem(screen: BottomBarScreen, isSelected: Boolean, onClick: () -> Unit) {
+fun CustomBottomNavigationItem(
+    screen: BottomBarScreen,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+) {
     val background =
         if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent
     val contentColor =

@@ -20,7 +20,7 @@ class EpubXMLFileParser(
     fun parse(): Output {
         val body = Jsoup.parse(data.inputStream(), "UTF-8", "").body()
         val title = body.selectFirst("h1, h2, h3, h4, h5, h6")?.text()
-        // body.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
+        body.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
         return Output(
             title = title, body = getNodeStructuredText(body)
         )

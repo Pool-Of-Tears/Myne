@@ -37,9 +37,8 @@ import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import coil.annotation.ExperimentalCoilApi
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.others.NetworkObserver
-import com.starry.myne.ui.screens.MainScreen
+import com.starry.myne.ui.screens.other.MainScreen
 import com.starry.myne.ui.theme.MyneTheme
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
@@ -78,13 +77,6 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             MyneTheme(settingsViewModel = settingsViewModel) {
-
-                val systemUiController = rememberSystemUiController()
-                systemUiController.setSystemBarsColor(
-                    color = MaterialTheme.colorScheme.background,
-                    darkIcons = settingsViewModel.getCurrentTheme() == ThemeMode.Light
-                )
-
                 val status by networkObserver.observe().collectAsState(
                     initial = NetworkObserver.Status.Unavailable
                 )
@@ -93,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(status)
+                    MainScreen(status, settingsViewModel = settingsViewModel)
                 }
             }
         }
