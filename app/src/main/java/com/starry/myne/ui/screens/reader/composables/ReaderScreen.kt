@@ -47,7 +47,7 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
     )
 
     val textSizeValue = remember { mutableStateOf(100) }
-    val textSize = (textSizeValue.value / 10) * 1.6
+    val textSize = (textSizeValue.value / 10) * 1.8
 
     BottomSheetScaffold(scaffoldState = bottomSheetScaffoldState,
         sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
@@ -76,7 +76,9 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
                     }
                 } else {
                     LazyColumn(state = lazyListState) {
-                        items(state.epubBook!!.chapters.size) { idx ->
+                        items(state.epubBook!!.chapters.size, key = {
+                            state.epubBook.chapters[it].title
+                        }) { idx ->
                             val chapter = state.epubBook.chapters[idx]
                             ReaderItem(title = chapter.title,
                                 body = chapter.body,
@@ -117,18 +119,16 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
                         }
                     })
 
-                    if (chapterIndex != -1) {
-                        LaunchedEffect(key1 = true, block = {
+                    LaunchedEffect(key1 = true, block = {
+                        if (chapterIndex != -1) {
                             lazyListState.scrollToItem(chapterIndex, 0)
-                        })
-                    } else if (state.readerItem != null) {
-                        LaunchedEffect(key1 = true, block = {
+                        } else if (state.readerItem != null) {
                             lazyListState.scrollToItem(
                                 state.readerItem.lastChapterIndex,
                                 state.readerItem.lastChapterOffset
                             )
-                        })
-                    }
+                        }
+                    })
                 }
             }
 
@@ -167,7 +167,8 @@ fun ReaderItem(title: String, body: String, textSize: TextUnit, onClick: () -> U
             Text(
                 modifier = Modifier.padding(end = 4.dp),
                 text = title,
-                fontSize = 22.sp,
+                fontSize = 24.sp,
+                lineHeight = 32.sp,
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.88f)
@@ -179,6 +180,7 @@ fun ReaderItem(title: String, body: String, textSize: TextUnit, onClick: () -> U
         Text(
             text = body,
             fontSize = textSize,
+            lineHeight = (textSize * 4) / 3,
             fontFamily = FontFamily.Serif,
             modifier = Modifier.padding(start = 14.dp, end = 14.dp),
         )
@@ -201,7 +203,7 @@ fun BottomSheetContents(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
             .height(240.dp),
     ) {
         Row(
@@ -216,7 +218,7 @@ fun BottomSheetContents(
                     .width(115.dp)
                     .height(54.dp)
                     .clip(RoundedCornerShape(6.dp))
-                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
+                    .background(MaterialTheme.colorScheme.surface)
                     .clickable {
                         if (textSizeValue.value <= 50) {
                             coroutineScope.launch {
@@ -243,9 +245,7 @@ fun BottomSheetContents(
                 modifier = Modifier
                     .height(54.dp)
                     .width(115.dp), colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                        2.dp
-                    )
+                    containerColor = MaterialTheme.colorScheme.surface
                 ), shape = RoundedCornerShape(6.dp)
             ) {
                 Box(
@@ -285,7 +285,7 @@ fun BottomSheetContents(
                     .width(115.dp)
                     .height(54.dp)
                     .clip(RoundedCornerShape(6.dp))
-                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
+                    .background(MaterialTheme.colorScheme.surface)
                     .clickable {
                         if (textSizeValue.value >= 200) {
                             coroutineScope.launch {
