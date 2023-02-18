@@ -33,8 +33,8 @@ import com.starry.myne.api.BooksApi
 import com.starry.myne.api.models.Book
 import com.starry.myne.api.models.BookSet
 import com.starry.myne.api.models.ExtraInfo
-import com.starry.myne.database.LibraryDao
-import com.starry.myne.database.LibraryItem
+import com.starry.myne.database.library.LibraryDao
+import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.others.BookDownloader
 import com.starry.myne.others.Constants
 import com.starry.myne.utils.BookUtils

@@ -7,7 +7,7 @@ import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import com.starry.myne.BuildConfig
 import com.starry.myne.R
-import com.starry.myne.database.LibraryItem
+import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.navigation.Screens
 import java.io.File
 import java.text.DecimalFormat

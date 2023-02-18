@@ -66,7 +66,7 @@ fun ReaderDetailScreen(bookId: String, navController: NavController) {
             navController.navigateUp()
         }
     }, floatingActionButton = {
-        ExtendedFloatingActionButton(text = { Text(text = stringResource(id = R.string.continue_reading_button)) },
+        ExtendedFloatingActionButton(text = { Text(text = stringResource(id = if (state.readerItem != null) R.string.continue_reading_button else R.string.start_reading_button)) },
             onClick = { navController.navigate(Screens.ReaderScreen.withBookId(bookId)) },
             icon = {
                 Icon(
@@ -206,20 +206,20 @@ fun ReaderDetailScreen(bookId: String, navController: NavController) {
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
 
-                            // TODO: Implement this after adding reader screen
-                            Text(
-                                text = "69% Completed",
-                                modifier = Modifier.padding(
-                                    start = 12.dp, end = 8.dp, top = 8.dp
-                                ),
-                                fontSize = 16.sp,
-                                fontFamily = figeronaFont,
-                                fontWeight = FontWeight.Medium,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                color = MaterialTheme.colorScheme.onBackground,
-                            )
-
+                            if (state.readerItem != null) {
+                                Text(
+                                    text = "${state.readerItem.getProgressPercent(state.ebookData.epubBook.chapters.size)}% Completed",
+                                    modifier = Modifier.padding(
+                                        start = 12.dp, end = 8.dp, top = 8.dp
+                                    ),
+                                    fontSize = 16.sp,
+                                    fontFamily = figeronaFont,
+                                    fontWeight = FontWeight.Medium,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                )
+                            }
                             Spacer(modifier = Modifier.height(50.dp))
                         }
                     }
@@ -242,7 +242,11 @@ fun ReaderDetailScreen(bookId: String, navController: NavController) {
                     items(state.ebookData!!.epubBook.chapters.size) { idx ->
                         val chapter = state.ebookData.epubBook.chapters[idx]
                         ChapterItem(chapterTitle = chapter.title) {
-                           navController.navigate(Screens.ReaderScreen.withBookId(bookId, idx = idx))
+                            navController.navigate(
+                                Screens.ReaderScreen.withBookId(
+                                    bookId, idx = idx
+                                )
+                            )
                         }
                     }
                 }
@@ -270,7 +274,9 @@ fun ChapterItem(chapterTitle: String, onClick: () -> Unit) {
             modifier = Modifier.padding(top = 12.dp, bottom = 12.dp)
         ) {
             Text(
-                modifier = Modifier.weight(3f).padding(start = 12.dp),
+                modifier = Modifier
+                    .weight(3f)
+                    .padding(start = 12.dp),
                 text = chapterTitle,
                 fontFamily = figeronaFont,
                 color = MaterialTheme.colorScheme.onSurface,

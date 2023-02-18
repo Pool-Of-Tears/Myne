@@ -19,8 +19,8 @@ package com.starry.myne.ui.screens.library.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.starry.myne.database.LibraryDao
-import com.starry.myne.database.LibraryItem
+import com.starry.myne.database.library.LibraryDao
+import com.starry.myne.database.library.LibraryItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

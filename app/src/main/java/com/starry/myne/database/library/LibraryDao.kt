@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.database
+package com.starry.myne.database.library
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

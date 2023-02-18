@@ -93,13 +93,46 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
                         }
                     }
 
+                    // Update reader progress.
+                    LaunchedEffect(key1 = !lazyListState.isScrollInProgress, block = {
+                        /*
+                         For some weird reason when using lazyListState.scrollToItem()
+                         to automatically scroll to last viewed item position, the
+                         lazyListState.firstVisibleItemIndex remains 0 even if we are
+                         not showing the item at first index right now, however it gets updated
+                         to current position when user scrolls for the first time.
+                         */
+                        if (lazyListState.firstVisibleItemIndex == 0 && state.readerItem != null) {
+                            viewModel.updateReaderProgress(
+                                bookId.toInt(),
+                                state.readerItem.lastChapterIndex,
+                                lazyListState.firstVisibleItemScrollOffset
+                            )
+                        } else {
+                            viewModel.updateReaderProgress(
+                                bookId.toInt(),
+                                lazyListState.firstVisibleItemIndex,
+                                lazyListState.firstVisibleItemScrollOffset
+                            )
+                        }
+                    })
+
                     if (chapterIndex != -1) {
                         LaunchedEffect(key1 = true, block = {
                             lazyListState.scrollToItem(chapterIndex, 0)
                         })
+                    } else if (state.readerItem != null) {
+                        LaunchedEffect(key1 = true, block = {
+                            lazyListState.scrollToItem(
+                                state.readerItem.lastChapterIndex,
+                                state.readerItem.lastChapterOffset
+                            )
+                        })
                     }
                 }
             }
+
+
         })
 }
 
@@ -244,7 +277,6 @@ fun BottomSheetContents(
                     }
                 }
             }
-
 
             Spacer(modifier = Modifier.width(14.dp))
 
