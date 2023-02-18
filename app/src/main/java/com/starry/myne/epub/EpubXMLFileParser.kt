@@ -21,6 +21,8 @@ class EpubXMLFileParser(
         val body = Jsoup.parse(data.inputStream(), "UTF-8", "").body()
         val title = body.selectFirst("h1, h2, h3, h4, h5, h6")?.text()
         body.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
+        // TODO: Add support for images, for now just remove them.
+        body.getElementsByTag("img").remove()
         return Output(
             title = title, body = getNodeStructuredText(body)
         )

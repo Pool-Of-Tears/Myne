@@ -2,31 +2,35 @@ package com.starry.myne.ui.screens.reader.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.starry.myne.R
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
+import com.starry.myne.ui.theme.figeronaFont
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi
@@ -42,21 +46,19 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
         bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
     )
 
-    BottomSheetScaffold(
-        scaffoldState = bottomSheetScaffoldState,
-        sheetContent = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                //TODO
-                Text("MEOW")
-            }
-        },
-        sheetShape = RoundedCornerShape(topEnd = 30.dp),
+    val textSizeValue = remember { mutableStateOf(100) }
+    val textSize = (textSizeValue.value / 10) * 1.6
+
+    BottomSheetScaffold(scaffoldState = bottomSheetScaffoldState,
+        sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         sheetPeekHeight = 0.dp,
+        sheetContent = {
+            BottomSheetContents(
+                textSizeValue = textSizeValue,
+                coroutineScope = coroutineScope,
+                bottomSheetScaffoldState = bottomSheetScaffoldState
+            )
+        },
         content = {
             Column(
                 modifier = Modifier
@@ -76,9 +78,9 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
                     LazyColumn(state = lazyListState) {
                         items(state.epubBook!!.chapters.size) { idx ->
                             val chapter = state.epubBook.chapters[idx]
-                            LazyChapterItem(title = chapter.title,
+                            ReaderItem(title = chapter.title,
                                 body = chapter.body,
-                                textSize = 16.sp,
+                                textSize = textSize.sp,
                                 onClick = {
                                     coroutineScope.launch {
                                         if (bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
@@ -103,10 +105,12 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
 
 
 @Composable
-fun LazyChapterItem(title: String, body: String, textSize: TextUnit, onClick: () -> Unit) {
+fun ReaderItem(title: String, body: String, textSize: TextUnit, onClick: () -> Unit) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Column(modifier = Modifier
         .fillMaxWidth()
-        .clickable { onClick() }) {
+        .clickable(interactionSource = interactionSource, indication = null) { onClick() }) {
 
         Row(
             modifier = Modifier
@@ -151,4 +155,137 @@ fun LazyChapterItem(title: String, body: String, textSize: TextUnit, onClick: ()
             thickness = 2.dp,
         )
     }
+}
+
+
+@ExperimentalMaterialApi
+@Composable
+fun BottomSheetContents(
+    textSizeValue: MutableState<Int>,
+    coroutineScope: CoroutineScope,
+    bottomSheetScaffoldState: BottomSheetScaffoldState
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface)
+            .height(240.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 21.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .width(115.dp)
+                    .height(54.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
+                    .clickable {
+                        if (textSizeValue.value <= 50) {
+                            coroutineScope.launch {
+                                bottomSheetScaffoldState.snackbarHostState.showSnackbar(
+                                    "No", null
+                                )
+                            }
+                        } else {
+                            textSizeValue.value -= 10
+                        }
+                    }, contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_text_minus),
+                    contentDescription = stringResource(id = R.string.back_button_desc),
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(14.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(14.dp))
+
+            Card(
+                modifier = Modifier
+                    .height(54.dp)
+                    .width(115.dp), colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                        2.dp
+                    )
+                ), shape = RoundedCornerShape(6.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_text_size),
+                            contentDescription = null,
+                            //    modifier = Modifier.size(size = 15.dp),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Text(
+                            text = textSizeValue.value.toString(),
+                            fontFamily = figeronaFont,
+                            fontSize = 22.sp,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(start = 2.dp, bottom = 1.dp),
+                        )
+                    }
+                }
+            }
+
+
+            Spacer(modifier = Modifier.width(14.dp))
+
+            Box(
+                modifier = Modifier
+                    .width(115.dp)
+                    .height(54.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
+                    .clickable {
+                        if (textSizeValue.value >= 200) {
+                            coroutineScope.launch {
+                                bottomSheetScaffoldState.snackbarHostState.showSnackbar(
+                                    "No", null
+                                )
+                            }
+                        } else {
+                            textSizeValue.value += 10
+                        }
+                    }, contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_text_plus),
+                    contentDescription = stringResource(id = R.string.back_button_desc),
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(14.dp)
+                )
+            }
+        }
+    }
+}
+
+
+@ExperimentalMaterialApi
+@Composable
+@Preview
+fun BottomSheetContentsPV() {
+    val textValue = remember { mutableStateOf(100) }
+    BottomSheetContents(
+        textSizeValue = textValue,
+        coroutineScope = rememberCoroutineScope(),
+        bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
+    )
 }

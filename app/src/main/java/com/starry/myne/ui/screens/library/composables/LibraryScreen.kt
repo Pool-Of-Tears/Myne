@@ -59,7 +59,6 @@ import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.utils.PreferenceUtils
 import com.starry.myne.utils.Utils
 import com.starry.myne.utils.getActivity
 import com.starry.myne.utils.toToast
@@ -169,21 +168,7 @@ fun LibraryScreen(navController: NavController) {
                                 author = item.authors,
                                 item.getFileSize(),
                                 item.getDownloadDate(),
-                                onReadClick = {
-                                    if (PreferenceUtils.getBoolean(
-                                            PreferenceUtils.INTERNAL_READER,
-                                            false
-                                        )
-                                    ) {
-                                        navController.navigate(
-                                            Screens.ReaderDetailScreen.withBookId(
-                                                item.bookId.toString()
-                                            )
-                                        )
-                                    } else {
-                                        Utils.openBookFile(context, item)
-                                    }
-                                },
+                                onReadClick = { Utils.openBookFile(context, item, navController) },
                                 onDeleteClick = { openDeleteDialog.value = true })
                         }
 
@@ -237,13 +222,11 @@ fun LibraryCard(
     Card(
         modifier = Modifier
             .height(125.dp)
-            .fillMaxWidth(),
-        colors = CardDefaults.cardColors(
+            .fillMaxWidth(), colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
                 3.dp
             )
-        ),
-        shape = RoundedCornerShape(0.dp)
+        ), shape = RoundedCornerShape(0.dp)
     ) {
         Row(
             modifier = Modifier
@@ -321,19 +304,15 @@ fun LibraryCard(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Row {
-                    LibraryCardButton(
-                        text = stringResource(id = R.string.library_read_button),
+                    LibraryCardButton(text = stringResource(id = R.string.library_read_button),
                         icon = ImageVector.vectorResource(id = R.drawable.ic_library_read),
-                        onClick = { onReadClick() }
-                    )
+                        onClick = { onReadClick() })
 
                     Spacer(modifier = Modifier.width(10.dp))
 
-                    LibraryCardButton(
-                        text = stringResource(id = R.string.library_delete_button),
+                    LibraryCardButton(text = stringResource(id = R.string.library_delete_button),
                         icon = Icons.Outlined.Delete,
-                        onClick = { onDeleteClick() }
-                    )
+                        onClick = { onDeleteClick() })
                 }
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -347,18 +326,15 @@ fun LibraryCardButton(
     icon: ImageVector,
     onClick: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .clickable { onClick() }
-    ) {
+    Box(modifier = Modifier
+        .border(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.onSurface,
+            shape = RoundedCornerShape(8.dp)
+        )
+        .clickable { onClick() }) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(6.dp)
+            verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(6.dp)
 
 
         ) {

@@ -312,10 +312,10 @@ fun BookDetailScreen(
                                         viewModel.viewModelScope.launch(Dispatchers.IO) {
                                             val libraryItem =
                                                 viewModel.libraryDao.getItemById(book.id)!!
-                                            Utils.openBookFile(context, libraryItem)
+                                            Utils.openBookFile(context, libraryItem, navController)
                                         }
                                     } else {
-                                        Utils.openBookFile(context, bookLibraryItem)
+                                        Utils.openBookFile(context, bookLibraryItem, navController)
                                     }
 
                                 }
