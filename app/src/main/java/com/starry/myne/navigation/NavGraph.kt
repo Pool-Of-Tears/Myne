@@ -34,6 +34,12 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.screens.*
+import com.starry.myne.ui.screens.home.composables.BookDetailScreen
+import com.starry.myne.ui.screens.home.composables.HomeScreen
+import com.starry.myne.ui.screens.library.composables.LibraryScreen
+import com.starry.myne.ui.screens.reader.composables.ReaderDetailScreen
+import com.starry.myne.ui.screens.reader.composables.ReaderScreen
+import com.starry.myne.ui.screens.settings.composables.SettingsScreen
 
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
@@ -56,7 +62,8 @@ fun NavGraph(
         ) {
             SplashScreen(navController = navController)
         }
-        // Bottom Navigation Screens
+
+        /** Home Screen */
         composable(
             route = BottomBarScreen.Home.route,
             exitTransition = {
@@ -81,6 +88,50 @@ fun NavGraph(
             HomeScreen(navController, networkStatus)
         }
 
+        /** Book Detail Screen */
+        composable(
+            route = Screens.BookDetailScreen.route,
+            arguments = listOf(
+                navArgument(BOOK_ID_ARG_KEY) {
+                    type = NavType.StringType
+                },
+            ),
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { 300 }, animationSpec = tween(
+                        durationMillis = 300, easing = FastOutSlowInEasing
+                    )
+                ) + fadeIn(animationSpec = tween(300))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -300 }, animationSpec = tween(
+                        durationMillis = 300, easing = FastOutSlowInEasing
+                    )
+                ) + fadeOut(animationSpec = tween(300))
+
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -300 }, animationSpec = tween(
+                        durationMillis = 300, easing = FastOutSlowInEasing
+                    )
+                ) + fadeIn(animationSpec = tween(300))
+
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { 300 }, animationSpec = tween(
+                        durationMillis = 300, easing = FastOutSlowInEasing
+                    )
+                ) + fadeOut(animationSpec = tween(300))
+            },
+        ) { backStackEntry ->
+            val bookId = backStackEntry.arguments!!.getString(BOOK_ID_ARG_KEY)!!
+            BookDetailScreen(bookId, navController, networkStatus)
+        }
+
+        /** Categories Screen */
         composable(
             route = BottomBarScreen.Categories.route,
             exitTransition = {
@@ -105,81 +156,7 @@ fun NavGraph(
             CategoriesScreen(navController)
         }
 
-        composable(
-            route = BottomBarScreen.Library.route,
-            exitTransition = {
-                if (initialState.destination.route == Screens.BookDetailScreen.route) {
-                    slideOutHorizontally(
-                        targetOffsetX = { -300 }, animationSpec = tween(
-                            durationMillis = 300, easing = FastOutSlowInEasing
-                        )
-                    ) + fadeOut(animationSpec = tween(300))
-                } else null
-            },
-            popEnterTransition = {
-                if (targetState.destination.route == BottomBarScreen.Library.route) {
-                    slideInHorizontally(
-                        initialOffsetX = { -300 }, animationSpec = tween(
-                            durationMillis = 300, easing = FastOutSlowInEasing
-                        )
-                    ) + fadeIn(animationSpec = tween(300))
-                } else null
-            },
-        ) {
-            LibraryScreen(navController)
-        }
-
-        composable(
-            route = BottomBarScreen.Settings.route,
-            exitTransition = {
-                if (initialState.destination.route == Screens.OSLScreen.route || initialState.destination.route == Screens.AboutScreen.route) {
-                    slideOutHorizontally(
-                        targetOffsetX = { -300 }, animationSpec = tween(
-                            durationMillis = 300, easing = FastOutSlowInEasing
-                        )
-                    ) + fadeOut(animationSpec = tween(300))
-                } else null
-            },
-            popEnterTransition = {
-                if (initialState.destination.route == Screens.OSLScreen.route || initialState.destination.route == Screens.AboutScreen.route) {
-                    slideInHorizontally(
-                        initialOffsetX = { -300 }, animationSpec = tween(
-                            durationMillis = 300, easing = FastOutSlowInEasing
-                        )
-                    ) + fadeIn(animationSpec = tween(300))
-                } else null
-            },
-        ) {
-            SettingsScreen(navController)
-        }
-
-        // Other screens.
-        composable(
-            route = Screens.BookDetailScreen.route,
-            arguments = listOf(
-                navArgument(BOOK_DETAIL_ARG_KEY) {
-                    type = NavType.StringType
-                },
-            ),
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { 300 }, animationSpec = tween(
-                        durationMillis = 300, easing = FastOutSlowInEasing
-                    )
-                ) + fadeIn(animationSpec = tween(300))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { 300 }, animationSpec = tween(
-                        durationMillis = 300, easing = FastOutSlowInEasing
-                    )
-                ) + fadeOut(animationSpec = tween(300))
-            },
-        ) { backStackEntry ->
-            val bookId = backStackEntry.arguments!!.getString(BOOK_DETAIL_ARG_KEY)!!
-            BookDetailScreen(bookId, navController, networkStatus)
-        }
-
+        /** Category Detail Screen */
         composable(
             route = Screens.CategoryDetailScreen.route,
             arguments = listOf(navArgument(CATEGORY_DETAIL_ARG_KEY) {
@@ -220,6 +197,130 @@ fun NavGraph(
             CategoryDetailScreen(category, navController, networkStatus)
         }
 
+        /** Library Screen */
+        composable(
+            route = BottomBarScreen.Library.route,
+            exitTransition = {
+                if (initialState.destination.route == Screens.BookDetailScreen.route) {
+                    slideOutHorizontally(
+                        targetOffsetX = { -300 }, animationSpec = tween(
+                            durationMillis = 300, easing = FastOutSlowInEasing
+                        )
+                    ) + fadeOut(animationSpec = tween(300))
+                } else null
+            },
+            popEnterTransition = {
+                if (targetState.destination.route == BottomBarScreen.Library.route) {
+                    slideInHorizontally(
+                        initialOffsetX = { -300 }, animationSpec = tween(
+                            durationMillis = 300, easing = FastOutSlowInEasing
+                        )
+                    ) + fadeIn(animationSpec = tween(300))
+                } else null
+            },
+        ) {
+            LibraryScreen(navController)
+        }
+
+        /** Reader Detail Screen */
+        composable(
+            route = Screens.ReaderDetailScreen.route,
+            arguments = listOf(navArgument(
+                BOOK_ID_ARG_KEY
+            ) {
+                type = NavType.StringType
+            }),
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { 300 }, animationSpec = tween(
+                        durationMillis = 300, easing = FastOutSlowInEasing
+                    )
+                ) + fadeIn(animationSpec = tween(300))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -300 }, animationSpec = tween(
+                        durationMillis = 300, easing = FastOutSlowInEasing
+                    )
+                ) + fadeOut(animationSpec = tween(300))
+
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -300 }, animationSpec = tween(
+                        durationMillis = 300, easing = FastOutSlowInEasing
+                    )
+                ) + fadeIn(animationSpec = tween(300))
+
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { 300 }, animationSpec = tween(
+                        durationMillis = 300, easing = FastOutSlowInEasing
+                    )
+                ) + fadeOut(animationSpec = tween(300))
+            },
+        ) { backStackEntry ->
+            val bookId = backStackEntry.arguments!!.getString(BOOK_ID_ARG_KEY)!!
+            ReaderDetailScreen(bookId = bookId, navController = navController)
+        }
+
+        /** Reader Screen */
+        composable(
+            route = Screens.ReaderScreen.route,
+            arguments = listOf(navArgument(
+                BOOK_ID_ARG_KEY
+            ) {
+                type = NavType.StringType
+            }, navArgument(READER_CHAPTER_INDEX_KEY) {
+                type = NavType.IntType
+            }),
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { 300 }, animationSpec = tween(
+                        durationMillis = 300, easing = FastOutSlowInEasing
+                    )
+                ) + fadeIn(animationSpec = tween(300))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { 300 }, animationSpec = tween(
+                        durationMillis = 300, easing = FastOutSlowInEasing
+                    )
+                ) + fadeOut(animationSpec = tween(300))
+            },
+        ) { backStackEntry ->
+            val bookId = backStackEntry.arguments!!.getString(BOOK_ID_ARG_KEY)!!
+            val chapterIdx = backStackEntry.arguments!!.getInt(READER_CHAPTER_INDEX_KEY)
+            ReaderScreen(bookId = bookId, chapterIdx)
+        }
+
+        /** Settings Screen */
+        composable(
+            route = BottomBarScreen.Settings.route,
+            exitTransition = {
+                if (initialState.destination.route == Screens.OSLScreen.route || initialState.destination.route == Screens.AboutScreen.route) {
+                    slideOutHorizontally(
+                        targetOffsetX = { -300 }, animationSpec = tween(
+                            durationMillis = 300, easing = FastOutSlowInEasing
+                        )
+                    ) + fadeOut(animationSpec = tween(300))
+                } else null
+            },
+            popEnterTransition = {
+                if (initialState.destination.route == Screens.OSLScreen.route || initialState.destination.route == Screens.AboutScreen.route) {
+                    slideInHorizontally(
+                        initialOffsetX = { -300 }, animationSpec = tween(
+                            durationMillis = 300, easing = FastOutSlowInEasing
+                        )
+                    ) + fadeIn(animationSpec = tween(300))
+                } else null
+            },
+        ) {
+            SettingsScreen(navController)
+        }
+
+        /** Open Source Licenses Screen */
         composable(
             route = Screens.OSLScreen.route,
             enterTransition = {
@@ -240,6 +341,7 @@ fun NavGraph(
             OSLScreen(navController = navController)
         }
 
+        /** About Screen */
         composable(
             route = Screens.AboutScreen.route,
             enterTransition = {

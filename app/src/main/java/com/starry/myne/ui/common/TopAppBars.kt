@@ -40,7 +40,7 @@ fun CustomTopAppBar(headerText: String, icon: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 8.dp)
     ) {
         Row(
             modifier = Modifier
@@ -74,7 +74,7 @@ fun CustomTopAppBar(headerText: String, onBackButtonClicked: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 8.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically

@@ -42,6 +42,9 @@ class MainModule {
     @Provides
     fun provideLibraryDao(myneDatabase: MyneDatabase) = myneDatabase.getLibraryDao()
 
+    @Provides
+    fun provideReaderDao(myneDatabase: MyneDatabase) = myneDatabase.getReaderDao()
+
     @Singleton
     @Provides
     fun provideBookDownloader(@ApplicationContext context: Context) = BookDownloader(context)

@@ -17,15 +17,26 @@ limitations under the License.
 package com.starry.myne.database
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.starry.myne.database.library.LibraryDao
+import com.starry.myne.database.library.LibraryItem
+import com.starry.myne.database.reader.ReaderDao
+import com.starry.myne.database.reader.ReaderItem
 import com.starry.myne.others.Constants
 
-@Database(entities = [LibraryItem::class], version = 1, exportSchema = true)
+@Database(
+    entities = [LibraryItem::class, ReaderItem::class],
+    version = 2,
+    exportSchema = true,
+    autoMigrations = [AutoMigration(from = 1, to = 2)]
+)
 abstract class MyneDatabase : RoomDatabase() {
 
     abstract fun getLibraryDao(): LibraryDao
+    abstract fun getReaderDao(): ReaderDao
 
     companion object {
 

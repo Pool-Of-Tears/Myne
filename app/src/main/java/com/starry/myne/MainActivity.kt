@@ -25,7 +25,6 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
@@ -38,12 +37,11 @@ import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import coil.annotation.ExperimentalCoilApi
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.others.NetworkObserver
-import com.starry.myne.ui.screens.MainScreen
+import com.starry.myne.ui.screens.other.MainScreen
 import com.starry.myne.ui.theme.MyneTheme
-import com.starry.myne.ui.viewmodels.SettingsViewModel
-import com.starry.myne.ui.viewmodels.ThemeMode
+import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
+import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.utils.PreferenceUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -79,12 +77,6 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             MyneTheme(settingsViewModel = settingsViewModel) {
-
-                val systemUiController = rememberSystemUiController()
-                systemUiController.setSystemBarsColor(
-                    color = MaterialTheme.colorScheme.background, darkIcons = !isSystemInDarkTheme()
-                )
-
                 val status by networkObserver.observe().collectAsState(
                     initial = NetworkObserver.Status.Unavailable
                 )
@@ -93,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(status)
+                    MainScreen(status, settingsViewModel = settingsViewModel)
                 }
             }
         }

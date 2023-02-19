@@ -3,10 +3,12 @@ buildscript {
         compose_version = '1.4.0-alpha04'
         hilt_version = '2.44.2'
     }
+
     repositories {
         google()
         mavenCentral()
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.0'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20'
@@ -15,6 +17,7 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
+
 plugins {
     id 'com.android.application' version '7.4.0' apply false
     id 'com.android.library' version '7.4.0' apply false
