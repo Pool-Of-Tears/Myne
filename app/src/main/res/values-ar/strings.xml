@@ -26,6 +26,8 @@
     <string name="continue_reading_button">Resume</string>
     <string name="reader_chapters_list">Chapters</string>
     <string name="reader_file_not_found">Oops! File not found \nPlease re-download the book in case it is deleted.</string>
+    <string name="reader_max_fontsize_reached">Sorry, cannot go any higher than that!</string>
+    <string name="reader_min_fontsize_reached">Sorry, cannot go any lower than that!</string>
     <string name="settings_header">الاعدادات</string>
     <string name="app_desc">محمل الكتب الالكترونية</string>
     <string name="made_by">"صنع ب  ❤ بواسطة Shivam  "</string>

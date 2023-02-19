@@ -27,6 +27,7 @@ object PreferenceUtils {
     const val APP_THEME = "theme_settings"
     const val MATERIAL_YOU = "material_you"
     const val INTERNAL_READER = "internal_reader"
+    const val READER_FONT_SIZE = "reader_font_size"
 
     fun initialize(context: Context) {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

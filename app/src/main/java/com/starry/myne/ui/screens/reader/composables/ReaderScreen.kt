@@ -1,6 +1,8 @@
 package com.starry.myne.ui.screens.reader.composables
 
+import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -8,16 +10,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material3.*
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
@@ -30,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.starry.myne.R
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.utils.PreferenceUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -37,8 +42,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun ReaderScreen(bookId: String, chapterIndex: Int) {
     val viewModel: ReaderViewModel = hiltViewModel()
-    viewModel.loadEpubBook(bookId)
+
+    LaunchedEffect(key1 = true, block = { viewModel.loadEpubBook(bookId) })
     val state = viewModel.state
+    val context = LocalContext.current
 
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -46,7 +53,8 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
         bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
     )
 
-    val textSizeValue = remember { mutableStateOf(100) }
+    val textSizeValue =
+        remember { mutableStateOf(PreferenceUtils.getInt(PreferenceUtils.READER_FONT_SIZE, 100)) }
     val textSize = (textSizeValue.value / 10) * 1.8
 
     BottomSheetScaffold(scaffoldState = bottomSheetScaffoldState,
@@ -54,6 +62,7 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
         sheetPeekHeight = 0.dp,
         sheetContent = {
             BottomSheetContents(
+                context = context,
                 textSizeValue = textSizeValue,
                 coroutineScope = coroutineScope,
                 bottomSheetScaffoldState = bottomSheetScaffoldState
@@ -196,6 +205,7 @@ fun ReaderItem(title: String, body: String, textSize: TextUnit, onClick: () -> U
 @ExperimentalMaterialApi
 @Composable
 fun BottomSheetContents(
+    context: Context,
     textSizeValue: MutableState<Int>,
     coroutineScope: CoroutineScope,
     bottomSheetScaffoldState: BottomSheetScaffoldState
@@ -203,8 +213,8 @@ fun BottomSheetContents(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
-            .height(240.dp),
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+            .height(100.dp),
     ) {
         Row(
             modifier = Modifier
@@ -215,19 +225,28 @@ fun BottomSheetContents(
 
             Box(
                 modifier = Modifier
-                    .width(115.dp)
-                    .height(54.dp)
+                    .width(100.dp)
+                    .height(45.dp)
+                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+                    .border(
+                        1.dp, MaterialTheme.colorScheme.onSurface, shape = RoundedCornerShape(6.dp)
+                    )
                     .clip(RoundedCornerShape(6.dp))
-                    .background(MaterialTheme.colorScheme.surface)
                     .clickable {
                         if (textSizeValue.value <= 50) {
                             coroutineScope.launch {
                                 bottomSheetScaffoldState.snackbarHostState.showSnackbar(
-                                    "No", null
+                                    context.getString(R.string.reader_min_fontsize_reached), null
                                 )
                             }
                         } else {
-                            textSizeValue.value -= 10
+                            coroutineScope.launch {
+                                textSizeValue.value -= 10
+                                PreferenceUtils.putInt(
+                                    PreferenceUtils.READER_FONT_SIZE,
+                                    textSizeValue.value
+                                )
+                            }
                         }
                     }, contentAlignment = Alignment.Center
             ) {
@@ -241,12 +260,15 @@ fun BottomSheetContents(
 
             Spacer(modifier = Modifier.width(14.dp))
 
-            Card(
+            Box(
                 modifier = Modifier
-                    .height(54.dp)
-                    .width(115.dp), colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ), shape = RoundedCornerShape(6.dp)
+                    .width(100.dp)
+                    .height(45.dp)
+                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+                    .border(
+                        1.dp, MaterialTheme.colorScheme.onSurface, shape = RoundedCornerShape(6.dp)
+                    )
+                    .clip(RoundedCornerShape(6.dp))
             ) {
                 Box(
                     modifier = Modifier
@@ -262,7 +284,7 @@ fun BottomSheetContents(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_text_size),
                             contentDescription = null,
                             //    modifier = Modifier.size(size = 15.dp),
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(16.dp)
                         )
 
                         Spacer(modifier = Modifier.width(10.dp))
@@ -270,7 +292,7 @@ fun BottomSheetContents(
                         Text(
                             text = textSizeValue.value.toString(),
                             fontFamily = figeronaFont,
-                            fontSize = 22.sp,
+                            fontSize = 16.sp,
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(start = 2.dp, bottom = 1.dp),
                         )
@@ -282,19 +304,28 @@ fun BottomSheetContents(
 
             Box(
                 modifier = Modifier
-                    .width(115.dp)
-                    .height(54.dp)
+                    .width(100.dp)
+                    .height(45.dp)
+                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+                    .border(
+                        1.dp, MaterialTheme.colorScheme.onSurface, shape = RoundedCornerShape(6.dp)
+                    )
                     .clip(RoundedCornerShape(6.dp))
-                    .background(MaterialTheme.colorScheme.surface)
                     .clickable {
                         if (textSizeValue.value >= 200) {
                             coroutineScope.launch {
                                 bottomSheetScaffoldState.snackbarHostState.showSnackbar(
-                                    "No", null
+                                    context.getString(R.string.reader_max_fontsize_reached), null
                                 )
                             }
                         } else {
-                            textSizeValue.value += 10
+                            coroutineScope.launch {
+                                textSizeValue.value += 10
+                                PreferenceUtils.putInt(
+                                    PreferenceUtils.READER_FONT_SIZE,
+                                    textSizeValue.value
+                                )
+                            }
                         }
                     }, contentAlignment = Alignment.Center
             ) {
@@ -316,6 +347,7 @@ fun BottomSheetContents(
 fun BottomSheetContentsPV() {
     val textValue = remember { mutableStateOf(100) }
     BottomSheetContents(
+        context = LocalContext.current,
         textSizeValue = textValue,
         coroutineScope = rememberCoroutineScope(),
         bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
