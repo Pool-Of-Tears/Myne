@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.ui.screens
+package com.starry.myne.ui.screens.other
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.starry.myne.R
+import com.starry.myne.ui.theme.figeronaFont
 
 @ExperimentalComposeUiApi
 @Composable
@@ -49,9 +50,7 @@ fun NoInternetScreen() {
             painter = painterResource(id = R.drawable.ic_no_internet),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier
-                .size(250.dp)
-                .padding(end = 20.dp)
+            modifier = Modifier.size(140.dp)
         )
 
         Text(
@@ -59,8 +58,9 @@ fun NoInternetScreen() {
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
             letterSpacing = 2.sp,
+            fontSize = 24.sp,
+            fontFamily = figeronaFont,
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground,
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -71,9 +71,10 @@ fun NoInternetScreen() {
             modifier = Modifier
                 .padding(top = 10.dp, start = 25.dp, end = 25.dp)
                 .fillMaxWidth(),
-            letterSpacing = 1.sp,
-            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground,
+            fontSize = 18.sp,
+            fontFamily = figeronaFont,
+            fontWeight = FontWeight.Medium
         )
     }
 }

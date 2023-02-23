@@ -54,7 +54,7 @@ import com.starry.myne.navigation.Screens
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.ProgressDots
-import com.starry.myne.ui.screens.NoInternetScreen
+import com.starry.myne.ui.screens.other.NoInternetScreen
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.ui.screens.home.viewmodels.HomeViewModel

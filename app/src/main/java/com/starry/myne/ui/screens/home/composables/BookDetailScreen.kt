@@ -63,8 +63,8 @@ import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.ProgressDots
-import com.starry.myne.ui.screens.NoInternetScreen
 import com.starry.myne.ui.screens.home.viewmodels.BookDetailViewModel
+import com.starry.myne.ui.screens.other.NoInternetScreen
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
@@ -83,7 +83,6 @@ fun BookDetailScreen(
     bookId: String, navController: NavController, networkStatus: NetworkObserver.Status
 ) {
     val viewModel: BookDetailViewModel = hiltViewModel()
-    viewModel.getBookDetails(bookId)
     val state = viewModel.state
 
     val context = LocalContext.current
@@ -91,6 +90,10 @@ fun BookDetailScreen(
 
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = true, block = {
+        viewModel.getBookDetails(bookId)
+    })
 
     Scaffold(
         scaffoldState = scaffoldState,
