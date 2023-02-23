@@ -42,8 +42,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun ReaderScreen(bookId: String, chapterIndex: Int) {
     val viewModel: ReaderViewModel = hiltViewModel()
-
-    LaunchedEffect(key1 = true, block = { viewModel.loadEpubBook(bookId) })
     val state = viewModel.state
     val context = LocalContext.current
 
@@ -56,6 +54,8 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
     val textSizeValue =
         remember { mutableStateOf(PreferenceUtils.getInt(PreferenceUtils.READER_FONT_SIZE, 100)) }
     val textSize = (textSizeValue.value / 10) * 1.8
+
+    LaunchedEffect(key1 = true, block = { viewModel.loadEpubBook(bookId) })
 
     BottomSheetScaffold(scaffoldState = bottomSheetScaffoldState,
         sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
@@ -284,7 +284,8 @@ fun BottomSheetContents(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_text_size),
                             contentDescription = null,
                             //    modifier = Modifier.size(size = 15.dp),
-                            tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(16.dp)
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(16.dp)
                         )
 
                         Spacer(modifier = Modifier.width(10.dp))

@@ -37,6 +37,7 @@ import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.screens.categories.viewmodels.CategoryViewModel
+import com.starry.myne.ui.screens.other.NoInternetScreen
 import com.starry.myne.utils.BookUtils
 import kotlinx.coroutines.delay
 
