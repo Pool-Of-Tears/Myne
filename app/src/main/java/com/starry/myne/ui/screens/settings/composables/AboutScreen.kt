@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.ui.screens
+package com.starry.myne.ui.screens.settings.composables
 
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.starry.myne.BuildConfig
 import com.starry.myne.R
 import com.starry.myne.others.Constants
@@ -77,7 +79,8 @@ fun AboutScreen(navController: NavController) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(148.dp), contentAlignment = Alignment.Center
+                        .height(148.dp),
+                    contentAlignment = Alignment.Center
                 ) {
                     Box(
                         modifier = Modifier
@@ -181,13 +184,15 @@ fun AboutScreen(navController: NavController) {
                     modifier = Modifier.fillMaxSize(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.github_pfp),
-                        contentDescription = null,
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data("https://avatars.githubusercontent.com/u/58552395")
+                            .error(R.drawable.github_pfp).build(),
                         modifier = Modifier
                             .padding(start = 12.dp)
                             .size(90.dp)
-                            .clip(CircleShape)
+                            .clip(CircleShape),
+                        contentDescription = null,
                     )
 
                     Column(

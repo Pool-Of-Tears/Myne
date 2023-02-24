@@ -22,8 +22,8 @@ const val READER_CHAPTER_INDEX_KEY = "readerChapterIndex"
 
 sealed class Screens(val route: String) {
 
-    object SplashScreen : Screens("splash_screen")
     object OSLScreen : Screens("osl_screen")
+
     object AboutScreen : Screens("about_screen")
 
     object BookDetailScreen : Screens("book_detail_screen/{$BOOK_ID_ARG_KEY}") {
