@@ -8,6 +8,17 @@
   <a href="https://www.github.com/starry-shivam"><img src="https://forthebadge.com/images/badges/built-with-love.svg"/></a>
 </p>
 
+<p align="center">
+  <a href="https://t.me/PotApps"><img src="https://img.shields.io/badge/Telegram-PotApps-green?style=flat&logo=telegram"/></a>
+  <a href="https://github.com/Pool-Of-Tears/Myne/releases"><img src="https://img.shields.io/github/downloads/Pool-Of-Tears/Myne/total?label=Downloads&logo=github"</img></a>
+  <a href="https://github.com/Pool-Of-Tears/Myne/stargazers"><img src="https://img.shields.io/github/stars/Pool-Of-Tears/Myne?color=informational&label=Stars"</img></a>
+</p>
+
+<p align="center">
+  <a href=""><img src="https://img.shields.io/github/languages/code-size/Pool-Of-Tears/Myne?logo=github&logoColor=%23fff&style=for-the-badge"></img></a>
+  <a href=""><img src="https://img.shields.io/github/languages/top/Pool-Of-Tears/Myne?style=for-the-badge"></img></a>
+</p>  
+
 ------
 
 **Myne** is a [FOSS](https://en.m.wikipedia.org/wiki/Free_and_open-source_software) Android application to download ebooks from the [Project GutenBerg](https://gutenberg.org), it uses [GutenDex](https://gutendex.com) API to fetch metadata of ebooks in the backend.
@@ -40,7 +51,8 @@ metadata but the mapping is not 100% accurate and not all books available on Gut
 <h2 align="center">Highlights</h2>
 
 - Clean & beautiful UI based on Google's [material design three](https://m3.material.io/) guidelines.
-- Browse and download over 60k free ebooks available in multiple languages and updated daily.
+- Browse and download over 70k free ebooks available in multiple languages and updated daily.
+- Comes with inbuilt ebook reader while also having an option to use third-party ebook readers.
 - Compatible with Android 7.0 and above (API 24+)
 - Supports [Material You](https://www.androidpolice.com/everything-we-love-about-material-you/amp/) theming in devices running on Android 12+
 - Comes in both light and dark mode.
@@ -77,6 +89,7 @@ If this project helped you a little bit, please consider donating a small amount
   - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - Stores UI-related data that isn't destroyed on UI changes.
 - [OkHttp3](https://square.github.io/okhttp/) - OkHttp is an HTTP client for Android that’s efficient by default.
 - [Gson](https://github.com/google/gson) - A Java serialization/deserialization library to convert Java Objects into JSON and back.
+- [Jsoup](https://jsoup.org) - Jsoup is a Java library for working with real-world HTML. It provides a very convenient API for fetching URLs and extracting and manipulating data, using the best of HTML5 DOM methods and CSS selectors.
 - [Coil](https://coil-kt.github.io/coil/compose/) - An image loading library for Android backed by Kotlin Coroutines.
 - [Dagger-Hilt](https://dagger.dev/hilt/) For [Dependency injection (DI)](https://developer.android.com/training/dependency-injection)
 - [Room database](https://developer.android.com/jetpack/androidx/releases/room) - Persistence library provides an abstraction layer over SQLite to allow for more robust database access while harnessing the full power of SQLite.

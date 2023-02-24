@@ -33,15 +33,15 @@ import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.starry.myne.others.NetworkObserver
-import com.starry.myne.ui.screens.settings.composables.AboutScreen
 import com.starry.myne.ui.screens.CategoriesScreen
 import com.starry.myne.ui.screens.CategoryDetailScreen
-import com.starry.myne.ui.screens.settings.composables.OSLScreen
 import com.starry.myne.ui.screens.home.composables.BookDetailScreen
 import com.starry.myne.ui.screens.home.composables.HomeScreen
 import com.starry.myne.ui.screens.library.composables.LibraryScreen
 import com.starry.myne.ui.screens.reader.composables.ReaderDetailScreen
 import com.starry.myne.ui.screens.reader.composables.ReaderScreen
+import com.starry.myne.ui.screens.settings.composables.AboutScreen
+import com.starry.myne.ui.screens.settings.composables.OSLScreen
 import com.starry.myne.ui.screens.settings.composables.SettingsScreen
 
 @ExperimentalAnimationApi

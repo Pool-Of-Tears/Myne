@@ -118,7 +118,6 @@ fun LibraryScreen(navController: NavController) {
                 }
             }
         } else {
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
