@@ -1,6 +1,6 @@
 <div align="center">
 <img src="https://te.legra.ph/file/8234db16f1e9418b73005.png" align="center" style="width: 100%" />
-<h1>Myne: Ebook Downloader</h1>
+<h1>Myne | Ebook Downloader</h1>
 </div>
 
 <p align="center">
@@ -12,12 +12,11 @@
   <a href="https://t.me/PotApps"><img src="https://img.shields.io/badge/Telegram-PotApps-green?style=flat&logo=telegram"/></a>
   <a href="https://github.com/Pool-Of-Tears/Myne/releases"><img src="https://img.shields.io/github/downloads/Pool-Of-Tears/Myne/total?label=Downloads&logo=github"</img></a>
   <a href="https://github.com/Pool-Of-Tears/Myne/stargazers"><img src="https://img.shields.io/github/stars/Pool-Of-Tears/Myne?color=informational&label=Stars"</img></a>
+  <img alt="GitHub" src="https://img.shields.io/github/license/Pool-Of-Tears/Myne">
+  <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/Pool-Of-Tears/Myne">
+  <a href="https://www.repostatus.org/#active"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed." /></a>
+  <img alt="build-workflow"src="https://github.com/Pool-Of-Tears/Myne/actions/workflows/android.yml/badge.svg">
 </p>
-
-<p align="center">
-  <a href=""><img src="https://img.shields.io/github/languages/code-size/Pool-Of-Tears/Myne?logo=github&logoColor=%23fff&style=for-the-badge"></img></a>
-  <a href=""><img src="https://img.shields.io/github/languages/top/Pool-Of-Tears/Myne?style=for-the-badge"></img></a>
-</p>  
 
 ------
 
@@ -56,6 +55,7 @@ metadata but the mapping is not 100% accurate and not all books available on Gut
 - Compatible with Android 7.0 and above (API 24+)
 - Supports [Material You](https://www.androidpolice.com/everything-we-love-about-material-you/amp/) theming in devices running on Android 12+
 - Comes in both light and dark mode.
+- MAD: UI and logic written with pure Kotlin. Single activity, no fragments, only composable destinations.
 
 ------
 
@@ -89,7 +89,7 @@ If this project helped you a little bit, please consider donating a small amount
   - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - Stores UI-related data that isn't destroyed on UI changes.
 - [OkHttp3](https://square.github.io/okhttp/) - OkHttp is an HTTP client for Android that’s efficient by default.
 - [Gson](https://github.com/google/gson) - A Java serialization/deserialization library to convert Java Objects into JSON and back.
-- [Jsoup](https://jsoup.org) - Jsoup is a Java library for working with real-world HTML. It provides a very convenient API for fetching URLs and extracting and manipulating data, using the best of HTML5 DOM methods and CSS selectors.
+- [Jsoup](https://jsoup.org) - Jsoup is a Java library for working with HTML. It provides a convenient API for extracting and manipulating data, using the HTML5 DOM methods and CSS selectors.
 - [Coil](https://coil-kt.github.io/coil/compose/) - An image loading library for Android backed by Kotlin Coroutines.
 - [Dagger-Hilt](https://dagger.dev/hilt/) For [Dependency injection (DI)](https://developer.android.com/training/dependency-injection)
 - [Room database](https://developer.android.com/jetpack/androidx/releases/room) - Persistence library provides an abstraction layer over SQLite to allow for more robust database access while harnessing the full power of SQLite.
@@ -118,3 +118,10 @@ Copyright 2022 - 2023 Stɑrry Shivɑm
    See the License for the specific language governing permissions and
    limitations under the License.
 ```
+
+------
+
+<h2 align="center">Contributors</h2>
+
+![GitHub Contributors Image](https://contrib.rocks/image?repo=Pool-Of-Tears/Myne)
+
