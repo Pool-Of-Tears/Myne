@@ -1,0 +1,4 @@
+- Added an inbuilt ebook reader! To enable this set "Default Reader" in settings to "Internal Reader", by default it's disabled as it's a very minimal epub reader which doesn't have lots of advanced features you may need, if that's the case you can continue using some dedicated EPUB Reader app like on previous versions.
+- Switched to the self-hosted Instance of GutenDex API, loading times for books and other metadata should be faster than before.
+
+And more! visit https://github.com/Pool-Of-Tears/Myne/releases/tag/v1.2.0 for full changelog.
