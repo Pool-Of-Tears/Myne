@@ -33,7 +33,10 @@ import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.starry.myne.others.NetworkObserver
-import com.starry.myne.ui.screens.*
+import com.starry.myne.ui.screens.settings.composables.AboutScreen
+import com.starry.myne.ui.screens.CategoriesScreen
+import com.starry.myne.ui.screens.CategoryDetailScreen
+import com.starry.myne.ui.screens.settings.composables.OSLScreen
 import com.starry.myne.ui.screens.home.composables.BookDetailScreen
 import com.starry.myne.ui.screens.home.composables.HomeScreen
 import com.starry.myne.ui.screens.library.composables.LibraryScreen
@@ -53,15 +56,9 @@ fun NavGraph(
 ) {
     AnimatedNavHost(
         navController = navController,
-        startDestination = Screens.SplashScreen.route,
+        startDestination = BottomBarScreen.Home.route,
         modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ) {
-        // Splash Screen.
-        composable(
-            route = Screens.SplashScreen.route,
-        ) {
-            SplashScreen(navController = navController)
-        }
 
         /** Home Screen */
         composable(

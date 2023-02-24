@@ -335,8 +335,6 @@ fun LibraryCardButton(
         .clickable { onClick() }) {
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(6.dp)
-
-
         ) {
             Icon(
                 imageVector = icon,

@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.annotation.ExperimentalCoilApi
@@ -133,7 +134,7 @@ fun BottomBar(
                         screen = screen, isSelected = screen.route == currentDestination?.route
                     ) {
                         navController.navigate(screen.route) {
-                            popUpTo(BottomBarScreen.Home.route)
+                            popUpTo(navController.graph.findStartDestination().id)
                             launchSingleTop = true
                         }
                     }

@@ -35,13 +35,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.screens.other.MainScreen
-import com.starry.myne.ui.theme.MyneTheme
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
+import com.starry.myne.ui.theme.MyneTheme
 import com.starry.myne.utils.PreferenceUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -74,6 +75,9 @@ class MainActivity : AppCompatActivity() {
                 PreferenceUtils.MATERIAL_YOU, Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
             )
         )
+
+        // Install splash screen before setting content.
+        installSplashScreen()
 
         setContent {
             MyneTheme(settingsViewModel = settingsViewModel) {
