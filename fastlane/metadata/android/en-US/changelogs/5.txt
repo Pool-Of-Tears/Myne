@@ -1,4 +1,4 @@
-- Add material you themed monochrome icon for Android 13
+- Added material you themed monochrome icon for Android 13
 
 - Improved adaptive Icon and removed legacy icons.
 
