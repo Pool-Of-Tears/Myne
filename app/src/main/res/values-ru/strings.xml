@@ -43,11 +43,8 @@
     <string name="miscellaneous_setting_header">Разное</string>
     <string name="license_setting">Лицензия и Благодарности</string>
     <string name="license_setting_desc">Лицензии с открытым исходным кодом.</string>
-    <string name="update_setting">Проверить наличие обновлений</string>
-    <string name="update_setting_desc">Проверьте наличие новых версий приложения.</string>
-    <string name="update_available">Новая версия доступна</string>
-    <string name="no_update_available">Вы уже используете последнюю версию!</string>
-    <string name="downloading_update">Загрузка обновления…</string>
+    <string name="about_setting">App Information</string>
+    <string name="about_setting_desc">Show App information &amp; useful links</string>
     <string name="home_search_icon_desc">Поиск книг</string>
     <string name="cover_image_desc">Обложка книги</string>
     <string name="book_detail_header">Информация о книге</string>

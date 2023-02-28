@@ -44,11 +44,8 @@
     <string name="miscellaneous_setting_header">متفرقات</string>
     <string name="license_setting">التراخيص</string>
     <string name="license_setting_desc">التراخيص مفتوحة المصدر</string>
-    <string name="update_setting">البحث عن تحديثات</string>
-    <string name="update_setting_desc">البحث عن اصدارات احدث</string>
-    <string name="update_available">"نسخة جديدة متوفره "</string>
-    <string name="no_update_available">انت محدث لاخر نسخه!</string>
-    <string name="downloading_update">تحميل التحديث…</string>
+    <string name="about_setting">App Information</string>
+    <string name="about_setting_desc">Show App information &amp; useful links</string>
     <string name="home_search_icon_desc">البحث عن كتاب</string>
     <string name="cover_image_desc">صورة الغلاف</string>
     <string name="book_detail_header">تفاصيل الكتاب</string>

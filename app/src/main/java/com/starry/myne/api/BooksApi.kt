@@ -33,40 +33,41 @@ import kotlin.coroutines.suspendCoroutine
 
 object BooksApi {
 
-    private const val BASE_URL =
-        "http://ec2-54-199-237-70.ap-northeast-1.compute.amazonaws.com/books"
+    private lateinit var BASE_API_URL: String
     private const val GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes"
     private const val GOOGLE_API_KEY = "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE"
 
 
-    private val okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(60, TimeUnit.SECONDS)
-        .readTimeout(100, TimeUnit.SECONDS)
-        .build()
+    private val okHttpClient = OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS).readTimeout(100, TimeUnit.SECONDS).build()
 
     private val gsonClient = Gson()
 
     suspend fun getAllBooks(page: Long): Result<BookSet> {
-        val request = Request.Builder().get().url("${BASE_URL}?page=$page").build()
+        setApiUrlIfNotSetAlready()
+        val request = Request.Builder().get().url("${BASE_API_URL}?page=$page").build()
         return makeApiRequest(request)
     }
 
     suspend fun searchBooks(query: String): Result<BookSet> {
+        setApiUrlIfNotSetAlready()
         val encodedString = withContext(Dispatchers.IO) {
             URLEncoder.encode(query, "UTF-8")
         }
-        val request = Request.Builder().get().url("${BASE_URL}?search=$encodedString").build()
+        val request = Request.Builder().get().url("${BASE_API_URL}?search=$encodedString").build()
         return makeApiRequest(request)
     }
 
     suspend fun getBookById(bookId: String): Result<BookSet> {
-        val request = Request.Builder().get().url("${BASE_URL}?ids=$bookId").build()
+        setApiUrlIfNotSetAlready()
+        val request = Request.Builder().get().url("${BASE_API_URL}?ids=$bookId").build()
         return makeApiRequest(request)
     }
 
     suspend fun getBooksByCategory(category: String, page: Long): Result<BookSet> {
-        val request = Request.Builder().get().url("${BASE_URL}?page=$page&topic=$category").build()
+        setApiUrlIfNotSetAlready()
+        val request =
+            Request.Builder().get().url("${BASE_API_URL}?page=$page&topic=$category").build()
         return makeApiRequest(request)
     }
 
@@ -131,6 +132,31 @@ object BooksApi {
             }
         } catch (exc: JSONException) {
             null
+        }
+    }
+
+    private suspend fun setApiUrlIfNotSetAlready() {
+        if (!this::BASE_API_URL.isInitialized) {
+            val request = Request.Builder().get()
+                .url("https://raw.githubusercontent.com/starry-shivam/stuffs/main/myne-api-url")
+                .build()
+            val response = suspendCoroutine { continuation ->
+                okHttpClient.newCall(request).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        continuation.resumeWithException(e)
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        response.use {
+                            continuation.resume(
+                                response.body!!.string()
+                            )
+                        }
+                    }
+                })
+            }
+            val jsonObj = JSONObject(response)
+            BASE_API_URL = jsonObj.getString("api_url")
         }
     }
 
