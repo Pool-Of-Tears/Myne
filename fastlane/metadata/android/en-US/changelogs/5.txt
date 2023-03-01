@@ -1,0 +1,7 @@
+- Added material you themed monochrome icon for Android 13
+
+- Improved adaptive Icon and removed legacy icons.
+
+- Removed check for updates thingy from settings.
+
+- Some other minor improvements and fixes.

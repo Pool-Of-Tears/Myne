@@ -57,9 +57,6 @@ import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.PreferenceUtils
 import com.starry.myne.utils.getActivity
-import com.starry.myne.utils.toToast
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalCoilApi
@@ -72,7 +69,6 @@ fun SettingsScreen(navController: NavController) {
     val viewModel = (context.getActivity() as MainActivity).settingsViewModel
 
     val snackBarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         modifier = Modifier.padding(bottom = 70.dp),
@@ -88,18 +84,10 @@ fun SettingsScreen(navController: NavController) {
                 icon = R.drawable.ic_nav_settings
             )
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                SettingsCard(onClick = {
-                    navController.navigate(Screens.AboutScreen.route)
-                })
+                SettingsCard()
                 GeneralOptionsUI()
-                DisplayOptionsUI(viewModel = viewModel, context = context)
-                InformationUI(
-                    navController = navController,
-                    viewModel = viewModel,
-                    context = context,
-                    coroutineScope = coroutineScope,
-                    snackBarHostState = snackBarHostState
-                )
+                DisplayOptionsUI(viewModel = viewModel, context = context, snackBarHostState)
+                InformationUI(navController = navController)
             }
         }
     }
@@ -107,13 +95,12 @@ fun SettingsScreen(navController: NavController) {
 
 @Composable
 @ExperimentalMaterial3Api
-fun SettingsCard(onClick: () -> Unit) {
+fun SettingsCard() {
     Card(
         modifier = Modifier
             .height(150.dp)
             .padding(10.dp)
             .fillMaxWidth(),
-        onClick = onClick,
         shape = RoundedCornerShape(6.dp)
     ) {
         Row(
@@ -284,7 +271,11 @@ fun GeneralOptionsUI() {
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
-fun DisplayOptionsUI(viewModel: SettingsViewModel, context: Context) {
+fun DisplayOptionsUI(
+    viewModel: SettingsViewModel,
+    context: Context,
+    snackbarHostState: SnackbarHostState,
+) {
     val displayValue =
         when (PreferenceUtils.getInt(PreferenceUtils.APP_THEME, ThemeMode.Auto.ordinal)) {
             ThemeMode.Light.ordinal -> "Light"
@@ -340,7 +331,9 @@ fun DisplayOptionsUI(viewModel: SettingsViewModel, context: Context) {
             PreferenceUtils.putBoolean(PreferenceUtils.MATERIAL_YOU, true)
         } else {
             materialYouSwitch.value = false
-            stringResource(id = R.string.material_you_error).toToast(context)
+            LaunchedEffect(
+                key1 = true,
+                block = { snackbarHostState.showSnackbar(context.getString(R.string.material_you_error)) })
         }
     } else {
         viewModel.setMaterialYou(false)
@@ -439,14 +432,7 @@ fun DisplayOptionsUI(viewModel: SettingsViewModel, context: Context) {
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
-fun InformationUI(
-    viewModel: SettingsViewModel,
-    context: Context,
-    navController: NavController,
-    coroutineScope: CoroutineScope,
-    snackBarHostState: SnackbarHostState
-) {
-
+fun InformationUI(navController: NavController) {
     Box {
         Column(
             modifier = Modifier
@@ -465,46 +451,13 @@ fun InformationUI(
                 mainText = stringResource(id = R.string.license_setting),
                 subText = stringResource(id = R.string.license_setting_desc),
                 onClick = { navController.navigate(Screens.OSLScreen.route) })
-            SettingItem(icon = R.drawable.ic_settings_update,
-                mainText = stringResource(id = R.string.update_setting),
-                subText = stringResource(id = R.string.update_setting_desc),
-                onClick = {
-                    viewModel.checkForUpdates { updateAvailable, newReleaseLink, errorOnRequest ->
-                        if (errorOnRequest) {
-                            coroutineScope.launch {
-                                snackBarHostState.showSnackbar(
-                                    message = context.getString(R.string.error),
-                                )
-                            }
-                        }
-                        if (updateAvailable) {
-                            coroutineScope.launch {
-                                val result = snackBarHostState.showSnackbar(
-                                    message = context.getString(R.string.update_available),
-                                    actionLabel = "UPDATE"
-                                )
+            SettingItem(
+                icon = R.drawable.ic_settings_about,
+                mainText = stringResource(id = R.string.about_setting),
+                subText = stringResource(id = R.string.about_setting_desc),
+                onClick = { navController.navigate(Screens.AboutScreen.route) }
+            )
 
-                                when (result) {
-                                    SnackbarResult.ActionPerformed -> {
-                                        viewModel.downloadUpdate(
-                                            newReleaseLink!!,
-                                            (context.getActivity() as MainActivity)
-                                        )
-                                    }
-                                    SnackbarResult.Dismissed -> {
-                                        /* dismissed, no action needed */
-                                    }
-                                }
-                            }
-                        } else {
-                            coroutineScope.launch {
-                                snackBarHostState.showSnackbar(
-                                    message = context.getString(R.string.no_update_available)
-                                )
-                            }
-                        }
-                    }
-                })
         }
     }
 
