@@ -4,10 +4,10 @@ Our mission is to help people protect their privacy, data, and devices from onli
 We do not require you to create any kind of account with your personally identifiable information inorder to use the app.
 We ask for only the least amount of information necessary for the proper functioning of the application, which are explained below.
 
-#### Why is Internet permission is required?
+#### Why Internet permission is required?
 Internet permission is required to browse and download ebooks from the [Project Gutenberg](https://gutenberg.org)'s book library which is hosted on the cloud.
 
-#### Why is Storage permission is required?
+#### Why Storage permission is required?
 The app will only ask for storage permission if your device is running on Android 12 or earlier.
 Storage access is required if you want to download ebooks in local storage of your device, however if you're running on Android 13 and above, the app won't ask you for storage access as it uses scoped-storagw API and only has access to files created by itself (i.e. the app cannot access any of your personal files except the ebooks which you've downloaded using the app).
 
