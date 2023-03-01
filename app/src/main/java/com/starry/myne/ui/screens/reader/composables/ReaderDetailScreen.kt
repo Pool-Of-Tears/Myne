@@ -99,9 +99,9 @@ fun ReaderDetailScreen(bookId: String, navController: NavController) {
                         .fillMaxWidth()
                         .height(240.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.book_reader_bg),
-                        contentDescription = "",
+                    AsyncImage(
+                        model = R.drawable.book_reader_bg,
+                        contentDescription = null,
                         alpha = 0.35f,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop

@@ -20,10 +20,13 @@ import android.app.DownloadManager
 import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -150,9 +153,9 @@ fun BookDetailScreen(
                                 .fillMaxWidth()
                                 .height(240.dp)
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.book_details_bg),
-                                contentDescription = "",
+                            AsyncImage(
+                                model = R.drawable.book_details_bg,
+                                contentDescription = null,
                                 alpha = 0.35f,
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
