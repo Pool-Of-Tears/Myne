@@ -45,9 +45,7 @@ class BookDownloader(context: Context) {
 
     @SuppressLint("Range")
     fun downloadBook(
-        book: Book,
-        downloadProgressListener: (Float, Int) -> Unit,
-        onDownloadSuccess: () -> Unit
+        book: Book, downloadProgressListener: (Float, Int) -> Unit, onDownloadSuccess: () -> Unit
     ) {
         val filename = getFilenameForBook(book)
         val uri = Uri.parse(book.formats.applicationepubzip)
@@ -123,6 +121,6 @@ class BookDownloader(context: Context) {
     fun cancelDownload(downloadId: Long?) = downloadId?.let { downloadManager.remove(it) }
 
     fun getFilenameForBook(book: Book) =
-        book.title.split(" ").joinToString(separator = "+") + ".epub"
+        book.title.replace(":", ";").split(" ").joinToString(separator = "+") + ".epub"
 
 }
