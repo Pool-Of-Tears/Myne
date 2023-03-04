@@ -29,21 +29,34 @@ metadata but the mapping is not 100% accurate and not all books available on Gut
 
 ------
 
-<div align="center">
+<h2 align="center">Donations</h2>
 
+If this project helped you a little bit, please consider donating a small amount to keep the projects going, Your donations helps ensure that my open source projects are actively maintained. You can donate via following mediums:
+
+[![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/starry-shivam)
+[![Bitcoin](https://img.shields.io/badge/Bitcoin-000?style=for-the-badge&logo=bitcoin&logoColor=white)](https://www.blockchain.com/btc/address/bc1q82qh9hw5xupwlf0f3ddfud63sek53lavk6cf0k)
+[![Ethereum](https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white)](https://www.blockchain.com/eth/address/0x9ef20ad6FBf1985e6eF6ea6337ad800Cb8126eD3)
+![](https://img.shields.io/badge/starry%40airtel-UPI-red?style=for-the-badge)
+
+Or you could just buy the app from Google Play Store. You'll get constant updates without the need to get all the way here and download the release all by yourself and install the release all by yourself and then you realize you have a different package name so you contact me but I really don't have time for this so I update it on google play and then you realize your installer doesn't work and then you realize your whole life is like this, miserable and not working but then you see a point of light in the distance so you run towards and and it's the "Buy" button in the Myne's page on google play, it'l make your life easier.
+
+------
+<h2 align="center">Downloads</h2>
+
+<div align="center">
+<a href="https://play.google.com/store/apps/details?id=com.starry.myne"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="65"</img></a>
 <a href='https://f-droid.org/packages/com.starry.myne/'><img alt='Get it on F-Droid' src='https://fdroid.gitlab.io/artwork/badge/get-it-on.png' height='65'/></a>
 <a href='https://apt.izzysoft.de/fdroid/index/apk/com.starry.myne'><img alt='Get it on IzzyOnDroid' src='https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png' height='65'/></a>
-[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="65">](https://github.com/Pool-Of-Tears/Myne/releases/latest)
-
+<a href="https://github.com/Pool-Of-Tears/Myne/releases/latest"><img alt="Get it on GitHub" src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="65"</img></a>
 </div>
 
 ------
 
 <h2 align="center">Screenshots</h2>
 
-| ![](https://te.legra.ph/file/efaa1f70b56c2ce1af969.jpg) | ![](https://te.legra.ph/file/4344ce91092a05f2007f9.jpg) | ![](https://te.legra.ph/file/b1b1578b3b01436d80bba.jpg) | ![](https://te.legra.ph/file/4902644c0b32e1be4c9f0.jpg) |
-|--------------------------------------------------------|--------------------------------------------------------|--------------------------------------------------------|--------------------------------------------------------|
-| ![](https://te.legra.ph/file/828b97b5b1bd5730d40f6.jpg) | ![](https://te.legra.ph/file/4898106707bf8b38403ab.jpg) | ![](https://te.legra.ph/file/655a59bb2537492730888.jpg) | ![](https://te.legra.ph/file/d7db728fa2201be8b31df.jpg) |
+| ![](https://graph.org/file/a86b19969bbba506fcdfa.png) | ![](https://graph.org/file/7d1964fb46fd1f4ebf98c.png) | ![](https://graph.org/file/14bc72fa57c42deaf03bf.png) |
+|-------------------------------------------------------|-------------------------------------------------------|-------------------------------------------------------|
+| ![](https://graph.org/file/3b2b55557ef23d96213ba.png) | ![](https://graph.org/file/0278019a5078d6f8a6155.png) | ![](https://graph.org/file/c44d5574399783320be10.png) |
 
 ------
 
@@ -64,17 +77,6 @@ metadata but the mapping is not 100% accurate and not all books available on Gut
 If you want to make app available in your language, you're very welcome to create a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) with your translation file.
 The string resources can be found under `/app/src/main/res/values/strings.xml`. It is easiest to make a translation using the Android Studio XML editor, but you can always go with your favorite XML-text editor instead.
 Checkout this guide to learn more about translation strings from [Helpshift](https://developers.helpshift.com/android/i18n/) for Android.
-
-------
-
-<h2 align="center">Donations</h2>
-
-If this project helped you a little bit, please consider donating a small amount to support further development and ofcourse boosting morale :)
-
-[![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/starry-shivam)
-[![Bitcoin](https://img.shields.io/badge/Bitcoin-000?style=for-the-badge&logo=bitcoin&logoColor=white)](https://www.blockchain.com/btc/address/bc1q82qh9hw5xupwlf0f3ddfud63sek53lavk6cf0k)
-[![Ethereum](https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white)](https://www.blockchain.com/eth/address/0x9ef20ad6FBf1985e6eF6ea6337ad800Cb8126eD3)
-![](https://img.shields.io/badge/starry%40airtel-UPI-red?style=for-the-badge)
 
 ------
 
@@ -118,10 +120,3 @@ Copyright 2022 - 2023 Stɑrry Shivɑm
    See the License for the specific language governing permissions and
    limitations under the License.
 ```
-
-------
-
-<h2 align="center">Contributors</h2>
-
-![GitHub Contributors Image](https://contrib.rocks/image?repo=Pool-Of-Tears/Myne)
-
