@@ -9,7 +9,7 @@ Internet permission is required to browse and download ebooks from the [Project 
 
 #### Why Storage permission is required?
 The app will only ask for storage permission if your device is running on Android 12 or earlier.
-Storage access is required if you want to download ebooks in local storage of your device, however if you're running on Android 13 and above, the app won't ask you for storage access as it uses scoped-storagw API and only has access to files created by itself (i.e. the app cannot access any of your personal files except the ebooks which you've downloaded using the app).
+Storage access is required if you want to download ebooks in local storage of your device, however if you're running on Android 13 and above, the app won't ask you for storage access as it uses scoped-storage API and only has access to files created by itself (i.e. the app cannot access any of your personal files except the ebooks which you've downloaded using the app).
 
 #### Terms of Use
 Thank you for using Myne Ebook Downloader. To protect the app and our users we need this user agreement to set rules that are required to use our software.
