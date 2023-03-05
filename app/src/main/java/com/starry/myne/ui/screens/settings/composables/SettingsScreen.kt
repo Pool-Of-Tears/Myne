@@ -168,13 +168,13 @@ fun SettingsCard() {
 @Composable
 fun GeneralOptionsUI() {
     val internalReaderValue = when (PreferenceUtils.getBoolean(
-        PreferenceUtils.INTERNAL_READER, false
+        PreferenceUtils.INTERNAL_READER, true
     )) {
         true -> "Internal Reader"
         false -> "External Reader"
     }
     val internalReaderDialog = remember { mutableStateOf(false) }
-    val radioOptions = listOf("External Reader", "Internal Reader")
+    val radioOptions = listOf("Internal Reader", "External Reader")
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(internalReaderValue) }
 
     Column(
