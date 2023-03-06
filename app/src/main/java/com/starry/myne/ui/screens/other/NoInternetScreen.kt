@@ -63,6 +63,7 @@ fun NoInternetScreen() {
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground,
         )
+
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(

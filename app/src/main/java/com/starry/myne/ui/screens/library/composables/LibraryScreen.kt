@@ -220,7 +220,6 @@ fun LibraryCard(
 ) {
     Card(
         modifier = Modifier
-            .height(125.dp)
             .fillMaxWidth(), colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
                 3.dp
@@ -228,9 +227,7 @@ fun LibraryCard(
         ), shape = RoundedCornerShape(0.dp)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 12.dp, end = 12.dp),
+            modifier = Modifier.padding(start = 12.dp, end = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
@@ -313,7 +310,7 @@ fun LibraryCard(
                         icon = Icons.Outlined.Delete,
                         onClick = { onDeleteClick() })
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(6.dp))
             }
         }
     }

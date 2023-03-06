@@ -5,8 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,7 +50,6 @@ import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.getActivity
-import com.starry.myne.utils.toToast
 
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
@@ -61,39 +65,42 @@ fun ReaderDetailScreen(bookId: String, navController: NavController) {
     val context = LocalContext.current
     val settingsVM = (context.getActivity() as MainActivity).settingsViewModel
 
-    Scaffold(topBar = {
-        CustomTopAppBar(headerText = stringResource(id = R.string.reader_detail_header)) {
-            navController.navigateUp()
-        }
-    }, floatingActionButton = {
-        ExtendedFloatingActionButton(text = { Text(text = stringResource(id = if (state.readerItem != null) R.string.continue_reading_button else R.string.start_reading_button)) },
-            onClick = { navController.navigate(Screens.ReaderScreen.withBookId(bookId)) },
-            icon = {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_fab_button),
-                    contentDescription = null
-                )
-            })
-    }) {
-        Column(
+    if (state.isLoading) {
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(it)
+                .padding(bottom = 65.dp),
+            contentAlignment = Alignment.Center
         ) {
-            if (state.isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 65.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    ProgressDots()
-                }
-            } else if (state.error != null) {
-                stringResource(id = R.string.reader_file_not_found).toToast(context)
+            ProgressDots()
+        }
+    } else if (state.error != null && state.error == ReaderDetailViewModel.FILE_NOT_FOUND) {
+        ReaderError(navController = navController)
+    } else {
+        Scaffold(topBar = {
+            CustomTopAppBar(headerText = stringResource(id = R.string.reader_detail_header)) {
                 navController.navigateUp()
-            } else {
+            }
+        }, floatingActionButton = {
+            ExtendedFloatingActionButton(
+                text = { Text(text = stringResource(id = if (state.readerItem != null) R.string.continue_reading_button else R.string.start_reading_button)) },
+                onClick = { navController.navigate(Screens.ReaderScreen.withBookId(bookId)) },
+                icon = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_fab_button),
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.padding(end = 10.dp, bottom = 8.dp),
+            )
+        }) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(it)
+            ) {
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -295,7 +302,107 @@ fun ChapterItem(chapterTitle: String, onClick: () -> Unit) {
         }
     }
 
+}
 
+
+@Composable
+fun ReaderError(navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_reader_error),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.size(140.dp)
+        )
+
+        Spacer(modifier = Modifier.height(18.dp))
+
+        Text(
+            text = stringResource(id = R.string.reader_error_title),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+            letterSpacing = 2.sp,
+            fontSize = 24.sp,
+            fontFamily = figeronaFont,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+
+            Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                text = stringResource(id = R.string.reader_error_subtitle),
+                letterSpacing = 2.sp,
+                fontSize = 20.sp,
+                fontFamily = figeronaFont,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                text = stringResource(id = R.string.reader_error_reason_one_title),
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 18.sp,
+                fontFamily = figeronaFont,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                text = stringResource(id = R.string.reader_error_reason_one_desc),
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = figeronaFont,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                text = stringResource(id = R.string.reader_error_reason_two_title),
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 18.sp,
+                fontFamily = figeronaFont,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                text = stringResource(id = R.string.reader_error_reason_two_desc),
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = figeronaFont,
+            )
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Button(
+            onClick = { navController.navigateUp() },
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .height(55.dp),
+            shape = RoundedCornerShape(14.dp),
+        ) {
+            Row {
+                Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
+                Spacer(modifier = Modifier.width(14.dp))
+                Text(
+                    text = stringResource(id = R.string.reader_error_back_button),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+            }
+        }
+    }
 }
 
 
@@ -307,4 +414,5 @@ fun ChapterItem(chapterTitle: String, onClick: () -> Unit) {
 @Composable
 fun EpubDetailScreenPV() {
     ReaderDetailScreen("", rememberNavController())
+   // ReaderError(rememberNavController())
 }
