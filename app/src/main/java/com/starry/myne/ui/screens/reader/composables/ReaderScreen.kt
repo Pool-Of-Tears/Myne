@@ -236,7 +236,7 @@ fun BottomSheetContents(
                         if (textSizeValue.value <= 50) {
                             coroutineScope.launch {
                                 bottomSheetScaffoldState.snackbarHostState.showSnackbar(
-                                    context.getString(R.string.reader_min_fontsize_reached), null
+                                    context.getString(R.string.reader_min_font_size_reached), null
                                 )
                             }
                         } else {
@@ -316,7 +316,7 @@ fun BottomSheetContents(
                         if (textSizeValue.value >= 200) {
                             coroutineScope.launch {
                                 bottomSheetScaffoldState.snackbarHostState.showSnackbar(
-                                    context.getString(R.string.reader_max_fontsize_reached), null
+                                    context.getString(R.string.reader_max_font_size_reached), null
                                 )
                             }
                         } else {
