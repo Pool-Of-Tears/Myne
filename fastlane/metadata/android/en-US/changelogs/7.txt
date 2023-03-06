@@ -1,0 +1,3 @@
+- Fixed an error when downloading e-books which contains forbidden characters in their filename.
+- Fixed library button texts going out of borders when user has custom font size set on their device.
+And more! visit https://github.com/Pool-Of-Tears/Myne/releases/tag/v1.4.0 for full changelog.
