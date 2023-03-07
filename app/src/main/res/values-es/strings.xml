@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Others Strings -->
+    <string name="not_applicable">N/A</string>
+    <string name="woops">"¡Ups!"</string>
+    <string name="dialog_confirm_button">Confirmar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="storage_perm_error">Por favor, acepte el permiso de almacenamiento</string>
+    <string name="no_app_to_handle_epub">No se ha podido encontrar ninguna aplicación para abrir el fichero epub.</string>
+    <string name="error">¡Ups! Algo ha ido mal.</string>
+
+    <!-- Navigation titles -->
+    <string name="navigation_home">Inicio</string>
+    <string name="navigation_categories">Categorías</string>
+    <string name="navigation_library">Biblioteca</string>
+    <string name="navigation_settings">Ajustes</string>
+
+    <!-- Home screen. -->
+    <string name="home_header">Todos los libros</string>
+
+    <!-- Categories screen. -->
+    <string name="categories_header">Categorías</string>
+
+    <!-- Library screen. -->
+    <string name="library_header">Biblioteca</string>
+    <string name="empty_library">¡Nada por aquí!</string>
+    <string name="open_app_chooser">Abrir con…</string>
+    <string name="share_app_chooser">Compartir con…</string>
+    <string name="library_read_button">Leer</string>
+    <string name="library_delete_button">Eliminar</string>
+    <string name="library_delete_dialog_title">¿Está seguro de eso?</string>
+
+    <!-- Reader Detail Screen -->
+    <string name="reader_detail_header">Lector de Ebook</string>
+    <string name="start_reading_button">Comenzar</string>
+    <string name="continue_reading_button">Continuar</string>
+    <string name="reader_chapters_list">Capítulos</string>
+    <string name="reader_error_title">¡Ups! No se ha podido abrir el fichero del e-book :(</string>
+    <string name="reader_error_subtitle">Esto puede deberse a varios motivos.</string>
+    <string name="reader_error_reason_one_title">1. El fichero del e-book ha sido eliminado.</string>
+    <string name="reader_error_reason_one_desc">Por favor, compruebe dentro de la carpeta MyneEbooks en su directorio de descarga, y si ese es el caso, por favor vuelva a descargar el libro.</string>
+    <string name="reader_error_reason_two_title">2. El archivo está ahí, pero has desinstalado la aplicación previamente.</string>
+    <string name="reader_error_reason_two_desc">Myne utiliza la API de almacenamiento de Android, lo que significa que sólo puede acceder a los archivos que fueron creados por sí mismo y no puede acceder a los archivos personales del usuario. Debido a esta limitación, una vez que el usuario desinstala la aplicación, pierde el permiso para leer y modificar archivos, incluso si fue creado por sí mismo, si ese es el caso, por favor, elimine el archivo epub del libro electrónico de la carpeta MyneEbooks dentro de su directorio de descarga y simplemente volver a descargar el libro.</string>
+    <string name="reader_error_back_button">Cerrar e ir atrás</string>
+
+    <!--Reader Screen -->
+    <string name="reader_max_font_size_reached">Lo sentimos, no puede subir más</string>
+    <string name="reader_min_font_size_reached">Lo sentimos, no puede bajar más</string>
+
+    <!-- Settings screen. -->
+    <string name="settings_header">Ajustes</string>
+    <string name="app_desc">Descargador de Ebooks</string>
+    <string name="made_by">Hecho con ❤ por Shivam</string>
+    <string name="general_settings_header">General</string>
+    <string name="default_reader_setting">Lector por defecto</string>
+    <string name="default_reader_dialog_title">Abrir ebooks con…</string>
+    <string name="display_setting_header">Mostrar</string>
+    <string name="theme_setting">Tema por defecto</string>
+    <string name="theme_dialog_title">Cambiar tema</string>
+    <string name="theme_dialog_apply_button">Aplicar</string>
+    <string name="material_you_settings_disabled_desc">Habilitar Material You</string>
+    <string name="material_you_settings_enabled_desc">Deshabilitar Material You</string>
+    <string name="material_you_error">Esta función es sólo para dispositivos con Android 12 o superior.</string>
+    <string name="miscellaneous_setting_header">Varios</string>
+    <string name="license_setting">Licencia y agradecimientos</string>
+    <string name="license_setting_desc">Licencias de código abierto.</string>
+    <string name="about_setting">Información de la aplicación</string>
+    <string name="about_setting_desc">Mostrar información sobre la aplicación y enlaces útiles</string>
+
+    <!-- Books card -->
+    <string name="home_search_icon_desc">Buscar libros</string>
+    <string name="cover_image_desc">Imagen de la portada</string>
+
+    <!-- Book Detail Screen -->
+    <string name="book_detail_header">Detalles del libro</string>
+    <string name="back_button_desc">Atrás.</string>
+    <string name="share_button_desc">Compartir este libro.</string>
+    <string name="share_intent_header">Compartir usando…</string>
+    <string name="read_book_button">Empezar a leer</string>
+    <string name="download_book_button">Descargar</string>
+    <string name="downloading_book">¡Descarga iniciada!</string>
+    <string name="book_synopsis">Sinopsis</string>
+    <string name="book_synopsis_not_found">No disponible</string>
+
+    <!-- About Screen -->
+    <string name="about_header">A cerca de</string>
+    <string name="about_desc">Una aplicación Android gratuita y de código abierto para descargar libros electrónicos del Proyecto GutenBerg.</string>
+    <string name="developed_by">Desarrollado por</string>
+
+    <!-- Open source libraries screen -->
+    <string name="open_source_header">Librerías de código abierto</string>
+
+    <!-- No Internet Screen -->
+    <string name="no_internet_connection">No hay conexión a internet. Por favor, compruebe su conexión e inténtelo de nuevo.</string>
+
+</resources>
