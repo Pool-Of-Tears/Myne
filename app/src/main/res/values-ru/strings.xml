@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Others Strings -->
     <string name="not_applicable">Неизвестно</string>
     <string name="woops">Упс!!</string>
     <string name="dialog_confirm_button">Подтвердить</string>
@@ -7,12 +8,20 @@
     <string name="storage_perm_error">Пожалуйста, предоставьте разрешение на хранение!</string>
     <string name="no_app_to_handle_epub">Не удается найти ни одного приложения для открытия файла epub.</string>
     <string name="error">Ой! Что-то пошло не так.</string>
+    
+    <!-- Navigation titles -->
     <string name="navigation_home">Главная</string>
     <string name="navigation_categories">Категории</string>
     <string name="navigation_library">Библиотека</string>
     <string name="navigation_settings">Настройки</string>
+    
+    <!-- Home screen. -->
     <string name="home_header">Все книги</string>
+    
+    <!-- Categories screen. -->
     <string name="categories_header">Категории</string>
+    
+    <!-- Library screen. -->
     <string name="library_header">Библиотека</string>
     <string name="empty_library">Здесь пусто!</string>
     <string name="open_app_chooser">Открыть с помощью…</string>
@@ -20,19 +29,25 @@
     <string name="library_read_button">Читать</string>
     <string name="library_delete_button">Удалить</string>
     <string name="library_delete_dialog_title">Вы в этом уверены?</string>
+    
+    <!-- Reader Detail Screen -->
     <string name="reader_detail_header">Райдер</string>
     <string name="start_reading_button">Начать читать</string>
     <string name="continue_reading_button">Продолжить</string>
     <string name="reader_chapters_list">Главы</string>
-    <string name="reader_error_title">Упс! Неудалось открыть файл:(</string>
+    <string name="reader_error_title">Упс! Неудалось открыть файл :(</string>
     <string name="reader_error_subtitle">Для того, чтобы это произошло, может быть несколько причин.</string>
     <string name="reader_error_reason_one_title">1. Файл был удален.</string>
     <string name="reader_error_reason_one_desc">Пожалуйста, проверьте внутри папки "Мои электронные книги" в вашем каталоге загрузки, и если это так, пожалуйста, повторно загрузите книгу.</string>
-    <string name="reader_error_reason_two_title">2. Файл есть, но ранее вы адалили приложение.</string>
+    <string name="reader_error_reason_two_title">2. Файл есть, но ранее вы удалили приложение.</string>
     <string name="reader_error_reason_two_desc">Myne использует функции ограниченного хранилища Android что означает, что он может получить доступ только к тем файлам, которые были созданы им самим, и не может получить доступ ни к каким личным файлам пользователя. Из-за этого ограничения, как только пользователь деинсталлирует приложение, оно теряет разрешение на чтение и изменение файлов, даже если файл был создан приложением до этого. Пожалуйста, удалите файл epub электронной книги из папки MyneEbooks в вашем каталоге загрузок и просто повторно загрузите книгу.</string>
     <string name="reader_error_back_button">Закрыть &amp; Назад</string>
+    
+    <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Извините, достигнут максимальный размер шрифта!</string>
     <string name="reader_min_font_size_reached">Извините, достигнут минимальный размер шрифта!</string>
+    
+    <!-- Settings screen. -->
     <string name="settings_header">Настройки</string>
     <string name="app_desc">Установщик электронных книг</string>
     <string name="made_by">"Сделано Shivam, с любовью ❤"</string>
@@ -51,8 +66,12 @@
     <string name="license_setting_desc">Лицензии с открытым исходным кодом.</string>
     <string name="about_setting">Информация о приложении</string>
     <string name="about_setting_desc">Информация о приложении &amp; полезные ссылки</string>
+    
+    <!-- Books card -->
     <string name="home_search_icon_desc">Поиск книг</string>
     <string name="cover_image_desc">Обложка книги</string>
+    
+    <!-- Book Detail Screen -->
     <string name="book_detail_header">Информация о книге</string>
     <string name="back_button_desc">Назад</string>
     <string name="share_button_desc">Поделиться книгой</string>
@@ -62,9 +81,15 @@
     <string name="downloading_book">Загрузка началась!</string>
     <string name="book_synopsis">Краткий обзор</string>
     <string name="book_synopsis_not_found">Недоступно</string>
+    
+    <!-- About Screen -->
     <string name="about_header">Описание</string>
     <string name="about_desc">Бесплатное приложение для Android с открытым исходным кодом для загрузки электронных книг из проекта GutenBerg.</string>
     <string name="developed_by">Разработано</string>
+    
+    <!-- Open source libraries screen -->
     <string name="open_source_header">Библиотеки с открытым исходным кодом</string>
+    
+    <!-- No Internet Screen -->
     <string name="no_internet_connection">Отсутствует подключение к интернету. Пожалуйста, проверьте ваше соединение и повторите попытку.</string>
 </resources>
