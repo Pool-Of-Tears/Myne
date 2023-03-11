@@ -1,0 +1,3 @@
+- Fixed a crash when trying to open a book from book details screen (in some cases).
+- Added Spanish translations; Credits: Rodrigo.
+- Updated Russian translation; Credits: Alex.
