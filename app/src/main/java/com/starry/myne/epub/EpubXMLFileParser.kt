@@ -34,7 +34,7 @@ class EpubXMLFileParser(
         val absPath = File(
             fileParentFolder,
             relPathEncoded.decodedURL
-        ).canonicalPath.removePrefix(absBasePath).replace("""\""", "/").removePrefix("/")
+        ).canonicalPath.removePrefix(absBasePath).replace("\\", "/").removePrefix("/")
         // Use run catching so it can be run locally without crash
         val bitmap = zipFile[absPath]?.second?.runCatching {
             BitmapFactory.decodeByteArray(this, 0, this.size)

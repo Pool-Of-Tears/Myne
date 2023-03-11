@@ -46,7 +46,7 @@ fun createEpubBook(filePath: String): EpubBook {
         ?: throw Exception(".opf metadata title tag missing")
     val bookUrl = bookTitle.asFileName()
     val rootPath = File(opfFilePath).parentFile ?: File("")
-    fun String.absPath() = File(rootPath, this).path.replace("""\""", "/").removePrefix("/")
+    fun String.absPath() = File(rootPath, this).path.replace("\\", "/").removePrefix("/")
 
     val items = manifest.selectChildTag("item").map {
         EpubManifestItem(
