@@ -1,0 +1,99 @@
+<resources>
+    <string name="app_name" translatable="false">Myne</string>
+    <!-- Others Strings -->
+    <string name="not_applicable">N/A</string>
+    <string name="woops">"Jejda!"</string>
+    <string name="dialog_confirm_button">Potvrdit</string>
+    <string name="cancel">Zrušit</string>
+    <string name="storage_perm_error">Udělte prosím přístup k úložišti!</string>
+    <string name="no_app_to_handle_epub">Nepodařilo se najít aplikaci, která by dokázala otevřít soubor epub.</string>
+    <string name="error">Jejda! Něco se pokazilo.</string>
+
+    <!-- Navigation titles -->
+    <string name="navigation_home">Domů</string>
+    <string name="navigation_categories">Kategorie</string>
+    <string name="navigation_library">Knihovna</string>
+    <string name="navigation_settings">Nastavení</string>
+
+    <!-- Home screen. -->
+    <string name="home_header">Všechny knihy</string>
+
+    <!-- Categories screen. -->
+    <string name="categories_header">Kategorie</string>
+
+    <!-- Library screen. -->
+    <string name="library_header">Knihovna</string>
+    <string name="empty_library">Nic tu není!</string>
+    <string name="open_app_chooser">Otevřít pomocí…</string>
+    <string name="share_app_chooser">Sdílet s…</string>
+    <string name="library_read_button">Číst</string>
+    <string name="library_delete_button">Odstranit</string>
+    <string name="library_delete_dialog_title">Opravdu?</string>
+
+    <!-- Reader Detail Screen -->
+    <string name="reader_detail_header">Čtečka e-knih</string>
+    <string name="start_reading_button">Začít</string>
+    <string name="continue_reading_button">Pokračovat</string>
+    <string name="reader_chapters_list">Kapitoly</string>
+    <string name="reader_error_title">Jejda! Nepodařilo se otevřít soubor e-knihy :(</string>
+    <string name="reader_error_subtitle">Důvodů, proč se tak stalo, může být několik.</string>
+    <string name="reader_error_reason_one_title">1. Soubor e-knihy byl odstraněn.</string>
+    <string name="reader_error_reason_one_desc">Zkontrolujte prosím složku MyneEbooks v adresáři pro stahování, a pokud tomu tak je, stáhněte knihu znovu.</string>
+    <string name="reader_error_reason_two_title">2. Soubor tam je, ale aplikaci jste již dříve odinstalovali.</string>
+    <string name="reader_error_reason_two_desc">Aplikace Myne používá rozhraní API systému Android s omezeným rozsahem úložiště, což znamená, že může přistupovat pouze k souborům, které sama vytvořila, a nemůže přistupovat k osobním souborům uživatele. Kvůli tomuto omezení, jakmile uživatel aplikaci odinstaluje, ztratí oprávnění číst a upravovat soubory, i když je sama vytvořila, v takovém případě prosím odstraňte soubor epub e-knihy ze složky MyneEbooks uvnitř adresáře pro stahování a jednoduše knihu stáhněte znovu.</string>
+    <string name="reader_error_back_button">Zavřít a vrátit se</string>
+
+    <!--Reader Screen -->
+    <string name="reader_max_font_size_reached">Je nám líto, ale výš už to nejde!</string>
+    <string name="reader_min_font_size_reached">Je nám líto, ale níž už to nejde!</string>
+
+    <!-- Settings screen. -->
+    <string name="settings_header">Nastavení</string>
+    <string name="app_desc">Stahování e-knih</string>
+    <string name="made_by">S ❤ vytvořil Shivam</string>
+    <string name="general_settings_header">Obecné</string>
+    <string name="default_reader_setting">Výchozí čtečka</string>
+    <string name="default_reader_dialog_title">Otevírat e-knihy pomocí…</string>
+    <string name="display_setting_header">Zobrazení</string>
+    <string name="theme_setting">Výchozí motiv</string>
+    <string name="theme_dialog_title">Změnit motiv</string>
+    <string name="theme_dialog_apply_button">Použít</string>
+    <string name="material_you_setting" translatable="false">Material You</string>
+    <string name="material_you_settings_disabled_desc">Povolit Material You</string>
+    <string name="material_you_settings_enabled_desc">Zakázat Material You</string>
+    <string name="material_you_error">Tato funkce je určena pouze pro zařízení se systémem Android 12 nebo novějším.</string>
+    <string name="miscellaneous_setting_header">Různé</string>
+    <string name="license_setting">Licence a poděkování</string>
+    <string name="license_setting_desc">Licence open source.</string>
+    <string name="about_setting">Informace o aplikaci</string>
+    <string name="about_setting_desc">Zobrazit informace o aplikaci a užitečné odkazy</string>
+
+    <!-- Books card -->
+    <string name="home_search_icon_desc">Hledat knihy</string>
+    <string name="cover_image_desc">Obrázek na obálce knihy</string>
+
+    <!-- Book Detail Screen -->
+    <string name="book_detail_header">Podrobnosti o knize</string>
+    <string name="back_button_desc">Vrátit se.</string>
+    <string name="share_button_desc">Sdílet tuto knihu.</string>
+    <string name="share_intent_header">Sdílet pomocí…</string>
+    <string name="read_book_button">Začít číst</string>
+    <string name="download_book_button">Stáhnout</string>
+    <string name="downloading_book">Stahování spuštěno!</string>
+    <string name="book_synopsis">Stručný obsah knihy</string>
+    <string name="book_synopsis_not_found">Nedostupné</string>
+
+    <!-- About Screen -->
+    <string name="about_header">O aplikaci</string>
+    <string name="about_desc">Bezplatná aplikace pro Android s otevřeným zdrojovým kódem ke stahování elektronických knih z projektu GutenBerg.</string>
+    <string name="developed_by">Vyvinul</string>
+    <string name="dev_name" translatable="false">Starry Shivam</string>
+    <string name="dev_username" translatable="false">\@starry-shivam</string>
+
+    <!-- Open source libraries screen -->
+    <string name="open_source_header">Knihovny open source</string>
+
+    <!-- No Internet Screen -->
+    <string name="no_internet_connection">Nebylo nalezeno žádné internetové připojení. Zkontrolujte prosím své připojení a zkuste to znovu.</string>
+
+</resources>
