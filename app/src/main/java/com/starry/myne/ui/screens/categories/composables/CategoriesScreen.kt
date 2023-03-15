@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.ui.screens
+package com.starry.myne.ui.screens.categories.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -50,7 +50,7 @@ fun CategoriesScreen(navController: NavController) {
     ) {
         CustomTopAppBar(
             headerText = stringResource(id = R.string.categories_header),
-            icon = R.drawable.ic_category_header
+            icon = R.drawable.ic_nav_categories
         )
 
         Column(

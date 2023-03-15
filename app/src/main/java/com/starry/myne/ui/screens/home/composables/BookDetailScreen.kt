@@ -221,7 +221,7 @@ fun BookDetailScreen(
                                         text = book.title,
                                         modifier = Modifier
                                             .padding(
-                                                start = 12.dp, end = 8.dp, top = 20.dp
+                                                start = 12.dp, end = 12.dp, top = 20.dp
                                             )
                                             .fillMaxWidth(),
                                         fontSize = 24.sp,

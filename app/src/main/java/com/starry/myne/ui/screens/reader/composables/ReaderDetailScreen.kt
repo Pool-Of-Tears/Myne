@@ -189,7 +189,7 @@ fun ReaderDetailScreen(bookId: String, navController: NavController) {
                                 text = state.ebookData!!.title,
                                 modifier = Modifier
                                     .padding(
-                                        start = 12.dp, end = 8.dp, top = 20.dp
+                                        start = 12.dp, end = 12.dp, top = 20.dp
                                     )
                                     .fillMaxWidth(),
                                 fontSize = 24.sp,
@@ -391,14 +391,19 @@ fun ReaderError(navController: NavController) {
                 .fillMaxWidth(0.9f)
                 .height(55.dp),
             shape = RoundedCornerShape(14.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
         ) {
             Row {
-                Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
+                Icon(
+                    imageVector = Icons.Outlined.ArrowBack,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
                 Spacer(modifier = Modifier.width(14.dp))
                 Text(
                     text = stringResource(id = R.string.reader_error_back_button),
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.padding(top = 2.dp)
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.padding(top = 2.dp),
                 )
             }
         }
@@ -414,5 +419,5 @@ fun ReaderError(navController: NavController) {
 @Composable
 fun EpubDetailScreenPV() {
     ReaderDetailScreen("", rememberNavController())
-   // ReaderError(rememberNavController())
+    //ReaderError(rememberNavController())
 }
