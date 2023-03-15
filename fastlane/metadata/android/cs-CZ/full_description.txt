@@ -1,0 +1,13 @@
+Myne je bezplatná open-source aplikace pro Android ke stahování elektronických knih z Projektu GutenBerg, která v backendu využívá GutenDex API k načítání metadat elektronických knih.
+
+Funkce:
+
+- Čisté a krásné uživatelské rozhraní založené na zásadách Material Design 3 společnosti Google.
+- Prohlížení a stahování více než 70 tisíc bezplatných elektronických knih dostupných v několika jazycích a denně aktualizovaných.
+- Obsahuje vestavěnou čtečku elektronických knih a zároveň možnost používat čtečky elektronických knih třetích stran.
+- Kompatibilní se systémem Android 7.0 a novějším (API 24+)
+- Podporuje motivy Material You v zařízeních se systémem Android 12+
+- Obsahuje světlý i tmavý režim.
+- MAD: uživatelské rozhraní a logika napsané v čistém jazyce Kotlin. Jedna aktivita, žádné fragmenty, pouze složitelné cíle.
+
+PS: *Název aplikace je inspirován hlavním hrdinou anime s názvem Ascendance of a Bookworm (Honzuki no gekokudžó).*
