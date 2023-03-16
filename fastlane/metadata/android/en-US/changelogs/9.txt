@@ -1,0 +1,4 @@
+- Fixed NPE due to no epub available for certain books.
+- Added Czech translation; Credits: Fjuro
+- Code cleanups and some UI Improvements.
+- Updated all of the dependencies and upgraded kotlin to v1.8.0
