@@ -29,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +43,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,6 +53,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
+import com.airbnb.lottie.compose.*
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
@@ -92,31 +95,7 @@ fun LibraryScreen(navController: NavController) {
         )
 
         if (state.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_empty_library),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.size(85.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(2.dp))
-
-                    Text(
-                        text = stringResource(id = R.string.empty_library),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = figeronaFont,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
-            }
+            NoLibraryItemAnimation()
         } else {
             LazyColumn(
                 modifier = Modifier
@@ -350,6 +329,43 @@ fun LibraryCardButton(
         }
     }
 }
+
+@Composable
+fun NoLibraryItemAnimation() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val compositionResult: LottieCompositionResult =
+            rememberLottieComposition(
+                spec = LottieCompositionSpec.RawRes(R.raw.loading_cat_lottie)
+            )
+        val progressAnimation by animateLottieCompositionAsState(
+            compositionResult.value,
+            isPlaying = true,
+            iterations = LottieConstants.IterateForever,
+            speed = 1f
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+        LottieAnimation(
+            composition = compositionResult.value,
+            progress = progressAnimation,
+            modifier = Modifier.size(300.dp),
+            enableMergePaths = true
+        )
+
+        Text(
+            text = stringResource(id = R.string.empty_library),
+            fontWeight = FontWeight.Medium,
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp)
+        )
+        Spacer(modifier = Modifier.weight(1f))
+    }
+}
+
 
 @ExperimentalMaterial3Api
 @Composable

@@ -160,12 +160,11 @@ fun AboutScreen(navController: NavController) {
                 text = stringResource(id = R.string.developed_by),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, bottom = 12.dp),
+                    .padding(start = 20.dp, bottom = 12.dp),
                 fontSize = 16.sp,
                 fontFamily = figeronaFont,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
+                color = MaterialTheme.colorScheme.onBackground
             )
 
 

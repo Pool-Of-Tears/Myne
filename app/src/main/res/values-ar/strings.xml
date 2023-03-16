@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Myne</string>
+    <!-- Others Strings -->
     <string name="not_applicable">غير معروف</string>
     <string name="woops">اووبس!!</string>
     <string name="dialog_confirm_button">تأكيد</string>
@@ -8,12 +8,20 @@
     <string name="storage_perm_error">امنح اذن التخزين من فضلك</string>
     <string name="no_app_to_handle_epub">لا يوجد اى تطبيق لفتح ملف epub</string>
     <string name="error">حدث خطأ ما</string>
+
+    <!-- Navigation titles -->
     <string name="navigation_home">الرئيسية</string>
     <string name="navigation_categories">الفئات</string>
     <string name="navigation_library">المكتبة</string>
     <string name="navigation_settings">الاعدادات</string>
+
+    <!-- Home screen. -->
     <string name="home_header">كل الكتب</string>
+
+    <!-- Categories screen. -->
     <string name="categories_header">الفئات</string>
+
+    <!-- Library screen. -->
     <string name="library_header">المكتبة</string>
     <string name="empty_library">لا يوجد شئ هنا</string>
     <string name="open_app_chooser">افتح بواسطة</string>
@@ -21,6 +29,8 @@
     <string name="library_read_button">اقرأ</string>
     <string name="library_delete_button">امسح</string>
     <string name="library_delete_dialog_title">هل انت متأكد ؟</string>
+
+    <!-- Reader Detail Screen -->
     <string name="reader_detail_header">Ebook Reader</string>
     <string name="start_reading_button">Start</string>
     <string name="continue_reading_button">Resume</string>
@@ -32,8 +42,12 @@
     <string name="reader_error_reason_two_title">2. The file is there, but you have uninstalled the app previously.</string>
     <string name="reader_error_reason_two_desc">Myne uses scoped-storage API of Android which means it can only access those files which were created by itself and cannot access any of the user\'s personal files. Due to this limitation, once the user uninstalls the app, it loses the permission to read &amp; modify files even if it was created by itself, if that\'s the case please delete the ebook\'s epub file from MyneEbooks folder inside your download directory and simply re-download the book.</string>
     <string name="reader_error_back_button">Close &amp; Go Back</string>
+
+    <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Sorry, cannot go any higher than that!</string>
     <string name="reader_min_font_size_reached">Sorry, cannot go any lower than that!</string>
+
+    <!-- Settings screen. -->
     <string name="settings_header">الاعدادات</string>
     <string name="app_desc">محمل الكتب الالكترونية</string>
     <string name="made_by">"صنع ب  ❤ بواسطة Shivam  "</string>
@@ -52,8 +66,12 @@
     <string name="license_setting_desc">التراخيص مفتوحة المصدر</string>
     <string name="about_setting">App Information</string>
     <string name="about_setting_desc">Show App information &amp; useful links</string>
+
+    <!-- Books card -->
     <string name="home_search_icon_desc">البحث عن كتاب</string>
     <string name="cover_image_desc">صورة الغلاف</string>
+
+    <!-- Book Detail Screen -->
     <string name="book_detail_header">تفاصيل الكتاب</string>
     <string name="back_button_desc">ارجع للخلف</string>
     <string name="share_button_desc">مشاركة الكتاب</string>
@@ -63,9 +81,15 @@
     <string name="downloading_book">تم بدأ التحميل</string>
     <string name="book_synopsis">موجز</string>
     <string name="book_synopsis_not_found">غير متاح</string>
+
+    <!-- About Screen -->
     <string name="about_header">لمحة</string>
     <string name="about_desc">تطبيق اندرويد لتحميل الكتب المجانية من GutenBerg</string>
     <string name="developed_by">تم التطوير بواسطة</string>
+
+    <!-- Open source libraries screen -->
     <string name="open_source_header">المكتبات مفتوحة المصدر</string>
+
+    <!-- No Internet Screen -->
     <string name="no_internet_connection">لا يوجد انترنت, حاول مرة اخرى</string>
 </resources>

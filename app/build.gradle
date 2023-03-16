@@ -106,6 +106,8 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:1.0.0"
     // Jsoup HTML Parser.
     implementation "org.jsoup:jsoup:1.15.2"
+    // Lottie animations.
+    implementation "com.airbnb.android:lottie-compose:4.1.0"
     // Open Source Libraries Screen.
     implementation "com.mikepenz:aboutlibraries-core:10.5.2"
     implementation "com.mikepenz:aboutlibraries-compose:10.5.2"

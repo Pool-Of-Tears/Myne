@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">Myne</string>
     <!-- Others Strings -->
     <string name="not_applicable">N/A</string>
     <string name="woops">"Jejda!"</string>
@@ -58,7 +57,6 @@
     <string name="theme_setting">Výchozí motiv</string>
     <string name="theme_dialog_title">Změnit motiv</string>
     <string name="theme_dialog_apply_button">Použít</string>
-    <string name="material_you_setting" translatable="false">Material You</string>
     <string name="material_you_settings_disabled_desc">Povolit Material You</string>
     <string name="material_you_settings_enabled_desc">Zakázat Material You</string>
     <string name="material_you_error">Tato funkce je určena pouze pro zařízení se systémem Android 12 nebo novějším.</string>
@@ -87,8 +85,6 @@
     <string name="about_header">O aplikaci</string>
     <string name="about_desc">Bezplatná aplikace pro Android s otevřeným zdrojovým kódem ke stahování elektronických knih z projektu GutenBerg.</string>
     <string name="developed_by">Vyvinul</string>
-    <string name="dev_name" translatable="false">Starry Shivam</string>
-    <string name="dev_username" translatable="false">\@starry-shivam</string>
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Knihovny open source</string>
