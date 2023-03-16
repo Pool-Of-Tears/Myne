@@ -68,8 +68,9 @@ class HomeViewModel : ViewModel() {
             allBooksState = allBooksState.copy(error = it?.localizedMessage)
         },
         onSuccess = { bookSet, newPage ->
+            val books = bookSet.books.filter { it.formats.applicationepubzip != null }
             allBooksState = allBooksState.copy(
-                items = (allBooksState.items + bookSet.books),
+                items = (allBooksState.items + books),
                 page = newPage,
                 endReached = bookSet.books.isEmpty()
             )
@@ -112,7 +113,7 @@ class HomeViewModel : ViewModel() {
 
     private suspend fun searchBooks(query: String) {
         val bookSet = BooksApi.searchBooks(query)
-        topBarState =
-            topBarState.copy(searchResults = bookSet.getOrNull()!!.books, isSearching = false)
+        val books = bookSet.getOrNull()!!.books.filter { it.formats.applicationepubzip != null }
+        topBarState = topBarState.copy(searchResults = books, isSearching = false)
     }
 }
