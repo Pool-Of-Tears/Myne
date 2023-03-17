@@ -362,7 +362,7 @@ fun NoLibraryItemAnimation() {
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp)
         )
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(1.4f))
     }
 }
 

@@ -31,8 +31,7 @@ class BookDownloader(context: Context) {
 
     private val downloadJob = Job()
     private val downloadScope = CoroutineScope(Dispatchers.IO + downloadJob)
-    private val downloadManager =
-        context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+    private val downloadManager by lazy { context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager }
 
     data class DownloadInfo(
         val downloadId: Long,
