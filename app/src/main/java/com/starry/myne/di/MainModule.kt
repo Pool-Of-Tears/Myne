@@ -1,5 +1,3 @@
-package com.starry.myne.di
-
 /*
 Copyright 2022 - 2023 Stɑrry Shivɑm
 
@@ -15,6 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
+
+package com.starry.myne.di
 
 import android.content.Context
 import com.starry.myne.database.MyneDatabase
