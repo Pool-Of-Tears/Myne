@@ -83,14 +83,14 @@ fun WelcomeScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
+            OutlinedButton(
                 onClick = { internalReaderDialog.value = true },
                 modifier = Modifier
                     .padding(top = 30.dp, bottom = 16.dp)
                     .height(50.dp)
                     .fillMaxWidth(0.8f),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                //colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
             ) {
                 Text(
                     text = internalReaderValue,
