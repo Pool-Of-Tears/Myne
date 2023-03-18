@@ -9,8 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,10 +40,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.starry.myne.MainActivity
 import com.starry.myne.R
-import com.starry.myne.navigation.Screens
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.common.simpleVerticalScrollbar
+import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
@@ -343,7 +341,7 @@ fun ReaderError(navController: NavController) {
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                 text = stringResource(id = R.string.reader_error_subtitle),
                 letterSpacing = 2.sp,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontFamily = figeronaFont,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -355,7 +353,7 @@ fun ReaderError(navController: NavController) {
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                 text = stringResource(id = R.string.reader_error_reason_one_title),
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 fontFamily = figeronaFont,
                 fontWeight = FontWeight.Medium
             )
@@ -363,7 +361,6 @@ fun ReaderError(navController: NavController) {
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                 text = stringResource(id = R.string.reader_error_reason_one_desc),
                 color = MaterialTheme.colorScheme.onBackground,
-                fontFamily = figeronaFont,
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -371,7 +368,7 @@ fun ReaderError(navController: NavController) {
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                 text = stringResource(id = R.string.reader_error_reason_two_title),
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 fontFamily = figeronaFont,
                 fontWeight = FontWeight.Medium
             )
@@ -379,7 +376,6 @@ fun ReaderError(navController: NavController) {
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                 text = stringResource(id = R.string.reader_error_reason_two_desc),
                 color = MaterialTheme.colorScheme.onBackground,
-                fontFamily = figeronaFont,
             )
         }
 
@@ -394,11 +390,6 @@ fun ReaderError(navController: NavController) {
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
         ) {
             Row {
-                Icon(
-                    imageVector = Icons.Outlined.ArrowBack,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
                 Spacer(modifier = Modifier.width(14.dp))
                 Text(
                     text = stringResource(id = R.string.reader_error_back_button),

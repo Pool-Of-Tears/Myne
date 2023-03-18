@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.navigation
+package com.starry.myne.ui.navigation
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -43,6 +43,7 @@ import com.starry.myne.ui.screens.reader.composables.ReaderScreen
 import com.starry.myne.ui.screens.settings.composables.AboutScreen
 import com.starry.myne.ui.screens.settings.composables.OSLScreen
 import com.starry.myne.ui.screens.settings.composables.SettingsScreen
+import com.starry.myne.ui.screens.welcome.composables.WelcomeScreen
 
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
@@ -51,14 +52,37 @@ import com.starry.myne.ui.screens.settings.composables.SettingsScreen
 @ExperimentalComposeUiApi
 @Composable
 fun NavGraph(
+    startDestination: String,
     navController: NavHostController,
     networkStatus: NetworkObserver.Status,
 ) {
     AnimatedNavHost(
         navController = navController,
-        startDestination = BottomBarScreen.Home.route,
+        startDestination = startDestination,
         modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ) {
+
+        /** Welcome Screen */
+        composable(
+            route = Screens.WelcomeScreen.route,
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -300 }, animationSpec = tween(
+                        durationMillis = 300, easing = FastOutSlowInEasing
+                    )
+                ) + fadeOut(animationSpec = tween(300))
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -300 }, animationSpec = tween(
+                        durationMillis = 300, easing = FastOutSlowInEasing
+                    )
+                ) + fadeIn(animationSpec = tween(300))
+
+            },
+        ) {
+            WelcomeScreen(navController = navController)
+        }
 
         /** Home Screen */
         composable(

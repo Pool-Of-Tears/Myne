@@ -57,8 +57,8 @@ import com.airbnb.lottie.compose.*
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
-import com.starry.myne.navigation.Screens
 import com.starry.myne.ui.common.CustomTopAppBar
+import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
@@ -360,7 +360,9 @@ fun NoLibraryItemAnimation() {
             fontWeight = FontWeight.Medium,
             fontSize = 18.sp,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 12.dp, end = 12.dp)
         )
         Spacer(modifier = Modifier.weight(1.4f))
     }

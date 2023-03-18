@@ -17,7 +17,6 @@ limitations under the License.
 package com.starry.myne.ui.screens.home.viewmodels
 
 import android.annotation.SuppressLint
-import android.os.Environment
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
@@ -36,7 +35,6 @@ import com.starry.myne.api.models.ExtraInfo
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.others.BookDownloader
-import com.starry.myne.others.Constants
 import com.starry.myne.utils.BookUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -93,11 +91,11 @@ class BookDetailViewModel @Inject constructor(
 
     private fun insertIntoDB(book: Book, filename: String) {
         val libraryItem = LibraryItem(
-            book.id,
-            book.title,
-            BookUtils.getAuthorsAsString(book.authors),
-            "/storage/emulated/0/${Environment.DIRECTORY_DOWNLOADS}/${Constants.DOWNLOAD_DIR}/$filename",
-            System.currentTimeMillis()
+            bookId = book.id,
+            title = book.title,
+            authors = BookUtils.getAuthorsAsString(book.authors),
+            filePath = "${BookDownloader.FILE_FOLDER_PATH}/$filename",
+            createdAt = System.currentTimeMillis()
         )
         libraryDao.insert(libraryItem)
     }

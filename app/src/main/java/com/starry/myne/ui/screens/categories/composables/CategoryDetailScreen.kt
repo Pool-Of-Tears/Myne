@@ -30,12 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
-import com.starry.myne.navigation.Screens
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.others.viewModelFactory
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.ProgressDots
+import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.categories.viewmodels.CategoryViewModel
 import com.starry.myne.ui.screens.other.NoInternetScreen
 import com.starry.myne.utils.BookUtils

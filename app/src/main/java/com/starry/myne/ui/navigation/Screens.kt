@@ -14,17 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.navigation
+package com.starry.myne.ui.navigation
 
 const val BOOK_ID_ARG_KEY = "bookId"
 const val CATEGORY_DETAIL_ARG_KEY = "category"
 const val READER_CHAPTER_INDEX_KEY = "readerChapterIndex"
 
 sealed class Screens(val route: String) {
-
-    object OSLScreen : Screens("osl_screen")
-
-    object AboutScreen : Screens("about_screen")
 
     object BookDetailScreen : Screens("book_detail_screen/{$BOOK_ID_ARG_KEY}") {
         fun withBookId(id: String): String {
@@ -50,4 +46,10 @@ sealed class Screens(val route: String) {
                 .replace("{$READER_CHAPTER_INDEX_KEY}", idx.toString())
         }
     }
+
+    object WelcomeScreen : Screens("welcome_screen")
+
+    object OSLScreen : Screens("osl_screen")
+
+    object AboutScreen : Screens("about_screen")
 }

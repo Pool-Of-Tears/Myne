@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.ui.screens.other
+package com.starry.myne.ui.screens.main
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
@@ -50,9 +50,9 @@ import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.starry.myne.navigation.BottomBarScreen
-import com.starry.myne.navigation.NavGraph
 import com.starry.myne.others.NetworkObserver
+import com.starry.myne.ui.navigation.BottomBarScreen
+import com.starry.myne.ui.navigation.NavGraph
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
@@ -64,7 +64,11 @@ import com.starry.myne.ui.theme.figeronaFont
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
 @Composable
-fun MainScreen(networkStatus: NetworkObserver.Status, settingsViewModel: SettingsViewModel) {
+fun MainScreen(
+    startDestination: String,
+    networkStatus: NetworkObserver.Status,
+    settingsViewModel: SettingsViewModel,
+) {
     val navController = rememberAnimatedNavController()
     val systemUiController = rememberSystemUiController()
 
@@ -80,7 +84,11 @@ fun MainScreen(networkStatus: NetworkObserver.Status, settingsViewModel: Setting
             )
         }, containerColor = MaterialTheme.colorScheme.background
     ) {
-        NavGraph(navController = navController, networkStatus)
+        NavGraph(
+            startDestination = startDestination,
+            navController = navController,
+            networkStatus = networkStatus
+        )
     }
 }
 

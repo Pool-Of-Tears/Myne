@@ -39,7 +39,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.others.NetworkObserver
-import com.starry.myne.ui.screens.other.MainScreen
+import com.starry.myne.ui.screens.main.MainScreen
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.MyneTheme
@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var networkObserver: NetworkObserver
     lateinit var settingsViewModel: SettingsViewModel
+    private lateinit var mainViewModel: MainViewModel
 
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         PreferenceUtils.initialize(this)
         networkObserver = NetworkObserver(applicationContext)
         settingsViewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
+        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         when (PreferenceUtils.getInt(PreferenceUtils.APP_THEME, ThemeMode.Auto.ordinal)) {
             ThemeMode.Auto.ordinal -> settingsViewModel.setTheme(ThemeMode.Auto)
@@ -77,7 +79,9 @@ class MainActivity : AppCompatActivity() {
         )
 
         // Install splash screen before setting content.
-        installSplashScreen()
+        installSplashScreen().setKeepOnScreenCondition {
+            mainViewModel.isLoading.value
+        }
 
         setContent {
             MyneTheme(settingsViewModel = settingsViewModel) {
@@ -89,7 +93,12 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(status, settingsViewModel = settingsViewModel)
+                    val startDestination by mainViewModel.startDestination
+                    MainScreen(
+                        startDestination = startDestination,
+                        networkStatus = status,
+                        settingsViewModel = settingsViewModel
+                    )
                 }
             }
         }

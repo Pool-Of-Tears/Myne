@@ -19,6 +19,7 @@ limitations under the License.
 import android.content.Context
 import com.starry.myne.database.MyneDatabase
 import com.starry.myne.others.BookDownloader
+import com.starry.myne.others.WelcomeDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,4 +49,10 @@ class MainModule {
     @Singleton
     @Provides
     fun provideBookDownloader(@ApplicationContext context: Context) = BookDownloader(context)
+
+    @Provides
+    @Singleton
+    fun provideDataStoreRepository(
+        @ApplicationContext context: Context
+    ) = WelcomeDataStore(context = context)
 }

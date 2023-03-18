@@ -50,10 +50,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.R
-import com.starry.myne.navigation.Screens
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.ProgressDots
+import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.home.viewmodels.HomeViewModel
 import com.starry.myne.ui.screens.home.viewmodels.UserAction
 import com.starry.myne.ui.screens.other.NoInternetScreen
