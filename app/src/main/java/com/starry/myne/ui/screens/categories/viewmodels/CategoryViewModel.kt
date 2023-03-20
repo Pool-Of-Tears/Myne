@@ -24,8 +24,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.api.BooksApi
 import com.starry.myne.api.models.Book
+import com.starry.myne.api.models.BookSet
 import com.starry.myne.others.Paginator
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class CategorisedBooksState(
     val isLoading: Boolean = false,
@@ -35,7 +38,8 @@ data class CategorisedBooksState(
     val page: Long = 1L
 )
 
-class CategoryViewModel(category: String) : ViewModel() {
+@HiltViewModel
+class CategoryViewModel @Inject constructor(private val booksApi: BooksApi) : ViewModel() {
     companion object {
         val CATEGORIES_ARRAY =
             listOf(
@@ -60,32 +64,36 @@ class CategoryViewModel(category: String) : ViewModel() {
             )
     }
 
+    private lateinit var paginator: Paginator<Long, BookSet>
+
     var state by mutableStateOf(CategorisedBooksState())
 
-    private val paginator = Paginator(
-        initialPage = state.page,
-        onLoadUpdated = {
-            state = state.copy(isLoading = it)
-        },
-        onRequest = { nextPage ->
-            BooksApi.getBooksByCategory(category, nextPage)
-        },
-        getNextPage = {
-            state.page + 1L
-        },
-        onError = {
-            state = state.copy(error = it?.localizedMessage)
-        },
-        onSuccess = { bookSet, newPage ->
-            state = state.copy(
-                items = (state.items + bookSet.books),
-                page = newPage,
-                endReached = bookSet.books.isEmpty()
+    fun loadBookByCategory(category: String) {
+        if (!this::paginator.isInitialized) {
+            paginator = Paginator(
+                initialPage = state.page,
+                onLoadUpdated = {
+                    state = state.copy(isLoading = it)
+                },
+                onRequest = { nextPage ->
+                    booksApi.getBooksByCategory(category, nextPage)
+                },
+                getNextPage = {
+                    state.page + 1L
+                },
+                onError = {
+                    state = state.copy(error = it?.localizedMessage)
+                },
+                onSuccess = { bookSet, newPage ->
+                    state = state.copy(
+                        items = (state.items + bookSet.books),
+                        page = newPage,
+                        endReached = bookSet.books.isEmpty()
+                    )
+                }
             )
         }
-    )
 
-    init {
         loadNextItems()
     }
 

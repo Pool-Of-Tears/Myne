@@ -27,11 +27,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.others.NetworkObserver
-import com.starry.myne.others.viewModelFactory
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.ProgressDots
@@ -51,10 +50,10 @@ fun CategoryDetailScreen(
     networkStatus: NetworkObserver.Status
 ) {
     if (networkStatus == NetworkObserver.Status.Available) {
-        val viewModel = viewModel<CategoryViewModel>(factory = viewModelFactory {
-            CategoryViewModel(category)
-        })
+        val viewModel: CategoryViewModel = hiltViewModel()
         val state = viewModel.state
+
+        LaunchedEffect(key1 = true, block = { viewModel.loadBookByCategory(category) })
 
         Column(
             modifier = Modifier

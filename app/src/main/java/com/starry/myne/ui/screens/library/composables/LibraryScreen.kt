@@ -338,7 +338,7 @@ fun NoLibraryItemAnimation() {
     ) {
         val compositionResult: LottieCompositionResult =
             rememberLottieComposition(
-                spec = LottieCompositionSpec.RawRes(R.raw.loading_cat_lottie)
+                spec = LottieCompositionSpec.RawRes(R.raw.no_library_items_lottie)
             )
         val progressAnimation by animateLottieCompositionAsState(
             compositionResult.value,

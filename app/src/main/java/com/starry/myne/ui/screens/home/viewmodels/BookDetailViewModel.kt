@@ -54,13 +54,15 @@ data class BookDetailScreenState(
 @ExperimentalMaterial3Api
 @HiltViewModel
 class BookDetailViewModel @Inject constructor(
-    val libraryDao: LibraryDao, val bookDownloader: BookDownloader
+    private val booksApi: BooksApi,
+    val libraryDao: LibraryDao,
+    val bookDownloader: BookDownloader,
 ) : ViewModel() {
     var state by mutableStateOf(BookDetailScreenState())
     fun getBookDetails(bookId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val bookItem = BooksApi.getBookById(bookId).getOrNull()!!
-            val extraInfo = BooksApi.getExtraInfo(bookItem.books.first().title)
+            val bookItem = booksApi.getBookById(bookId).getOrNull()!!
+            val extraInfo = booksApi.getExtraInfo(bookItem.books.first().title)
             state = if (extraInfo != null) {
                 state.copy(item = bookItem, extraInfo = extraInfo)
             } else {
