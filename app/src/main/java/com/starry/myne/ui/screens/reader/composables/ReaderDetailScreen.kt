@@ -406,14 +406,10 @@ fun ReaderError(navController: NavController) {
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
         ) {
-            Row {
-                Spacer(modifier = Modifier.width(14.dp))
-                Text(
-                    text = stringResource(id = R.string.reader_error_back_button),
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.padding(top = 2.dp),
-                )
-            }
+            Text(
+                text = stringResource(id = R.string.reader_error_back_button),
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
         }
     }
 }

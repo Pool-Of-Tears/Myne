@@ -22,24 +22,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.others.NetworkObserver
-import com.starry.myne.others.viewModelFactory
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.categories.viewmodels.CategoryViewModel
-import com.starry.myne.ui.screens.other.NoInternetScreen
+import com.starry.myne.ui.screens.other.NetworkErrorView
 import com.starry.myne.utils.BookUtils
-import kotlinx.coroutines.delay
 
 @ExperimentalCoilApi
 @ExperimentalMaterial3Api
@@ -50,79 +50,77 @@ fun CategoryDetailScreen(
     navController: NavController,
     networkStatus: NetworkObserver.Status
 ) {
-    if (networkStatus == NetworkObserver.Status.Available) {
-        val viewModel = viewModel<CategoryViewModel>(factory = viewModelFactory {
-            CategoryViewModel(category)
-        })
-        val state = viewModel.state
+    val viewModel: CategoryViewModel = hiltViewModel()
+    val state = viewModel.state
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            CustomTopAppBar(headerText = category) {
-                navController.navigateUp()
-            }
+    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+        CustomTopAppBar(headerText = category) {
+            navController.navigateUp()
+        }
+    }, content = {
+        if (networkStatus == NetworkObserver.Status.Available) {
+            LaunchedEffect(key1 = true, block = { viewModel.loadBookByCategory(category) })
 
-            if (state.page == 1L && state.isLoading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(start = 8.dp, end = 8.dp)
-                ) {
-                    items(state.items.size) { i ->
-                        val item = state.items[i]
-                        if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
-                            viewModel.loadNextItems()
-                        }
-                        Box(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .fillMaxWidth(), contentAlignment = Alignment.Center
-                        ) {
-                            BookItemCard(
-                                title = item.title,
-                                author = BookUtils.getAuthorsAsString(item.authors),
-                                language = BookUtils.getLanguagesAsString(item.languages),
-                                subjects = BookUtils.getSubjectsAsString(item.subjects, 3),
-                                coverImageUrl = item.formats.imagejpeg
-                            ) {
-                                navController.navigate(Screens.BookDetailScreen.withBookId(item.id.toString()))
-                            }
-                        }
-
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(it)
+            ) {
+                if (state.page == 1L && state.isLoading) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     }
-                    item {
-                        if (state.isLoading) {
-                            Row(
+                } else if (state.error != null) {
+                    NetworkErrorView()
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background)
+                            .padding(start = 8.dp, end = 8.dp)
+                    ) {
+                        items(state.items.size) { i ->
+                            val item = state.items[i]
+                            if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
+                                viewModel.loadNextItems()
+                            }
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                horizontalArrangement = Arrangement.Center
+                                    .padding(4.dp)
+                                    .fillMaxWidth(), contentAlignment = Alignment.Center
                             ) {
-                                ProgressDots()
+                                BookItemCard(
+                                    title = item.title,
+                                    author = BookUtils.getAuthorsAsString(item.authors),
+                                    language = BookUtils.getLanguagesAsString(item.languages),
+                                    subjects = BookUtils.getSubjectsAsString(item.subjects, 3),
+                                    coverImageUrl = item.formats.imagejpeg
+                                ) {
+                                    navController.navigate(Screens.BookDetailScreen.withBookId(item.id.toString()))
+                                }
+                            }
+
+                        }
+                        item {
+                            if (state.isLoading) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    ProgressDots()
+                                }
                             }
                         }
                     }
                 }
+
             }
+        } else {
+            NetworkErrorView()
+        }
+    })
 
-        }
-
-    } else {
-        var showNoInternet by remember { mutableStateOf(false) }
-        LaunchedEffect(key1 = Unit) {
-            delay(250)
-            showNoInternet = true
-        }
-        if (showNoInternet) {
-            NoInternetScreen()
-        }
-    }
 }

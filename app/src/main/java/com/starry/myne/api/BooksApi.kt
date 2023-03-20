@@ -16,6 +16,8 @@ limitations under the License.
 
 package com.starry.myne.api
 
+import android.content.Context
+import android.net.ConnectivityManager
 import com.google.gson.Gson
 import com.starry.myne.api.models.BookSet
 import com.starry.myne.api.models.ExtraInfo
@@ -31,21 +33,42 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-object BooksApi {
 
-    private lateinit var BASE_API_URL: String
-    private const val GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes"
-    private const val GOOGLE_API_KEY = "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE"
+class ForceCacheInterceptor(private val context: Context) : Interceptor {
+
+    private val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val networkCapabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+
+        val builder: Request.Builder = chain.request().newBuilder()
+        if (networkCapabilities == null) {
+            builder.cacheControl(CacheControl.FORCE_CACHE)
+        }
+        return chain.proceed(builder.build())
+    }
+}
+
+class BooksApi(context: Context) {
+
+    private lateinit var baseApiUrl: String
+    private val googleBooksUrl = "https://www.googleapis.com/books/v1/volumes"
+    private val googleApiKey = "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE"
 
 
     private val okHttpClient = OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(60, TimeUnit.SECONDS).readTimeout(100, TimeUnit.SECONDS).build()
+        .writeTimeout(60, TimeUnit.SECONDS).readTimeout(100, TimeUnit.SECONDS)
+        .cache(Cache(context.cacheDir, 50 * 1024 * 1024L))
+        .addInterceptor(ForceCacheInterceptor(context)).build()
 
     private val gsonClient = Gson()
 
     suspend fun getAllBooks(page: Long): Result<BookSet> {
         setApiUrlIfNotSetAlready()
-        val request = Request.Builder().get().url("${BASE_API_URL}?page=$page").build()
+        val request = Request.Builder().get().url("${baseApiUrl}?page=$page").build()
         return makeApiRequest(request)
     }
 
@@ -54,20 +77,20 @@ object BooksApi {
         val encodedString = withContext(Dispatchers.IO) {
             URLEncoder.encode(query, "UTF-8")
         }
-        val request = Request.Builder().get().url("${BASE_API_URL}?search=$encodedString").build()
+        val request = Request.Builder().get().url("${baseApiUrl}?search=$encodedString").build()
         return makeApiRequest(request)
     }
 
     suspend fun getBookById(bookId: String): Result<BookSet> {
         setApiUrlIfNotSetAlready()
-        val request = Request.Builder().get().url("${BASE_API_URL}?ids=$bookId").build()
+        val request = Request.Builder().get().url("${baseApiUrl}?ids=$bookId").build()
         return makeApiRequest(request)
     }
 
     suspend fun getBooksByCategory(category: String, page: Long): Result<BookSet> {
         setApiUrlIfNotSetAlready()
         val request =
-            Request.Builder().get().url("${BASE_API_URL}?page=$page&topic=$category").build()
+            Request.Builder().get().url("${baseApiUrl}?page=$page&topic=$category").build()
         return makeApiRequest(request)
     }
 
@@ -95,7 +118,7 @@ object BooksApi {
     suspend fun getExtraInfo(bookName: String): ExtraInfo? = suspendCoroutine { continuation ->
         val encodedName = URLEncoder.encode(bookName, "UTF-8")
         val url =
-            "${GOOGLE_BOOKS_URL}?q=$encodedName&startIndex=0&maxResults=1&apiKey=$GOOGLE_API_KEY"
+            "${googleBooksUrl}?q=$encodedName&startIndex=0&maxResults=1&apiKey=$googleApiKey"
         val request = Request.Builder().get().url(url).build()
         okHttpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -136,7 +159,7 @@ object BooksApi {
     }
 
     private suspend fun setApiUrlIfNotSetAlready() {
-        if (!this::BASE_API_URL.isInitialized) {
+        if (!this::baseApiUrl.isInitialized) {
             val request = Request.Builder().get()
                 .url("https://raw.githubusercontent.com/starry-shivam/stuffs/main/myne-api-url")
                 .build()
@@ -156,7 +179,7 @@ object BooksApi {
                 })
             }
             val jsonObj = JSONObject(response)
-            BASE_API_URL = jsonObj.getString("api_url")
+            baseApiUrl = jsonObj.getString("api_url")
         }
     }
 

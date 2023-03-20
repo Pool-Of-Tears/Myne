@@ -45,7 +45,8 @@ data class BookDetailScreenState(
     val isLoading: Boolean = true,
     val item: BookSet = BookSet(0, null, null, emptyList()),
     val extraInfo: ExtraInfo = ExtraInfo(),
-    val bookLibraryItem: LibraryItem? = null
+    val bookLibraryItem: LibraryItem? = null,
+    val error: String? = null
 )
 
 @ExperimentalMaterialApi
@@ -54,21 +55,27 @@ data class BookDetailScreenState(
 @ExperimentalMaterial3Api
 @HiltViewModel
 class BookDetailViewModel @Inject constructor(
-    val libraryDao: LibraryDao, val bookDownloader: BookDownloader
+    private val booksApi: BooksApi,
+    val libraryDao: LibraryDao,
+    val bookDownloader: BookDownloader,
 ) : ViewModel() {
     var state by mutableStateOf(BookDetailScreenState())
     fun getBookDetails(bookId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val bookItem = BooksApi.getBookById(bookId).getOrNull()!!
-            val extraInfo = BooksApi.getExtraInfo(bookItem.books.first().title)
-            state = if (extraInfo != null) {
-                state.copy(item = bookItem, extraInfo = extraInfo)
-            } else {
-                state.copy(item = bookItem)
+            try {
+                val bookItem = booksApi.getBookById(bookId).getOrNull()!!
+                val extraInfo = booksApi.getExtraInfo(bookItem.books.first().title)
+                state = if (extraInfo != null) {
+                    state.copy(item = bookItem, extraInfo = extraInfo)
+                } else {
+                    state.copy(item = bookItem)
+                }
+                state = state.copy(
+                    bookLibraryItem = libraryDao.getItemById(bookId.toInt()), isLoading = false
+                )
+            } catch (exc: Exception) {
+                state = state.copy(error = exc.localizedMessage, isLoading = false)
             }
-            state = state.copy(
-                bookLibraryItem = libraryDao.getItemById(bookId.toInt()), isLoading = false
-            )
         }
     }
 

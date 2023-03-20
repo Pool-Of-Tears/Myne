@@ -51,6 +51,7 @@ data class ReaderDetailScreenState(
 
 @HiltViewModel
 class ReaderDetailViewModel @Inject constructor(
+    private val booksApi: BooksApi,
     private val libraryDao: LibraryDao,
     private val readerDao: ReaderDao
 ) : ViewModel() {
@@ -66,7 +67,7 @@ class ReaderDetailViewModel @Inject constructor(
             val libraryItem = libraryDao.getItemById(bookId.toInt())!!
             state = try {
                 val coverImage: String? = try {
-                    BooksApi.getExtraInfo(libraryItem.title)?.coverImage
+                    booksApi.getExtraInfo(libraryItem.title)?.coverImage
                 } catch (exc: Exception) {
                     null
                 }

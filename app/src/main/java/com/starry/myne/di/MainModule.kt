@@ -18,6 +18,7 @@ limitations under the License.
 package com.starry.myne.di
 
 import android.content.Context
+import com.starry.myne.api.BooksApi
 import com.starry.myne.database.MyneDatabase
 import com.starry.myne.others.BookDownloader
 import com.starry.myne.others.WelcomeDataStore
@@ -46,6 +47,10 @@ class MainModule {
 
     @Provides
     fun provideReaderDao(myneDatabase: MyneDatabase) = myneDatabase.getReaderDao()
+
+    @Singleton
+    @Provides
+    fun provideBooksApi(@ApplicationContext context: Context) = BooksApi(context)
 
     @Singleton
     @Provides

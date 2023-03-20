@@ -67,7 +67,7 @@ import com.starry.myne.R
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.screens.home.viewmodels.BookDetailViewModel
-import com.starry.myne.ui.screens.other.NoInternetScreen
+import com.starry.myne.ui.screens.other.NetworkErrorView
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
@@ -95,10 +95,6 @@ fun BookDetailScreen(
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(key1 = true, block = {
-        viewModel.getBookDetails(bookId)
-    })
-
     Scaffold(
         scaffoldState = scaffoldState,
         snackbarHost = {
@@ -110,277 +106,287 @@ fun BookDetailScreen(
                 )
             }
         },
-    ) { paddingValues ->
-        if (networkStatus == NetworkObserver.Status.Available) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .background(MaterialTheme.colorScheme.background)
-            ) {
-                BookDetailTopBar(onBackClicked = {
-                    navController.navigateUp()
-                }, onShareClicked = {
-                    val intent = Intent(Intent.ACTION_SEND)
-                    intent.type = "text/plain"
-                    intent.putExtra(
-                        Intent.EXTRA_TEXT, "https://www.gutenberg.org/ebooks/$bookId"
-                    )
-                    val chooser = Intent.createChooser(
-                        intent, context.getString(R.string.share_intent_header)
-                    )
-                    context.startActivity(chooser)
+        content = { paddingValues ->
+            if (networkStatus == NetworkObserver.Status.Available) {
+                LaunchedEffect(key1 = true, block = {
+                    viewModel.getBookDetails(bookId)
                 })
 
-                if (state.isLoading) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = 65.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        ProgressDots()
-                    }
-                } else {
-                    val book = state.item.books.first()
-                    Column(
-                        Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background)
-                            .verticalScroll(rememberScrollState())
-                    ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .background(MaterialTheme.colorScheme.background)
+                ) {
+                    BookDetailTopBar(onBackClicked = {
+                        navController.navigateUp()
+                    }, onShareClicked = {
+                        val intent = Intent(Intent.ACTION_SEND)
+                        intent.type = "text/plain"
+                        intent.putExtra(
+                            Intent.EXTRA_TEXT, "https://www.gutenberg.org/ebooks/$bookId"
+                        )
+                        val chooser = Intent.createChooser(
+                            intent, context.getString(R.string.share_intent_header)
+                        )
+                        context.startActivity(chooser)
+                    })
+
+                    if (state.isLoading) {
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(240.dp)
+                                .fillMaxSize()
+                                .padding(bottom = 65.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            AsyncImage(
-                                model = R.drawable.book_details_bg,
-                                contentDescription = null,
-                                alpha = 0.35f,
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
+                            ProgressDots()
+                        }
+                    } else if (state.error != null) {
+                        NetworkErrorView()
+                    } else {
+                        val book = state.item.books.first()
+                        Column(
+                            Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.background)
+                                .verticalScroll(rememberScrollState())
+                        ) {
                             Box(
                                 modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(
-                                        Brush.verticalGradient(
-                                            colors = listOf(
-                                                MaterialTheme.colorScheme.background,
-                                                Color.Transparent,
-                                                MaterialTheme.colorScheme.background
-                                            ), startY = 8f
-                                        )
-                                    )
-                            )
-
-                            Row(modifier = Modifier.fillMaxSize()) {
-
-                                val imageUrl = state.extraInfo.coverImage.ifEmpty {
-                                    book.formats.imagejpeg
-                                }
-
+                                    .fillMaxWidth()
+                                    .height(240.dp)
+                            ) {
+                                AsyncImage(
+                                    model = R.drawable.book_details_bg,
+                                    contentDescription = null,
+                                    alpha = 0.35f,
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
                                 Box(
                                     modifier = Modifier
-                                        .fillMaxHeight()
-                                        .padding(16.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    val imageBackground =
-                                        if (settingsVM.getCurrentTheme() == ThemeMode.Dark) {
-                                            MaterialTheme.colorScheme.onSurface
-                                        } else {
-                                            MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
-                                        }
+                                        .fillMaxSize()
+                                        .background(
+                                            Brush.verticalGradient(
+                                                colors = listOf(
+                                                    MaterialTheme.colorScheme.background,
+                                                    Color.Transparent,
+                                                    MaterialTheme.colorScheme.background
+                                                ), startY = 8f
+                                            )
+                                        )
+                                )
+
+                                Row(modifier = Modifier.fillMaxSize()) {
+
+                                    val imageUrl = state.extraInfo.coverImage.ifEmpty {
+                                        book.formats.imagejpeg
+                                    }
+
                                     Box(
                                         modifier = Modifier
-                                            .shadow(24.dp)
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(imageBackground)
+                                            .fillMaxHeight()
+                                            .padding(16.dp),
+                                        contentAlignment = Alignment.Center
                                     ) {
-                                        AsyncImage(
-                                            model = ImageRequest.Builder(context)
-                                                .data(imageUrl)
-                                                .crossfade(true).build(),
-                                            placeholder = painterResource(id = R.drawable.placeholder_cat),
-                                            contentDescription = null,
-                                            modifier = Modifier
-                                                .width(118.dp)
-                                                .height(169.dp),
-                                            contentScale = ContentScale.Crop
-                                        )
-                                    }
-                                }
-
-                                Column(
-                                    modifier = Modifier.fillMaxSize(),
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = book.title,
-                                        modifier = Modifier
-                                            .padding(
-                                                start = 12.dp, end = 12.dp, top = 20.dp
-                                            )
-                                            .fillMaxWidth(),
-                                        fontSize = 24.sp,
-                                        fontFamily = figeronaFont,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                    )
-
-                                    Text(
-                                        text = BookUtils.getAuthorsAsString(book.authors),
-                                        modifier = Modifier.padding(
-                                            start = 12.dp, end = 8.dp, top = 4.dp
-                                        ),
-                                        fontSize = 18.sp,
-                                        fontFamily = figeronaFont,
-                                        fontWeight = FontWeight.SemiBold,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                    )
-
-                                    Spacer(modifier = Modifier.height(50.dp))
-                                }
-                            }
-                        }
-
-                        val pageCount = if (state.extraInfo.pageCount > 0) {
-                            state.extraInfo.pageCount.toString()
-                        } else {
-                            stringResource(id = R.string.not_applicable)
-                        }
-
-                        // Check if this book is in downloadQueue.
-                        val buttonTextValue =
-                            if (viewModel.bookDownloader.isBookCurrentlyDownloading(book.id)) {
-                                stringResource(id = R.string.cancel)
-                            } else {
-                                if (state.bookLibraryItem != null) stringResource(id = R.string.read_book_button) else stringResource(
-                                    id = R.string.download_book_button
-                                )
-                            }
-
-                        var buttonText by remember { mutableStateOf(buttonTextValue) }
-                        var progressState by remember { mutableStateOf(0f) }
-                        var showProgressBar by remember { mutableStateOf(false) }
-
-                        // Callable which updates book details screen button.
-                        val updateBtnText: (Int?) -> Unit = { downloadStatus ->
-                            buttonText = when (downloadStatus) {
-                                DownloadManager.STATUS_RUNNING -> {
-                                    showProgressBar = true
-                                    context.getString(R.string.cancel)
-                                }
-                                DownloadManager.STATUS_SUCCESSFUL -> {
-                                    showProgressBar = false
-                                    context.getString(R.string.read_book_button)
-                                }
-                                else -> {
-                                    showProgressBar = false
-                                    context.getString(R.string.download_book_button)
-                                }
-                            }
-                        }
-
-                        // Check if this book is in downloadQueue.
-                        if (viewModel.bookDownloader.isBookCurrentlyDownloading(book.id)) {
-                            progressState =
-                                viewModel.bookDownloader.getRunningDownload(book.id)?.progress?.collectAsState()?.value!!
-                            LaunchedEffect(key1 = progressState, block = {
-                                updateBtnText(viewModel.bookDownloader.getRunningDownload(book.id)?.status)
-                            })
-                        }
-
-                        MiddleBar(
-                            bookLang = BookUtils.getLanguagesAsString(book.languages),
-                            pageCount = pageCount,
-                            downloadCount = Utils.prettyCount(book.downloadCount),
-                            progressValue = progressState,
-                            buttonText = buttonText,
-                            showProgressBar = showProgressBar
-                        ) {
-                            when (buttonText) {
-                                context.getString(R.string.read_book_button) -> {
-                                    val bookLibraryItem = state.bookLibraryItem
-                                    /**
-                                     *  Library item could be null if we reload the screen
-                                     *  while some download was running, in that case we'll
-                                     *  de-attach from our old state where download function
-                                     *  will update library item and our new state will have
-                                     *  no library item, i.e. null.
-                                     */
-                                    if (bookLibraryItem == null) {
-                                        viewModel.viewModelScope.launch(Dispatchers.IO) {
-                                            val libraryItem =
-                                                viewModel.libraryDao.getItemById(book.id)!!
-                                            withContext(Dispatchers.Main) {
-                                                Utils.openBookFile(
-                                                    context,
-                                                    libraryItem,
-                                                    navController
-                                                )
+                                        val imageBackground =
+                                            if (settingsVM.getCurrentTheme() == ThemeMode.Dark) {
+                                                MaterialTheme.colorScheme.onSurface
+                                            } else {
+                                                MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
                                             }
+                                        Box(
+                                            modifier = Modifier
+                                                .shadow(24.dp)
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .background(imageBackground)
+                                        ) {
+                                            AsyncImage(
+                                                model = ImageRequest.Builder(context)
+                                                    .data(imageUrl)
+                                                    .crossfade(true).build(),
+                                                placeholder = painterResource(id = R.drawable.placeholder_cat),
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .width(118.dp)
+                                                    .height(169.dp),
+                                                contentScale = ContentScale.Crop
+                                            )
                                         }
-                                    } else {
-                                        Utils.openBookFile(context, bookLibraryItem, navController)
                                     }
 
-                                }
-                                context.getString(R.string.download_book_button) -> {
-                                    val message = viewModel.downloadBook(
-                                        book, (context.getActivity() as MainActivity)
-                                    ) { downloadProgress, downloadStatus ->
-                                        progressState = downloadProgress
-                                        updateBtnText(downloadStatus)
+                                    Column(
+                                        modifier = Modifier.fillMaxSize(),
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            text = book.title,
+                                            modifier = Modifier
+                                                .padding(
+                                                    start = 12.dp, end = 12.dp, top = 20.dp
+                                                )
+                                                .fillMaxWidth(),
+                                            fontSize = 24.sp,
+                                            fontFamily = figeronaFont,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis,
+                                            color = MaterialTheme.colorScheme.onBackground,
+                                        )
+
+                                        Text(
+                                            text = BookUtils.getAuthorsAsString(book.authors),
+                                            modifier = Modifier.padding(
+                                                start = 12.dp, end = 8.dp, top = 4.dp
+                                            ),
+                                            fontSize = 18.sp,
+                                            fontFamily = figeronaFont,
+                                            fontWeight = FontWeight.SemiBold,
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis,
+                                            color = MaterialTheme.colorScheme.onBackground,
+                                        )
+
+                                        Spacer(modifier = Modifier.height(50.dp))
                                     }
-                                    coroutineScope.launch {
-                                        scaffoldState.snackbarHostState.showSnackbar(
-                                            message = message,
+                                }
+                            }
+
+                            val pageCount = if (state.extraInfo.pageCount > 0) {
+                                state.extraInfo.pageCount.toString()
+                            } else {
+                                stringResource(id = R.string.not_applicable)
+                            }
+
+                            // Check if this book is in downloadQueue.
+                            val buttonTextValue =
+                                if (viewModel.bookDownloader.isBookCurrentlyDownloading(book.id)) {
+                                    stringResource(id = R.string.cancel)
+                                } else {
+                                    if (state.bookLibraryItem != null) stringResource(id = R.string.read_book_button) else stringResource(
+                                        id = R.string.download_book_button
+                                    )
+                                }
+
+                            var buttonText by remember { mutableStateOf(buttonTextValue) }
+                            var progressState by remember { mutableStateOf(0f) }
+                            var showProgressBar by remember { mutableStateOf(false) }
+
+                            // Callable which updates book details screen button.
+                            val updateBtnText: (Int?) -> Unit = { downloadStatus ->
+                                buttonText = when (downloadStatus) {
+                                    DownloadManager.STATUS_RUNNING -> {
+                                        showProgressBar = true
+                                        context.getString(R.string.cancel)
+                                    }
+                                    DownloadManager.STATUS_SUCCESSFUL -> {
+                                        showProgressBar = false
+                                        context.getString(R.string.read_book_button)
+                                    }
+                                    else -> {
+                                        showProgressBar = false
+                                        context.getString(R.string.download_book_button)
+                                    }
+                                }
+                            }
+
+                            // Check if this book is in downloadQueue.
+                            if (viewModel.bookDownloader.isBookCurrentlyDownloading(book.id)) {
+                                progressState =
+                                    viewModel.bookDownloader.getRunningDownload(book.id)?.progress?.collectAsState()?.value!!
+                                LaunchedEffect(key1 = progressState, block = {
+                                    updateBtnText(viewModel.bookDownloader.getRunningDownload(book.id)?.status)
+                                })
+                            }
+
+                            MiddleBar(
+                                bookLang = BookUtils.getLanguagesAsString(book.languages),
+                                pageCount = pageCount,
+                                downloadCount = Utils.prettyCount(book.downloadCount),
+                                progressValue = progressState,
+                                buttonText = buttonText,
+                                showProgressBar = showProgressBar
+                            ) {
+                                when (buttonText) {
+                                    context.getString(R.string.read_book_button) -> {
+                                        val bookLibraryItem = state.bookLibraryItem
+                                        /**
+                                         *  Library item could be null if we reload the screen
+                                         *  while some download was running, in that case we'll
+                                         *  de-attach from our old state where download function
+                                         *  will update library item and our new state will have
+                                         *  no library item, i.e. null.
+                                         */
+                                        if (bookLibraryItem == null) {
+                                            viewModel.viewModelScope.launch(Dispatchers.IO) {
+                                                val libraryItem =
+                                                    viewModel.libraryDao.getItemById(book.id)!!
+                                                withContext(Dispatchers.Main) {
+                                                    Utils.openBookFile(
+                                                        context,
+                                                        libraryItem,
+                                                        navController
+                                                    )
+                                                }
+                                            }
+                                        } else {
+                                            Utils.openBookFile(
+                                                context,
+                                                bookLibraryItem,
+                                                navController
+                                            )
+                                        }
+
+                                    }
+                                    context.getString(R.string.download_book_button) -> {
+                                        val message = viewModel.downloadBook(
+                                            book, (context.getActivity() as MainActivity)
+                                        ) { downloadProgress, downloadStatus ->
+                                            progressState = downloadProgress
+                                            updateBtnText(downloadStatus)
+                                        }
+                                        coroutineScope.launch {
+                                            scaffoldState.snackbarHostState.showSnackbar(
+                                                message = message,
+                                            )
+                                        }
+                                    }
+                                    context.getString(R.string.cancel) -> {
+                                        viewModel.bookDownloader.cancelDownload(
+                                            viewModel.bookDownloader.getRunningDownload(book.id)?.downloadId
                                         )
                                     }
                                 }
-                                context.getString(R.string.cancel) -> {
-                                    viewModel.bookDownloader.cancelDownload(
-                                        viewModel.bookDownloader.getRunningDownload(book.id)?.downloadId
-                                    )
-                                }
                             }
+
+                            Text(
+                                text = stringResource(id = R.string.book_synopsis),
+                                modifier = Modifier.padding(start = 12.dp, end = 8.dp),
+                                fontSize = 20.sp,
+                                fontFamily = figeronaFont,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
+
+                            val synopsis = state.extraInfo.description.ifEmpty {
+                                stringResource(id = R.string.book_synopsis_not_found)
+                            }
+
+                            Text(
+                                text = synopsis,
+                                modifier = Modifier.padding(14.dp),
+                                fontFamily = figeronaFont,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
+
                         }
-
-                        Text(
-                            text = stringResource(id = R.string.book_synopsis),
-                            modifier = Modifier.padding(start = 12.dp, end = 8.dp),
-                            fontSize = 20.sp,
-                            fontFamily = figeronaFont,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-
-                        val synopsis = state.extraInfo.description.ifEmpty {
-                            stringResource(id = R.string.book_synopsis_not_found)
-                        }
-
-                        Text(
-                            text = synopsis,
-                            modifier = Modifier.padding(14.dp),
-                            fontFamily = figeronaFont,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-
                     }
                 }
+            } else {
+                NetworkErrorView()
             }
-        } else {
-            NoInternetScreen()
-        }
-    }
+        })
 
 
 }

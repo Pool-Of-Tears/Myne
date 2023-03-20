@@ -23,10 +23,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.api.BooksApi
 import com.starry.myne.api.models.Book
+import com.starry.myne.others.NetworkObserver
 import com.starry.myne.others.Paginator
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class AllBooksState(
     val isLoading: Boolean = false,
@@ -49,7 +52,8 @@ sealed class UserAction {
     data class TextFieldInput(val text: String) : UserAction()
 }
 
-class HomeViewModel : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(private val booksApi: BooksApi) : ViewModel() {
     var allBooksState by mutableStateOf(AllBooksState())
     var topBarState by mutableStateOf(TopBarState())
 
@@ -59,7 +63,11 @@ class HomeViewModel : ViewModel() {
             allBooksState = allBooksState.copy(isLoading = it)
         },
         onRequest = { nextPage ->
-            BooksApi.getAllBooks(nextPage)
+            try {
+                booksApi.getAllBooks(nextPage)
+            } catch (exc: Exception) {
+                Result.failure(exc)
+            }
         },
         getNextPage = {
             allBooksState.page + 1L
@@ -89,7 +97,7 @@ class HomeViewModel : ViewModel() {
 
     private var searchJob: Job? = null
 
-    fun onAction(userAction: UserAction) {
+    fun onAction(userAction: UserAction, networkStatus: NetworkObserver.Status) {
         when (userAction) {
             UserAction.CloseIconClicked -> {
                 topBarState = topBarState.copy(isSearchBarVisible = false)
@@ -99,20 +107,22 @@ class HomeViewModel : ViewModel() {
             }
             is UserAction.TextFieldInput -> {
                 topBarState = topBarState.copy(searchText = userAction.text)
-                searchJob?.cancel()
-                searchJob = viewModelScope.launch {
-                    if (userAction.text.isNotBlank()) {
-                        topBarState = topBarState.copy(isSearching = true)
+                if (networkStatus == NetworkObserver.Status.Available) {
+                    searchJob?.cancel()
+                    searchJob = viewModelScope.launch {
+                        if (userAction.text.isNotBlank()) {
+                            topBarState = topBarState.copy(isSearching = true)
+                        }
+                        delay(500L)
+                        searchBooks(userAction.text)
                     }
-                    delay(500L)
-                    searchBooks(userAction.text)
                 }
             }
         }
     }
 
     private suspend fun searchBooks(query: String) {
-        val bookSet = BooksApi.searchBooks(query)
+        val bookSet = booksApi.searchBooks(query)
         val books = bookSet.getOrNull()!!.books.filter { it.formats.applicationepubzip != null }
         topBarState = topBarState.copy(searchResults = books, isSearching = false)
     }
