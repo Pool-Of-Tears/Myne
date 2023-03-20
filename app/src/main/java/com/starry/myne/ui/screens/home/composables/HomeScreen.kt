@@ -16,6 +16,7 @@ limitations under the License.
 
 package com.starry.myne.ui.screens.home.composables
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -31,6 +32,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -75,6 +77,18 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
     val allBooksState = viewModel.allBooksState
     val topBarState = viewModel.topBarState
 
+    /*
+     Block back button press if search bar is visible to avoid
+     app from closing immediately, instead disable search bar
+     on first back press, and close app on second.
+     */
+    val sysBackButtonState = remember { mutableStateOf(false) }
+    BackHandler(enabled = sysBackButtonState.value) {
+        if (viewModel.topBarState.isSearchBarVisible) {
+            viewModel.onAction(UserAction.CloseIconClicked, networkStatus)
+        }
+    }
+
     Scaffold(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background),
@@ -100,12 +114,14 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
                             keyboardController?.hide()
                             focusManager.clearFocus()
                         })
+                        sysBackButtonState.value = true
                     } else {
                         HomeTopAppBar(
                             onSearchIconClicked = {
                                 viewModel.onAction(UserAction.SearchIconClicked, networkStatus)
                             },
                         )
+                        sysBackButtonState.value = false
                     }
                 }
                 Divider(
