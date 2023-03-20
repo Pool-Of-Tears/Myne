@@ -7,6 +7,7 @@
     <string name="cancel">الغاء</string>
     <string name="storage_perm_error">امنح اذن التخزين من فضلك</string>
     <string name="no_app_to_handle_epub">لا يوجد اى تطبيق لفتح ملف epub</string>
+    <string name="network_error">Oops! Failed to establish connection with the server, please check if your internet is working properly and try again.</string>
     <string name="error">حدث خطأ ما</string>
 
     <!-- Navigation titles -->
@@ -93,7 +94,4 @@
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">المكتبات مفتوحة المصدر</string>
-
-    <!-- No Internet Screen -->
-    <string name="no_internet_connection">لا يوجد انترنت, حاول مرة اخرى</string>
 </resources>

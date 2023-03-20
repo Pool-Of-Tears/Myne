@@ -6,6 +6,7 @@
     <string name="cancel">Zrušit</string>
     <string name="storage_perm_error">Udělte prosím přístup k úložišti!</string>
     <string name="no_app_to_handle_epub">Nepodařilo se najít aplikaci, která by dokázala otevřít soubor epub.</string>
+    <string name="network_error">Oops! Failed to establish connection with the server, please check if your internet is working properly and try again.</string>
     <string name="error">Jejda! Něco se pokazilo.</string>
 
     <!-- Navigation titles -->
@@ -92,8 +93,4 @@
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Knihovny open source</string>
-
-    <!-- No Internet Screen -->
-    <string name="no_internet_connection">Nebylo nalezeno žádné internetové připojení. Zkontrolujte prosím své připojení a zkuste to znovu.</string>
-
 </resources>

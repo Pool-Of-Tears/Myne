@@ -76,7 +76,11 @@ class CategoryViewModel @Inject constructor(private val booksApi: BooksApi) : Vi
                     state = state.copy(isLoading = it)
                 },
                 onRequest = { nextPage ->
-                    booksApi.getBooksByCategory(category, nextPage)
+                    try {
+                        booksApi.getBooksByCategory(category, nextPage)
+                    } catch (exc: Exception) {
+                        Result.failure(exc)
+                    }
                 },
                 getNextPage = {
                     state.page + 1L

@@ -27,7 +27,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,7 +36,7 @@ import com.starry.myne.ui.theme.figeronaFont
 
 @ExperimentalComposeUiApi
 @Composable
-fun NoInternetScreen() {
+fun NetworkErrorView() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -67,17 +66,18 @@ fun NoInternetScreen() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            text = stringResource(id = R.string.no_internet_connection),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(top = 10.dp, start = 28.dp, end = 28.dp)
-                .fillMaxWidth(),
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = 16.sp,
-            fontFamily = figeronaFont,
-            fontWeight = FontWeight.Medium
-        )
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            Text(
+                text = stringResource(id = R.string.network_error),
+                modifier = Modifier
+                    .padding(top = 10.dp, start = 25.dp, end = 25.dp)
+                    .fillMaxWidth(),
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 16.sp,
+                fontFamily = figeronaFont,
+                fontWeight = FontWeight.Medium
+            )
+        }
     }
 }
 
@@ -86,7 +86,7 @@ fun NoInternetScreen() {
 @ExperimentalComposeUiApi
 @Composable
 fun NoInternetScreenPreview() {
-    NoInternetScreen()
+    NetworkErrorView()
 }
 
 

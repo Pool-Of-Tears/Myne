@@ -58,6 +58,7 @@ import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.home.viewmodels.HomeViewModel
 import com.starry.myne.ui.screens.home.viewmodels.UserAction
+import com.starry.myne.ui.screens.other.NetworkErrorView
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.utils.BookUtils
@@ -134,13 +135,7 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
                                 CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                             }
                         } else if (allBooksState.error != null) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                //TODO
-                                Text(text = allBooksState.error)
-                            }
+                            NetworkErrorView()
                         } else {
                             LazyColumn(
                                 modifier = Modifier

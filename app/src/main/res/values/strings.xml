@@ -7,6 +7,7 @@
     <string name="cancel">Cancel</string>
     <string name="storage_perm_error">Please grant storage permission!</string>
     <string name="no_app_to_handle_epub">Cannot find any app to open epub file.</string>
+    <string name="network_error">Oops! Failed to establish connection with the server, please check if your internet is working properly and try again.</string>
     <string name="error">Oops! Something went wrong.</string>
 
     <!-- Navigation titles -->
@@ -96,8 +97,4 @@
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Open Source Libraries</string>
-
-    <!-- No Internet Screen -->
-    <string name="no_internet_connection">No Internet connection was found. Please check your connection and try again.</string>
-
 </resources>

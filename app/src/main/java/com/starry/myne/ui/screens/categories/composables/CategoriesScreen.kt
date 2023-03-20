@@ -43,40 +43,49 @@ import java.util.*
 @ExperimentalMaterial3Api
 @Composable
 fun CategoriesScreen(navController: NavController) {
-    Column(
+    Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        CustomTopAppBar(
-            headerText = stringResource(id = R.string.categories_header),
-            icon = R.drawable.ic_nav_categories
-        )
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp, bottom = 70.dp)
-        ) {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(168.dp),
-                content = {
-                    items(CategoryViewModel.CATEGORIES_ARRAY.size) { i ->
-                        val category = CategoryViewModel.CATEGORIES_ARRAY[i].replaceFirstChar {
-                            if (it.isLowerCase()) it.titlecase(
-                                Locale.getDefault()
-                            ) else it.toString()
-                        }
-                        CategoriesItem(category) {
-                            navController.navigate(
-                                Screens.CategoryDetailScreen.withCategory(category)
-                            )
-                        }
-                    }
-                },
+            .background(MaterialTheme.colorScheme.background),
+        topBar = {
+            CustomTopAppBar(
+                headerText = stringResource(id = R.string.categories_header),
+                icon = R.drawable.ic_nav_categories
             )
-        }
-    }
+        }, content = { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(paddingValues)
+            ) {
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp, bottom = 70.dp)
+                ) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(168.dp),
+                        content = {
+                            items(CategoryViewModel.CATEGORIES_ARRAY.size) { i ->
+                                val category =
+                                    CategoryViewModel.CATEGORIES_ARRAY[i].replaceFirstChar {
+                                        if (it.isLowerCase()) it.titlecase(
+                                            Locale.getDefault()
+                                        ) else it.toString()
+                                    }
+                                CategoriesItem(category) {
+                                    navController.navigate(
+                                        Screens.CategoryDetailScreen.withCategory(category)
+                                    )
+                                }
+                            }
+                        },
+                    )
+                }
+            }
+        })
 
 }
 
