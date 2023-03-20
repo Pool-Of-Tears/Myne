@@ -62,6 +62,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.airbnb.lottie.compose.*
 import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.others.NetworkObserver
@@ -368,18 +369,51 @@ fun BookDetailScreen(
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
 
-                            val synopsis = state.extraInfo.description.ifEmpty {
-                                stringResource(id = R.string.book_synopsis_not_found)
+                            val synopsis = state.extraInfo.description.ifEmpty { null }
+                            if (synopsis != null) {
+                                Text(
+                                    text = synopsis,
+                                    modifier = Modifier.padding(14.dp),
+                                    fontFamily = figeronaFont,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                )
+                            } else {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    val compositionResult: LottieCompositionResult =
+                                        rememberLottieComposition(
+                                            spec = LottieCompositionSpec.RawRes(R.raw.synopis_not_found_lottie)
+                                        )
+                                    val progressAnimation by animateLottieCompositionAsState(
+                                        compositionResult.value,
+                                        isPlaying = true,
+                                        iterations = LottieConstants.IterateForever,
+                                        speed = 1f
+                                    )
+
+                                    Spacer(modifier = Modifier.weight(2f))
+                                    LottieAnimation(
+                                        composition = compositionResult.value,
+                                        progress = progressAnimation,
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.85f)
+                                            .height(200.dp),
+                                        enableMergePaths = true
+                                    )
+
+                                    Text(
+                                        text = stringResource(id = R.string.book_synopsis_not_found),
+                                        modifier = Modifier.padding(14.dp),
+                                        fontFamily = figeronaFont,
+                                        fontWeight = FontWeight.Medium,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
                             }
-
-                            Text(
-                                text = synopsis,
-                                modifier = Modifier.padding(14.dp),
-                                fontFamily = figeronaFont,
-                                fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.onBackground,
-                            )
-
                         }
                     }
                 }

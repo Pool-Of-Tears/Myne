@@ -76,7 +76,15 @@ class HomeViewModel @Inject constructor(private val booksApi: BooksApi) : ViewMo
             allBooksState = allBooksState.copy(error = it?.localizedMessage)
         },
         onSuccess = { bookSet, newPage ->
-            val books = bookSet.books.filter { it.formats.applicationepubzip != null }
+            val books: ArrayList<Book> =
+                bookSet.books.filter { it.formats.applicationepubzip != null } as ArrayList<Book>
+
+            // idk...
+            if (allBooksState.page == 1L) {
+                books.removeAt(0)
+            }
+            //
+
             allBooksState = allBooksState.copy(
                 items = (allBooksState.items + books),
                 page = newPage,
