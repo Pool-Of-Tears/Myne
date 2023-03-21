@@ -16,8 +16,8 @@ android {
         applicationId "com.starry.myne"
         minSdk 24
         targetSdk 33
-        versionCode 9
-        versionName "1.6.0"
+        versionCode 11
+        versionName "1.7.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -37,6 +37,13 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Rename the output apk file automatically.
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def name = "Myne-v${variant.versionName}.apk"
+                    output.outputFileName = name
+                }
+            }
         }
     }
     compileOptions {

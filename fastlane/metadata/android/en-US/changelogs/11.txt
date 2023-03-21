@@ -1,0 +1,3 @@
+- Refactored networking related stuff and improved handling of connection errors.
+- Added a setup/welcome screen which allows user to pick their preferred reader when they launch app for the first time.
+And more! visit https://github.com/Pool-Of-Tears/Myne/releases/tag/v1.7.0 for full changelog.
