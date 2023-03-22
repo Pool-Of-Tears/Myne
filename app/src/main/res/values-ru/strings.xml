@@ -22,6 +22,8 @@
 
     <!-- Home screen. -->
     <string name="home_header">Все книги</string>
+    <string name="home_language_icon_desc">Sort by language</string>
+    <string name="home_search_icon_desc">Search books</string>
 
     <!-- Categories screen. -->
     <string name="categories_header">Категории</string>
@@ -73,7 +75,6 @@
     <string name="about_setting_desc">Информация о приложении &amp; полезные ссылки</string>
 
     <!-- Books card -->
-    <string name="home_search_icon_desc">Поиск книг</string>
     <string name="cover_image_desc">Обложка книги</string>
 
     <!-- Book Detail Screen -->

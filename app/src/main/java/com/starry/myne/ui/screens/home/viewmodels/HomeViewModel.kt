@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.api.BooksApi
 import com.starry.myne.api.models.Book
+import com.starry.myne.others.LanguageSortTypes
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.others.Paginator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,6 +43,7 @@ data class AllBooksState(
 data class TopBarState(
     val searchText: String = "",
     val isSearchBarVisible: Boolean = false,
+    val isSortMenuVisible: Boolean = false,
     val isSearching: Boolean = false,
     val searchResults: List<Book> = emptyList()
 )
@@ -50,6 +52,7 @@ sealed class UserAction {
     object SearchIconClicked : UserAction()
     object CloseIconClicked : UserAction()
     data class TextFieldInput(val text: String) : UserAction()
+    data class SortItemClicked(val type: LanguageSortTypes) : UserAction()
 }
 
 @HiltViewModel
@@ -125,6 +128,9 @@ class HomeViewModel @Inject constructor(private val booksApi: BooksApi) : ViewMo
                         searchBooks(userAction.text)
                     }
                 }
+            }
+            is UserAction.SortItemClicked -> {
+
             }
         }
     }
