@@ -20,9 +20,10 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -38,17 +39,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,7 +60,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.R
-import com.starry.myne.others.LanguageSortTypes
+import com.starry.myne.others.BookLanguages
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.ProgressDots
@@ -88,10 +91,15 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
     val sysBackButtonState = remember { mutableStateOf(false) }
     BackHandler(enabled = sysBackButtonState.value) {
         if (viewModel.topBarState.isSearchBarVisible) {
-            viewModel.onAction(UserAction.CloseIconClicked, networkStatus)
+            if (viewModel.topBarState.searchText.isNotEmpty()) {
+                viewModel.onAction(UserAction.TextFieldInput(""), networkStatus)
+            } else {
+                viewModel.onAction(UserAction.CloseIconClicked, networkStatus)
+            }
         }
     }
 
+    val haptic = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
     val bottomSheetScaffoldState = androidx.compose.material.rememberBottomSheetScaffoldState(
         bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
@@ -100,38 +108,38 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
     androidx.compose.material.BottomSheetScaffold(scaffoldState = bottomSheetScaffoldState,
         sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         sheetPeekHeight = 0.dp,
+        sheetElevation = 24.dp,
+        sheetBackgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp),
         sheetContent = {
-            val languages = LanguageSortTypes.getAllLanguages()
-            LazyColumn(
+            val languages = BookLanguages.getAllLanguages()
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(380.dp)
-                    .padding(bottom = 70.dp),
+                    .height(325.dp)
+                    .padding(bottom = 72.dp)
             ) {
-                items(languages.size) { idx ->
-                    val language = languages[idx]
-
-                    //TODO
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.background)
-                            .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .clickable { },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = language.name,
-                            fontWeight = FontWeight.Medium,
-                            fontFamily = figeronaFont,
-                            fontSize = 16.sp
-                        )
+                LazyVerticalGrid(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 12.dp, end = 12.dp, top = 8.dp),
+                    columns = GridCells.Adaptive(168.dp)
+                ) {
+                    items(languages.size) { idx ->
+                        val language = languages[idx]
+                        LanguageItem(language = language, onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.onAction(
+                                UserAction.SortItemClicked(language), networkStatus
+                            )
+                            coroutineScope.launch {
+                                bottomSheetScaffoldState.bottomSheetState.collapse()
+                            }
+                        })
                     }
                 }
             }
-        }
-    ) {
+
+        }) {
         HomeScreenScaffold(
             viewModel = viewModel,
             networkStatus = networkStatus,
@@ -192,11 +200,10 @@ fun HomeScreenScaffold(
                         })
                         sysBackButtonState.value = true
                     } else {
-                        HomeTopAppBar(
+                        HomeTopAppBar(bookLanguages = viewModel.language.value,
                             onSearchIconClicked = {
                                 viewModel.onAction(
-                                    UserAction.SearchIconClicked,
-                                    networkStatus
+                                    UserAction.SearchIconClicked, networkStatus
                                 )
                             }, onSortIconClicked = {
                                 coroutineScope.launch {
@@ -206,8 +213,7 @@ fun HomeScreenScaffold(
                                         bottomSheetScaffoldState.bottomSheetState.collapse()
                                     }
                                 }
-                            }
-                        )
+                            })
                         sysBackButtonState.value = false
                     }
                 }
@@ -232,8 +238,7 @@ fun HomeScreenScaffold(
                     // show fullscreen progress indicator when loading the first page.
                     if (allBooksState.page == 1L && allBooksState.isLoading) {
                         Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                         }
@@ -328,8 +333,7 @@ fun HomeScreenScaffold(
                                     author = BookUtils.getAuthorsAsString(item.authors),
                                     language = BookUtils.getLanguagesAsString(item.languages),
                                     subjects = BookUtils.getSubjectsAsString(
-                                        item.subjects,
-                                        3
+                                        item.subjects, 3
                                     ),
                                     coverImageUrl = item.formats.imagejpeg
                                 ) {
@@ -350,6 +354,7 @@ fun HomeScreenScaffold(
 
 @Composable
 fun HomeTopAppBar(
+    bookLanguages: BookLanguages,
     onSearchIconClicked: () -> Unit,
     onSortIconClicked: () -> Unit,
 ) {
@@ -361,7 +366,8 @@ fun HomeTopAppBar(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = stringResource(id = R.string.home_header),
+            text = if (bookLanguages == BookLanguages.AllBooks)
+                stringResource(id = R.string.home_header) else bookLanguages.name,
             fontSize = 28.sp,
             color = MaterialTheme.colorScheme.onBackground,
             fontFamily = pacificoFont
@@ -450,6 +456,36 @@ fun SearchAppBar(
     )
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
+    }
+}
+
+@ExperimentalMaterial3Api
+@Composable
+fun LanguageItem(language: BookLanguages, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .height(60.dp)
+            .width(70.dp)
+            .padding(6.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        ),
+        shape = RoundedCornerShape(14.dp),
+        onClick = onClick
+    ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(
+                modifier = Modifier.padding(2.dp),
+                text = language.name,
+                fontSize = 18.sp,
+                fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
+                fontFamily = figeronaFont,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+            )
+        }
     }
 }
 
