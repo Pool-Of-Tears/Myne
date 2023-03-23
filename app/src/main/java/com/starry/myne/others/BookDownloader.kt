@@ -124,7 +124,7 @@ class BookDownloader(context: Context) {
 
     fun cancelDownload(downloadId: Long?) = downloadId?.let { downloadManager.remove(it) }
 
-    fun getFilenameForBook(book: Book) =
-        book.title.replace(":", ";").split(" ").joinToString(separator = "+") + ".epub"
+    fun getFilenameForBook(book: Book) = book.title.replace(":", ";")
+        .replace("\"", "").split(" ").joinToString(separator = "+") + ".epub"
 
 }

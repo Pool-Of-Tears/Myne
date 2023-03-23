@@ -51,6 +51,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -115,9 +116,19 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(325.dp)
+                    //.height(325.dp)
                     .padding(bottom = 72.dp)
             ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    text = "Browse by language",
+                    textAlign = TextAlign.Center,
+                    fontFamily = pacificoFont,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 20.sp
+                )
                 LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -129,7 +140,7 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
                         LanguageItem(language = language, onClick = {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             viewModel.onAction(
-                                UserAction.SortItemClicked(language), networkStatus
+                                UserAction.LanguageItemClicked(language), networkStatus
                             )
                             coroutineScope.launch {
                                 bottomSheetScaffoldState.bottomSheetState.collapse()

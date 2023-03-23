@@ -50,7 +50,7 @@ sealed class UserAction {
     object SearchIconClicked : UserAction()
     object CloseIconClicked : UserAction()
     data class TextFieldInput(val text: String) : UserAction()
-    data class SortItemClicked(val language: BookLanguages) : UserAction()
+    data class LanguageItemClicked(val language: BookLanguages) : UserAction()
 }
 
 @HiltViewModel
@@ -128,7 +128,7 @@ class HomeViewModel @Inject constructor(private val booksApi: BooksApi) : ViewMo
                     }
                 }
             }
-            is UserAction.SortItemClicked -> {
+            is UserAction.LanguageItemClicked -> {
                 viewModelScope.launch { changeLanguage(userAction.language) }
             }
         }
