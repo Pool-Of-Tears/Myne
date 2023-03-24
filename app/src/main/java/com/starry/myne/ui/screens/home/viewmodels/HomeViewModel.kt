@@ -79,7 +79,7 @@ class HomeViewModel @Inject constructor(private val booksApi: BooksApi) : ViewMo
         allBooksState = allBooksState.copy(error = it?.localizedMessage)
     }, onSuccess = { bookSet, newPage ->
         /**
-         * usually bookSet.books is not nullable and api si,ply returns empty list
+         * usually bookSet.books is not nullable and API simply returns empty list
          * when browsing books all books (i.e. without passing language parameter)
          * however, when browsing by language it returns a response which looks like
          * this: {"detail": "Invalid page."}. Hence the [BookSet] attributes become
