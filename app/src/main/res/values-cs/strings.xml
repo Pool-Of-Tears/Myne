@@ -21,6 +21,9 @@
 
     <!-- Home screen. -->
     <string name="home_header">Všechny knihy</string>
+    <string name="home_language_icon_desc">Sort by language</string>
+    <string name="home_search_icon_desc">Hledat knihy</string>
+    <string name="language_menu_title">Browse by language</string>
 
     <!-- Categories screen. -->
     <string name="categories_header">Kategorie</string>
@@ -72,7 +75,6 @@
     <string name="about_setting_desc">Zobrazit informace o aplikaci a užitečné odkazy</string>
 
     <!-- Books card -->
-    <string name="home_search_icon_desc">Hledat knihy</string>
     <string name="cover_image_desc">Obrázek na obálce knihy</string>
 
     <!-- Book Detail Screen -->

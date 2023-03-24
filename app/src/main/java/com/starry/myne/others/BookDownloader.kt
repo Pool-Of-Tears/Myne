@@ -47,6 +47,14 @@ class BookDownloader(context: Context) {
     /** Stores running download with book id as key */
     private val runningDownloads = HashMap<Int, DownloadInfo>()
 
+    /**
+     * Start downloading epub file for the given [Book] object.
+     * @param book [Book] which needs to be downloaded.
+     * @param downloadProgressListener a callable which takes download progress; [Float] and
+     * download status; [Int] as arguments.
+     * @param onDownloadSuccess: a callable which will be executed after download has been
+     * completed successfully.
+     */
     @SuppressLint("Range")
     fun downloadBook(
         book: Book, downloadProgressListener: (Float, Int) -> Unit, onDownloadSuccess: () -> Unit
@@ -118,13 +126,29 @@ class BookDownloader(context: Context) {
         }
     }
 
+    /**
+     * Returns true if book with the given id is currently being downloaded
+     * false otherwise.
+     */
     fun isBookCurrentlyDownloading(bookId: Int) = runningDownloads.containsKey(bookId)
 
+    /**
+     * Returns [DownloadInfo] for the given book id if it's currently
+     * being downloaded, null otherwise.
+     */
     fun getRunningDownload(bookId: Int) = runningDownloads[bookId]
 
+    /**
+     * Cancels download of book by using it's download id (if download is running).
+     */
     fun cancelDownload(downloadId: Long?) = downloadId?.let { downloadManager.remove(it) }
 
-    fun getFilenameForBook(book: Book) =
-        book.title.replace(":", ";").split(" ").joinToString(separator = "+") + ".epub"
+    /**
+     * Sanitizes book title by replacing forbidden chars which are not allowed
+     * as the file name & builds file name for the epub file by joining all of
+     * the words in the  book title at the end.
+     */
+    fun getFilenameForBook(book: Book) = book.title.replace(":", ";")
+        .replace("\"", "").split(" ").joinToString(separator = "+") + ".epub"
 
 }

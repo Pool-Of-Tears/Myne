@@ -22,6 +22,9 @@
 
     <!-- Home screen. -->
     <string name="home_header">كل الكتب</string>
+    <string name="home_language_icon_desc">Sort by language</string>
+    <string name="home_search_icon_desc">البحث عن كتاب</string>
+    <string name="language_menu_title">Browse by language</string>
 
     <!-- Categories screen. -->
     <string name="categories_header">الفئات</string>
@@ -73,7 +76,6 @@
     <string name="about_setting_desc">Show App information &amp; useful links</string>
 
     <!-- Books card -->
-    <string name="home_search_icon_desc">البحث عن كتاب</string>
     <string name="cover_image_desc">صورة الغلاف</string>
 
     <!-- Book Detail Screen -->

@@ -21,6 +21,7 @@ import android.net.ConnectivityManager
 import com.google.gson.Gson
 import com.starry.myne.api.models.BookSet
 import com.starry.myne.api.models.ExtraInfo
+import com.starry.myne.others.BookLanguages
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.*
@@ -34,7 +35,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
-class ForceCacheInterceptor(private val context: Context) : Interceptor {
+class ForceCacheInterceptor(context: Context) : Interceptor {
 
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -66,9 +67,17 @@ class BooksApi(context: Context) {
 
     private val gsonClient = Gson()
 
-    suspend fun getAllBooks(page: Long): Result<BookSet> {
+    suspend fun getAllBooks(
+        page: Long,
+        bookLanguage: BookLanguages = BookLanguages.English
+    ): Result<BookSet> {
         setApiUrlIfNotSetAlready()
-        val request = Request.Builder().get().url("${baseApiUrl}?page=$page").build()
+        val url = if (bookLanguage != BookLanguages.AllBooks) {
+            "${baseApiUrl}?page=$page&languages=${bookLanguage.isoCode}"
+        } else {
+            "${baseApiUrl}?page=$page"
+        }
+        val request = Request.Builder().get().url(url).build()
         return makeApiRequest(request)
     }
 

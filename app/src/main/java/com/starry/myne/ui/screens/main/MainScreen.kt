@@ -80,7 +80,9 @@ fun MainScreen(
     Scaffold(
         bottomBar = {
             BottomBar(
-                navController = navController, systemUiController, settingsViewModel
+                navController = navController,
+                systemUiController = systemUiController,
+                settingsViewModel = settingsViewModel
             )
         }, containerColor = MaterialTheme.colorScheme.background
     ) {

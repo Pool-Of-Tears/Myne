@@ -77,7 +77,6 @@ aboutLibraries {
 
 
 dependencies {
-
     // Android core components.
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.0'
@@ -124,6 +123,8 @@ dependencies {
     implementation "me.saket.swipe:swipe:1.0.0"
     // Crash Handler.
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
+    // Kotlin reflect API.
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.8.10"
     // Testing components.
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
