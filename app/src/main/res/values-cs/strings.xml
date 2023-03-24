@@ -22,7 +22,8 @@
     <!-- Home screen. -->
     <string name="home_header">Všechny knihy</string>
     <string name="home_language_icon_desc">Sort by language</string>
-    <string name="home_search_icon_desc">Search books</string>
+    <string name="home_search_icon_desc">Hledat knihy</string>
+    <string name="language_menu_title">Browse by language</string>
 
     <!-- Categories screen. -->
     <string name="categories_header">Kategorie</string>

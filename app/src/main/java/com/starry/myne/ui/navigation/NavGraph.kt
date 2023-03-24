@@ -87,6 +87,7 @@ fun NavGraph(
         /** Home Screen */
         composable(
             route = BottomBarScreen.Home.route,
+            enterTransition = { fadeIn(animationSpec = tween(400)) },
             exitTransition = {
                 if (initialState.destination.route == Screens.BookDetailScreen.route) {
                     slideOutHorizontally(
@@ -94,7 +95,7 @@ fun NavGraph(
                             durationMillis = 300, easing = FastOutSlowInEasing
                         )
                     ) + fadeOut(animationSpec = tween(300))
-                } else null
+                } else fadeOut(animationSpec = tween(400))
             },
             popEnterTransition = {
                 if (targetState.destination.route == Screens.BookDetailScreen.route) {
@@ -103,8 +104,9 @@ fun NavGraph(
                             durationMillis = 300, easing = FastOutSlowInEasing
                         )
                     ) + fadeIn(animationSpec = tween(300))
-                } else null
+                } else fadeIn(animationSpec = tween(400))
             },
+            popExitTransition = { fadeOut(animationSpec = tween(400)) }
         ) {
             HomeScreen(navController, networkStatus)
         }
@@ -155,6 +157,7 @@ fun NavGraph(
         /** Categories Screen */
         composable(
             route = BottomBarScreen.Categories.route,
+            enterTransition = { fadeIn(animationSpec = tween(400)) },
             exitTransition = {
                 if (initialState.destination.route == Screens.CategoryDetailScreen.route) {
                     slideOutHorizontally(
@@ -162,7 +165,7 @@ fun NavGraph(
                             durationMillis = 300, easing = FastOutSlowInEasing
                         )
                     ) + fadeOut(animationSpec = tween(300))
-                } else null
+                } else fadeOut(animationSpec = tween(400))
             },
             popEnterTransition = {
                 if (targetState.destination.route == Screens.CategoryDetailScreen.route) {
@@ -171,8 +174,9 @@ fun NavGraph(
                             durationMillis = 300, easing = FastOutSlowInEasing
                         )
                     ) + fadeIn(animationSpec = tween(300))
-                } else null
+                } else fadeIn(animationSpec = tween(400))
             },
+            popExitTransition = { fadeOut(animationSpec = tween(400)) }
         ) {
             CategoriesScreen(navController)
         }
@@ -221,6 +225,7 @@ fun NavGraph(
         /** Library Screen */
         composable(
             route = BottomBarScreen.Library.route,
+            enterTransition = { fadeIn(animationSpec = tween(400)) },
             exitTransition = {
                 if (initialState.destination.route == Screens.BookDetailScreen.route) {
                     slideOutHorizontally(
@@ -228,7 +233,7 @@ fun NavGraph(
                             durationMillis = 300, easing = FastOutSlowInEasing
                         )
                     ) + fadeOut(animationSpec = tween(300))
-                } else null
+                } else fadeOut(animationSpec = tween(400))
             },
             popEnterTransition = {
                 if (targetState.destination.route == BottomBarScreen.Library.route) {
@@ -237,8 +242,9 @@ fun NavGraph(
                             durationMillis = 300, easing = FastOutSlowInEasing
                         )
                     ) + fadeIn(animationSpec = tween(300))
-                } else null
+                } else fadeIn(animationSpec = tween(400))
             },
+            popExitTransition = { fadeOut(animationSpec = tween(400)) }
         ) {
             LibraryScreen(navController)
         }
@@ -319,6 +325,7 @@ fun NavGraph(
         /** Settings Screen */
         composable(
             route = BottomBarScreen.Settings.route,
+            enterTransition = { fadeIn(animationSpec = tween(400)) },
             exitTransition = {
                 if (initialState.destination.route == Screens.OSLScreen.route || initialState.destination.route == Screens.AboutScreen.route) {
                     slideOutHorizontally(
@@ -326,7 +333,7 @@ fun NavGraph(
                             durationMillis = 300, easing = FastOutSlowInEasing
                         )
                     ) + fadeOut(animationSpec = tween(300))
-                } else null
+                } else fadeOut(animationSpec = tween(400))
             },
             popEnterTransition = {
                 if (initialState.destination.route == Screens.OSLScreen.route || initialState.destination.route == Screens.AboutScreen.route) {
@@ -335,8 +342,9 @@ fun NavGraph(
                             durationMillis = 300, easing = FastOutSlowInEasing
                         )
                     ) + fadeIn(animationSpec = tween(300))
-                } else null
+                } else fadeIn(animationSpec = tween(400))
             },
+            popExitTransition = { fadeOut(animationSpec = tween(400)) }
         ) {
             SettingsScreen(navController)
         }

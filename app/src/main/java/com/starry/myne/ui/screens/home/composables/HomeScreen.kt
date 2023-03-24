@@ -116,14 +116,13 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    //.height(325.dp)
                     .padding(bottom = 72.dp)
             ) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(4.dp),
-                    text = "Browse by language",
+                    text = stringResource(id = R.string.language_menu_title),
                     textAlign = TextAlign.Center,
                     fontFamily = pacificoFont,
                     fontWeight = FontWeight.Medium,
@@ -231,7 +230,6 @@ fun HomeScreenScaffold(
                 Divider(
                     color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
                     thickness = 2.dp,
-                    // modifier = Modifier.padding(vertical = 2.dp)
                 )
             }
         },

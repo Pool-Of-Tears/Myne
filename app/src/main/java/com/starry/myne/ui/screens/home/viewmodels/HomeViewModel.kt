@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.api.BooksApi
 import com.starry.myne.api.models.Book
+import com.starry.myne.api.models.BookSet
 import com.starry.myne.others.BookLanguages
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.others.Paginator
@@ -77,23 +78,35 @@ class HomeViewModel @Inject constructor(private val booksApi: BooksApi) : ViewMo
     }, onError = {
         allBooksState = allBooksState.copy(error = it?.localizedMessage)
     }, onSuccess = { bookSet, newPage ->
-        val books: ArrayList<Book> =
-            bookSet.books.filter { it.formats.applicationepubzip != null } as ArrayList<Book>
+        /**
+         * usually bookSet.books is not nullable and api si,ply returns empty list
+         * when browsing books all books (i.e. without passing language parameter)
+         * however, when browsing by language it returns a response which looks like
+         * this: {"detail": "Invalid page."}. Hence the [BookSet] attributes become
+         * null in this case and can cause crashes.
+         */
+        val books = if (bookSet.books != null) {
+            val books: ArrayList<Book> =
+                bookSet.books.filter { it.formats.applicationepubzip != null } as ArrayList<Book>
 
-        // pls ignore (this line doesn't exists)...
-        if (setOf(
-                BookLanguages.English,
-                BookLanguages.AllBooks
-            ).contains(language.value) && allBooksState.page == 1L
-        ) {
-            books.removeAt(0)
+            // pls ignore (this line doesn't exists)...
+            if (setOf(
+                    BookLanguages.English,
+                    BookLanguages.AllBooks
+                ).contains(language.value) && allBooksState.page == 1L
+            ) {
+                books.removeAt(0)
+            }
+            // returning value
+            books
+        } else {
+            ArrayList()
         }
-        //
 
         allBooksState = allBooksState.copy(
             items = (allBooksState.items + books),
             page = newPage,
-            endReached = bookSet.books.isEmpty()
+            endReached = books.isEmpty()
         )
     })
 
