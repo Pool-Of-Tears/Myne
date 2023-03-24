@@ -38,7 +38,7 @@ If this project helped you a little bit, please consider donating a small amount
 [![Ethereum](https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white)](https://www.blockchain.com/eth/address/0x9ef20ad6FBf1985e6eF6ea6337ad800Cb8126eD3)
 ![](https://img.shields.io/badge/starry%40airtel-UPI-red?style=for-the-badge)
 
-Or you could just buy the app from Google Play Store. You'll get constant updates without the need to get all the way here and download the release all by yourself and install the release all by yourself and then you realize you have a different package name so you contact me but I really don't have time for this so I update it on google play and then you realize your installer doesn't work and then you realize your whole life is like this, miserable and not working but then you see a point of light in the distance so you run towards and and it's the "Buy" button in the Myne's page on google play, it'l make your life easier.
+Or you could just buy the app from Google Play Store. You'll get constant updates without the need to get all the way here and download the release all by yourself and install the release all by yourself and then you realize you have a different package name so you contact me but I really don't have time for this so I update it on google play and then you realize your installer doesn't work and then you realize your whole life is like this, miserable and not working but then you see a point of light in the distance so you run towards and it's the "Buy" button in the Myne's page on google play, it'll make your life easier.
 
 ------
 <h2 align="center">Downloads</h2>
