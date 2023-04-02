@@ -18,7 +18,7 @@ limitations under the License.
 package com.starry.myne.di
 
 import android.content.Context
-import com.starry.myne.api.BooksApi
+import com.starry.myne.repo.BookRepository
 import com.starry.myne.database.MyneDatabase
 import com.starry.myne.others.BookDownloader
 import com.starry.myne.others.WelcomeDataStore
@@ -50,7 +50,7 @@ class MainModule {
 
     @Singleton
     @Provides
-    fun provideBooksApi(@ApplicationContext context: Context) = BooksApi(context)
+    fun provideBooksApi() = BookRepository()
 
     @Singleton
     @Provides

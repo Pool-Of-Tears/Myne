@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.api.models
+package com.starry.myne.repo.models
 
 
 import androidx.annotation.Keep

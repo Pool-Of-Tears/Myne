@@ -1,6 +1,6 @@
 # TODO: Change info of issue guide.
 name: "\U0001F41E Bug report"
-description: Create a report to help us improve.
+description: Create a bug report to help us improve.
 title: "[Bug]: "
 labels: ["\U0001F41E bug"]
 body:

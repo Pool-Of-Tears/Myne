@@ -22,7 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.starry.myne.api.BooksApi
+import com.starry.myne.repo.BookRepository
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderItem
@@ -51,7 +51,7 @@ data class ReaderDetailScreenState(
 
 @HiltViewModel
 class ReaderDetailViewModel @Inject constructor(
-    private val booksApi: BooksApi,
+    private val bookRepository: BookRepository,
     private val libraryDao: LibraryDao,
     private val readerDao: ReaderDao
 ) : ViewModel() {
@@ -67,7 +67,7 @@ class ReaderDetailViewModel @Inject constructor(
             val libraryItem = libraryDao.getItemById(bookId.toInt())!!
             state = try {
                 val coverImage: String? = try {
-                    booksApi.getExtraInfo(libraryItem.title)?.coverImage
+                    bookRepository.getExtraInfo(libraryItem.title)?.coverImage
                 } catch (exc: Exception) {
                     null
                 }

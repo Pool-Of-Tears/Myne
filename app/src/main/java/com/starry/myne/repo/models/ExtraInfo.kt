@@ -14,20 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.api.models
-
+package com.starry.myne.repo.models
 
 import androidx.annotation.Keep
-import com.google.gson.annotations.SerializedName
 
+/** Extra info from google books API */
 @Keep
-data class BookSet(
-    @SerializedName("count")
-    val count: Int,
-    @SerializedName("next")
-    val next: String?,
-    @SerializedName("previous")
-    val previous: String?,
-    @SerializedName("results")
-    val books: List<Book>
+data class ExtraInfo(
+    val coverImage: String = "",
+    val pageCount: Int = 0,
+    val description: String = ""
 )
