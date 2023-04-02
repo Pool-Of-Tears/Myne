@@ -22,10 +22,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.starry.myne.api.BooksApi
-import com.starry.myne.api.models.Book
-import com.starry.myne.api.models.BookSet
 import com.starry.myne.others.Paginator
+import com.starry.myne.repo.BookRepository
+import com.starry.myne.repo.models.Book
+import com.starry.myne.repo.models.BookSet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -39,7 +39,7 @@ data class CategorisedBooksState(
 )
 
 @HiltViewModel
-class CategoryViewModel @Inject constructor(private val booksApi: BooksApi) : ViewModel() {
+class CategoryViewModel @Inject constructor(private val booksApi: BookRepository) : ViewModel() {
     companion object {
         val CATEGORIES_ARRAY =
             listOf(
@@ -64,13 +64,13 @@ class CategoryViewModel @Inject constructor(private val booksApi: BooksApi) : Vi
             )
     }
 
-    private lateinit var paginator: Paginator<Long, BookSet>
+    private lateinit var pagination: Paginator<Long, BookSet>
 
     var state by mutableStateOf(CategorisedBooksState())
 
     fun loadBookByCategory(category: String) {
-        if (!this::paginator.isInitialized) {
-            paginator = Paginator(
+        if (!this::pagination.isInitialized) {
+            pagination = Paginator(
                 initialPage = state.page,
                 onLoadUpdated = {
                     state = state.copy(isLoading = it)
@@ -86,7 +86,7 @@ class CategoryViewModel @Inject constructor(private val booksApi: BooksApi) : Vi
                     state.page + 1L
                 },
                 onError = {
-                    state = state.copy(error = it?.localizedMessage)
+                    state = state.copy(error = it?.localizedMessage ?: "unknown-error")
                 },
                 onSuccess = { bookSet, newPage ->
                     state = state.copy(
@@ -103,7 +103,13 @@ class CategoryViewModel @Inject constructor(private val booksApi: BooksApi) : Vi
 
     fun loadNextItems() {
         viewModelScope.launch {
-            paginator.loadNextItems()
+            pagination.loadNextItems()
         }
+    }
+
+    fun reloadItems() {
+        pagination.reset()
+        state = CategorisedBooksState()
+        loadNextItems()
     }
 }

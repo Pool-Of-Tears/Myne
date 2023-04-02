@@ -58,68 +58,68 @@ fun CategoryDetailScreen(
             navController.navigateUp()
         }
     }, content = {
-        if (networkStatus == NetworkObserver.Status.Available) {
-            LaunchedEffect(key1 = true, block = { viewModel.loadBookByCategory(category) })
+        LaunchedEffect(key1 = true, block = { viewModel.loadBookByCategory(category) })
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(it)
-            ) {
-                if (state.page == 1L && state.isLoading) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                    }
-                } else if (state.error != null) {
-                    NetworkErrorView()
-                } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background)
-                            .padding(start = 8.dp, end = 8.dp)
-                    ) {
-                        items(state.items.size) { i ->
-                            val item = state.items[i]
-                            if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
-                                viewModel.loadNextItems()
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .fillMaxWidth(), contentAlignment = Alignment.Center
-                            ) {
-                                BookItemCard(
-                                    title = item.title,
-                                    author = BookUtils.getAuthorsAsString(item.authors),
-                                    language = BookUtils.getLanguagesAsString(item.languages),
-                                    subjects = BookUtils.getSubjectsAsString(item.subjects, 3),
-                                    coverImageUrl = item.formats.imagejpeg
-                                ) {
-                                    navController.navigate(Screens.BookDetailScreen.withBookId(item.id.toString()))
-                                }
-                            }
-
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(it)
+        ) {
+            if (state.page == 1L && state.isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                }
+            } else if (state.error != null) {
+                NetworkErrorView(onRetryClicked = { viewModel.reloadItems() })
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(start = 8.dp, end = 8.dp)
+                ) {
+                    items(state.items.size) { i ->
+                        val item = state.items[i]
+                        if (networkStatus == NetworkObserver.Status.Available
+                            && i >= state.items.size - 1
+                            && !state.endReached
+                            && !state.isLoading
+                        ) {
+                            viewModel.loadNextItems()
                         }
-                        item {
-                            if (state.isLoading) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp),
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    ProgressDots()
-                                }
+                        Box(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .fillMaxWidth(), contentAlignment = Alignment.Center
+                        ) {
+                            BookItemCard(
+                                title = item.title,
+                                author = BookUtils.getAuthorsAsString(item.authors),
+                                language = BookUtils.getLanguagesAsString(item.languages),
+                                subjects = BookUtils.getSubjectsAsString(item.subjects, 3),
+                                coverImageUrl = item.formats.imagejpeg
+                            ) {
+                                navController.navigate(Screens.BookDetailScreen.withBookId(item.id.toString()))
+                            }
+                        }
+
+                    }
+                    item {
+                        if (state.isLoading) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                ProgressDots()
                             }
                         }
                     }
                 }
-
             }
-        } else {
-            NetworkErrorView()
+
         }
     })
 

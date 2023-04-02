@@ -93,9 +93,9 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
     BackHandler(enabled = sysBackButtonState.value) {
         if (viewModel.topBarState.isSearchBarVisible) {
             if (viewModel.topBarState.searchText.isNotEmpty()) {
-                viewModel.onAction(UserAction.TextFieldInput(""), networkStatus)
+                viewModel.onAction(UserAction.TextFieldInput("", networkStatus))
             } else {
-                viewModel.onAction(UserAction.CloseIconClicked, networkStatus)
+                viewModel.onAction(UserAction.CloseIconClicked)
             }
         }
     }
@@ -139,7 +139,7 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
                         LanguageItem(language = language, onClick = {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             viewModel.onAction(
-                                UserAction.LanguageItemClicked(language), networkStatus
+                                UserAction.LanguageItemClicked(language)
                             )
                             coroutineScope.launch {
                                 bottomSheetScaffoldState.bottomSheetState.collapse()
@@ -199,10 +199,10 @@ fun HomeScreenScaffold(
                 ) {
                     if (it) {
                         SearchAppBar(onCloseIconClicked = {
-                            viewModel.onAction(UserAction.CloseIconClicked, networkStatus)
+                            viewModel.onAction(UserAction.CloseIconClicked)
                         }, onInputValueChange = { newText ->
                             viewModel.onAction(
-                                UserAction.TextFieldInput(newText), networkStatus
+                                UserAction.TextFieldInput(newText, networkStatus)
                             )
                         }, text = topBarState.searchText, onSearchClicked = {
                             keyboardController?.hide()
@@ -212,9 +212,7 @@ fun HomeScreenScaffold(
                     } else {
                         HomeTopAppBar(bookLanguages = viewModel.language.value,
                             onSearchIconClicked = {
-                                viewModel.onAction(
-                                    UserAction.SearchIconClicked, networkStatus
-                                )
+                                viewModel.onAction(UserAction.SearchIconClicked)
                             }, onSortIconClicked = {
                                 coroutineScope.launch {
                                     if (bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
@@ -252,7 +250,7 @@ fun HomeScreenScaffold(
                             CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                         }
                     } else if (allBooksState.error != null) {
-                        NetworkErrorView()
+                        NetworkErrorView(onRetryClicked = { viewModel.reloadItems() })
                     } else {
                         LazyColumn(
                             modifier = Modifier

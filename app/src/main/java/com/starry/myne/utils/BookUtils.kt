@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.starry.myne.utils
 
-import com.starry.myne.api.models.Author
+import com.starry.myne.repo.models.Author
 import java.util.*
 
 object BookUtils {

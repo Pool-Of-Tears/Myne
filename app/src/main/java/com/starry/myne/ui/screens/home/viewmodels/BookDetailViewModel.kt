@@ -28,13 +28,13 @@ import androidx.lifecycle.viewModelScope
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.MainActivity
 import com.starry.myne.R
-import com.starry.myne.api.BooksApi
-import com.starry.myne.api.models.Book
-import com.starry.myne.api.models.BookSet
-import com.starry.myne.api.models.ExtraInfo
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.others.BookDownloader
+import com.starry.myne.repo.BookRepository
+import com.starry.myne.repo.models.Book
+import com.starry.myne.repo.models.BookSet
+import com.starry.myne.repo.models.ExtraInfo
 import com.starry.myne.utils.BookUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +43,7 @@ import javax.inject.Inject
 
 data class BookDetailScreenState(
     val isLoading: Boolean = true,
-    val item: BookSet = BookSet(0, null, null, emptyList()),
+    val bookSet: BookSet = BookSet(0, null, null, emptyList()),
     val extraInfo: ExtraInfo = ExtraInfo(),
     val bookLibraryItem: LibraryItem? = null,
     val error: String? = null
@@ -55,26 +55,29 @@ data class BookDetailScreenState(
 @ExperimentalMaterial3Api
 @HiltViewModel
 class BookDetailViewModel @Inject constructor(
-    private val booksApi: BooksApi,
+    private val bookRepository: BookRepository,
     val libraryDao: LibraryDao,
     val bookDownloader: BookDownloader,
 ) : ViewModel() {
     var state by mutableStateOf(BookDetailScreenState())
     fun getBookDetails(bookId: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            // Reset Screen state.
+            state = BookDetailScreenState()
             try {
-                val bookItem = booksApi.getBookById(bookId).getOrNull()!!
-                val extraInfo = booksApi.getExtraInfo(bookItem.books.first().title)
+                val bookSet = bookRepository.getBookById(bookId).getOrNull()!!
+                val extraInfo = bookRepository.getExtraInfo(bookSet.books.first().title)
                 state = if (extraInfo != null) {
-                    state.copy(item = bookItem, extraInfo = extraInfo)
+                    state.copy(bookSet = bookSet, extraInfo = extraInfo)
                 } else {
-                    state.copy(item = bookItem)
+                    state.copy(bookSet = bookSet)
                 }
                 state = state.copy(
                     bookLibraryItem = libraryDao.getItemById(bookId.toInt()), isLoading = false
                 )
             } catch (exc: Exception) {
-                state = state.copy(error = exc.localizedMessage, isLoading = false)
+                state =
+                    state.copy(error = exc.localizedMessage ?: "unknown-error", isLoading = false)
             }
         }
     }

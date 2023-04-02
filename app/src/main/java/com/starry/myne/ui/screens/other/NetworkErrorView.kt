@@ -18,6 +18,9 @@ package com.starry.myne.ui.screens.other
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,21 +30,22 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.*
 import com.starry.myne.R
 import com.starry.myne.ui.theme.figeronaFont
 
 @ExperimentalComposeUiApi
 @Composable
-fun NetworkErrorView() {
+fun NetworkErrorView(onRetryClicked: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(bottom = 70.dp),
+            .padding(bottom = 70.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -60,22 +64,28 @@ fun NetworkErrorView() {
         LottieAnimation(
             composition = compositionResult.value,
             progress = progressAnimation,
-            modifier = Modifier.size(300.dp),
+            modifier = Modifier.size(280.dp),
             enableMergePaths = true
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Text(
+            text = stringResource(id = R.string.network_error),
+            modifier = Modifier
+                .padding(top = 10.dp, bottom = 18.dp)
+                .fillMaxWidth(),
+            color = MaterialTheme.colorScheme.onBackground,
+            fontFamily = figeronaFont,
+            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Center
+        )
+
+        Button(onClick = onRetryClicked) {
             Text(
-                text = stringResource(id = R.string.network_error),
-                modifier = Modifier
-                    .padding(top = 10.dp, start = 25.dp, end = 25.dp)
-                    .fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 16.sp,
-                fontFamily = figeronaFont,
-                fontWeight = FontWeight.Medium
+                text = stringResource(id = R.string.network_error_retry),
+                fontWeight = FontWeight.Medium,
+                fontFamily = figeronaFont
             )
         }
     }
@@ -86,7 +96,7 @@ fun NetworkErrorView() {
 @ExperimentalComposeUiApi
 @Composable
 fun NoInternetScreenPreview() {
-    NetworkErrorView()
+    NetworkErrorView {}
 }
 
 

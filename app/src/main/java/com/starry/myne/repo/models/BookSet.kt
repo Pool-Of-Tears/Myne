@@ -14,18 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.api.models
+package com.starry.myne.repo.models
 
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 @Keep
-data class Translator(
-    @SerializedName("name")
-    val name: String = "N/A",
-    @SerializedName("birth_year")
-    val birthYear: Int,
-    @SerializedName("death_year")
-    val deathYear: Int
+data class BookSet(
+    @SerializedName("count")
+    val count: Int,
+    @SerializedName("next")
+    val next: String?,
+    @SerializedName("previous")
+    val previous: String?,
+    @SerializedName("results")
+    val books: List<Book>
 )

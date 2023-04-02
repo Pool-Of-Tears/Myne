@@ -151,7 +151,7 @@ fun NavGraph(
             },
         ) { backStackEntry ->
             val bookId = backStackEntry.arguments!!.getString(BOOK_ID_ARG_KEY)!!
-            BookDetailScreen(bookId, navController, networkStatus)
+            BookDetailScreen(bookId, navController)
         }
 
         /** Categories Screen */

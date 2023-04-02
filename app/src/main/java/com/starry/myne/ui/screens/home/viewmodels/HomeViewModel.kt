@@ -19,12 +19,12 @@ package com.starry.myne.ui.screens.home.viewmodels
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.starry.myne.api.BooksApi
-import com.starry.myne.api.models.Book
-import com.starry.myne.api.models.BookSet
 import com.starry.myne.others.BookLanguages
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.others.Paginator
+import com.starry.myne.repo.BookRepository
+import com.starry.myne.repo.models.Book
+import com.starry.myne.repo.models.BookSet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -50,12 +50,16 @@ data class TopBarState(
 sealed class UserAction {
     object SearchIconClicked : UserAction()
     object CloseIconClicked : UserAction()
-    data class TextFieldInput(val text: String) : UserAction()
+    data class TextFieldInput(
+        val text: String,
+        val networkStatus: NetworkObserver.Status
+    ) : UserAction()
+
     data class LanguageItemClicked(val language: BookLanguages) : UserAction()
 }
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val booksApi: BooksApi) : ViewModel() {
+class HomeViewModel @Inject constructor(private val bookRepository: BookRepository) : ViewModel() {
     var allBooksState by mutableStateOf(AllBooksState())
     var topBarState by mutableStateOf(TopBarState())
 
@@ -69,14 +73,14 @@ class HomeViewModel @Inject constructor(private val booksApi: BooksApi) : ViewMo
         allBooksState = allBooksState.copy(isLoading = it)
     }, onRequest = { nextPage ->
         try {
-            booksApi.getAllBooks(nextPage, language.value)
+            bookRepository.getAllBooks(nextPage, language.value)
         } catch (exc: Exception) {
             Result.failure(exc)
         }
     }, getNextPage = {
         allBooksState.page + 1L
     }, onError = {
-        allBooksState = allBooksState.copy(error = it?.localizedMessage)
+        allBooksState = allBooksState.copy(error = it?.localizedMessage ?: "unknown-error")
     }, onSuccess = { bookSet, newPage ->
         /**
          * usually bookSet.books is not nullable and API simply returns empty list
@@ -120,7 +124,13 @@ class HomeViewModel @Inject constructor(private val booksApi: BooksApi) : ViewMo
         }
     }
 
-    fun onAction(userAction: UserAction, networkStatus: NetworkObserver.Status) {
+    fun reloadItems() {
+        pagination.reset()
+        allBooksState = AllBooksState()
+        loadNextItems()
+    }
+
+    fun onAction(userAction: UserAction) {
         when (userAction) {
             UserAction.CloseIconClicked -> {
                 topBarState = topBarState.copy(isSearchBarVisible = false)
@@ -130,7 +140,7 @@ class HomeViewModel @Inject constructor(private val booksApi: BooksApi) : ViewMo
             }
             is UserAction.TextFieldInput -> {
                 topBarState = topBarState.copy(searchText = userAction.text)
-                if (networkStatus == NetworkObserver.Status.Available) {
+                if (userAction.networkStatus == NetworkObserver.Status.Available) {
                     searchJob?.cancel()
                     searchJob = viewModelScope.launch {
                         if (userAction.text.isNotBlank()) {
@@ -142,26 +152,19 @@ class HomeViewModel @Inject constructor(private val booksApi: BooksApi) : ViewMo
                 }
             }
             is UserAction.LanguageItemClicked -> {
-                viewModelScope.launch { changeLanguage(userAction.language) }
+                changeLanguage(userAction.language)
             }
         }
     }
 
     private suspend fun searchBooks(query: String) {
-        val bookSet = booksApi.searchBooks(query)
+        val bookSet = bookRepository.searchBooks(query)
         val books = bookSet.getOrNull()!!.books.filter { it.formats.applicationepubzip != null }
         topBarState = topBarState.copy(searchResults = books, isSearching = false)
     }
 
-    private suspend fun changeLanguage(language: BookLanguages) {
-        pagination.reset()
-        allBooksState = allBooksState.copy(
-            isLoading = true,
-            items = emptyList(),
-            endReached = false,
-            page = 1L
-        )
+    private fun changeLanguage(language: BookLanguages) {
         _language.value = language
-        pagination.loadNextItems()
+        reloadItems()
     }
 }

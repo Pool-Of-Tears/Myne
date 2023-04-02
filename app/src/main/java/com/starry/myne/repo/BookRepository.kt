@@ -14,13 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.api
+package com.starry.myne.repo
 
-import android.content.Context
-import android.net.ConnectivityManager
 import com.google.gson.Gson
-import com.starry.myne.api.models.BookSet
-import com.starry.myne.api.models.ExtraInfo
+import com.starry.myne.repo.models.BookSet
+import com.starry.myne.repo.models.ExtraInfo
 import com.starry.myne.others.BookLanguages
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -35,25 +33,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
-class ForceCacheInterceptor(context: Context) : Interceptor {
-
-    private val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-    @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val networkCapabilities =
-            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-
-        val builder: Request.Builder = chain.request().newBuilder()
-        if (networkCapabilities == null) {
-            builder.cacheControl(CacheControl.FORCE_CACHE)
-        }
-        return chain.proceed(builder.build())
-    }
-}
-
-class BooksApi(context: Context) {
+class BookRepository {
 
     private lateinit var baseApiUrl: String
     private val googleBooksUrl = "https://www.googleapis.com/books/v1/volumes"
@@ -61,9 +41,7 @@ class BooksApi(context: Context) {
 
 
     private val okHttpClient = OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(60, TimeUnit.SECONDS).readTimeout(100, TimeUnit.SECONDS)
-        .cache(Cache(context.cacheDir, 50 * 1024 * 1024L))
-        .addInterceptor(ForceCacheInterceptor(context)).build()
+        .writeTimeout(60, TimeUnit.SECONDS).readTimeout(100, TimeUnit.SECONDS).build()
 
     private val gsonClient = Gson()
 
