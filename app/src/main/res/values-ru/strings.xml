@@ -7,8 +7,8 @@
     <string name="cancel">Отменить</string>
     <string name="storage_perm_error">Пожалуйста, предоставьте разрешение на хранение!</string>
     <string name="no_app_to_handle_epub">Не удается найти ни одного приложения для открытия файла epub.</string>
-    <string name="network_error">Oops! Failed to connect with the server.</string>
-    <string name="network_error_retry">Try Again</string>
+    <string name="network_error">Упс! Не удалось подключиться к серверу.</string>
+    <string name="network_error_retry">Попытайтесь снова</string>
     <string name="error">Ой! Что-то пошло не так.</string>
 
     <!-- Navigation titles -->
@@ -18,14 +18,14 @@
     <string name="navigation_settings">Настройки</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_text">ThankYou for installing Myne!\nPlease Select your preferred e-book reader to get on speed.</string>
-    <string name="welcome_screen_button">Get Started</string>
+    <string name="welcome_screen_text">Спасибо за установку Myne!\nПожалуйста выберите способ чтения книг.</string>
+    <string name="welcome_screen_button">Приступим</string>
 
     <!-- Home screen. -->
     <string name="home_header">Все книги</string>
-    <string name="home_language_icon_desc">Sort by language</string>
+    <string name="home_language_icon_desc">Сортировать по языку</string>
     <string name="home_search_icon_desc">Поиск книг</string>
-    <string name="language_menu_title">Browse by language</string>
+    <string name="language_menu_title">Отобразить по языку</string>
 
     <!-- Categories screen. -->
     <string name="categories_header">Категории</string>
@@ -40,7 +40,7 @@
     <string name="library_delete_dialog_title">Вы в этом уверены?</string>
 
     <!-- Reader Detail Screen -->
-    <string name="reader_detail_header">Райдер</string>
+    <string name="reader_detail_header">Ридер</string>
     <string name="start_reading_button">Начать читать</string>
     <string name="continue_reading_button">Продолжить</string>
     <string name="reader_chapters_list">Главы</string>
@@ -49,7 +49,7 @@
     <string name="reader_error_reason_one_title">1. Файл был удален.</string>
     <string name="reader_error_reason_one_desc">Пожалуйста, проверьте внутри папки "Мои электронные книги" в вашем каталоге загрузки, и если это так, пожалуйста, повторно загрузите книгу.</string>
     <string name="reader_error_reason_two_title">2. Файл есть, но ранее вы удалили приложение.</string>
-    <string name="reader_error_reason_two_desc">Myne использует функции ограниченного хранилища Android что означает, что он может получить доступ только к тем файлам, которые были созданы им самим, и не может получить доступ ни к каким личным файлам пользователя. Из-за этого ограничения, как только пользователь деинсталлирует приложение, оно теряет разрешение на чтение и изменение файлов, даже если файл был создан приложением до этого. Пожалуйста, удалите файл epub электронной книги из папки MyneEbooks в вашем каталоге загрузок и просто повторно загрузите книгу.</string>
+    <string name="reader_error_reason_two_desc">Myne использует функции ограниченного хранилища Android. Это значит, что он может получить доступ только к тем файлам, которые были созданы им самим, и не может получить доступ ни к каким личным файлам пользователя. Из-за этого ограничения, как только пользователь деинсталлирует приложение, оно теряет разрешение на чтение и изменение файлов, даже если файл был создан приложением до этого. Пожалуйста, удалите файл epub электронной книги из папки MyneEbooks в вашем каталоге загрузок и просто повторно загрузите книгу.</string>
     <string name="reader_error_back_button">Закрыть &amp; Назад</string>
 
     <!--Reader Screen -->
@@ -60,8 +60,8 @@
     <string name="settings_header">Настройки</string>
     <string name="app_desc">Установщик электронных книг</string>
     <string name="made_by">"Сделано Shivam, с любовью ❤"</string>
-    <string name="general_settings_header">Общие настройки</string>
-    <string name="default_reader_setting">Райдер по умолчанию</string>
+    <string name="general_settings_header">Общие</string>
+    <string name="default_reader_setting">Ридер по умолчанию</string>
     <string name="default_reader_dialog_title">Открыть с помощью…</string>
     <string name="display_setting_header">Дисплей</string>
     <string name="theme_setting">Тема по умолчанию</string>
