@@ -30,17 +30,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.starry.myne.R
 import com.starry.myne.ui.theme.pacificoFont
 
 @Composable
-fun CustomTopAppBar(headerText: String, icon: Int) {
+fun CustomTopAppBar(headerText: String, iconRes: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 8.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 8.dp)
     ) {
         Row(
             modifier = Modifier
@@ -56,7 +57,7 @@ fun CustomTopAppBar(headerText: String, icon: Int) {
                 fontFamily = pacificoFont
             )
             Icon(
-                imageVector = ImageVector.vectorResource(id = icon),
+                imageVector = ImageVector.vectorResource(id = iconRes),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(28.dp)
@@ -79,21 +80,8 @@ fun CustomTopAppBar(headerText: String, onBackButtonClicked: () -> Unit) {
         Row(
             modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(modifier = Modifier
-                .padding(start = 18.dp, top = 2.dp, bottom = 18.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
-                .clickable { onBackButtonClicked() }) {
-                Icon(
-                    imageVector = Icons.Outlined.ArrowBack,
-                    contentDescription = stringResource(id = R.string.back_button_desc),
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(10.dp)
-                )
-            }
-
+            TopBarActionItem(icon = Icons.Outlined.ArrowBack, onclick = onBackButtonClicked)
             Spacer(modifier = Modifier.weight(1f))
-
             Text(
                 text = headerText,
                 modifier = Modifier.padding(bottom = 16.dp),
@@ -102,12 +90,80 @@ fun CustomTopAppBar(headerText: String, onBackButtonClicked: () -> Unit) {
                 fontFamily = pacificoFont,
                 fontSize = 24.sp
             )
-
-            Spacer(modifier = Modifier.weight(1.75f))
+            Spacer(modifier = Modifier.weight(2.35f))
         }
         Divider(
             color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
             thickness = 2.dp,
         )
+    }
+}
+
+@Composable
+fun CustomTopAppBar(
+    headerText: String,
+    actionIconRes: Int,
+    onBackButtonClicked: () -> Unit,
+    onActionClicked: () -> Unit
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 8.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+        ) {
+            TopBarActionItem(icon = Icons.Outlined.ArrowBack, onclick = onBackButtonClicked)
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = headerText,
+                modifier = Modifier.padding(bottom = 16.dp),
+                color = MaterialTheme.colorScheme.onBackground,
+                fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
+                fontFamily = pacificoFont,
+                fontSize = 24.sp
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            TopBarActionItem(
+                icon = ImageVector.vectorResource(id = actionIconRes),
+                onclick = onActionClicked
+            )
+        }
+        Divider(
+            color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+            thickness = 2.dp,
+        )
+    }
+
+}
+
+@Composable
+private fun TopBarActionItem(icon: ImageVector, onclick: () -> Unit) {
+    Box(modifier = Modifier
+        .padding(start = 16.dp, top = 2.dp, bottom = 18.dp, end = 16.dp)
+        .clip(CircleShape)
+        .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
+        .clickable { onclick() }) {
+        Icon(
+            imageVector = icon,
+            contentDescription = stringResource(id = R.string.back_button_desc),
+            tint = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(10.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TopAppBarsPV() {
+    Column(Modifier.fillMaxSize()) {
+        CustomTopAppBar(headerText = "Something", iconRes = R.drawable.ic_nav_categories)
+        CustomTopAppBar(headerText = "Something", onBackButtonClicked = {})
+        CustomTopAppBar(
+            headerText = "Something",
+            actionIconRes = R.drawable.ic_sort_language,
+            onBackButtonClicked = { /*TODO*/ }, onActionClicked = {})
     }
 }

@@ -28,10 +28,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
+import com.starry.myne.R
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.CustomTopAppBar
@@ -54,9 +57,12 @@ fun CategoryDetailScreen(
     val state = viewModel.state
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-        CustomTopAppBar(headerText = category) {
-            navController.navigateUp()
-        }
+        CustomTopAppBar(
+            headerText = category,
+            actionIconRes = R.drawable.ic_sort_language,
+            onBackButtonClicked = { navController.navigateUp() },
+            onActionClicked = {}
+        )
     }, content = {
         LaunchedEffect(key1 = true, block = { viewModel.loadBookByCategory(category) })
 

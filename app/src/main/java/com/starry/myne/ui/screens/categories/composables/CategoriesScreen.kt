@@ -50,7 +50,7 @@ fun CategoriesScreen(navController: NavController) {
         topBar = {
             CustomTopAppBar(
                 headerText = stringResource(id = R.string.categories_header),
-                icon = R.drawable.ic_nav_categories
+                iconRes = R.drawable.ic_nav_categories
             )
         }, content = { paddingValues ->
             Column(
