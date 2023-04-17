@@ -81,7 +81,7 @@ fun SettingsScreen(navController: NavController) {
         ) {
             CustomTopAppBar(
                 headerText = stringResource(id = R.string.settings_header),
-                icon = R.drawable.ic_nav_settings
+                iconRes = R.drawable.ic_nav_settings
             )
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 SettingsCard()

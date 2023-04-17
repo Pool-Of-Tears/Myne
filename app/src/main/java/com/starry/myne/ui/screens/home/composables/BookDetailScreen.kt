@@ -67,7 +67,7 @@ import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.screens.home.viewmodels.BookDetailViewModel
-import com.starry.myne.ui.screens.other.NetworkErrorView
+import com.starry.myne.ui.screens.other.NetworkError
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
@@ -141,7 +141,7 @@ fun BookDetailScreen(
                         ProgressDots()
                     }
                 } else if (state.error != null) {
-                    NetworkErrorView(onRetryClicked = {
+                    NetworkError(onRetryClicked = {
                         viewModel.getBookDetails(bookId)
                     })
                 } else {

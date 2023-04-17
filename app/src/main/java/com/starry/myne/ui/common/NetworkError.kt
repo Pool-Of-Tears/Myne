@@ -39,7 +39,7 @@ import com.starry.myne.ui.theme.figeronaFont
 
 @ExperimentalComposeUiApi
 @Composable
-fun NetworkErrorView(onRetryClicked: () -> Unit) {
+fun NetworkError(onRetryClicked: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -96,7 +96,7 @@ fun NetworkErrorView(onRetryClicked: () -> Unit) {
 @ExperimentalComposeUiApi
 @Composable
 fun NoInternetScreenPreview() {
-    NetworkErrorView {}
+    NetworkError {}
 }
 
 

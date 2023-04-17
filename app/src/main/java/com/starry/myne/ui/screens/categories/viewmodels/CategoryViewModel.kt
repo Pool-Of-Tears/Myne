@@ -17,11 +17,10 @@ limitations under the License.
 package com.starry.myne.ui.screens.categories.viewmodels
 
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.starry.myne.others.BookLanguage
 import com.starry.myne.others.Paginator
 import com.starry.myne.repo.BookRepository
 import com.starry.myne.repo.models.Book
@@ -68,6 +67,10 @@ class CategoryViewModel @Inject constructor(private val booksApi: BookRepository
 
     var state by mutableStateOf(CategorisedBooksState())
 
+    private val _language: MutableState<BookLanguage> =
+        mutableStateOf(BookLanguage.AllBooks)
+    val language: State<BookLanguage> = _language
+
     fun loadBookByCategory(category: String) {
         if (!this::pagination.isInitialized) {
             pagination = Paginator(
@@ -77,7 +80,7 @@ class CategoryViewModel @Inject constructor(private val booksApi: BookRepository
                 },
                 onRequest = { nextPage ->
                     try {
-                        booksApi.getBooksByCategory(category, nextPage)
+                        booksApi.getBooksByCategory(category, nextPage, language.value)
                     } catch (exc: Exception) {
                         Result.failure(exc)
                     }
@@ -89,10 +92,22 @@ class CategoryViewModel @Inject constructor(private val booksApi: BookRepository
                     state = state.copy(error = it?.localizedMessage ?: "unknown-error")
                 },
                 onSuccess = { bookSet, newPage ->
+                    /**
+                     * usually bookSet.books is not nullable and API simply returns empty list
+                     * when browsing books all books (i.e. without passing language parameter)
+                     * however, when browsing by language it returns a response which looks like
+                     * this: {"detail": "Invalid page."}. Hence the [BookSet] attributes become
+                     * null in this case and can cause crashes.
+                     */
+                    val books = if (bookSet.books != null) {
+                        bookSet.books.filter { it.formats.applicationepubzip != null }
+                    } else {
+                        emptyList()
+                    }
                     state = state.copy(
-                        items = (state.items + bookSet.books),
+                        items = (state.items + books),
                         page = newPage,
-                        endReached = bookSet.books.isEmpty()
+                        endReached = books.isEmpty()
                     )
                 }
             )
@@ -111,5 +126,10 @@ class CategoryViewModel @Inject constructor(private val booksApi: BookRepository
         pagination.reset()
         state = CategorisedBooksState()
         loadNextItems()
+    }
+
+    fun changeLanguage(language: BookLanguage) {
+        _language.value = language
+        reloadItems()
     }
 }

@@ -90,7 +90,7 @@ fun LibraryScreen(navController: NavController) {
         topBar = {
             CustomTopAppBar(
                 headerText = stringResource(id = R.string.library_header),
-                icon = R.drawable.ic_nav_library
+                iconRes = R.drawable.ic_nav_library
             )
         },
     ) {

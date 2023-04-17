@@ -19,7 +19,7 @@ package com.starry.myne.ui.screens.home.viewmodels
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.starry.myne.others.BookLanguages
+import com.starry.myne.others.BookLanguage
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.others.Paginator
 import com.starry.myne.repo.BookRepository
@@ -55,7 +55,7 @@ sealed class UserAction {
         val networkStatus: NetworkObserver.Status
     ) : UserAction()
 
-    data class LanguageItemClicked(val language: BookLanguages) : UserAction()
+    data class LanguageItemClicked(val language: BookLanguage) : UserAction()
 }
 
 @HiltViewModel
@@ -63,9 +63,9 @@ class HomeViewModel @Inject constructor(private val bookRepository: BookReposito
     var allBooksState by mutableStateOf(AllBooksState())
     var topBarState by mutableStateOf(TopBarState())
 
-    private val _language: MutableState<BookLanguages> =
-        mutableStateOf(BookLanguages.AllBooks)
-    val language: State<BookLanguages> = _language
+    private val _language: MutableState<BookLanguage> =
+        mutableStateOf(BookLanguage.AllBooks)
+    val language: State<BookLanguage> = _language
 
     private var searchJob: Job? = null
 
@@ -95,8 +95,8 @@ class HomeViewModel @Inject constructor(private val bookRepository: BookReposito
 
             // pls ignore (this line doesn't exists)...
             if (setOf(
-                    BookLanguages.English,
-                    BookLanguages.AllBooks
+                    BookLanguage.English,
+                    BookLanguage.AllBooks
                 ).contains(language.value) && allBooksState.page == 1L
             ) {
                 books.removeAt(0)
@@ -163,7 +163,7 @@ class HomeViewModel @Inject constructor(private val bookRepository: BookReposito
         topBarState = topBarState.copy(searchResults = books, isSearching = false)
     }
 
-    private fun changeLanguage(language: BookLanguages) {
+    private fun changeLanguage(language: BookLanguage) {
         _language.value = language
         reloadItems()
     }
