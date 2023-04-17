@@ -1,0 +1,3 @@
+- Added ability to filter by language when browsing books based on categories.
+- Added four new book languages (Esperanto, Greek, Latin & Tagalog).
+- Some minor UI/UX improvements and fixes.

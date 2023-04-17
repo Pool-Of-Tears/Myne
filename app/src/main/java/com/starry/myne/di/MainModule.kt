@@ -18,10 +18,10 @@ limitations under the License.
 package com.starry.myne.di
 
 import android.content.Context
-import com.starry.myne.repo.BookRepository
 import com.starry.myne.database.MyneDatabase
 import com.starry.myne.others.BookDownloader
 import com.starry.myne.others.WelcomeDataStore
+import com.starry.myne.repo.BookRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
