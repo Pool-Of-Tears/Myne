@@ -27,20 +27,24 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.BottomSheetValue
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.material3.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalFocusManager
@@ -61,14 +65,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.R
-import com.starry.myne.others.BookLanguages
+import com.starry.myne.others.BookLanguage
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.home.viewmodels.HomeViewModel
 import com.starry.myne.ui.screens.home.viewmodels.UserAction
-import com.starry.myne.ui.screens.other.NetworkErrorView
+import com.starry.myne.ui.screens.other.NetworkError
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.utils.BookUtils
@@ -102,17 +106,16 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
 
     val haptic = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
-    val bottomSheetScaffoldState = androidx.compose.material.rememberBottomSheetScaffoldState(
-        bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
+    val modalBottomSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden
     )
-
-    androidx.compose.material.BottomSheetScaffold(scaffoldState = bottomSheetScaffoldState,
+    ModalBottomSheetLayout(
+        sheetState = modalBottomSheetState,
         sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        sheetPeekHeight = 0.dp,
         sheetElevation = 24.dp,
         sheetBackgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp),
         sheetContent = {
-            val languages = BookLanguages.getAllLanguages()
+            val languages = BookLanguage.getAllLanguages()
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -136,15 +139,18 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
                 ) {
                     items(languages.size) { idx ->
                         val language = languages[idx]
-                        LanguageItem(language = language, onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            viewModel.onAction(
-                                UserAction.LanguageItemClicked(language)
-                            )
-                            coroutineScope.launch {
-                                bottomSheetScaffoldState.bottomSheetState.collapse()
-                            }
-                        })
+                        LanguageItem(
+                            language = language,
+                            isSelected = language == viewModel.language.value,
+                            onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                viewModel.onAction(
+                                    UserAction.LanguageItemClicked(language)
+                                )
+                                coroutineScope.launch {
+                                    modalBottomSheetState.hide()
+                                }
+                            })
                     }
                 }
             }
@@ -156,7 +162,7 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
             navController = navController,
             coroutineScope = coroutineScope,
             sysBackButtonState = sysBackButtonState,
-            bottomSheetScaffoldState = bottomSheetScaffoldState
+            bottomSheetState = modalBottomSheetState
         )
     }
 
@@ -174,7 +180,7 @@ fun HomeScreenScaffold(
     navController: NavController,
     coroutineScope: CoroutineScope,
     sysBackButtonState: MutableState<Boolean>,
-    bottomSheetScaffoldState: androidx.compose.material.BottomSheetScaffoldState
+    bottomSheetState: ModalBottomSheetState
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -210,15 +216,15 @@ fun HomeScreenScaffold(
                         })
                         sysBackButtonState.value = true
                     } else {
-                        HomeTopAppBar(bookLanguages = viewModel.language.value,
+                        HomeTopAppBar(bookLanguage = viewModel.language.value,
                             onSearchIconClicked = {
                                 viewModel.onAction(UserAction.SearchIconClicked)
-                            }, onSortIconClicked = {
+                            }, onLanguageIconClicked = {
                                 coroutineScope.launch {
-                                    if (bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
-                                        bottomSheetScaffoldState.bottomSheetState.expand()
+                                    if (!bottomSheetState.isVisible) {
+                                        bottomSheetState.show()
                                     } else {
-                                        bottomSheetScaffoldState.bottomSheetState.collapse()
+                                        bottomSheetState.hide()
                                     }
                                 }
                             })
@@ -249,8 +255,8 @@ fun HomeScreenScaffold(
                         ) {
                             CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                         }
-                    } else if (allBooksState.error != null) {
-                        NetworkErrorView(onRetryClicked = { viewModel.reloadItems() })
+                    } else if (!allBooksState.isLoading && allBooksState.error != null) {
+                        NetworkError(onRetryClicked = { viewModel.reloadItems() })
                     } else {
                         LazyColumn(
                             modifier = Modifier
@@ -361,9 +367,9 @@ fun HomeScreenScaffold(
 
 @Composable
 fun HomeTopAppBar(
-    bookLanguages: BookLanguages,
+    bookLanguage: BookLanguage,
     onSearchIconClicked: () -> Unit,
-    onSortIconClicked: () -> Unit,
+    onLanguageIconClicked: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -373,14 +379,14 @@ fun HomeTopAppBar(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = if (bookLanguages == BookLanguages.AllBooks)
-                stringResource(id = R.string.home_header) else bookLanguages.name,
+            text = if (bookLanguage == BookLanguage.AllBooks)
+                stringResource(id = R.string.home_header) else bookLanguage.name,
             fontSize = 28.sp,
             color = MaterialTheme.colorScheme.onBackground,
             fontFamily = pacificoFont
         )
         Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = onSortIconClicked) {
+        IconButton(onClick = onLanguageIconClicked) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_sort_language),
                 contentDescription = stringResource(id = R.string.home_language_icon_desc),
@@ -468,15 +474,23 @@ fun SearchAppBar(
 
 @ExperimentalMaterial3Api
 @Composable
-fun LanguageItem(language: BookLanguages, onClick: () -> Unit) {
+fun LanguageItem(language: BookLanguage, isSelected: Boolean, onClick: () -> Unit) {
+    val buttonColor: Color
+    val textColor: Color
+    if (isSelected) {
+        buttonColor = MaterialTheme.colorScheme.primary
+        textColor = MaterialTheme.colorScheme.onPrimary
+    } else {
+        buttonColor = MaterialTheme.colorScheme.secondaryContainer
+        textColor = MaterialTheme.colorScheme.onSecondaryContainer
+    }
+
     Card(
         modifier = Modifier
             .height(60.dp)
             .width(70.dp)
             .padding(6.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        ),
+        colors = CardDefaults.cardColors(containerColor = buttonColor),
         shape = RoundedCornerShape(14.dp),
         onClick = onClick
     ) {
@@ -490,7 +504,7 @@ fun LanguageItem(language: BookLanguages, onClick: () -> Unit) {
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = textColor,
             )
         }
     }

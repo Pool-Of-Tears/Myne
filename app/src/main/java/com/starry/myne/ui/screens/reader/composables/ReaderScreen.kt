@@ -171,35 +171,15 @@ fun ReaderItem(title: String, body: String, textSize: TextUnit, onClick: () -> U
         .fillMaxWidth()
         .clickable(interactionSource = interactionSource, indication = null) { onClick() }) {
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp, bottom = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(modifier = Modifier.width(14.dp))
-
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_cat),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(58.dp)
-                    .padding(top = 4.dp),
-                tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.88f)
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Text(
-                modifier = Modifier.padding(end = 4.dp),
-                text = title,
-                fontSize = 24.sp,
-                lineHeight = 32.sp,
-                fontFamily = FontFamily.Serif,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.88f)
-            )
-        }
+        Text(
+            modifier = Modifier.padding(start = 12.dp, end = 4.dp, top = 10.dp),
+            text = title,
+            fontSize = 24.sp,
+            lineHeight = 32.sp,
+            fontFamily = FontFamily.Serif,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.88f)
+        )
 
         Spacer(modifier = Modifier.height(15.dp))
 

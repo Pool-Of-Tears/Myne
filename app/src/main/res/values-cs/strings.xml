@@ -28,6 +28,7 @@
 
     <!-- Categories screen. -->
     <string name="categories_header">Kategorie</string>
+    <string name="no_books_found_for_lang_and_cat">No books available in %s language for this category.</string>
 
     <!-- Library screen. -->
     <string name="library_header">Knihovna</string>

@@ -17,9 +17,9 @@ limitations under the License.
 package com.starry.myne.repo
 
 import com.google.gson.Gson
+import com.starry.myne.others.BookLanguage
 import com.starry.myne.repo.models.BookSet
 import com.starry.myne.repo.models.ExtraInfo
-import com.starry.myne.others.BookLanguages
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.*
@@ -47,13 +47,12 @@ class BookRepository {
 
     suspend fun getAllBooks(
         page: Long,
-        bookLanguage: BookLanguages = BookLanguages.English
+        bookLanguage: BookLanguage = BookLanguage.AllBooks
     ): Result<BookSet> {
         setApiUrlIfNotSetAlready()
-        val url = if (bookLanguage != BookLanguages.AllBooks) {
-            "${baseApiUrl}?page=$page&languages=${bookLanguage.isoCode}"
-        } else {
-            "${baseApiUrl}?page=$page"
+        var url = "${baseApiUrl}?page=$page"
+        if (bookLanguage != BookLanguage.AllBooks) {
+            url += "&languages=${bookLanguage.isoCode}"
         }
         val request = Request.Builder().get().url(url).build()
         return makeApiRequest(request)
@@ -74,10 +73,17 @@ class BookRepository {
         return makeApiRequest(request)
     }
 
-    suspend fun getBooksByCategory(category: String, page: Long): Result<BookSet> {
+    suspend fun getBooksByCategory(
+        category: String,
+        page: Long,
+        bookLanguage: BookLanguage = BookLanguage.AllBooks
+    ): Result<BookSet> {
         setApiUrlIfNotSetAlready()
-        val request =
-            Request.Builder().get().url("${baseApiUrl}?page=$page&topic=$category").build()
+        var url = "${baseApiUrl}?page=$page&topic=$category"
+        if (bookLanguage != BookLanguage.AllBooks) {
+            url += "&languages=${bookLanguage.isoCode}"
+        }
+        val request = Request.Builder().get().url(url).build()
         return makeApiRequest(request)
     }
 
