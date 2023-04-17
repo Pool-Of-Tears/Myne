@@ -54,6 +54,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import com.airbnb.lottie.compose.*
+import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.ui.common.CustomTopAppBar
