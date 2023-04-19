@@ -168,7 +168,7 @@ fun SettingsCard() {
 @Composable
 fun GeneralOptionsUI() {
     val internalReaderValue = when (PreferenceUtils.getBoolean(
-        PreferenceUtils.INTERNAL_READER, true
+        PreferenceUtils.INTERNAL_READER_BOOL, true
     )) {
         true -> "Internal Reader"
         false -> "External Reader"
@@ -246,10 +246,10 @@ fun GeneralOptionsUI() {
 
                 when (selectedOption) {
                     "External Reader" -> {
-                        PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER, false)
+                        PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER_BOOL, false)
                     }
                     "Internal Reader" -> {
-                        PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER, true)
+                        PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER_BOOL, true)
                     }
                 }
             }) {
@@ -277,7 +277,7 @@ fun DisplayOptionsUI(
     snackbarHostState: SnackbarHostState,
 ) {
     val displayValue =
-        when (PreferenceUtils.getInt(PreferenceUtils.APP_THEME, ThemeMode.Auto.ordinal)) {
+        when (PreferenceUtils.getInt(PreferenceUtils.APP_THEME_INT, ThemeMode.Auto.ordinal)) {
             ThemeMode.Light.ordinal -> "Light"
             ThemeMode.Dark.ordinal -> "Dark"
             else -> "System"
@@ -289,7 +289,7 @@ fun DisplayOptionsUI(
     val materialYouSwitch = remember {
         mutableStateOf(
             PreferenceUtils.getBoolean(
-                PreferenceUtils.MATERIAL_YOU, Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                PreferenceUtils.MATERIAL_YOU_BOOL, Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
             )
         )
     }
@@ -328,7 +328,7 @@ fun DisplayOptionsUI(
     if (materialYouSwitch.value) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             viewModel.setMaterialYou(true)
-            PreferenceUtils.putBoolean(PreferenceUtils.MATERIAL_YOU, true)
+            PreferenceUtils.putBoolean(PreferenceUtils.MATERIAL_YOU_BOOL, true)
         } else {
             materialYouSwitch.value = false
             LaunchedEffect(
@@ -337,7 +337,7 @@ fun DisplayOptionsUI(
         }
     } else {
         viewModel.setMaterialYou(false)
-        PreferenceUtils.putBoolean(PreferenceUtils.MATERIAL_YOU, false)
+        PreferenceUtils.putBoolean(PreferenceUtils.MATERIAL_YOU_BOOL, false)
     }
 
     if (displayDialog.value) {
@@ -394,7 +394,7 @@ fun DisplayOptionsUI(
                             ThemeMode.Light
                         )
                         PreferenceUtils.putInt(
-                            PreferenceUtils.APP_THEME, ThemeMode.Light.ordinal
+                            PreferenceUtils.APP_THEME_INT, ThemeMode.Light.ordinal
                         )
                     }
                     "Dark" -> {
@@ -402,7 +402,7 @@ fun DisplayOptionsUI(
                             ThemeMode.Dark
                         )
                         PreferenceUtils.putInt(
-                            PreferenceUtils.APP_THEME, ThemeMode.Dark.ordinal
+                            PreferenceUtils.APP_THEME_INT, ThemeMode.Dark.ordinal
                         )
                     }
                     "System" -> {
@@ -410,7 +410,7 @@ fun DisplayOptionsUI(
                             ThemeMode.Auto
                         )
                         PreferenceUtils.putInt(
-                            PreferenceUtils.APP_THEME, ThemeMode.Auto.ordinal
+                            PreferenceUtils.APP_THEME_INT, ThemeMode.Auto.ordinal
                         )
                     }
                 }

@@ -24,10 +24,10 @@ object PreferenceUtils {
     private const val PREFS_NAME = "myne_settings"
 
     // Preference keys
-    const val APP_THEME = "theme_settings"
-    const val MATERIAL_YOU = "material_you"
-    const val INTERNAL_READER = "internal_reader"
-    const val READER_FONT_SIZE = "reader_font_size"
+    const val APP_THEME_INT = "theme_settings"
+    const val MATERIAL_YOU_BOOL = "material_you"
+    const val INTERNAL_READER_BOOL = "internal_reader"
+    const val READER_FONT_SIZE_INT = "reader_font_size"
 
     fun initialize(context: Context) {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

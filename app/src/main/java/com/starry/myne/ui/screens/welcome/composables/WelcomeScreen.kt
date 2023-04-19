@@ -50,7 +50,7 @@ fun WelcomeScreen(navController: NavController) {
     val viewModel: WelcomeViewModel = hiltViewModel()
 
     val internalReaderValue = when (PreferenceUtils.getBoolean(
-        PreferenceUtils.INTERNAL_READER, true
+        PreferenceUtils.INTERNAL_READER_BOOL, true
     )) {
         true -> "Internal Reader"
         false -> "External Reader"
@@ -187,10 +187,10 @@ fun WelcomeScreen(navController: NavController) {
 
                     when (selectedOption) {
                         "External Reader" -> {
-                            PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER, false)
+                            PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER_BOOL, false)
                         }
                         "Internal Reader" -> {
-                            PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER, true)
+                            PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER_BOOL, true)
                         }
                     }
                 }) {

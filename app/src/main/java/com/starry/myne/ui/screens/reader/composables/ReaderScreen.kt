@@ -69,7 +69,7 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
     )
 
     val textSizeValue =
-        remember { mutableStateOf(PreferenceUtils.getInt(PreferenceUtils.READER_FONT_SIZE, 100)) }
+        remember { mutableStateOf(PreferenceUtils.getInt(PreferenceUtils.READER_FONT_SIZE_INT, 100)) }
     val textSize = (textSizeValue.value / 10) * 1.8
 
     LaunchedEffect(key1 = true, block = { viewModel.loadEpubBook(bookId) })
@@ -240,7 +240,7 @@ fun BottomSheetContents(
                             coroutineScope.launch {
                                 textSizeValue.value -= 10
                                 PreferenceUtils.putInt(
-                                    PreferenceUtils.READER_FONT_SIZE,
+                                    PreferenceUtils.READER_FONT_SIZE_INT,
                                     textSizeValue.value
                                 )
                             }
@@ -320,7 +320,7 @@ fun BottomSheetContents(
                             coroutineScope.launch {
                                 textSizeValue.value += 10
                                 PreferenceUtils.putInt(
-                                    PreferenceUtils.READER_FONT_SIZE,
+                                    PreferenceUtils.READER_FONT_SIZE_INT,
                                     textSizeValue.value
                                 )
                             }
