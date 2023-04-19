@@ -61,7 +61,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.0'
+        kotlinCompilerExtensionVersion '1.4.4'
     }
     packagingOptions {
         resources {
@@ -78,9 +78,9 @@ aboutLibraries {
 
 dependencies {
     // Android core components.
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.0'
-    implementation 'androidx.activity:activity-compose:1.6.1'
+    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation 'androidx.activity:activity-compose:1.7.0'
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
     // Jetpack compose.
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -88,8 +88,8 @@ dependencies {
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.animation:animation:$compose_version"
     implementation "com.google.accompanist:accompanist-navigation-animation:0.29.0-alpha"
-    implementation "androidx.compose.material3:material3:1.1.0-alpha08"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0"
+    implementation "androidx.compose.material3:material3:1.1.0-beta02"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     // Material theme for main activity.
     implementation 'com.google.android.material:material:1.8.0'
@@ -102,9 +102,9 @@ dependencies {
     // Coil Image loading library.
     implementation "io.coil-kt:coil-compose:2.2.2"
     // Room database components.
-    implementation "androidx.room:room-ktx:2.5.0"
-    kapt "androidx.room:room-compiler:2.5.0"
-    androidTestImplementation "androidx.room:room-testing:2.5.0"
+    implementation "androidx.room:room-ktx:2.5.1"
+    kapt "androidx.room:room-compiler:2.5.1"
+    androidTestImplementation "androidx.room:room-testing:2.5.1"
     // Dagger - Hilt.
     implementation "com.google.dagger:hilt-android:$hilt_version"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
