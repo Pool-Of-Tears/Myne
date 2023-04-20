@@ -6,10 +6,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.api.BeforeEach
 import java.lang.reflect.Field
 
-data class PaginatorResult(
+data class PaginatorTestResult(
     var error: Throwable? = null,
     var result: List<String>? = null,
     var nextPage: Int = 1
@@ -24,15 +23,11 @@ class PaginatorTest {
     private lateinit var isMakingRequestField: Field
     private lateinit var currentPage: Field
 
-    private var testResult = PaginatorResult()
-
-    @BeforeEach
-    fun resetResult() {
-        testResult = PaginatorResult()
-    }
+    private lateinit var testResult: PaginatorTestResult
 
     @Before
     fun setup() {
+        testResult = PaginatorTestResult()
         paginator = Paginator(
             initialPage = 1,
             onLoadUpdated = {},
