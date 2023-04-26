@@ -35,8 +35,7 @@ data class TempEpubChapter(
     val url: String, val title: String?, val body: String, val chapterIndex: Int
 )
 
-fun createEpubBook(filePath: String): EpubBook {
-    val inputStream = FileInputStream(filePath)
+private fun parseAndCreateEpubBook(inputStream: FileInputStream): EpubBook {
     val zipFile = ZipInputStream(inputStream).use { zipInputStream ->
         zipInputStream.entries().filterNot { it.isDirectory }
             .associate { it.name to (it to zipInputStream.readBytes()) }
@@ -133,3 +132,10 @@ fun createEpubBook(filePath: String): EpubBook {
         images = images.toList()
     )
 }
+
+fun createEpubBook(filePath: String): EpubBook {
+    val inputStream = FileInputStream(filePath)
+    return parseAndCreateEpubBook(inputStream)
+}
+
+fun createEpubBook(inputStream: FileInputStream) = parseAndCreateEpubBook(inputStream)
