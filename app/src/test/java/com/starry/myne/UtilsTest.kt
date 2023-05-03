@@ -1,4 +1,4 @@
-package com.starry.myne.utils
+package com.starry.myne
 
 import com.starry.myne.utils.Utils.prettyCount
 import junit.framework.TestCase.assertEquals
