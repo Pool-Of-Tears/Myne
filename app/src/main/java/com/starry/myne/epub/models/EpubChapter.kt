@@ -18,7 +18,7 @@ limitations under the License.
 package com.starry.myne.epub.models
 
 data class EpubChapter(
-    val url: String,
+    val absPath: String,
     val title: String,
     val body: String
 )

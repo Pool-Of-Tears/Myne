@@ -22,18 +22,39 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetScaffoldState
+import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +76,9 @@ import com.starry.myne.utils.PreferenceUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+
+enum class TextScaleButtonType { INCREASE, DECREASE }
+
 @ExperimentalMaterialApi
 @Composable
 fun ReaderScreen(bookId: String, chapterIndex: Int) {
@@ -69,7 +93,14 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
     )
 
     val textSizeValue =
-        remember { mutableStateOf(PreferenceUtils.getInt(PreferenceUtils.READER_FONT_SIZE_INT, 100)) }
+        remember {
+            mutableStateOf(
+                PreferenceUtils.getInt(
+                    PreferenceUtils.READER_FONT_SIZE_INT,
+                    100
+                )
+            )
+        }
     val textSize = (textSizeValue.value / 10) * 1.8
 
     LaunchedEffect(key1 = true, block = { viewModel.loadEpubBook(bookId) })
@@ -219,44 +250,14 @@ fun BottomSheetContents(
                 .padding(top = 21.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-
-            Box(
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(45.dp)
-                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
-                    .border(
-                        1.dp, MaterialTheme.colorScheme.onSurface, shape = RoundedCornerShape(6.dp)
-                    )
-                    .clip(RoundedCornerShape(6.dp))
-                    .clickable {
-                        if (textSizeValue.value <= 50) {
-                            coroutineScope.launch {
-                                bottomSheetScaffoldState.snackbarHostState.showSnackbar(
-                                    context.getString(R.string.reader_min_font_size_reached), null
-                                )
-                            }
-                        } else {
-                            coroutineScope.launch {
-                                textSizeValue.value -= 10
-                                PreferenceUtils.putInt(
-                                    PreferenceUtils.READER_FONT_SIZE_INT,
-                                    textSizeValue.value
-                                )
-                            }
-                        }
-                    }, contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_text_minus),
-                    contentDescription = stringResource(id = R.string.back_button_desc),
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(14.dp)
-                )
-            }
-
+            ReaderTextScaleButton(
+                context = context,
+                buttonType = TextScaleButtonType.DECREASE,
+                textSizeValue = textSizeValue,
+                coroutineScope = coroutineScope,
+                bottomSheetScaffoldState = bottomSheetScaffoldState
+            )
             Spacer(modifier = Modifier.width(14.dp))
-
             Box(
                 modifier = Modifier
                     .width(100.dp)
@@ -297,44 +298,88 @@ fun BottomSheetContents(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.width(14.dp))
+            ReaderTextScaleButton(
+                context = context,
+                buttonType = TextScaleButtonType.INCREASE,
+                textSizeValue = textSizeValue,
+                coroutineScope = coroutineScope,
+                bottomSheetScaffoldState = bottomSheetScaffoldState
+            )
+        }
+    }
+}
 
-            Box(
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(45.dp)
-                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
-                    .border(
-                        1.dp, MaterialTheme.colorScheme.onSurface, shape = RoundedCornerShape(6.dp)
-                    )
-                    .clip(RoundedCornerShape(6.dp))
-                    .clickable {
-                        if (textSizeValue.value >= 200) {
-                            coroutineScope.launch {
-                                bottomSheetScaffoldState.snackbarHostState.showSnackbar(
-                                    context.getString(R.string.reader_max_font_size_reached), null
-                                )
-                            }
-                        } else {
-                            coroutineScope.launch {
-                                textSizeValue.value += 10
-                                PreferenceUtils.putInt(
-                                    PreferenceUtils.READER_FONT_SIZE_INT,
-                                    textSizeValue.value
-                                )
-                            }
-                        }
-                    }, contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_text_plus),
-                    contentDescription = stringResource(id = R.string.back_button_desc),
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(14.dp)
-                )
+@ExperimentalMaterialApi
+@Composable
+fun ReaderTextScaleButton(
+    context: Context,
+    buttonType: TextScaleButtonType,
+    textSizeValue: MutableState<Int>,
+    coroutineScope: CoroutineScope,
+    bottomSheetScaffoldState: BottomSheetScaffoldState
+) {
+    val iconRes: Int
+    val callback: () -> Unit
+    when (buttonType) {
+        TextScaleButtonType.DECREASE -> {
+            iconRes = R.drawable.ic_reader_text_minus
+            callback = {
+                if (textSizeValue.value <= 50) {
+                    coroutineScope.launch {
+                        bottomSheetScaffoldState.snackbarHostState.showSnackbar(
+                            context.getString(R.string.reader_min_font_size_reached), null
+                        )
+                    }
+                } else {
+                    coroutineScope.launch {
+                        textSizeValue.value -= 10
+                        PreferenceUtils.putInt(
+                            PreferenceUtils.READER_FONT_SIZE_INT,
+                            textSizeValue.value
+                        )
+                    }
+                }
             }
         }
+        TextScaleButtonType.INCREASE -> {
+            iconRes = R.drawable.ic_reader_text_plus
+            callback = {
+                if (textSizeValue.value >= 200) {
+                    coroutineScope.launch {
+                        bottomSheetScaffoldState.snackbarHostState.showSnackbar(
+                            context.getString(R.string.reader_max_font_size_reached), null
+                        )
+                    }
+                } else {
+                    coroutineScope.launch {
+                        textSizeValue.value += 10
+                        PreferenceUtils.putInt(
+                            PreferenceUtils.READER_FONT_SIZE_INT,
+                            textSizeValue.value
+                        )
+                    }
+                }
+            }
+        }
+    }
+    Box(
+        modifier = Modifier
+            .width(100.dp)
+            .height(45.dp)
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+            .border(
+                1.dp, MaterialTheme.colorScheme.onSurface, shape = RoundedCornerShape(6.dp)
+            )
+            .clip(RoundedCornerShape(6.dp))
+            .clickable { callback() }, contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(id = iconRes),
+            contentDescription = stringResource(id = R.string.back_button_desc),
+            tint = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(14.dp)
+        )
     }
 }
 
