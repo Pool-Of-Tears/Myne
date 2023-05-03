@@ -65,7 +65,7 @@ Or you could just buy the app from Google Play Store. You'll get constant update
 - Clean & beautiful UI based on Google's [material design three](https://m3.material.io/) guidelines.
 - Browse and download over 70k free ebooks available in multiple languages and updated daily.
 - Comes with inbuilt ebook reader while also having an option to use third-party ebook readers.
-- Compatible with Android 7.0 and above (API 24+)
+- Compatible with Android 8.0 and above (API 26+)
 - Supports [Material You](https://www.androidpolice.com/everything-we-love-about-material-you/amp/) theming in devices running on Android 12+
 - Comes in both light and dark mode.
 - MAD: UI and logic written with pure Kotlin. Single activity, no fragments, only composable destinations.

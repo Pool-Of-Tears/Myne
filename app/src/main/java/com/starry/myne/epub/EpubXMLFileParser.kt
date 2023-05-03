@@ -22,43 +22,57 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.TextNode
 import java.io.File
 import java.util.zip.ZipEntry
+import kotlin.io.path.invariantSeparatorsPathString
 
 class EpubXMLFileParser(
     fileAbsolutePath: String,
     val data: ByteArray,
-    private val zipFile: Map<String, Pair<ZipEntry, ByteArray>>
+    private val zipFile: Map<String, EpubFile>
 ) {
     data class Output(val title: String?, val body: String)
 
-    private val fileParentFolder: File = File(fileAbsolutePath).parentFile ?: File("")
+    val fileParentFolder: File = File(fileAbsolutePath).parentFile ?: File("")
 
-    // Make all local references absolute to the root of the epub for consistent references
-    private val absBasePath: String = File("").canonicalPath
-    fun parse(): Output {
+
+    fun parseAsDocument(): Output {
         val body = Jsoup.parse(data.inputStream(), "UTF-8", "").body()
+
         val title = body.selectFirst("h1, h2, h3, h4, h5, h6")?.text()
         body.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
         // TODO: Add support for images, for now just remove them.
         body.getElementsByTag("img").remove()
         return Output(
-            title = title, body = getNodeStructuredText(body)
+            title = title,
+            body = getNodeStructuredText(body)
         )
+    }
+
+    fun parseAsImage(absolutePathImage: String): String {
+        // Use run catching so it can be run locally without crash
+        val bitmap = zipFile[absolutePathImage]?.data?.runCatching {
+            BitmapFactory.decodeByteArray(this, 0, this.size)
+        }?.getOrNull()
+
+        val text = BookTextMapper.ImgEntry(
+            path = absolutePathImage,
+            yrel = bitmap?.let { it.height.toFloat() / it.width.toFloat() } ?: 1.45f
+        ).toXMLString()
+
+        return "\n\n$text\n\n"
     }
 
     // Rewrites the image node to xml for the next stage.
     private fun declareImgEntry(node: org.jsoup.nodes.Node): String {
-        val relPathEncoded = (node as? org.jsoup.nodes.Element)?.attr("src") ?: return ""
-        val absPath = File(
-            fileParentFolder,
-            relPathEncoded.decodedURL
-        ).canonicalPath.removePrefix(absBasePath).replace("\\", "/").removePrefix("/")
-        // Use run catching so it can be run locally without crash
-        val bitmap = zipFile[absPath]?.second?.runCatching {
-            BitmapFactory.decodeByteArray(this, 0, this.size)
-        }?.getOrNull()
-        val text = BookTextMapper.ImgEntry(path = absPath,
-            yrel = bitmap?.let { it.height.toFloat() / it.width.toFloat() } ?: 1.45f).toXMLString()
-        return "\n\n$text\n\n"
+        val attrs = node.attributes().associate { it.key to it.value }
+        val relPathEncoded = attrs["src"] ?: attrs["xlink:href"] ?: ""
+
+        val absolutePathImage = File(fileParentFolder, relPathEncoded.decodedURL)
+            .canonicalFile
+            .toPath()
+            .invariantSeparatorsPathString
+            .removePrefix("/")
+
+        return parseAsImage(absolutePathImage)
     }
 
     private fun getPTraverse(node: org.jsoup.nodes.Node): String {
@@ -67,6 +81,7 @@ class EpubXMLFileParser(
                 when {
                     child.nodeName() == "br" -> "\n"
                     child.nodeName() == "img" -> declareImgEntry(child)
+                    child.nodeName() == "image" -> declareImgEntry(child)
                     child is TextNode -> child.text()
                     else -> innerTraverse(child)
                 }
@@ -78,13 +93,16 @@ class EpubXMLFileParser(
 
     private fun getNodeTextTraverse(node: org.jsoup.nodes.Node): String {
         val children = node.childNodes()
-        if (children.isEmpty()) return ""
+        if (children.isEmpty())
+            return ""
+
         return children.joinToString("") { child ->
             when {
                 child.nodeName() == "p" -> getPTraverse(child)
                 child.nodeName() == "br" -> "\n"
                 child.nodeName() == "hr" -> "\n\n"
                 child.nodeName() == "img" -> declareImgEntry(child)
+                child.nodeName() == "image" -> declareImgEntry(child)
                 child is TextNode -> {
                     val text = child.text().trim()
                     if (text.isEmpty()) "" else text + "\n\n"
@@ -96,13 +114,16 @@ class EpubXMLFileParser(
 
     private fun getNodeStructuredText(node: org.jsoup.nodes.Node): String {
         val children = node.childNodes()
-        if (children.isEmpty()) return ""
+        if (children.isEmpty())
+            return ""
+
         return children.joinToString("") { child ->
             when {
                 child.nodeName() == "p" -> getPTraverse(child)
                 child.nodeName() == "br" -> "\n"
                 child.nodeName() == "hr" -> "\n\n"
                 child.nodeName() == "img" -> declareImgEntry(child)
+                child.nodeName() == "image" -> declareImgEntry(child)
                 child is TextNode -> child.text().trim()
                 else -> getNodeTextTraverse(child)
             }

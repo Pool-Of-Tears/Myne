@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId "com.starry.myne"
-        minSdk 24
+        minSdk 26
         targetSdk 33
         versionCode 14
         versionName "2.0.0"
@@ -52,9 +52,6 @@ android {
     }
     lintOptions {
         abortOnError false
-    }
-    testOptions {
-        unitTests.returnDefaultValues = true
     }
     kotlinOptions {
         jvmTarget = '1.8'

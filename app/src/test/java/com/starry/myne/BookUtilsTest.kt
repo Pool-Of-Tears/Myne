@@ -1,7 +1,8 @@
-package com.starry.myne.utils
+package com.starry.myne
 
 import com.google.common.truth.Truth.assertThat
 import com.starry.myne.repo.models.Author
+import com.starry.myne.utils.BookUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
