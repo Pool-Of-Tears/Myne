@@ -20,6 +20,7 @@ package com.starry.myne.ui.screens.reader.viewmodels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.FontFamily
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
@@ -33,6 +34,18 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+sealed class ReaderFonts(val id: String, val name: String, fontFamily: FontFamily) {
+
+    companion object {
+        fun getAllFonts() = ReaderFonts::class.sealedSubclasses.mapNotNull { it.objectInstance }
+    }
+
+    object Regular : ReaderFonts("system", "System Default", FontFamily.Default)
+    object Serif : ReaderFonts("serif", "Serif Font", FontFamily.Serif)
+    object Cursive : ReaderFonts("cursive", "Cursive Font", FontFamily.Cursive)
+    object SansSerif : ReaderFonts("sans-serif", "SansSerif Font", FontFamily.SansSerif)
+}
 
 data class ReaderScreenState(
     val isLoading: Boolean = true,
@@ -61,8 +74,7 @@ class ReaderViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             if (readerDao.getReaderItem(bookId) != null && chapterIndex != state.epubBook?.chapters!!.size - 1) {
                 readerDao.update(bookId, chapterIndex, chapterOffset)
-            } else if (chapterIndex == state.epubBook?.chapters!!.size - 1) {
-                /*
+            } else if (chapterIndex == state.epubBook?.chapters!!.size - 1) {/*
                  if  the user has reached last chapter, delete this book
                  from reader database instead of saving it's progress
                */

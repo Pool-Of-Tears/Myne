@@ -18,6 +18,7 @@ limitations under the License.
 package com.starry.myne.ui.screens.reader.composables
 
 import android.content.Context
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,7 +41,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.material3.CircularProgressIndicator
@@ -176,6 +179,8 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
                         }
                     })
 
+                    // Scroll to last read chapter or some specific chapter
+                    // depending on user's selection.
                     LaunchedEffect(key1 = true, block = {
                         if (chapterIndex != -1) {
                             lazyListState.scrollToItem(chapterIndex, 0)
@@ -188,7 +193,6 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
                     })
                 }
             }
-
 
         })
 }
@@ -241,8 +245,7 @@ fun BottomSheetContents(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
-            .height(100.dp),
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)),
     ) {
         Row(
             modifier = Modifier
@@ -307,6 +310,39 @@ fun BottomSheetContents(
                 bottomSheetScaffoldState = bottomSheetScaffoldState
             )
         }
+        Spacer(modifier = Modifier.height(14.dp))
+
+        Divider()
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            OutlinedButton(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.width(325.dp),
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                        2.dp
+                    )
+                )
+            ) {
+                Row {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_font),
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = "System Default")
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
@@ -342,6 +378,7 @@ fun ReaderTextScaleButton(
                 }
             }
         }
+
         TextScaleButtonType.INCREASE -> {
             iconRes = R.drawable.ic_reader_text_plus
             callback = {
