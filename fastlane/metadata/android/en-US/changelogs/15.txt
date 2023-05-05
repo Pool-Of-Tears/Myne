@@ -1,0 +1,2 @@
+- Added ability switch between five different font styles in ebook reader!
+- Bug fixes and other improvements.
