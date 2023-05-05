@@ -56,6 +56,7 @@
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Извините, достигнут максимальный размер шрифта!</string>
     <string name="reader_min_font_size_reached">Извините, достигнут минимальный размер шрифта!</string>
+    <string name="reader_font_style_chooer">Change FontStyle</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Настройки</string>

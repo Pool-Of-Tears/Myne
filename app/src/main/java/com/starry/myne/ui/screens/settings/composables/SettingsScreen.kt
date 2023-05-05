@@ -55,7 +55,7 @@ import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.utils.PreferenceUtils
+import com.starry.myne.utils.PreferenceUtil
 import com.starry.myne.utils.getActivity
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -167,8 +167,8 @@ fun SettingsCard() {
 @ExperimentalMaterial3Api
 @Composable
 fun GeneralOptionsUI() {
-    val internalReaderValue = when (PreferenceUtils.getBoolean(
-        PreferenceUtils.INTERNAL_READER_BOOL, true
+    val internalReaderValue = when (PreferenceUtil.getBoolean(
+        PreferenceUtil.INTERNAL_READER_BOOL, true
     )) {
         true -> "Internal Reader"
         false -> "External Reader"
@@ -246,10 +246,10 @@ fun GeneralOptionsUI() {
 
                 when (selectedOption) {
                     "External Reader" -> {
-                        PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER_BOOL, false)
+                        PreferenceUtil.putBoolean(PreferenceUtil.INTERNAL_READER_BOOL, false)
                     }
                     "Internal Reader" -> {
-                        PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER_BOOL, true)
+                        PreferenceUtil.putBoolean(PreferenceUtil.INTERNAL_READER_BOOL, true)
                     }
                 }
             }) {
@@ -277,7 +277,7 @@ fun DisplayOptionsUI(
     snackbarHostState: SnackbarHostState,
 ) {
     val displayValue =
-        when (PreferenceUtils.getInt(PreferenceUtils.APP_THEME_INT, ThemeMode.Auto.ordinal)) {
+        when (PreferenceUtil.getInt(PreferenceUtil.APP_THEME_INT, ThemeMode.Auto.ordinal)) {
             ThemeMode.Light.ordinal -> "Light"
             ThemeMode.Dark.ordinal -> "Dark"
             else -> "System"
@@ -288,8 +288,8 @@ fun DisplayOptionsUI(
 
     val materialYouSwitch = remember {
         mutableStateOf(
-            PreferenceUtils.getBoolean(
-                PreferenceUtils.MATERIAL_YOU_BOOL, Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+            PreferenceUtil.getBoolean(
+                PreferenceUtil.MATERIAL_YOU_BOOL, Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
             )
         )
     }
@@ -328,7 +328,7 @@ fun DisplayOptionsUI(
     if (materialYouSwitch.value) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             viewModel.setMaterialYou(true)
-            PreferenceUtils.putBoolean(PreferenceUtils.MATERIAL_YOU_BOOL, true)
+            PreferenceUtil.putBoolean(PreferenceUtil.MATERIAL_YOU_BOOL, true)
         } else {
             materialYouSwitch.value = false
             LaunchedEffect(
@@ -337,7 +337,7 @@ fun DisplayOptionsUI(
         }
     } else {
         viewModel.setMaterialYou(false)
-        PreferenceUtils.putBoolean(PreferenceUtils.MATERIAL_YOU_BOOL, false)
+        PreferenceUtil.putBoolean(PreferenceUtil.MATERIAL_YOU_BOOL, false)
     }
 
     if (displayDialog.value) {
@@ -393,24 +393,24 @@ fun DisplayOptionsUI(
                         viewModel.setTheme(
                             ThemeMode.Light
                         )
-                        PreferenceUtils.putInt(
-                            PreferenceUtils.APP_THEME_INT, ThemeMode.Light.ordinal
+                        PreferenceUtil.putInt(
+                            PreferenceUtil.APP_THEME_INT, ThemeMode.Light.ordinal
                         )
                     }
                     "Dark" -> {
                         viewModel.setTheme(
                             ThemeMode.Dark
                         )
-                        PreferenceUtils.putInt(
-                            PreferenceUtils.APP_THEME_INT, ThemeMode.Dark.ordinal
+                        PreferenceUtil.putInt(
+                            PreferenceUtil.APP_THEME_INT, ThemeMode.Dark.ordinal
                         )
                     }
                     "System" -> {
                         viewModel.setTheme(
                             ThemeMode.Auto
                         )
-                        PreferenceUtils.putInt(
-                            PreferenceUtils.APP_THEME_INT, ThemeMode.Auto.ordinal
+                        PreferenceUtil.putInt(
+                            PreferenceUtil.APP_THEME_INT, ThemeMode.Auto.ordinal
                         )
                     }
                 }

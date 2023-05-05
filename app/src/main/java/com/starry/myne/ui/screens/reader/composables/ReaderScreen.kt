@@ -18,6 +18,7 @@ limitations under the License.
 package com.starry.myne.ui.screens.reader.composables
 
 import android.content.Context
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,18 +37,26 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,10 +67,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,9 +81,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.starry.myne.R
+import com.starry.myne.ui.screens.reader.viewmodels.ReaderFont
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.utils.PreferenceUtils
+import com.starry.myne.utils.PreferenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -86,6 +98,8 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
     val state = viewModel.state
     val context = LocalContext.current
 
+    LaunchedEffect(key1 = true, block = { viewModel.loadEpubBook(bookId) })
+
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
@@ -95,15 +109,82 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
     val textSizeValue =
         remember {
             mutableStateOf(
-                PreferenceUtils.getInt(
-                    PreferenceUtils.READER_FONT_SIZE_INT,
+                PreferenceUtil.getInt(
+                    PreferenceUtil.READER_FONT_SIZE_INT,
                     100
                 )
             )
         }
     val textSize = (textSizeValue.value / 10) * 1.8
+    val readerFontFamily = remember { mutableStateOf(viewModel.getFontFamily()) }
 
-    LaunchedEffect(key1 = true, block = { viewModel.loadEpubBook(bookId) })
+    // Font style chooser dialog.
+    val showFontDialog = remember { mutableStateOf(false) }
+    val radioOptions = ReaderFont.getAllFonts().map { it.name }
+    val (selectedOption, onOptionSelected) = remember {
+        mutableStateOf(viewModel.getFontFamily())
+    }
+
+    if (showFontDialog.value) {
+        AlertDialog(onDismissRequest = {
+            showFontDialog.value = false
+        }, title = {
+            Text(
+                text = stringResource(id = R.string.reader_font_style_chooer),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }, text = {
+            Column(
+                modifier = Modifier.selectableGroup(),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                radioOptions.forEach { text ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(46.dp)
+                            .selectable(
+                                selected = (text == selectedOption.name),
+                                onClick = { onOptionSelected(ReaderFont.getFontByName(text)) },
+                                role = Role.RadioButton,
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(
+                            selected = (text == selectedOption.name),
+                            onClick = null,
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = MaterialTheme.colorScheme.primary,
+                                unselectedColor = MaterialTheme.colorScheme.inversePrimary,
+                                disabledSelectedColor = Color.Black,
+                                disabledUnselectedColor = Color.Black
+                            ),
+                        )
+                        Text(
+                            text = text,
+                            modifier = Modifier.padding(start = 16.dp),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontFamily = figeronaFont
+                        )
+                    }
+                }
+            }
+        }, confirmButton = {
+            TextButton(onClick = {
+                showFontDialog.value = false
+                viewModel.setFontFamily(selectedOption)
+                readerFontFamily.value = selectedOption
+            }) {
+                Text(stringResource(id = R.string.theme_dialog_apply_button))
+            }
+        }, dismissButton = {
+            TextButton(onClick = {
+                showFontDialog.value = false
+            }) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        })
+    }
 
     BottomSheetScaffold(scaffoldState = bottomSheetScaffoldState,
         sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
@@ -112,6 +193,8 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
             BottomSheetContents(
                 context = context,
                 textSizeValue = textSizeValue,
+                readerFontFamily = readerFontFamily,
+                showFontDialog = showFontDialog,
                 coroutineScope = coroutineScope,
                 bottomSheetScaffoldState = bottomSheetScaffoldState
             )
@@ -133,13 +216,14 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
                     }
                 } else {
                     LazyColumn(state = lazyListState) {
-                        items(state.epubBook!!.chapters.size, key = {
-                            state.epubBook.chapters[it].title
-                        }) { idx ->
+                        items(state.epubBook!!.chapters.size,
+                            key = { state.epubBook.chapters[it].title },
+                            contentType = { null }) { idx ->
                             val chapter = state.epubBook.chapters[idx]
                             ReaderItem(title = chapter.title,
                                 body = chapter.body,
                                 textSize = textSize.sp,
+                                fontFamily = readerFontFamily.value.fontFamily,
                                 onClick = {
                                     coroutineScope.launch {
                                         if (bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
@@ -176,6 +260,8 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
                         }
                     })
 
+                    // Scroll to last read chapter or some specific chapter
+                    // depending on user's selection.
                     LaunchedEffect(key1 = true, block = {
                         if (chapterIndex != -1) {
                             lazyListState.scrollToItem(chapterIndex, 0)
@@ -188,14 +274,18 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
                     })
                 }
             }
-
-
         })
 }
 
 
 @Composable
-fun ReaderItem(title: String, body: String, textSize: TextUnit, onClick: () -> Unit) {
+fun ReaderItem(
+    title: String,
+    body: String,
+    textSize: TextUnit,
+    fontFamily: FontFamily,
+    onClick: () -> Unit
+) {
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(modifier = Modifier
@@ -207,7 +297,7 @@ fun ReaderItem(title: String, body: String, textSize: TextUnit, onClick: () -> U
             text = title,
             fontSize = 24.sp,
             lineHeight = 32.sp,
-            fontFamily = FontFamily.Serif,
+            fontFamily = fontFamily,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.88f)
         )
@@ -218,7 +308,7 @@ fun ReaderItem(title: String, body: String, textSize: TextUnit, onClick: () -> U
             text = body,
             fontSize = textSize,
             lineHeight = (textSize * 4) / 3,
-            fontFamily = FontFamily.Serif,
+            fontFamily = fontFamily,
             modifier = Modifier.padding(start = 14.dp, end = 14.dp),
         )
 
@@ -235,14 +325,15 @@ fun ReaderItem(title: String, body: String, textSize: TextUnit, onClick: () -> U
 fun BottomSheetContents(
     context: Context,
     textSizeValue: MutableState<Int>,
+    readerFontFamily: MutableState<ReaderFont>,
+    showFontDialog: MutableState<Boolean>,
     coroutineScope: CoroutineScope,
     bottomSheetScaffoldState: BottomSheetScaffoldState
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
-            .height(100.dp),
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)),
     ) {
         Row(
             modifier = Modifier
@@ -307,6 +398,39 @@ fun BottomSheetContents(
                 bottomSheetScaffoldState = bottomSheetScaffoldState
             )
         }
+
+        Spacer(modifier = Modifier.height(14.dp))
+        Divider()
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            OutlinedButton(
+                onClick = { showFontDialog.value = true },
+                modifier = Modifier.width(325.dp),
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                        2.dp
+                    )
+                )
+            ) {
+                Row {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_font),
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = readerFontFamily.value.name)
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
@@ -334,14 +458,15 @@ fun ReaderTextScaleButton(
                 } else {
                     coroutineScope.launch {
                         textSizeValue.value -= 10
-                        PreferenceUtils.putInt(
-                            PreferenceUtils.READER_FONT_SIZE_INT,
+                        PreferenceUtil.putInt(
+                            PreferenceUtil.READER_FONT_SIZE_INT,
                             textSizeValue.value
                         )
                     }
                 }
             }
         }
+
         TextScaleButtonType.INCREASE -> {
             iconRes = R.drawable.ic_reader_text_plus
             callback = {
@@ -354,8 +479,8 @@ fun ReaderTextScaleButton(
                 } else {
                     coroutineScope.launch {
                         textSizeValue.value += 10
-                        PreferenceUtils.putInt(
-                            PreferenceUtils.READER_FONT_SIZE_INT,
+                        PreferenceUtil.putInt(
+                            PreferenceUtil.READER_FONT_SIZE_INT,
                             textSizeValue.value
                         )
                     }
@@ -392,6 +517,8 @@ fun BottomSheetContentsPV() {
     BottomSheetContents(
         context = LocalContext.current,
         textSizeValue = textValue,
+        readerFontFamily = remember { mutableStateOf(ReaderFont.System) },
+        showFontDialog = remember { mutableStateOf(false) },
         coroutineScope = rememberCoroutineScope(),
         bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
     )

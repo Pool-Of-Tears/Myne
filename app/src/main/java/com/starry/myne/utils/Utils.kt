@@ -49,7 +49,7 @@ object Utils {
 
     fun openBookFile(context: Context, item: LibraryItem, navController: NavController) {
 
-        if (PreferenceUtils.getBoolean(PreferenceUtils.INTERNAL_READER_BOOL, true)) {
+        if (PreferenceUtil.getBoolean(PreferenceUtil.INTERNAL_READER_BOOL, true)) {
             navController.navigate(
                 Screens.ReaderDetailScreen.withBookId(
                     item.bookId.toString()
