@@ -19,7 +19,7 @@ package com.starry.myne.utils
 import android.content.Context
 import android.content.SharedPreferences
 
-object PreferenceUtils {
+object PreferenceUtil {
     private lateinit var prefs: SharedPreferences
     private const val PREFS_NAME = "myne_settings"
 
@@ -28,6 +28,7 @@ object PreferenceUtils {
     const val MATERIAL_YOU_BOOL = "material_you"
     const val INTERNAL_READER_BOOL = "internal_reader"
     const val READER_FONT_SIZE_INT = "reader_font_size"
+    const val READER_FONT_STYLE_STR = "reader_font_style"
 
     fun initialize(context: Context) {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

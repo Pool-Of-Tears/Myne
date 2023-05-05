@@ -17,17 +17,21 @@ limitations under the License.
 
 package com.starry.myne.ui.screens.reader.viewmodels
 
+import androidx.annotation.Keep
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.starry.myne.R
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderItem
 import com.starry.myne.epub.createEpubBook
 import com.starry.myne.epub.models.EpubBook
+import com.starry.myne.utils.PreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -35,16 +39,28 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-sealed class ReaderFonts(val id: String, val name: String, fontFamily: FontFamily) {
+@Keep
+sealed class ReaderFont(val id: String, val name: String, val fontFamily: FontFamily) {
 
     companion object {
-        fun getAllFonts() = ReaderFonts::class.sealedSubclasses.mapNotNull { it.objectInstance }
+        fun getAllFonts() = ReaderFont::class.sealedSubclasses.mapNotNull { it.objectInstance }
+        fun getFontByName(name: String) = getAllFonts().find { it.name == name }!!
     }
 
-    object Regular : ReaderFonts("system", "System Default", FontFamily.Default)
-    object Serif : ReaderFonts("serif", "Serif Font", FontFamily.Serif)
-    object Cursive : ReaderFonts("cursive", "Cursive Font", FontFamily.Cursive)
-    object SansSerif : ReaderFonts("sans-serif", "SansSerif Font", FontFamily.SansSerif)
+    @Keep
+    object System : ReaderFont("system", "System Default", FontFamily.Default)
+
+    @Keep
+    object Serif : ReaderFont("serif", "Serif Font", FontFamily.Serif)
+
+    @Keep
+    object Cursive : ReaderFont("cursive", "Cursive Font", FontFamily.Cursive)
+
+    @Keep
+    object SansSerif : ReaderFont("sans-serif", "SansSerif Font", FontFamily.SansSerif)
+
+    @Keep
+    object Inter : ReaderFont("inter", "Inter Font", FontFamily(Font(R.font.reader_inter_font)))
 }
 
 data class ReaderScreenState(
@@ -83,5 +99,18 @@ class ReaderViewModel @Inject constructor(
                 readerDao.insert(readerItem = ReaderItem(bookId, chapterIndex, chapterOffset))
             }
         }
+    }
+
+    fun setFontFamily(font: ReaderFont) {
+        PreferenceUtil.putString(PreferenceUtil.READER_FONT_STYLE_STR, font.id)
+    }
+
+    fun getFontFamily(): ReaderFont {
+        return ReaderFont.getAllFonts().find {
+            it.id == PreferenceUtil.getString(
+                PreferenceUtil.READER_FONT_STYLE_STR,
+                ReaderFont.System.id
+            )
+        }!!
     }
 }

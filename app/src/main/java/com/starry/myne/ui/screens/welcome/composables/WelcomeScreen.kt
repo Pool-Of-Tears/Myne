@@ -43,14 +43,14 @@ import com.starry.myne.R
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.screens.welcome.viewmodels.WelcomeViewModel
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.utils.PreferenceUtils
+import com.starry.myne.utils.PreferenceUtil
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
     val viewModel: WelcomeViewModel = hiltViewModel()
 
-    val internalReaderValue = when (PreferenceUtils.getBoolean(
-        PreferenceUtils.INTERNAL_READER_BOOL, true
+    val internalReaderValue = when (PreferenceUtil.getBoolean(
+        PreferenceUtil.INTERNAL_READER_BOOL, true
     )) {
         true -> "Internal Reader"
         false -> "External Reader"
@@ -187,10 +187,10 @@ fun WelcomeScreen(navController: NavController) {
 
                     when (selectedOption) {
                         "External Reader" -> {
-                            PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER_BOOL, false)
+                            PreferenceUtil.putBoolean(PreferenceUtil.INTERNAL_READER_BOOL, false)
                         }
                         "Internal Reader" -> {
-                            PreferenceUtils.putBoolean(PreferenceUtils.INTERNAL_READER_BOOL, true)
+                            PreferenceUtil.putBoolean(PreferenceUtil.INTERNAL_READER_BOOL, true)
                         }
                     }
                 }) {
