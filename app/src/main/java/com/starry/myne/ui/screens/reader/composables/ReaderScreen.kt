@@ -230,7 +230,6 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
                                 epubBook = state.epubBook,
                                 textSize = textSize.sp,
                                 fontFamily = readerFontFamily.value.fontFamily,
-                                viewModel = viewModel,
                                 onClick = {
                                     coroutineScope.launch {
                                         if (bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
@@ -291,7 +290,6 @@ fun ReaderItem(
     epubBook: EpubBook,
     textSize: TextUnit,
     fontFamily: FontFamily,
-    viewModel: ReaderViewModel,
     onClick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -326,7 +324,7 @@ fun ReaderItem(
                 }
 
                 else -> {
-                    val image = viewModel.getImageFromEntry(imgEntry, epubBook)
+                    val image = epubBook.images.find { it.absPath == imgEntry.path }
                     image?.let {
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
