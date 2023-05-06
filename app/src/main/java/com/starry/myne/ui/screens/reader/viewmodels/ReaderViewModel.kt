@@ -29,6 +29,7 @@ import com.starry.myne.R
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderItem
+import com.starry.myne.epub.BookTextMapper
 import com.starry.myne.epub.createEpubBook
 import com.starry.myne.epub.models.EpubBook
 import com.starry.myne.utils.PreferenceUtil
@@ -113,4 +114,7 @@ class ReaderViewModel @Inject constructor(
             )
         }!!
     }
+
+    fun getImageFromEntry(entry: BookTextMapper.ImgEntry, epubBook: EpubBook) =
+        epubBook.images.find { it.absPath == entry.path }
 }
