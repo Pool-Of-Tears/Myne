@@ -1,0 +1,2 @@
+- Added support for images in e-book reader.
+- Some other minor improvements.

@@ -69,6 +69,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -80,7 +81,12 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.starry.myne.R
+import com.starry.myne.epub.BookTextMapper
+import com.starry.myne.epub.models.EpubBook
+import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderFont
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.theme.figeronaFont
@@ -220,8 +226,8 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
                             key = { state.epubBook.chapters[it].title },
                             contentType = { null }) { idx ->
                             val chapter = state.epubBook.chapters[idx]
-                            ReaderItem(title = chapter.title,
-                                body = chapter.body,
+                            ReaderItem(chapter = chapter,
+                                epubBook = state.epubBook,
                                 textSize = textSize.sp,
                                 fontFamily = readerFontFamily.value.fontFamily,
                                 onClick = {
@@ -280,13 +286,14 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
 
 @Composable
 fun ReaderItem(
-    title: String,
-    body: String,
+    chapter: EpubChapter,
+    epubBook: EpubBook,
     textSize: TextUnit,
     fontFamily: FontFamily,
     onClick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val paragraphs = chapter.body.splitToSequence("\n\n").filter { it.isNotBlank() }.toList()
 
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -294,7 +301,7 @@ fun ReaderItem(
 
         Text(
             modifier = Modifier.padding(start = 12.dp, end = 4.dp, top = 10.dp),
-            text = title,
+            text = chapter.title,
             fontSize = 24.sp,
             lineHeight = 32.sp,
             fontFamily = fontFamily,
@@ -304,13 +311,34 @@ fun ReaderItem(
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        Text(
-            text = body,
-            fontSize = textSize,
-            lineHeight = (textSize * 4) / 3,
-            fontFamily = fontFamily,
-            modifier = Modifier.padding(start = 14.dp, end = 14.dp),
-        )
+        paragraphs.forEach { para ->
+            when (val imgEntry = BookTextMapper.ImgEntry.fromXMLString(para)) {
+                null -> {
+                    Text(
+                        text = para,
+                        fontSize = textSize,
+                        lineHeight = (textSize * 4) / 3,
+                        fontFamily = fontFamily,
+                        modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 8.dp),
+                    )
+                }
+
+                else -> {
+                    val image = epubBook.images.find { it.absPath == imgEntry.path }
+                    image?.let {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(image.image)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+            }
+        }
 
         Divider(
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),

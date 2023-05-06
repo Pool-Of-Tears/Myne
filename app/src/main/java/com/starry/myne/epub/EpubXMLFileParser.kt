@@ -21,7 +21,6 @@ import android.graphics.BitmapFactory
 import org.jsoup.Jsoup
 import org.jsoup.nodes.TextNode
 import java.io.File
-import java.util.zip.ZipEntry
 import kotlin.io.path.invariantSeparatorsPathString
 
 class EpubXMLFileParser(
@@ -36,11 +35,8 @@ class EpubXMLFileParser(
 
     fun parseAsDocument(): Output {
         val body = Jsoup.parse(data.inputStream(), "UTF-8", "").body()
-
         val title = body.selectFirst("h1, h2, h3, h4, h5, h6")?.text()
         body.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
-        // TODO: Add support for images, for now just remove them.
-        body.getElementsByTag("img").remove()
         return Output(
             title = title,
             body = getNodeStructuredText(body)
@@ -107,6 +103,7 @@ class EpubXMLFileParser(
                     val text = child.text().trim()
                     if (text.isEmpty()) "" else text + "\n\n"
                 }
+
                 else -> getNodeTextTraverse(child)
             }
         }
