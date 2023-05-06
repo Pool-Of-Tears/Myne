@@ -21,7 +21,6 @@ import android.graphics.BitmapFactory
 import org.jsoup.Jsoup
 import org.jsoup.nodes.TextNode
 import java.io.File
-import java.util.zip.ZipEntry
 import kotlin.io.path.invariantSeparatorsPathString
 
 class EpubXMLFileParser(
@@ -104,6 +103,7 @@ class EpubXMLFileParser(
                     val text = child.text().trim()
                     if (text.isEmpty()) "" else text + "\n\n"
                 }
+
                 else -> getNodeTextTraverse(child)
             }
         }

@@ -248,6 +248,7 @@ fun GeneralOptionsUI() {
                     "External Reader" -> {
                         PreferenceUtil.putBoolean(PreferenceUtil.INTERNAL_READER_BOOL, false)
                     }
+
                     "Internal Reader" -> {
                         PreferenceUtil.putBoolean(PreferenceUtil.INTERNAL_READER_BOOL, true)
                     }
@@ -397,6 +398,7 @@ fun DisplayOptionsUI(
                             PreferenceUtil.APP_THEME_INT, ThemeMode.Light.ordinal
                         )
                     }
+
                     "Dark" -> {
                         viewModel.setTheme(
                             ThemeMode.Dark
@@ -405,6 +407,7 @@ fun DisplayOptionsUI(
                             PreferenceUtil.APP_THEME_INT, ThemeMode.Dark.ordinal
                         )
                     }
+
                     "System" -> {
                         viewModel.setTheme(
                             ThemeMode.Auto

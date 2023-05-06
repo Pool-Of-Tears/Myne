@@ -91,11 +91,13 @@ class BookDownloader(context: Context) {
                                 progress = (downloadedBytes * 100 / totalBytes).toFloat() / 100
                             }
                         }
+
                         DownloadManager.STATUS_SUCCESSFUL -> {
                             isDownloadFinished = true
                             progress = 1f
                             onDownloadSuccess()
                         }
+
                         DownloadManager.STATUS_PAUSED, DownloadManager.STATUS_PENDING -> {}
                         DownloadManager.STATUS_FAILED -> {
                             isDownloadFinished = true

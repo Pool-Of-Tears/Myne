@@ -16,7 +16,11 @@ limitations under the License.
 
 package com.starry.myne.ui.screens.home.viewmodels
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.others.BookLanguage
@@ -135,9 +139,11 @@ class HomeViewModel @Inject constructor(private val bookRepository: BookReposito
             UserAction.CloseIconClicked -> {
                 topBarState = topBarState.copy(isSearchBarVisible = false)
             }
+
             UserAction.SearchIconClicked -> {
                 topBarState = topBarState.copy(isSearchBarVisible = true)
             }
+
             is UserAction.TextFieldInput -> {
                 topBarState = topBarState.copy(searchText = userAction.text)
                 if (userAction.networkStatus == NetworkObserver.Status.Available) {
@@ -151,6 +157,7 @@ class HomeViewModel @Inject constructor(private val bookRepository: BookReposito
                     }
                 }
             }
+
             is UserAction.LanguageItemClicked -> {
                 changeLanguage(userAction.language)
             }

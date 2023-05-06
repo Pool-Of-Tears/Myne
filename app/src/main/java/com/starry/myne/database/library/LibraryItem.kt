@@ -24,7 +24,8 @@ import java.io.IOException
 import java.text.CharacterIterator
 import java.text.DateFormat
 import java.text.StringCharacterIterator
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 @Entity(tableName = "book_library")
 data class LibraryItem(
