@@ -31,7 +31,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -284,11 +283,12 @@ fun HomeScreenScaffold(
                     } else if (!allBooksState.isLoading && allBooksState.error != null) {
                         NetworkError(onRetryClicked = { viewModel.reloadItems() })
                     } else {
-                        LazyColumn(
+                        LazyVerticalGrid(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(MaterialTheme.colorScheme.background)
-                                .padding(start = 8.dp, end = 8.dp)
+                                .padding(start = 8.dp, end = 8.dp),
+                            columns = GridCells.Adaptive(295.dp)
                         ) {
                             items(allBooksState.items.size) { i ->
                                 val item = allBooksState.items[i]
@@ -340,14 +340,15 @@ fun HomeScreenScaffold(
 
                     // Else show the search results.
                 } else {
-                    LazyColumn(
+                    LazyVerticalGrid(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.background)
-                            .padding(start = 8.dp, end = 8.dp)
+                            .padding(start = 8.dp, end = 8.dp),
+                        columns = GridCells.Adaptive(295.dp)
                     ) {
-                        item {
-                            if (topBarState.isSearching) {
+                        if (topBarState.isSearching) {
+                            item {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()

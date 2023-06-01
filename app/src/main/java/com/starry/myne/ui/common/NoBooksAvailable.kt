@@ -2,6 +2,7 @@ package com.starry.myne.ui.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -63,14 +64,16 @@ fun NoBooksAvailable(text: String) {
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        Text(
-            text = text,
-            modifier = Modifier.fillMaxWidth(0.8f),
-            color = MaterialTheme.colorScheme.onBackground,
-            fontFamily = figeronaFont,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold,
-        )
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            Text(
+                modifier = Modifier.padding(horizontal = 14.dp),
+                text = text,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = figeronaFont,
+                fontSize = 16.5.sp,
+                fontWeight = FontWeight.SemiBold,
+            )
+        }
 
         Spacer(modifier = Modifier.weight(1.68f))
     }
