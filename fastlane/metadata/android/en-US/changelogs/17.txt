@@ -1,0 +1,2 @@
+- Improved UI for wider screens like tablets.
+- Bug fixes and other improvements
