@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Myne"
         android:usesCleartextTraffic="true"
-        tools:targetApi="33">
+        tools:targetApi="34">
         <activity
             android:name=".MainActivity"
             android:exported="true"
