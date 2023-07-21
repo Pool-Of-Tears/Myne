@@ -184,7 +184,10 @@ fun LibraryScreen(navController: NavController) {
                                         item.getDownloadDate(),
                                         onReadClick = {
                                             Utils.openBookFile(
-                                                context, item, navController
+                                                context = context,
+                                                internalReader = viewModel.getInternalReaderSetting(),
+                                                libraryItem = item,
+                                                navController = navController
                                             )
                                         },
                                         onDeleteClick = { openDeleteDialog.value = true })

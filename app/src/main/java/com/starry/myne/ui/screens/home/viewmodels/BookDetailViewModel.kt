@@ -36,6 +36,7 @@ import com.starry.myne.repo.models.Book
 import com.starry.myne.repo.models.BookSet
 import com.starry.myne.repo.models.ExtraInfo
 import com.starry.myne.utils.BookUtils
+import com.starry.myne.utils.PreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -58,8 +59,14 @@ class BookDetailViewModel @Inject constructor(
     private val bookRepository: BookRepository,
     val libraryDao: LibraryDao,
     val bookDownloader: BookDownloader,
+    private val preferenceUtil: PreferenceUtil
 ) : ViewModel() {
     var state by mutableStateOf(BookDetailScreenState())
+
+    fun getInternalReaderSetting() = preferenceUtil.getBoolean(
+        PreferenceUtil.INTERNAL_READER_BOOL, true
+    )
+
     fun getBookDetails(bookId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             // Reset Screen state.

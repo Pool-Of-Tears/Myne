@@ -55,7 +55,6 @@ import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.utils.PreferenceUtil
 import com.starry.myne.utils.getActivity
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -85,7 +84,7 @@ fun SettingsScreen(navController: NavController) {
             )
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 SettingsCard()
-                GeneralOptionsUI()
+                GeneralOptionsUI(viewModel = viewModel)
                 DisplayOptionsUI(viewModel = viewModel, context = context, snackBarHostState)
                 InformationUI(navController = navController)
             }
@@ -166,10 +165,8 @@ fun SettingsCard() {
 
 @ExperimentalMaterial3Api
 @Composable
-fun GeneralOptionsUI() {
-    val internalReaderValue = when (PreferenceUtil.getBoolean(
-        PreferenceUtil.INTERNAL_READER_BOOL, true
-    )) {
+fun GeneralOptionsUI(viewModel: SettingsViewModel) {
+    val internalReaderValue = when (viewModel.getInternalReaderValue()) {
         true -> "Internal Reader"
         false -> "External Reader"
     }
@@ -246,11 +243,11 @@ fun GeneralOptionsUI() {
 
                 when (selectedOption) {
                     "External Reader" -> {
-                        PreferenceUtil.putBoolean(PreferenceUtil.INTERNAL_READER_BOOL, false)
+                        viewModel.setInternalReaderValue(false)
                     }
 
                     "Internal Reader" -> {
-                        PreferenceUtil.putBoolean(PreferenceUtil.INTERNAL_READER_BOOL, true)
+                        viewModel.setInternalReaderValue(true)
                     }
                 }
             }) {
@@ -278,7 +275,7 @@ fun DisplayOptionsUI(
     snackbarHostState: SnackbarHostState,
 ) {
     val displayValue =
-        when (PreferenceUtil.getInt(PreferenceUtil.APP_THEME_INT, ThemeMode.Auto.ordinal)) {
+        when (viewModel.getThemeValue()) {
             ThemeMode.Light.ordinal -> "Light"
             ThemeMode.Dark.ordinal -> "Dark"
             else -> "System"
@@ -287,14 +284,7 @@ fun DisplayOptionsUI(
     val radioOptions = listOf("Light", "Dark", "System")
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(displayValue) }
 
-    val materialYouSwitch = remember {
-        mutableStateOf(
-            PreferenceUtil.getBoolean(
-                PreferenceUtil.MATERIAL_YOU_BOOL, Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-            )
-        )
-    }
-
+    val materialYouSwitch = remember { mutableStateOf(viewModel.getMaterialYouValue()) }
     val materialYouDesc = if (materialYouSwitch.value) {
         stringResource(id = R.string.material_you_settings_enabled_desc)
     } else {
@@ -329,7 +319,6 @@ fun DisplayOptionsUI(
     if (materialYouSwitch.value) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             viewModel.setMaterialYou(true)
-            PreferenceUtil.putBoolean(PreferenceUtil.MATERIAL_YOU_BOOL, true)
         } else {
             materialYouSwitch.value = false
             LaunchedEffect(
@@ -338,7 +327,6 @@ fun DisplayOptionsUI(
         }
     } else {
         viewModel.setMaterialYou(false)
-        PreferenceUtil.putBoolean(PreferenceUtil.MATERIAL_YOU_BOOL, false)
     }
 
     if (displayDialog.value) {
@@ -394,26 +382,17 @@ fun DisplayOptionsUI(
                         viewModel.setTheme(
                             ThemeMode.Light
                         )
-                        PreferenceUtil.putInt(
-                            PreferenceUtil.APP_THEME_INT, ThemeMode.Light.ordinal
-                        )
                     }
 
                     "Dark" -> {
                         viewModel.setTheme(
                             ThemeMode.Dark
                         )
-                        PreferenceUtil.putInt(
-                            PreferenceUtil.APP_THEME_INT, ThemeMode.Dark.ordinal
-                        )
                     }
 
                     "System" -> {
                         viewModel.setTheme(
                             ThemeMode.Auto
-                        )
-                        PreferenceUtil.putInt(
-                            PreferenceUtil.APP_THEME_INT, ThemeMode.Auto.ordinal
                         )
                     }
                 }
