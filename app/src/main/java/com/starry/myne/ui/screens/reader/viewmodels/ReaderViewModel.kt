@@ -71,7 +71,9 @@ data class ReaderScreenState(
 
 @HiltViewModel
 class ReaderViewModel @Inject constructor(
-    private val libraryDao: LibraryDao, private val readerDao: ReaderDao
+    private val libraryDao: LibraryDao,
+    private val readerDao: ReaderDao,
+    private val preferenceUtil: PreferenceUtil
 ) : ViewModel() {
     var state by mutableStateOf(ReaderScreenState())
 
@@ -102,16 +104,23 @@ class ReaderViewModel @Inject constructor(
     }
 
     fun setFontFamily(font: ReaderFont) {
-        PreferenceUtil.putString(PreferenceUtil.READER_FONT_STYLE_STR, font.id)
+        preferenceUtil.putString(PreferenceUtil.READER_FONT_STYLE_STR, font.id)
     }
 
     fun getFontFamily(): ReaderFont {
         return ReaderFont.getAllFonts().find {
-            it.id == PreferenceUtil.getString(
+            it.id == preferenceUtil.getString(
                 PreferenceUtil.READER_FONT_STYLE_STR,
                 ReaderFont.System.id
             )
         }!!
     }
+
+    fun setFontSize(newValue: Int) {
+        preferenceUtil.putInt(PreferenceUtil.READER_FONT_SIZE_INT, newValue)
+    }
+
+    fun getFontSize() = preferenceUtil.getInt(PreferenceUtil.READER_FONT_SIZE_INT, 100)
+
 
 }

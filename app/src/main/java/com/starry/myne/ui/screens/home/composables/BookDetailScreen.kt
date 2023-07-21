@@ -356,17 +356,19 @@ fun BookDetailScreen(
                                                 viewModel.libraryDao.getItemById(book.id)!!
                                             withContext(Dispatchers.Main) {
                                                 Utils.openBookFile(
-                                                    context,
-                                                    libraryItem,
-                                                    navController
+                                                    context = context,
+                                                    internalReader = viewModel.getInternalReaderSetting(),
+                                                    libraryItem = libraryItem,
+                                                    navController = navController
                                                 )
                                             }
                                         }
                                     } else {
                                         Utils.openBookFile(
-                                            context,
-                                            bookLibraryItem,
-                                            navController
+                                            context = context,
+                                            internalReader = viewModel.getInternalReaderSetting(),
+                                            libraryItem = bookLibraryItem,
+                                            navController = navController
                                         )
                                     }
 

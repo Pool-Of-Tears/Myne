@@ -47,17 +47,18 @@ object Utils {
         }
     }
 
-    fun openBookFile(context: Context, item: LibraryItem, navController: NavController) {
+    fun openBookFile(
+        context: Context,
+        internalReader: Boolean,
+        libraryItem: LibraryItem,
+        navController: NavController
+    ) {
 
-        if (PreferenceUtil.getBoolean(PreferenceUtil.INTERNAL_READER_BOOL, true)) {
-            navController.navigate(
-                Screens.ReaderDetailScreen.withBookId(
-                    item.bookId.toString()
-                )
-            )
+        if (internalReader) {
+            navController.navigate(Screens.ReaderDetailScreen.withBookId(libraryItem.bookId.toString()))
         } else {
             val uri = FileProvider.getUriForFile(
-                context, BuildConfig.APPLICATION_ID + ".provider", File(item.filePath)
+                context, BuildConfig.APPLICATION_ID + ".provider", File(libraryItem.filePath)
             )
             val intent = Intent(Intent.ACTION_VIEW)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

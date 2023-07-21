@@ -17,7 +17,6 @@ limitations under the License.
 
 package com.starry.myne.ui.screens.reader.composables
 
-import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -76,7 +75,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -90,7 +88,6 @@ import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderFont
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.utils.PreferenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -102,7 +99,6 @@ enum class TextScaleButtonType { INCREASE, DECREASE }
 fun ReaderScreen(bookId: String, chapterIndex: Int) {
     val viewModel: ReaderViewModel = hiltViewModel()
     val state = viewModel.state
-    val context = LocalContext.current
 
     LaunchedEffect(key1 = true, block = { viewModel.loadEpubBook(bookId) })
 
@@ -112,15 +108,7 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
         bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
     )
 
-    val textSizeValue =
-        remember {
-            mutableStateOf(
-                PreferenceUtil.getInt(
-                    PreferenceUtil.READER_FONT_SIZE_INT,
-                    100
-                )
-            )
-        }
+    val textSizeValue = remember { mutableStateOf(viewModel.getFontSize()) }
     val textSize = (textSizeValue.value / 10) * 1.8
     val readerFontFamily = remember { mutableStateOf(viewModel.getFontFamily()) }
 
@@ -197,7 +185,7 @@ fun ReaderScreen(bookId: String, chapterIndex: Int) {
         sheetPeekHeight = 0.dp,
         sheetContent = {
             BottomSheetContents(
-                context = context,
+                viewModel = viewModel,
                 textSizeValue = textSizeValue,
                 readerFontFamily = readerFontFamily,
                 showFontDialog = showFontDialog,
@@ -351,7 +339,7 @@ fun ReaderItem(
 @ExperimentalMaterialApi
 @Composable
 fun BottomSheetContents(
-    context: Context,
+    viewModel: ReaderViewModel,
     textSizeValue: MutableState<Int>,
     readerFontFamily: MutableState<ReaderFont>,
     showFontDialog: MutableState<Boolean>,
@@ -370,11 +358,11 @@ fun BottomSheetContents(
             horizontalArrangement = Arrangement.Center
         ) {
             ReaderTextScaleButton(
-                context = context,
                 buttonType = TextScaleButtonType.DECREASE,
                 textSizeValue = textSizeValue,
                 coroutineScope = coroutineScope,
-                bottomSheetScaffoldState = bottomSheetScaffoldState
+                bottomSheetScaffoldState = bottomSheetScaffoldState,
+                onTextSizeValueChanged = { viewModel.setFontSize(it) }
             )
             Spacer(modifier = Modifier.width(14.dp))
             Box(
@@ -419,11 +407,11 @@ fun BottomSheetContents(
             }
             Spacer(modifier = Modifier.width(14.dp))
             ReaderTextScaleButton(
-                context = context,
                 buttonType = TextScaleButtonType.INCREASE,
                 textSizeValue = textSizeValue,
                 coroutineScope = coroutineScope,
-                bottomSheetScaffoldState = bottomSheetScaffoldState
+                bottomSheetScaffoldState = bottomSheetScaffoldState,
+                onTextSizeValueChanged = { viewModel.setFontSize(it) }
             )
         }
 
@@ -465,14 +453,16 @@ fun BottomSheetContents(
 @ExperimentalMaterialApi
 @Composable
 fun ReaderTextScaleButton(
-    context: Context,
     buttonType: TextScaleButtonType,
     textSizeValue: MutableState<Int>,
     coroutineScope: CoroutineScope,
-    bottomSheetScaffoldState: BottomSheetScaffoldState
+    bottomSheetScaffoldState: BottomSheetScaffoldState,
+    onTextSizeValueChanged: (newValue: Int) -> Unit
 ) {
+    val context = LocalContext.current
     val iconRes: Int
     val callback: () -> Unit
+
     when (buttonType) {
         TextScaleButtonType.DECREASE -> {
             iconRes = R.drawable.ic_reader_text_minus
@@ -486,10 +476,7 @@ fun ReaderTextScaleButton(
                 } else {
                     coroutineScope.launch {
                         textSizeValue.value -= 10
-                        PreferenceUtil.putInt(
-                            PreferenceUtil.READER_FONT_SIZE_INT,
-                            textSizeValue.value
-                        )
+                        onTextSizeValueChanged(textSizeValue.value)
                     }
                 }
             }
@@ -507,10 +494,7 @@ fun ReaderTextScaleButton(
                 } else {
                     coroutineScope.launch {
                         textSizeValue.value += 10
-                        PreferenceUtil.putInt(
-                            PreferenceUtil.READER_FONT_SIZE_INT,
-                            textSizeValue.value
-                        )
+                        onTextSizeValueChanged(textSizeValue.value)
                     }
                 }
             }
@@ -534,20 +518,4 @@ fun ReaderTextScaleButton(
             modifier = Modifier.padding(14.dp)
         )
     }
-}
-
-
-@ExperimentalMaterialApi
-@Composable
-@Preview
-fun BottomSheetContentsPV() {
-    val textValue = remember { mutableStateOf(100) }
-    BottomSheetContents(
-        context = LocalContext.current,
-        textSizeValue = textValue,
-        readerFontFamily = remember { mutableStateOf(ReaderFont.System) },
-        showFontDialog = remember { mutableStateOf(false) },
-        coroutineScope = rememberCoroutineScope(),
-        bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
-    )
 }
