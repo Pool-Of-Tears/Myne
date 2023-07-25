@@ -30,7 +30,7 @@ import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
-import com.starry.myne.others.BookDownloader
+import com.starry.myne.utils.BookDownloader
 import com.starry.myne.repo.BookRepository
 import com.starry.myne.repo.models.Book
 import com.starry.myne.repo.models.BookSet

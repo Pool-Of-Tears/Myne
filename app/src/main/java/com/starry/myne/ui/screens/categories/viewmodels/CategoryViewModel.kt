@@ -29,6 +29,7 @@ import com.starry.myne.others.Paginator
 import com.starry.myne.repo.BookRepository
 import com.starry.myne.repo.models.Book
 import com.starry.myne.repo.models.BookSet
+import com.starry.myne.utils.PreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,7 +43,11 @@ data class CategorisedBooksState(
 )
 
 @HiltViewModel
-class CategoryViewModel @Inject constructor(private val booksApi: BookRepository) : ViewModel() {
+class CategoryViewModel @Inject constructor(
+    private val booksApi: BookRepository,
+    private val preferenceUtil: PreferenceUtil
+) : ViewModel() {
+
     companion object {
         val CATEGORIES_ARRAY =
             listOf(
@@ -71,8 +76,7 @@ class CategoryViewModel @Inject constructor(private val booksApi: BookRepository
 
     var state by mutableStateOf(CategorisedBooksState())
 
-    private val _language: MutableState<BookLanguage> =
-        mutableStateOf(BookLanguage.AllBooks)
+    private val _language: MutableState<BookLanguage> = mutableStateOf(getPreferredLanguage())
     val language: State<BookLanguage> = _language
 
     fun loadBookByCategory(category: String) {
@@ -134,6 +138,16 @@ class CategoryViewModel @Inject constructor(private val booksApi: BookRepository
 
     fun changeLanguage(language: BookLanguage) {
         _language.value = language
+        preferenceUtil.putString(PreferenceUtil.PREFERRED_BOOK_LANG_STR, language.isoCode)
         reloadItems()
+    }
+
+    private fun getPreferredLanguage(): BookLanguage {
+        val isoCode = preferenceUtil.getString(
+            PreferenceUtil.PREFERRED_BOOK_LANG_STR,
+            BookLanguage.AllBooks.isoCode
+        )
+        return BookLanguage.getAllLanguages().find { it.isoCode == isoCode }
+            ?: BookLanguage.AllBooks
     }
 }

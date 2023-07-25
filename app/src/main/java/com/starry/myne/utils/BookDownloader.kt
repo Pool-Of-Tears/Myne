@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.others
+package com.starry.myne.utils
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
@@ -22,8 +22,8 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
+import com.starry.myne.others.Constants
 import com.starry.myne.repo.models.Book
-import com.starry.myne.utils.BookUtils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
