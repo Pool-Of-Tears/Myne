@@ -29,6 +29,7 @@ import com.starry.myne.others.Paginator
 import com.starry.myne.repo.BookRepository
 import com.starry.myne.repo.models.Book
 import com.starry.myne.repo.models.BookSet
+import com.starry.myne.utils.PreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -63,12 +64,14 @@ sealed class UserAction {
 }
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val bookRepository: BookRepository) : ViewModel() {
+class HomeViewModel @Inject constructor(
+    private val bookRepository: BookRepository,
+    private val preferenceUtil: PreferenceUtil
+) : ViewModel() {
     var allBooksState by mutableStateOf(AllBooksState())
     var topBarState by mutableStateOf(TopBarState())
 
-    private val _language: MutableState<BookLanguage> =
-        mutableStateOf(BookLanguage.AllBooks)
+    private val _language: MutableState<BookLanguage> = mutableStateOf(getPreferredLanguage())
     val language: State<BookLanguage> = _language
 
     private var searchJob: Job? = null
@@ -172,6 +175,16 @@ class HomeViewModel @Inject constructor(private val bookRepository: BookReposito
 
     private fun changeLanguage(language: BookLanguage) {
         _language.value = language
+        preferenceUtil.putString(PreferenceUtil.PREFERRED_BOOK_LANG_STR, language.isoCode)
         reloadItems()
+    }
+
+    private fun getPreferredLanguage(): BookLanguage {
+        val isoCode = preferenceUtil.getString(
+            PreferenceUtil.PREFERRED_BOOK_LANG_STR,
+            BookLanguage.AllBooks.isoCode
+        )
+        return BookLanguage.getAllLanguages().find { it.isoCode == isoCode }
+            ?: BookLanguage.AllBooks
     }
 }

@@ -30,9 +30,10 @@ class PreferenceUtil(context: Context) {
         const val INTERNAL_READER_BOOL = "internal_reader"
         const val READER_FONT_SIZE_INT = "reader_font_size"
         const val READER_FONT_STYLE_STR = "reader_font_style"
+        const val PREFERRED_BOOK_LANG_STR = "preferred_book_language"
     }
 
-    private lateinit var prefs: SharedPreferences
+    private var prefs: SharedPreferences
 
     init {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -62,15 +63,15 @@ class PreferenceUtil(context: Context) {
         prefsEditor.apply()
     }
 
-    fun getString(key: String, value: String): String? {
-        return prefs.getString(key, value)
+    fun getString(key: String, defValue: String): String? {
+        return prefs.getString(key, defValue)
     }
 
-    fun getInt(key: String, value: Int): Int {
-        return prefs.getInt(key, value)
+    fun getInt(key: String, defValue: Int): Int {
+        return prefs.getInt(key, defValue)
     }
 
-    fun getBoolean(key: String, value: Boolean): Boolean {
-        return prefs.getBoolean(key, value)
+    fun getBoolean(key: String, defValue: Boolean): Boolean {
+        return prefs.getBoolean(key, defValue)
     }
 }
