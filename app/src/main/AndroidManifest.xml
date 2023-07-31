@@ -9,7 +9,6 @@
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <application
         android:name=".MyneApp"
         android:allowBackup="true"
@@ -22,6 +21,9 @@
         android:theme="@style/Theme.Myne"
         android:usesCleartextTraffic="true"
         tools:targetApi="34">
+        <activity
+            android:name=".ui.screens.reader.activities.ReaderActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -46,7 +48,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
     </application>
 
 </manifest>

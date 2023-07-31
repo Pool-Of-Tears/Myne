@@ -17,7 +17,10 @@ limitations under the License.
 
 package com.starry.myne.ui.screens.reader.viewmodels
 
+import android.util.Log
 import androidx.annotation.Keep
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -65,8 +68,9 @@ sealed class ReaderFont(val id: String, val name: String, val fontFamily: FontFa
 
 data class ReaderScreenState(
     val isLoading: Boolean = true,
+    val showReaderMenu: Boolean = false,
     val epubBook: EpubBook? = null,
-    val readerItem: ReaderItem? = null
+    val readerData: ReaderItem? = null
 )
 
 @HiltViewModel
@@ -75,16 +79,26 @@ class ReaderViewModel @Inject constructor(
     private val readerDao: ReaderDao,
     private val preferenceUtil: PreferenceUtil
 ) : ViewModel() {
+
     var state by mutableStateOf(ReaderScreenState())
 
-    fun loadEpubBook(bookId: String) {
+    private var _textSize: MutableState<Int> = mutableStateOf(getFontSize())
+    val textSize: State<Int> = _textSize
+
+    private var _readerFont: MutableState<ReaderFont> = mutableStateOf(getFontFamily())
+    val readerFont: State<ReaderFont> = _readerFont
+
+    fun loadEpubBook(bookId: Int, onLoaded: (ReaderScreenState) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            val libraryItem = libraryDao.getItemById(bookId.toInt())
-            val readerItem = readerDao.getReaderItem(bookId.toInt())
+            val libraryItem = libraryDao.getItemById(bookId)
+            val readerData = readerDao.getReaderItem(bookId)
+            // parse and create epub book
             val epubBook = createEpubBook(libraryItem!!.filePath)
+            state = state.copy(epubBook = epubBook, readerData = readerData)
+            onLoaded(state)
             // Added some delay to avoid choppy animation.
             delay(200L)
-            state = state.copy(isLoading = false, epubBook = epubBook, readerItem = readerItem)
+            state = state.copy(isLoading = false)
         }
     }
 
@@ -92,19 +106,36 @@ class ReaderViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             if (readerDao.getReaderItem(bookId) != null && chapterIndex != state.epubBook?.chapters!!.size - 1) {
                 readerDao.update(bookId, chapterIndex, chapterOffset)
+
+                Log.d("READER_VM", "Updated progress")
+
             } else if (chapterIndex == state.epubBook?.chapters!!.size - 1) {/*
                  if  the user has reached last chapter, delete this book
                  from reader database instead of saving it's progress
                */
                 readerDao.getReaderItem(bookId)?.let { readerDao.delete(it.bookId) }
+
+                Log.d("READER_VM", "Deleted progress")
+
             } else {
                 readerDao.insert(readerItem = ReaderItem(bookId, chapterIndex, chapterOffset))
+
+                Log.d("READER_VM", "Created progress")
             }
         }
     }
 
+    fun showReaderInfo() {
+        state = state.copy(showReaderMenu = true)
+    }
+
+    fun hideReaderInfo() {
+        state = state.copy(showReaderMenu = false)
+    }
+
     fun setFontFamily(font: ReaderFont) {
         preferenceUtil.putString(PreferenceUtil.READER_FONT_STYLE_STR, font.id)
+        _readerFont.value = font
     }
 
     fun getFontFamily(): ReaderFont {
@@ -118,6 +149,7 @@ class ReaderViewModel @Inject constructor(
 
     fun setFontSize(newValue: Int) {
         preferenceUtil.putInt(PreferenceUtil.READER_FONT_SIZE_INT, newValue)
+        _textSize.value = newValue
     }
 
     fun getFontSize() = preferenceUtil.getInt(PreferenceUtil.READER_FONT_SIZE_INT, 100)
