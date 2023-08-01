@@ -17,7 +17,6 @@ limitations under the License.
 
 package com.starry.myne.ui.screens.reader.viewmodels
 
-import android.util.Log
 import androidx.annotation.Keep
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -102,25 +101,28 @@ class ReaderViewModel @Inject constructor(
         }
     }
 
+    fun loadEpubBookExternal(filePath: String, onLoaded: (ReaderScreenState) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            // parse and create epub book
+            val epubBook = createEpubBook(filePath)
+            state = state.copy(epubBook = epubBook)
+            onLoaded(state)
+            // Added some delay to avoid choppy animation.
+            delay(200L)
+            state = state.copy(isLoading = false)
+        }
+    }
+
     fun updateReaderProgress(bookId: Int, chapterIndex: Int, chapterOffset: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             if (readerDao.getReaderItem(bookId) != null && chapterIndex != state.epubBook?.chapters!!.size - 1) {
                 readerDao.update(bookId, chapterIndex, chapterOffset)
-
-                Log.d("READER_VM", "Updated progress")
-
-            } else if (chapterIndex == state.epubBook?.chapters!!.size - 1) {/*
-                 if  the user has reached last chapter, delete this book
-                 from reader database instead of saving it's progress
-               */
+            } else if (chapterIndex == state.epubBook?.chapters!!.size - 1) {
+                // if the user has reached last chapter, delete this book
+                // from reader database instead of saving it's progress .
                 readerDao.getReaderItem(bookId)?.let { readerDao.delete(it.bookId) }
-
-                Log.d("READER_VM", "Deleted progress")
-
             } else {
                 readerDao.insert(readerItem = ReaderItem(bookId, chapterIndex, chapterOffset))
-
-                Log.d("READER_VM", "Created progress")
             }
         }
     }

@@ -1,7 +1,8 @@
 package com.starry.myne.ui.screens.reader.activities
 
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.view.WindowManager
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -92,6 +93,7 @@ import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.MyneTheme
 import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.utils.toToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -107,8 +109,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
     companion object {
         const val EXTRA_BOOK_ID = "reader_book_id"
         const val EXTRA_CHAPTER_IDX = "reader_chapter_index"
-        const val EXTERNAL_BOOK_FILEPATH = "reader_book_filepath"
-        const val INVALID = -100000
+        private const val INVALID = -100000
     }
 
     private lateinit var binding: ActivityReaderBinding
@@ -130,12 +131,6 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
         }
         settingsViewModel.setMaterialYou(settingsViewModel.getMaterialYouValue())
 
-        // Fullscreen mode that ignores any cutout, notch etc.
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        val controller = WindowInsetsControllerCompat(window, window.decorView)
-        controller.hide(WindowInsetsCompat.Type.displayCutout())
-        controller.hide(WindowInsetsCompat.Type.systemBars())
-
         // Setup reader's recycler view.
         val adapter = ReaderRVAdapter(
             activity = this,
@@ -149,7 +144,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
         // Fetch data from intent.
         val bookId = intent.extras?.getInt(EXTRA_BOOK_ID, INVALID)!!
         val chapterIndex = intent.extras?.getInt(EXTRA_CHAPTER_IDX, INVALID)!!
-        val externalBookFilePath = intent.extras?.getString(EXTERNAL_BOOK_FILEPATH, null)
+        isExternalBook = intent.type == "application/epub+zip"
 
         // Internal book
         if (bookId != INVALID) {
@@ -160,12 +155,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
                 adapter.allChapters = it.epubBook!!.chapters
                 // if there is saved progress for this book, then scroll to
                 // last page at exact position were used had left.
-
-                println("reader data ${it.readerData}")
-                println("reader chapterIdx $chapterIndex")
-
                 if (it.readerData != null && chapterIndex == INVALID) {
-                    Log.d("READER_ACT", "Resume called")
                     layoutManager.scrollToPositionWithOffset(
                         it.readerData.lastChapterIndex,
                         it.readerData.lastChapterOffset
@@ -179,11 +169,15 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
             }
 
             // External book.
-        } else if (externalBookFilePath != null) {
-            // TODO: External book
-            isExternalBook = true
+        } else if (isExternalBook) {
+            intent.data!!.path?.let {
+                viewModel.loadEpubBookExternal(it, onLoaded = { res ->
+                    adapter.allChapters = res.epubBook!!.chapters
+                })
+            }
         } else {
-            //TODO: Error
+            getString(R.string.error).toToast(this)
+            finish()
         }
 
         // Listener for updating reading progress in database.
@@ -199,46 +193,44 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
                         chapterIndex = progressChIndex,
                         chapterOffset = progressChOffset
                     )
-
-                    Log.d("READER_ACT", "Listener called")
-                    Log.d("READER_ACT", "Chapter IDX; $progressChIndex")
-                    Log.d("READER_ACT", "Chapter OFFSET; $progressChOffset")
                 }
             }
         })
 
-
         setContent {
             MyneTheme(settingsViewModel = settingsViewModel) {
                 TransparentSystemBars()
-
                 val textSizeValue = remember { mutableStateOf(viewModel.getFontSize()) }
                 val readerFontFamily = remember { mutableStateOf(viewModel.getFontFamily()) }
+                ReaderScreen(
+                    viewModel = viewModel,
+                    textSizeValue = textSizeValue,
+                    readerFontFamily = readerFontFamily,
+                    readerContent = { AndroidView(factory = { binding.root }) }
+                )
 
-                if (viewModel.state.isLoading) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = 65.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                    }
-                } else {
-                    ReaderScreen(
-                        viewModel = viewModel,
-                        textSizeValue = textSizeValue,
-                        readerFontFamily = readerFontFamily,
-                        readerContent = { AndroidView(factory = { binding.root }) }
-                    )
-                }
             }
+        }
+
+        // Fullscreen mode that ignores any cutout, notch etc.
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.hide(WindowInsetsCompat.Type.displayCutout())
+        controller.hide(WindowInsetsCompat.Type.systemBars())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
     }
 
 
     override fun onReaderClick() {
-        viewModel.showReaderInfo()
+        if (!viewModel.state.showReaderMenu) {
+            viewModel.showReaderInfo()
+        } else {
+            viewModel.hideReaderInfo()
+        }
+
     }
 
     @Composable
@@ -402,7 +394,20 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
                     )
                 }
             },
-            content = readerContent
+            content = {
+                if (viewModel.state.isLoading) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 65.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    }
+                } else {
+                    readerContent(it)
+                }
+            }
         )
     }
 
