@@ -36,7 +36,9 @@
                 android:value="" />
         </activity>
 
-        <activity android:name=".ui.screens.reader.activities.ReaderActivity"
+        <activity
+            android:name=".ui.screens.reader.activities.ReaderActivity"
+            android:configChanges="orientation|screenSize|uiMode|locale|layoutDirection|screenLayout"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

@@ -1,8 +1,12 @@
 package com.starry.myne.ui.screens.reader.activities
 
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -31,6 +35,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,7 +44,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,6 +65,7 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -72,6 +78,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -96,6 +103,7 @@ import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.toToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
@@ -109,18 +117,37 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
     companion object {
         const val EXTRA_BOOK_ID = "reader_book_id"
         const val EXTRA_CHAPTER_IDX = "reader_chapter_index"
-        private const val INVALID = -100000
+        private const val DEFAULT_NONE = -100000
+
     }
 
     private lateinit var binding: ActivityReaderBinding
     lateinit var settingsViewModel: SettingsViewModel
     private val viewModel: ReaderViewModel by viewModels()
 
+    // Weather book was opened from external epub file.
     private var isExternalBook by Delegates.notNull<Boolean>()
+
+    // Flow which stores currently visible chapter index.
+    private val visibleChapterFlow = MutableStateFlow(0)
+
+    // Store recycler view position and offset when activity
+    // gets paused, so we can restore it on orientation changes.
+    private var mRVPositionAndOffset: Pair<Int, Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityReaderBinding.inflate(layoutInflater)
+
+        // Fullscreen mode that ignores any cutout, notch etc.
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.hide(WindowInsetsCompat.Type.displayCutout())
+        controller.hide(WindowInsetsCompat.Type.systemBars())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
 
         // Set app theme.
         settingsViewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
@@ -142,20 +169,19 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
         val layoutManager = (binding.readerRecyclerView.layoutManager as LinearLayoutManager)
 
         // Fetch data from intent.
-        val bookId = intent.extras?.getInt(EXTRA_BOOK_ID, INVALID)!!
-        val chapterIndex = intent.extras?.getInt(EXTRA_CHAPTER_IDX, INVALID)!!
+        val bookId = intent.extras?.getInt(EXTRA_BOOK_ID, DEFAULT_NONE)!!
+        val chapterIndex = intent.extras?.getInt(EXTRA_CHAPTER_IDX, DEFAULT_NONE)!!
         isExternalBook = intent.type == "application/epub+zip"
 
         // Internal book
-        if (bookId != INVALID) {
-            isExternalBook = false
+        if (bookId != DEFAULT_NONE) {
             // Load epub book from given id and set chapters as items in
             // reader's recycler view adapter.
             viewModel.loadEpubBook(bookId = bookId, onLoaded = {
                 adapter.allChapters = it.epubBook!!.chapters
                 // if there is saved progress for this book, then scroll to
                 // last page at exact position were used had left.
-                if (it.readerData != null && chapterIndex == INVALID) {
+                if (it.readerData != null && chapterIndex == DEFAULT_NONE) {
                     layoutManager.scrollToPositionWithOffset(
                         it.readerData.lastChapterIndex,
                         it.readerData.lastChapterOffset
@@ -164,7 +190,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
             })
             // if user clicked on specific chapter, then scroll to
             // that chapter directly.
-            if (chapterIndex != INVALID) {
+            if (chapterIndex != DEFAULT_NONE) {
                 layoutManager.scrollToPosition(chapterIndex)
             }
 
@@ -176,7 +202,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
                 })
             }
         } else {
-            getString(R.string.error).toToast(this)
+            getString(R.string.error).toToast(this, Toast.LENGTH_LONG)
             finish()
         }
 
@@ -185,9 +211,14 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
             RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+                // fetch last visible chapter position and offset.
+                val progressChIndex = layoutManager.findLastVisibleItemPosition()
+                val progressChOffset = layoutManager.findViewByPosition(progressChIndex)!!.top
+                // Emit currently visible chapter.
+                visibleChapterFlow.value = progressChIndex
+                // If book was not opened from external epub file, update the
+                // reading progress into the database.
                 if (!isExternalBook) {
-                    val progressChIndex = layoutManager.findLastVisibleItemPosition()
-                    val progressChOffset = layoutManager.findViewByPosition(progressChIndex)!!.top
                     viewModel.updateReaderProgress(
                         bookId = bookId,
                         chapterIndex = progressChIndex,
@@ -197,6 +228,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
             }
         })
 
+        // Set UI contents.
         setContent {
             MyneTheme(settingsViewModel = settingsViewModel) {
                 TransparentSystemBars()
@@ -206,44 +238,40 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
                     viewModel = viewModel,
                     textSizeValue = textSizeValue,
                     readerFontFamily = readerFontFamily,
+                    recyclerViewManager = layoutManager,
                     readerContent = { AndroidView(factory = { binding.root }) }
                 )
-
             }
-        }
-
-        // Fullscreen mode that ignores any cutout, notch etc.
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        val controller = WindowInsetsControllerCompat(window, window.decorView)
-        controller.hide(WindowInsetsCompat.Type.displayCutout())
-        controller.hide(WindowInsetsCompat.Type.systemBars())
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            window.attributes.layoutInDisplayCutoutMode =
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        val layoutManager = (binding.readerRecyclerView.layoutManager as LinearLayoutManager)
+        val currentPosition = layoutManager.findLastVisibleItemPosition()
+        val currentOffset = layoutManager.findViewByPosition(currentPosition)!!.top
+        mRVPositionAndOffset = Pair(currentPosition, currentOffset)
+    }
+
+    // TODO Fix this
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (mRVPositionAndOffset != null) {
+                val layoutManager = (binding.readerRecyclerView.layoutManager as LinearLayoutManager)
+                layoutManager.scrollToPositionWithOffset(
+                    mRVPositionAndOffset!!.first,
+                    mRVPositionAndOffset!!.second
+                )
+            }
+        }, 50)
+    }
 
     override fun onReaderClick() {
         if (!viewModel.state.showReaderMenu) {
             viewModel.showReaderInfo()
         } else {
             viewModel.hideReaderInfo()
-        }
-
-    }
-
-    @Composable
-    private fun TransparentSystemBars(alpha: Float = 0f) {
-        val systemUiController = rememberSystemUiController()
-        val useDarkIcons = settingsViewModel.getCurrentTheme() == ThemeMode.Light
-        val baseColor = MaterialTheme.colorScheme.primary
-        val color = remember(alpha, baseColor) { baseColor.copy(alpha = alpha) }
-        SideEffect {
-            systemUiController.setSystemBarsColor(
-                color = color,
-                darkIcons = useDarkIcons
-            )
         }
     }
 
@@ -252,6 +280,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
         viewModel: ReaderViewModel,
         textSizeValue: MutableState<Int>,
         readerFontFamily: MutableState<ReaderFont>,
+        recyclerViewManager: LinearLayoutManager,
         readerContent: @Composable (paddingValues: PaddingValues) -> Unit
     ) {
         // Hide reader menu on back press.
@@ -327,7 +356,45 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
             })
         }
 
+        val showChaptersDialog = remember { mutableStateOf(false) }
+        if (showChaptersDialog.value) {
+            AlertDialog(onDismissRequest = {
+                showChaptersDialog.value = false
+            }, content = {
+                Column(
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+                ) {
+                    LazyColumn(content = {
+                        viewModel.state.epubBook?.chapters?.size?.let {
+                            items(it) { index ->
+                                val chapter = viewModel.state.epubBook!!.chapters[index]
+                                TextButton(
+                                    onClick = {
+                                        recyclerViewManager.scrollToPositionWithOffset(index, 0)
+                                        showChaptersDialog.value = false
+                                        viewModel.hideReaderInfo()
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(4.dp)
+                                ) {
+                                    Text(
+                                        text = chapter.title,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Start
+                                    )
+                                }
+                            }
+                        }
+                    })
+                }
+            })
+        }
+
         val snackBarHostState = remember { SnackbarHostState() }
+        val visibleChapterIdx = visibleChapterFlow.collectAsState().value
+        val chapter = viewModel.state.epubBook?.chapters?.get(visibleChapterIdx)
+
         Scaffold(
             snackbarHost = { SnackbarHost(snackBarHostState) },
             topBar = {
@@ -338,25 +405,34 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
                     exit = shrinkVertically(targetHeight = { 0 }, shrinkTowards = Alignment.Top)
                             + fadeOut(),
                 ) {
-                    Surface(color = MaterialTheme.colorScheme.primary) {
+                    Surface(color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)) {
                         Column(modifier = Modifier.displayCutoutPadding()) {
                             TopAppBar(
                                 colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    scrolledContainerColor = MaterialTheme.colorScheme.primary,
+                                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                        2.dp
+                                    ),
+                                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                        2.dp
+                                    ),
                                 ),
                                 title = {
-                                    Text(
-                                        text = "Hello Hello",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier.animateContentSize()
-                                    )
+                                    viewModel.state.epubBook?.let {
+                                        Text(
+                                            text = it.title,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier.animateContentSize(),
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }
                                 },
                                 actions = {
-                                    IconButton(onClick = {}) {
-                                        Icon(Icons.Filled.Face, null)
+                                    IconButton(onClick = { showChaptersDialog.value = true }) {
+                                        Icon(
+                                            Icons.Filled.Menu, null,
+                                            tint = MaterialTheme.colorScheme.onSurface
+                                        )
                                     }
                                 }
                             )
@@ -365,14 +441,14 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
                                     .padding(bottom = 8.dp)
                                     .padding(horizontal = 16.dp),
                             ) {
-                                Text(
-                                    text = "Chapter 45/87",
-                                    style = MaterialTheme.typography.labelMedium,
-                                )
-                                Text(
-                                    text = "Progress 100%",
-                                    style = MaterialTheme.typography.labelMedium,
-                                )
+                                chapter?.title?.let {
+                                    Text(
+                                        text = it,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
                             }
                             Divider()
                         }
@@ -412,7 +488,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
     }
 
     @Composable
-    fun BottomSheetContents(
+    private fun BottomSheetContents(
         viewModel: ReaderViewModel,
         textSizeValue: MutableState<Int>,
         readerFontFamily: MutableState<ReaderFont>,
@@ -506,18 +582,20 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
                     shape = RoundedCornerShape(16.dp),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                            2.dp
-                        )
+                        backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
                     )
                 ) {
                     Row {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_font),
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = readerFontFamily.value.name)
+                        Text(
+                            text = readerFontFamily.value.name,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 }
             }
@@ -527,7 +605,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
     }
 
     @Composable
-    fun ReaderTextScaleButton(
+    private fun ReaderTextScaleButton(
         buttonType: TextScaleButtonType,
         textSizeValue: MutableState<Int>,
         coroutineScope: CoroutineScope,
@@ -577,6 +655,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
                 }
             }
         }
+
         Box(
             modifier = Modifier
                 .width(100.dp)
@@ -595,6 +674,20 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
                 contentDescription = stringResource(id = R.string.back_button_desc),
                 tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(14.dp)
+            )
+        }
+    }
+
+    @Composable
+    private fun TransparentSystemBars(alpha: Float = 0f) {
+        val systemUiController = rememberSystemUiController()
+        val useDarkIcons = settingsViewModel.getCurrentTheme() == ThemeMode.Light
+        val baseColor = MaterialTheme.colorScheme.primary
+        val color = remember(alpha, baseColor) { baseColor.copy(alpha = alpha) }
+        SideEffect {
+            systemUiController.setSystemBarsColor(
+                color = color,
+                darkIcons = useDarkIcons
             )
         }
     }
