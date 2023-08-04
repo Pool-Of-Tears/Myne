@@ -17,6 +17,7 @@ limitations under the License.
 
 package com.starry.myne.ui.screens.reader.composables
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -82,7 +83,7 @@ import com.starry.myne.R
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.common.simpleVerticalScrollbar
-import com.starry.myne.ui.navigation.Screens
+import com.starry.myne.ui.screens.reader.activities.ReaderActivity
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
@@ -121,7 +122,11 @@ fun ReaderDetailScreen(bookId: String, navController: NavController) {
         }, floatingActionButton = {
             ExtendedFloatingActionButton(
                 text = { Text(text = stringResource(id = if (state.readerItem != null) R.string.continue_reading_button else R.string.start_reading_button)) },
-                onClick = { navController.navigate(Screens.ReaderScreen.withBookId(bookId)) },
+                onClick = {
+                    val intent = Intent(context, ReaderActivity::class.java)
+                    intent.putExtra(ReaderActivity.EXTRA_BOOK_ID, bookId.toInt())
+                    context.startActivity(intent)
+                },
                 icon = {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_fab_button),
@@ -285,13 +290,12 @@ fun ReaderDetailScreen(bookId: String, navController: NavController) {
                 ) {
                     items(state.ebookData!!.epubBook.chapters.size) { idx ->
                         val chapter = state.ebookData.epubBook.chapters[idx]
-                        ChapterItem(chapterTitle = chapter.title) {
-                            navController.navigate(
-                                Screens.ReaderScreen.withBookId(
-                                    bookId, idx = idx
-                                )
-                            )
-                        }
+                        ChapterItem(chapterTitle = chapter.title, onClick = {
+                            val intent = Intent(context, ReaderActivity::class.java)
+                            intent.putExtra(ReaderActivity.EXTRA_BOOK_ID, bookId.toInt())
+                            intent.putExtra(ReaderActivity.EXTRA_CHAPTER_IDX, idx)
+                            context.startActivity(intent)
+                        })
                     }
                 }
             }

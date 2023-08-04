@@ -43,7 +43,6 @@ import com.starry.myne.ui.screens.home.composables.BookDetailScreen
 import com.starry.myne.ui.screens.home.composables.HomeScreen
 import com.starry.myne.ui.screens.library.composables.LibraryScreen
 import com.starry.myne.ui.screens.reader.composables.ReaderDetailScreen
-import com.starry.myne.ui.screens.reader.composables.ReaderScreen
 import com.starry.myne.ui.screens.settings.composables.AboutScreen
 import com.starry.myne.ui.screens.settings.composables.OSLScreen
 import com.starry.myne.ui.screens.settings.composables.SettingsScreen
@@ -294,36 +293,6 @@ fun NavGraph(
         ) { backStackEntry ->
             val bookId = backStackEntry.arguments!!.getString(BOOK_ID_ARG_KEY)!!
             ReaderDetailScreen(bookId = bookId, navController = navController)
-        }
-
-        /** Reader Screen */
-        composable(
-            route = Screens.ReaderScreen.route,
-            arguments = listOf(navArgument(
-                BOOK_ID_ARG_KEY
-            ) {
-                type = NavType.StringType
-            }, navArgument(READER_CHAPTER_INDEX_KEY) {
-                type = NavType.IntType
-            }),
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { 300 }, animationSpec = tween(
-                        durationMillis = 300, easing = FastOutSlowInEasing
-                    )
-                ) + fadeIn(animationSpec = tween(300))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { 300 }, animationSpec = tween(
-                        durationMillis = 300, easing = FastOutSlowInEasing
-                    )
-                ) + fadeOut(animationSpec = tween(300))
-            },
-        ) { backStackEntry ->
-            val bookId = backStackEntry.arguments!!.getString(BOOK_ID_ARG_KEY)!!
-            val chapterIdx = backStackEntry.arguments!!.getInt(READER_CHAPTER_INDEX_KEY)
-            ReaderScreen(bookId = bookId, chapterIdx)
         }
 
         /** Settings Screen */
