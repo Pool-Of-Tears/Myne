@@ -1,5 +1,23 @@
+/*
+Copyright 2022 - 2023 Stɑrry Shivɑm
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package com.starry.myne.ui.screens.reader.adapters
 
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +44,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.starry.myne.R
 import com.starry.myne.epub.BookTextMapper
 import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.ui.screens.reader.activities.ReaderActivity
@@ -57,8 +76,8 @@ class ReaderRVAdapter(
         get() = differ.currentList
         set(value) = differ.submitList(value)
 
-    inner class ReaderComposeViewHolder(val composeView: ComposeView) :
-        RecyclerView.ViewHolder(composeView) {
+    inner class ReaderComposeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val composeView: ComposeView = view.findViewById(R.id.ReaderRVItem)
         fun bind(position: Int) {
             val chapter = allChapters[position]
             composeView.setContent {
@@ -73,7 +92,9 @@ class ReaderRVAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReaderComposeViewHolder {
-        val viewHolder = ReaderComposeViewHolder(ComposeView(parent.context))
+        val viewHolder = ReaderComposeViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.reader_item, parent, false)
+        )
         viewHolder.composeView.setOnClickListener { clickListener.onReaderClick() }
         return viewHolder
     }
