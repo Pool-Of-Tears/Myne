@@ -1,0 +1,6 @@
+- Reworked on ebook reader backend, fixed scrolling lags and other stability improvements
+- Added support for opening external EPUB files with inbuilt ebook reader.
+- Added ability to jump between chapters inside the ebook reader.
+- Updated target SDK to Android 14 (API 34)
+- Made language selection persistent across app launches.
+- Bug fixes and other improvements.

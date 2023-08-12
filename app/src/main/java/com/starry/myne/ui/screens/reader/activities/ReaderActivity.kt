@@ -185,12 +185,12 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
         val layoutManager = (binding.readerRecyclerView.layoutManager as LinearLayoutManager)
 
         // Fetch data from intent.
-        val bookId = intent.extras?.getInt(EXTRA_BOOK_ID, DEFAULT_NONE)!!
-        val chapterIndex = intent.extras?.getInt(EXTRA_CHAPTER_IDX, DEFAULT_NONE)!!
+        val bookId = intent.extras?.getInt(EXTRA_BOOK_ID, DEFAULT_NONE)
+        val chapterIndex = intent.extras?.getInt(EXTRA_CHAPTER_IDX, DEFAULT_NONE)
         isExternalBook = intent.type == "application/epub+zip"
 
         // Internal book
-        if (bookId != DEFAULT_NONE) {
+        if (bookId != null && bookId != DEFAULT_NONE) {
             // Load epub book from given id and set chapters as items in
             // reader's recycler view adapter.
             viewModel.loadEpubBook(bookId = bookId, onLoaded = {
@@ -206,7 +206,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
             })
             // if user clicked on specific chapter, then scroll to
             // that chapter directly.
-            if (chapterIndex != DEFAULT_NONE) {
+            if (chapterIndex != null && chapterIndex != DEFAULT_NONE) {
                 layoutManager.scrollToPosition(chapterIndex)
             }
 
@@ -236,7 +236,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
                 // reading progress into the database.
                 if (!isExternalBook) {
                     viewModel.updateReaderProgress(
-                        bookId = bookId,
+                        bookId = bookId!!,
                         chapterIndex = progressChIndex,
                         chapterOffset = progressChOffset
                     )
