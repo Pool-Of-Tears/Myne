@@ -16,8 +16,8 @@ android {
         applicationId "com.starry.myne"
         minSdk 26
         targetSdk 34
-        versionCode 17
-        versionName "2.3.0"
+        versionCode 18
+        versionName "2.4.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -106,8 +106,6 @@ dependencies {
     implementation "io.coil-kt:coil-compose:2.2.2"
     // Room database components.
     implementation "androidx.room:room-ktx:2.5.2"
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     kapt "androidx.room:room-compiler:2.5.2"
     androidTestImplementation "androidx.room:room-testing:2.5.2"
     // Dagger - Hilt.
