@@ -61,7 +61,7 @@
     <!-- Settings screen. -->
     <string name="settings_header">الاعدادات</string>
     <string name="app_desc">محمل الكتب الالكترونية</string>
-    <string name="made_by">"صنع ب  ❤ بواسطة Shivam & و تم تعريبه بواسطة MRX7014  "</string>
+    <string name="made_by">"صنع ب  ❤ بواسطة Shivam / و تم تعريبه بواسطة MRX7014  "</string>
     <string name="general_settings_header">عام</string>
     <string name="default_reader_setting">القارئ الافتراضي</string>
     <string name="default_reader_dialog_title">فتح الكتب الإلكترونية مع ...</string>
