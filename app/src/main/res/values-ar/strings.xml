@@ -7,8 +7,8 @@
     <string name="cancel">الغاء</string>
     <string name="storage_perm_error">امنح اذن التخزين من فضلك</string>
     <string name="no_app_to_handle_epub">لا يوجد اى تطبيق لفتح ملف epub</string>
-    <string name="network_error">Oops! Failed to connect with the server.</string>
-    <string name="network_error_retry">Try Again</string>
+    <string name="network_error">أُووبس! فشل الاتصال بالخادم.</string>
+    <string name="network_error_retry">حاول ثانية</string>
     <string name="error">حدث خطأ ما</string>
 
     <!-- Navigation titles -->
@@ -18,18 +18,18 @@
     <string name="navigation_settings">الاعدادات</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_text">ThankYou for installing Myne!\nPlease Select your preferred e-book reader to get on speed.</string>
-    <string name="welcome_screen_button">Get Started</string>
+    <string name="welcome_screen_text">شكرًا لك على تثبيت Myne!\nالرجاء تحديد قارئ الكتب الإلكترونية المفضل لديك للحصول على السرعة.</string>
+    <string name="welcome_screen_button">البدء</string>
 
     <!-- Home screen. -->
     <string name="home_header">كل الكتب</string>
-    <string name="home_language_icon_desc">Sort by language</string>
+    <string name="home_language_icon_desc">الترتيب حسب اللغة</string>
     <string name="home_search_icon_desc">البحث عن كتاب</string>
-    <string name="language_menu_title">Browse by language</string>
+    <string name="language_menu_title">تصفح حسب اللغة</string>
 
     <!-- Categories screen. -->
     <string name="categories_header">الفئات</string>
-    <string name="no_books_found_for_lang_and_cat">No books available in %s language for this category.</string>
+    <string name="no_books_found_for_lang_and_cat">لا توجد كتب متاحة باللغة %s لهذه الفئة.</string>
 
     <!-- Library screen. -->
     <string name="library_header">المكتبة</string>
@@ -41,30 +41,30 @@
     <string name="library_delete_dialog_title">هل انت متأكد ؟</string>
 
     <!-- Reader Detail Screen -->
-    <string name="reader_detail_header">Ebook Reader</string>
-    <string name="start_reading_button">Start</string>
-    <string name="continue_reading_button">Resume</string>
-    <string name="reader_chapters_list">Chapters</string>
-    <string name="reader_error_title">Oops! Failed to open the e-book file :(</string>
-    <string name="reader_error_subtitle">There could be several reasons for this to happen.</string>
-    <string name="reader_error_reason_one_title">1. The e-book file was deleted.</string>
-    <string name="reader_error_reason_one_desc">Please check inside the MyneEbooks folder in your download directory, and if that\'s the case, please re-download the book.</string>
-    <string name="reader_error_reason_two_title">2. The file is there, but you have uninstalled the app previously.</string>
-    <string name="reader_error_reason_two_desc">Myne uses scoped-storage API of Android which means it can only access those files which were created by itself and cannot access any of the user\'s personal files. Due to this limitation, once the user uninstalls the app, it loses the permission to read &amp; modify files even if it was created by itself, if that\'s the case please delete the ebook\'s epub file from MyneEbooks folder inside your download directory and simply re-download the book.</string>
-    <string name="reader_error_back_button">Close &amp; Go Back</string>
+    <string name="reader_detail_header">قارئ الكتاب الاليكتروني</string>
+    <string name="start_reading_button">يبدأ</string>
+    <string name="continue_reading_button">استمرار</string>
+    <string name="reader_chapters_list">فصول</string>
+    <string name="reader_error_title">أُووبس! فشل في فتح ملف الكتاب الإلكتروني :(</string>
+    <string name="reader_error_subtitle">يمكن أن يكون هناك عدة أسباب لحدوث ذلك.</string>
+    <string name="reader_error_reason_one_title">1. تم حذف ملف الكتاب الإلكتروني.</string>
+    <string name="reader_error_reason_one_desc">يرجى التحقق من مجلد MyneEbooks في دليل التنزيل الخاص بك، وإذا كان الأمر كذلك، فيرجى إعادة تنزيل الكتاب.</string>
+    <string name="reader_error_reason_two_title">2. الملف موجود، لكنك قمت بإلغاء تثبيت التطبيق مسبقًا.</string>
+    <string name="reader_error_reason_two_desc">يستخدم Myne واجهة برمجة تطبيقات التخزين النطاقي لنظام Android مما يعني أنه يمكنه فقط الوصول إلى تلك الملفات التي تم إنشاؤها بنفسه ولا يمكنه الوصول إلى أي من ملفات المستخدم الشخصية. بسبب هذا القيد, مرة واحدة لنا</string>
+    <string name="reader_error_back_button">إغلاق والعودة</string>
 
     <!--Reader Screen -->
-    <string name="reader_max_font_size_reached">Sorry, cannot go any higher than that!</string>
-    <string name="reader_min_font_size_reached">Sorry, cannot go any lower than that!</string>
-    <string name="reader_font_style_chooer">Change FontStyle</string>
+    <string name="reader_max_font_size_reached">آسف، لا يمكن أن تذهب إلى أعلى من ذلك!</string>
+    <string name="reader_min_font_size_reached">آسف، لا يمكن أن تذهب إلى أقل من ذلك!</string>
+    <string name="reader_font_style_chooer">تغيير نمط الخط</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">الاعدادات</string>
     <string name="app_desc">محمل الكتب الالكترونية</string>
-    <string name="made_by">"صنع ب  ❤ بواسطة Shivam  "</string>
-    <string name="general_settings_header">General</string>
-    <string name="default_reader_setting">Default Reader</string>
-    <string name="default_reader_dialog_title">Open ebooks with…</string>
+    <string name="made_by">"صنع ب  ❤ بواسطة Shivam & و تم تعريبه بواسطة MRX7014  "</string>
+    <string name="general_settings_header">عام</string>
+    <string name="default_reader_setting">القارئ الافتراضي</string>
+    <string name="default_reader_dialog_title">فتح الكتب الإلكترونية مع ...</string>
     <string name="display_setting_header">العرض</string>
     <string name="theme_setting">المظهر الافتراضى</string>
     <string name="theme_dialog_title">تغيير المظهر</string>
@@ -75,8 +75,8 @@
     <string name="miscellaneous_setting_header">متفرقات</string>
     <string name="license_setting">التراخيص</string>
     <string name="license_setting_desc">التراخيص مفتوحة المصدر</string>
-    <string name="about_setting">App Information</string>
-    <string name="about_setting_desc">Show App information &amp; useful links</string>
+    <string name="about_setting">معلومات التطبيق</string>
+    <string name="about_setting_desc">عرض معلومات التطبيق والروابط المفيدة</string>
 
     <!-- Books card -->
     <string name="cover_image_desc">صورة الغلاف</string>
