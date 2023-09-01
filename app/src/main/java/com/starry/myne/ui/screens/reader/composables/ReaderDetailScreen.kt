@@ -81,9 +81,9 @@ import coil.request.ImageRequest
 import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.others.NetworkObserver
-import com.starry.myne.ui.navigation.common.CustomTopAppBar
-import com.starry.myne.ui.navigation.common.ProgressDots
-import com.starry.myne.ui.navigation.common.simpleVerticalScrollbar
+import com.starry.myne.ui.screens.common.CustomTopAppBar
+import com.starry.myne.ui.screens.common.ProgressDots
+import com.starry.myne.ui.screens.common.simpleVerticalScrollbar
 import com.starry.myne.ui.screens.reader.activities.ReaderActivity
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode

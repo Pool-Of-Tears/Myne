@@ -82,7 +82,7 @@ import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.ui.navigation.Screens
-import com.starry.myne.ui.navigation.common.CustomTopAppBar
+import com.starry.myne.ui.screens.common.CustomTopAppBar
 import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont

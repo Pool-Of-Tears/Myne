@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.ui.navigation.common
+package com.starry.myne.ui.screens.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme

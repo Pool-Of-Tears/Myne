@@ -30,7 +30,7 @@ import androidx.navigation.NavController
 import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
 import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
 import com.starry.myne.R
-import com.starry.myne.ui.navigation.common.CustomTopAppBar
+import com.starry.myne.ui.screens.common.CustomTopAppBar
 
 @ExperimentalMaterial3Api
 @Composable

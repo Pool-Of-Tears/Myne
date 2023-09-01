@@ -63,7 +63,7 @@ import coil.request.ImageRequest
 import com.starry.myne.BuildConfig
 import com.starry.myne.R
 import com.starry.myne.others.Constants
-import com.starry.myne.ui.navigation.common.CustomTopAppBar
+import com.starry.myne.ui.screens.common.CustomTopAppBar
 import com.starry.myne.ui.theme.figeronaFont
 
 

@@ -93,8 +93,8 @@ import com.starry.myne.R
 import com.starry.myne.others.BookLanguage
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.navigation.Screens
-import com.starry.myne.ui.navigation.common.BookItemCard
-import com.starry.myne.ui.navigation.common.ProgressDots
+import com.starry.myne.ui.screens.common.BookItemCard
+import com.starry.myne.ui.screens.common.ProgressDots
 import com.starry.myne.ui.screens.home.viewmodels.HomeViewModel
 import com.starry.myne.ui.screens.home.viewmodels.UserAction
 import com.starry.myne.ui.screens.other.NetworkError
