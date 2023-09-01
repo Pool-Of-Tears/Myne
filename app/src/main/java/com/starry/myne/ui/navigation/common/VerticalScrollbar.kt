@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 
-package com.starry.myne.ui.common
+package com.starry.myne.ui.navigation.common
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

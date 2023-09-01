@@ -80,9 +80,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.starry.myne.MainActivity
 import com.starry.myne.R
-import com.starry.myne.ui.common.CustomTopAppBar
-import com.starry.myne.ui.common.ProgressDots
-import com.starry.myne.ui.common.simpleVerticalScrollbar
+import com.starry.myne.others.NetworkObserver
+import com.starry.myne.ui.navigation.common.CustomTopAppBar
+import com.starry.myne.ui.navigation.common.ProgressDots
+import com.starry.myne.ui.navigation.common.simpleVerticalScrollbar
 import com.starry.myne.ui.screens.reader.activities.ReaderActivity
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
@@ -94,11 +95,15 @@ import com.starry.myne.utils.getActivity
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
-fun ReaderDetailScreen(bookId: String, navController: NavController) {
+fun ReaderDetailScreen(
+    bookId: String,
+    navController: NavController,
+    networkStatus: NetworkObserver.Status
+) {
     val viewModel: ReaderDetailViewModel = hiltViewModel()
     val state = viewModel.state
 
-    LaunchedEffect(key1 = true) { viewModel.loadEbookData(bookId) }
+    LaunchedEffect(key1 = true) { viewModel.loadEbookData(bookId, networkStatus) }
 
     val context = LocalContext.current
     val settingsVM = (context.getActivity() as MainActivity).settingsViewModel
@@ -448,6 +453,6 @@ fun ReaderError(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun EpubDetailScreenPV() {
-    ReaderDetailScreen("", rememberNavController())
+    ReaderDetailScreen("", rememberNavController(), NetworkObserver.Status.Available)
     //ReaderError(rememberNavController())
 }

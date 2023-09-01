@@ -38,6 +38,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.FileInputStream
 import javax.inject.Inject
 
 
@@ -101,12 +102,12 @@ class ReaderViewModel @Inject constructor(
         }
     }
 
-    fun loadEpubBookExternal(filePath: String, onLoaded: (ReaderScreenState) -> Unit) {
+    fun loadEpubBookExternal(fileStream: FileInputStream, onLoaded: (EpubBook) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             // parse and create epub book
-            val epubBook = createEpubBook(filePath)
+            val epubBook = createEpubBook(fileStream)
             state = state.copy(epubBook = epubBook)
-            onLoaded(state)
+            onLoaded(state.epubBook!!)
             // Added some delay to avoid choppy animation.
             delay(200L)
             state = state.copy(isLoading = false)

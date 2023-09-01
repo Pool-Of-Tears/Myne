@@ -1,4 +1,4 @@
-package com.starry.myne.ui.common
+package com.starry.myne.ui.navigation.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
