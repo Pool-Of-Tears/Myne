@@ -22,7 +22,11 @@ import com.starry.myne.repo.models.BookSet
 import com.starry.myne.repo.models.ExtraInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.*
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -110,8 +114,7 @@ class BookRepository {
 
     suspend fun getExtraInfo(bookName: String): ExtraInfo? = suspendCoroutine { continuation ->
         val encodedName = URLEncoder.encode(bookName, "UTF-8")
-        val url =
-            "${googleBooksUrl}?q=$encodedName&startIndex=0&maxResults=1&apiKey=$googleApiKey"
+        val url = "${googleBooksUrl}?q=$encodedName&startIndex=0&maxResults=1&key=$googleApiKey"
         val request = Request.Builder().get().url(url).build()
         okHttpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -140,13 +143,22 @@ class BookRepository {
                 val imageLinks = volumeInfo.getJSONObject("imageLinks")
                 // Build Extra info.
                 val coverImage = imageLinks.getString("thumbnail")
-                val pageCount = volumeInfo.getInt("pageCount")
-                val description = volumeInfo.getString("description")
+                val pageCount = try {
+                    volumeInfo.getInt("pageCount")
+                } catch (exc: JSONException) {
+                    0
+                }
+                val description = try {
+                    volumeInfo.getString("description")
+                } catch (exc: JSONException) {
+                    ""
+                }
                 ExtraInfo(coverImage, pageCount, description)
             } else {
                 null
             }
         } catch (exc: JSONException) {
+            exc.printStackTrace()
             null
         }
     }

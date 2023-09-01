@@ -81,8 +81,8 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
-import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.navigation.Screens
+import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont

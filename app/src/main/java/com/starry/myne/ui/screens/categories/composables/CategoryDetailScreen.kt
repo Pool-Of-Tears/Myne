@@ -57,11 +57,11 @@ import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.R
 import com.starry.myne.others.BookLanguage
 import com.starry.myne.others.NetworkObserver
+import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.NoBooksAvailable
 import com.starry.myne.ui.common.ProgressDots
-import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.categories.viewmodels.CategoryViewModel
 import com.starry.myne.ui.screens.home.composables.LanguageItem
 import com.starry.myne.ui.screens.other.NetworkError

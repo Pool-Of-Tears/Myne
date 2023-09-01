@@ -121,6 +121,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.io.FileInputStream
 import kotlin.properties.Delegates
 
 @AndroidEntryPoint
@@ -212,10 +213,13 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
 
             // External book.
         } else if (isExternalBook) {
-            intent.data!!.path?.let {
-                viewModel.loadEpubBookExternal(it, onLoaded = { res ->
-                    adapter.allChapters = res.epubBook!!.chapters
-                })
+            intent?.data?.let {
+                contentResolver.openInputStream(it)?.let { ips ->
+                    viewModel.loadEpubBookExternal(ips as FileInputStream, onLoaded = { epubBook ->
+                        adapter.allChapters = epubBook.chapters
+                        ips.close()
+                    })
+                }
             }
         } else {
             getString(R.string.error).toToast(this, Toast.LENGTH_LONG)
@@ -265,8 +269,9 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
         super.onPause()
         val layoutManager = (binding.readerRecyclerView.layoutManager as LinearLayoutManager)
         val currentPosition = layoutManager.findLastVisibleItemPosition()
-        val currentOffset = layoutManager.findViewByPosition(currentPosition)!!.top
-        mRVPositionAndOffset = Pair(currentPosition, currentOffset)
+        layoutManager.findViewByPosition(currentPosition)?.let {
+            mRVPositionAndOffset = Pair(currentPosition, it.top)
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
