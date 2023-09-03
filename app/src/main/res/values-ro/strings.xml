@@ -2,7 +2,7 @@
     <string name="app_name" translatable="false">Myne</string>
     <!-- Others Strings -->
     <string name="not_applicable">N/A</string>
-    <string name="woops">"Ups!!"</string>
+    <string name="woops">"Ups!"</string>
     <string name="dialog_confirm_button">Confirmă</string>
     <string name="cancel">Anulează</string>
     <string name="storage_perm_error">Te rugăm să acorzi permisiunea de stocare!</string>
