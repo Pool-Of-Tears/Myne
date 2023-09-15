@@ -1,0 +1,13 @@
+Myne este o aplicație FOSS de Android pentru a descărca ebooks din Project GutenBerg, care folosește GutenDex API pentru a prelua metadatele ebook-urilor în backend.
+
+Aspecte importante:
+
+- Interfață curată și frumoasă, bazată pe cele trei linii directoare de material design de la Google.
+- Răsfoiți și descărcați peste 70k de eBook-uri gratuite, disponibile în mai multe limbi și actualizate zilnic.
+- Vine cu un ebook reader încorporat, având în același timp și opțiunea de a utiliza ebook readers de la terți.
+- Compatibil cu Android 8.0 și versiunile ulterioare (API 26+).
+- Suportă tema Material You în dispozitivele care rulează pe Android 12+.
+- Vine atât în modul luminos, cât și în cel întunecat.
+- MAD: UI și logică scrise cu Kotlin pur. Activitate unică, fără fragmente, doar destinații compozibile.
+
+PS: *Numele aplicației este inspirat de personajul principal al unui anime numit Ascendance of a Bookworm.

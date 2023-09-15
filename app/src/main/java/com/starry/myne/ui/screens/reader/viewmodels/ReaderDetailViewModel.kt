@@ -27,6 +27,7 @@ import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderItem
 import com.starry.myne.epub.createEpubBook
 import com.starry.myne.epub.models.EpubBook
+import com.starry.myne.others.NetworkObserver
 import com.starry.myne.repo.BookRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -61,13 +62,15 @@ class ReaderDetailViewModel @Inject constructor(
     }
 
     var state by mutableStateOf(ReaderDetailScreenState())
-    fun loadEbookData(bookId: String) {
+    fun loadEbookData(bookId: String, networkStatus: NetworkObserver.Status) {
         viewModelScope.launch(Dispatchers.IO) {
             // build EbookData.
             val libraryItem = libraryDao.getItemById(bookId.toInt())!!
             state = try {
                 val coverImage: String? = try {
-                    bookRepository.getExtraInfo(libraryItem.title)?.coverImage
+                    if (networkStatus == NetworkObserver.Status.Available) bookRepository.getExtraInfo(
+                        libraryItem.title
+                    )?.coverImage else null
                 } catch (exc: Exception) {
                     null
                 }
