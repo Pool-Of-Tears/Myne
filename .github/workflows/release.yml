@@ -1,5 +1,6 @@
 name: Release Build
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v*'
@@ -18,36 +19,16 @@ jobs:
       - name: Build APK
         id: build
         run: bash ./gradlew assembleRelease
-
-      - name: Sign APK
-        id: sign_apk
-        uses: r0adkll/sign-android-release@v1
+       
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3
         with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.BASE64KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-
-      - name: Make artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: Signed APP APK
-          path: ${{steps.sign_apk.outputs.signedReleaseFile}}
-
+         name: "app-release"
+         path: ./app/build/outputs/apk/release/*.apk
+         
       - name: Build AAB
         run: bash ./gradlew bundleRelease
 
-      - name: Sign AAB
-        id: sign_aab
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: app/build/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.BASE64KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-          
       - name: Make artifact
         uses: actions/upload-artifact@v2
         with:
