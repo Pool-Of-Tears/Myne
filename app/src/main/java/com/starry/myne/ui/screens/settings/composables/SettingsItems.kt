@@ -127,7 +127,11 @@ fun SettingItem(icon: Int, mainText: String, subText: String, onClick: () -> Uni
 @ExperimentalMaterial3Api
 @Composable
 fun SettingItemWIthSwitch(
-    icon: Int, mainText: String, subText: String, switchState: MutableState<Boolean>
+    icon: Int,
+    mainText: String,
+    subText: String,
+    switchState: MutableState<Boolean>,
+    onCheckChange: (Boolean) -> Unit
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -186,7 +190,7 @@ fun SettingItemWIthSwitch(
                     )
                 }
             }
-            Switch(checked = switchState.value, onCheckedChange = { switchState.value = it })
+            Switch(checked = switchState.value, onCheckedChange = onCheckChange)
         }
     }
 }
