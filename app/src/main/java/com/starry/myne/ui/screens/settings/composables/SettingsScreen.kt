@@ -50,12 +50,13 @@ import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
-import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.common.CustomTopAppBar
+import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.getActivity
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalCoilApi
@@ -274,6 +275,8 @@ fun DisplayOptionsUI(
     context: Context,
     snackbarHostState: SnackbarHostState,
 ) {
+    val coroutiScope = rememberCoroutineScope()
+
     val displayValue =
         when (viewModel.getThemeValue()) {
             ThemeMode.Light.ordinal -> "Light"
@@ -312,21 +315,18 @@ fun DisplayOptionsUI(
             icon = R.drawable.ic_settings_material_you,
             mainText = stringResource(id = R.string.material_you_setting),
             subText = materialYouDesc,
-            switchState = materialYouSwitch
+            switchState = materialYouSwitch,
+            onCheckChange = { materialYouValue ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    viewModel.setMaterialYou(materialYouValue)
+                    materialYouSwitch.value = materialYouValue
+                } else {
+                    viewModel.setMaterialYou(false)
+                    materialYouSwitch.value = false
+                    coroutiScope.launch { snackbarHostState.showSnackbar(context.getString(R.string.material_you_error)) }
+                }
+            }
         )
-    }
-
-    if (materialYouSwitch.value) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            viewModel.setMaterialYou(true)
-        } else {
-            materialYouSwitch.value = false
-            LaunchedEffect(
-                key1 = true,
-                block = { snackbarHostState.showSnackbar(context.getString(R.string.material_you_error)) })
-        }
-    } else {
-        viewModel.setMaterialYou(false)
     }
 
     if (displayDialog.value) {
