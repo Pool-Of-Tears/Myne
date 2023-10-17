@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'dagger.hilt.android.plugin'
-    id 'kotlin-kapt'
+    id 'com.google.devtools.ksp'
     id "com.mikepenz.aboutlibraries.plugin" version "10.5.2"
 }
 
@@ -24,11 +24,8 @@ android {
             useSupportLibrary true
         }
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += ["room.schemaLocation":
-                                      "$projectDir/schemas".toString()]
-            }
+        ksp {
+            arg('room.schemaLocation', "$projectDir/schemas")
         }
     }
 
@@ -47,22 +44,23 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     lintOptions {
         abortOnError false
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
         freeCompilerArgs = ['-Xjvm-default=all-compatibility']
     }
     buildFeatures {
         compose true
         viewBinding true
+        buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.7'
+        kotlinCompilerExtensionVersion '1.5.2'
     }
     packagingOptions {
         resources {
@@ -78,41 +76,46 @@ aboutLibraries {
 
 
 dependencies {
+    def composeBom =  platform('androidx.compose:compose-bom:2023.08.00')
+    implementation composeBom
+    androidTestImplementation composeBom
+
     // Android core components.
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.activity:activity-compose:1.7.2'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
+    implementation 'androidx.activity:activity-compose:1.8.0'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
     // Jetpack compose.
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.animation:animation:$compose_version"
-    implementation "androidx.compose.material3:material3:1.1.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
-    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-    implementation "com.google.accompanist:accompanist-navigation-animation:0.29.0-alpha"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.ui:ui-tooling-preview"
+    implementation "androidx.compose.material:material"
+    implementation "androidx.compose.animation:animation"
+    implementation "androidx.compose.runtime:runtime-livedata"
+    implementation "androidx.compose.material3:material3"
+    // Accompanist compose.
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
+    implementation "com.google.accompanist:accompanist-navigation-animation:0.33.1-alpha"
     // Recycler View for reader.
     implementation "androidx.recyclerview:recyclerview:1.3.1"
     // Material theme for main activity.
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.10.0'
     // Android 12+ splash API.
     implementation 'androidx.core:core-splashscreen:1.0.1'
     // Gson JSON library.
-    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'com.google.code.gson:gson:2.10.1'
     // OkHttp library.
-    implementation "com.squareup.okhttp3:okhttp:4.10.0"
+    implementation "com.squareup.okhttp3:okhttp:4.11.0"
     // Coil Image loading library.
-    implementation "io.coil-kt:coil-compose:2.2.2"
+    implementation "io.coil-kt:coil-compose:2.4.0"
     // Room database components.
     implementation "androidx.room:room-ktx:2.5.2"
-    kapt "androidx.room:room-compiler:2.5.2"
+    ksp "androidx.room:room-compiler:2.5.2"
     androidTestImplementation "androidx.room:room-testing:2.5.2"
     // Dagger - Hilt.
     implementation "com.google.dagger:hilt-android:$hilt_version"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-    kapt "androidx.hilt:hilt-compiler:1.0.0"
+    ksp "com.google.dagger:hilt-android-compiler:$hilt_version"
+    ksp "androidx.hilt:hilt-compiler:1.0.0"
     // Jsoup HTML Parser.
     implementation "org.jsoup:jsoup:1.15.2"
     // Lottie animations.
@@ -127,19 +130,19 @@ dependencies {
     // Crash Handler.
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
     // Kotlin reflect API.
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.8.10"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.8.22"
     // Testing components.
     testImplementation 'junit:junit:4.13.2'
     testImplementation "com.google.truth:truth:1.1.3"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testImplementation 'org.mockito:mockito-core:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     // Android testing components.
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4"
     // debug components.
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-tooling"
+    debugImplementation "androidx.compose.ui:ui-test-manifest"
 }
