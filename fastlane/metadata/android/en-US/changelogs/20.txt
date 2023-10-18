@@ -1,0 +1,9 @@
+- Fixed long book names getting cut after 2 lines.
+- Fixed images showing as html tags in some locales
+- Fixed flashing of Material You warning message below Android 12
+- Added Italian translation.
+- Added Romanian translation.
+- Updated Russian translation
+- Updated Arabic translation
+- Updated dependencies, gradle & kotlin versions
+- Some other minor fixes & improvements.
