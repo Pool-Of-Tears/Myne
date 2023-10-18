@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.ui.screens.home.composables
+package com.starry.myne.ui.screens.detail.composables
 
 import android.app.DownloadManager
 import android.content.Intent
@@ -58,6 +58,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -96,7 +97,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.ui.common.ProgressDots
-import com.starry.myne.ui.screens.home.viewmodels.BookDetailViewModel
+import com.starry.myne.ui.screens.detail.viewmodels.BookDetailViewModel
 import com.starry.myne.ui.screens.other.NetworkError
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
@@ -260,8 +261,6 @@ fun BookDetailScreen(
                                         fontSize = 24.sp,
                                         fontFamily = figeronaFont,
                                         fontWeight = FontWeight.Bold,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
                                         color = MaterialTheme.colorScheme.onBackground,
                                     )
 
@@ -300,7 +299,7 @@ fun BookDetailScreen(
                             }
 
                         var buttonText by remember { mutableStateOf(buttonTextValue) }
-                        var progressState by remember { mutableStateOf(0f) }
+                        var progressState by remember { mutableFloatStateOf(0f) }
                         var showProgressBar by remember { mutableStateOf(false) }
 
                         // Callable which updates book details screen button.
@@ -469,7 +468,10 @@ fun MiddleBar(
     showProgressBar: Boolean,
     onButtonClick: () -> Unit
 ) {
-    val progress by animateFloatAsState(targetValue = progressValue)
+    val progress by animateFloatAsState(
+        targetValue = progressValue,
+        label = "download progress bar"
+    )
     Column(modifier = Modifier.fillMaxWidth()) {
         AnimatedVisibility(visible = showProgressBar) {
             if (progressValue > 0f) {

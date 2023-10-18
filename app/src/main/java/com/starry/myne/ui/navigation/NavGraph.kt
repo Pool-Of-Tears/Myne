@@ -39,7 +39,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.screens.categories.composables.CategoriesScreen
 import com.starry.myne.ui.screens.categories.composables.CategoryDetailScreen
-import com.starry.myne.ui.screens.home.composables.BookDetailScreen
+import com.starry.myne.ui.screens.detail.composables.BookDetailScreen
 import com.starry.myne.ui.screens.home.composables.HomeScreen
 import com.starry.myne.ui.screens.library.composables.LibraryScreen
 import com.starry.myne.ui.screens.reader.composables.ReaderDetailScreen
