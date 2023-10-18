@@ -18,6 +18,7 @@ limitations under the License.
 package com.starry.myne.epub
 
 import org.jsoup.Jsoup
+import java.util.Locale
 
 object BookTextMapper {
     // <img yrel="{float}"> {uri} </img>
@@ -62,7 +63,7 @@ object BookTextMapper {
         }
 
         private fun toXMLStringV1(): String {
-            return """<img src="$path" yrel="${"%.2f".format(yrel)}">"""
+            return """<img src="$path" yrel="${"%.2f".format(Locale.US, yrel)}">"""
         }
 
         /*
