@@ -45,6 +45,19 @@ import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.MyneTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Welcome to the main launcher of our app! 🚀
+ *
+ * Responsibilities:
+ * 1. Monitors network availability with [NetworkObserver].
+ * 2. Sets the theme of the app using [SettingsViewModel.setTheme].
+ * 3. Install splash screen
+ * 4. Requests storage permissions using [checkStoragePermission].
+ * 5. Initializes the core application with [MainScreen].
+ *
+ * Remember, this is where it all begins. Enjoy the journey! 🌟
+ */
+
 @ExperimentalMaterialApi
 @ExperimentalCoilApi
 @ExperimentalMaterial3Api
@@ -74,6 +87,7 @@ class MainActivity : AppCompatActivity() {
 
         // Install splash screen before setting content.
         installSplashScreen().setKeepOnScreenCondition {
+            // set isLoading true
             mainViewModel.isLoading.value
         }
 
