@@ -64,12 +64,8 @@ class MainActivity : AppCompatActivity() {
         settingsViewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        when (settingsViewModel.getThemeValue()) {
-            ThemeMode.Auto.ordinal -> settingsViewModel.setTheme(ThemeMode.Auto)
-            ThemeMode.Dark.ordinal -> settingsViewModel.setTheme(ThemeMode.Dark)
-            ThemeMode.Light.ordinal -> settingsViewModel.setTheme(ThemeMode.Light)
-        }
-
+        ThemeMode.entries.find { it.ordinal == settingsViewModel.getThemeValue()}
+            ?.let { settingsViewModel.setTheme(it) }
         settingsViewModel.setMaterialYou(settingsViewModel.getMaterialYouValue())
 
         // Install splash screen before setting content.
