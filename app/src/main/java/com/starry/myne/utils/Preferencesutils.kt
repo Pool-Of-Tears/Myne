@@ -39,11 +39,7 @@ class PreferenceUtil(context: Context) {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
 
-    fun keyExists(key: String): Boolean {
-        if (prefs.contains(key))
-            return true
-        return false
-    }
+    fun keyExists(key: String): Boolean = prefs.contains(key)
 
     fun putString(key: String, value: String) {
         val prefsEditor = prefs.edit()

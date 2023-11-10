@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -82,10 +83,9 @@ class ReaderRVAdapter(
             val chapter = allChapters[position]
             composeView.setContent {
                 MyneTheme(settingsViewModel = activity.settingsViewModel) {
-                    ReaderItem(
-                        chapter = chapter,
-                        viewModel = viewModel
-                    )
+                    SelectionContainer {
+                        ReaderItem(chapter = chapter, viewModel = viewModel)
+                    }
                 }
             }
         }
