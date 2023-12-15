@@ -42,6 +42,7 @@ class MainViewModel @Inject constructor(private val welcomeDataStore: WelcomeDat
 
     init {
         viewModelScope.launch {
+            // Check if user has completed onboarding.
             welcomeDataStore.readOnBoardingState().collect { completed ->
                 if (completed) {
                     _startDestination.value = BottomBarScreen.Home.route

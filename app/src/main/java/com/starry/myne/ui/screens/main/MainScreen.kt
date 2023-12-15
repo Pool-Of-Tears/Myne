@@ -46,8 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.others.NetworkObserver
@@ -69,7 +69,7 @@ fun MainScreen(
     networkStatus: NetworkObserver.Status,
     settingsViewModel: SettingsViewModel,
 ) {
-    val navController = rememberAnimatedNavController()
+    val navController = rememberNavController()
     val systemUiController = rememberSystemUiController()
 
     systemUiController.setStatusBarColor(
