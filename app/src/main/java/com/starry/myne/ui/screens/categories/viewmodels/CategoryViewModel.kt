@@ -24,8 +24,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.starry.myne.others.BookLanguage
-import com.starry.myne.others.Paginator
+import com.starry.myne.utils.book.BookLanguage
+import com.starry.myne.utils.Paginator
 import com.starry.myne.repo.BookRepository
 import com.starry.myne.repo.models.Book
 import com.starry.myne.repo.models.BookSet
@@ -100,6 +100,13 @@ class CategoryViewModel @Inject constructor(
                     state = state.copy(error = it?.localizedMessage ?: "unknown-error")
                 },
                 onSuccess = { bookSet, newPage ->
+                    /**
+                     * usually bookSet.books is not nullable and API simply returns empty list
+                     * when browsing books all books (i.e. without passing language parameter)
+                     * however, when browsing by language it returns a response which looks like
+                     * this: {"detail": "Invalid page."}. Hence the [BookSet] attributes become
+                     * null in this case and can cause crashes.
+                     */
                     /**
                      * usually bookSet.books is not nullable and API simply returns empty list
                      * when browsing books all books (i.e. without passing language parameter)

@@ -50,7 +50,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.starry.myne.others.NetworkObserver
+import com.starry.myne.utils.NetworkObserver
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.navigation.NavGraph
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel

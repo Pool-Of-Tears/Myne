@@ -19,9 +19,9 @@ package com.starry.myne.di
 
 import android.content.Context
 import com.starry.myne.database.MyneDatabase
-import com.starry.myne.others.WelcomeDataStore
+import com.starry.myne.ui.screens.welcome.viewmodels.WelcomeDataStore
 import com.starry.myne.repo.BookRepository
-import com.starry.myne.utils.BookDownloader
+import com.starry.myne.utils.book.BookDownloader
 import com.starry.myne.utils.PreferenceUtil
 import dagger.Module
 import dagger.Provides

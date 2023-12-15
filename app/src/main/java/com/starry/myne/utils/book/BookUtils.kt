@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.utils
+package com.starry.myne.utils.book
 
 import com.starry.myne.repo.models.Author
 import java.util.Locale

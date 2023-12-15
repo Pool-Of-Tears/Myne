@@ -1,4 +1,4 @@
-package com.starry.myne.others
+package com.starry.myne.utils.book
 
 import androidx.annotation.Keep
 

@@ -19,7 +19,6 @@ package com.starry.myne.ui.screens.welcome.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.starry.myne.others.WelcomeDataStore
 import com.starry.myne.utils.PreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

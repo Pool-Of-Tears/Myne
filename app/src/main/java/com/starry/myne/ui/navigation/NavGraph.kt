@@ -36,7 +36,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
-import com.starry.myne.others.NetworkObserver
+import com.starry.myne.utils.NetworkObserver
 import com.starry.myne.ui.screens.categories.composables.CategoriesScreen
 import com.starry.myne.ui.screens.categories.composables.CategoryDetailScreen
 import com.starry.myne.ui.screens.detail.composables.BookDetailScreen

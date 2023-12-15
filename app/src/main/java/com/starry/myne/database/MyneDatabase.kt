@@ -25,7 +25,7 @@ import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderItem
-import com.starry.myne.others.Constants
+import com.starry.myne.utils.Constants
 
 @Database(
     entities = [LibraryItem::class, ReaderItem::class],

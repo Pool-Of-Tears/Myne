@@ -20,6 +20,11 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.PointerInputScope
 
 fun Context.getActivity(): AppCompatActivity? = when (this) {
     is AppCompatActivity -> this
@@ -29,4 +34,17 @@ fun Context.getActivity(): AppCompatActivity? = when (this) {
 
 fun String.toToast(context: Context, length: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(context, this, length).show()
+}
+
+suspend fun PointerInputScope.detectTapGestureIfMatch(
+    onTap: (Offset) -> Boolean,
+) {
+    awaitEachGesture {
+        awaitFirstDown()
+
+        val up = waitForUpOrCancellation()
+        if (up != null && onTap(up.position)) {
+            up.consume()
+        }
+    }
 }

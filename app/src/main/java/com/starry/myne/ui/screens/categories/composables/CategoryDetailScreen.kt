@@ -55,8 +55,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.R
-import com.starry.myne.others.BookLanguage
-import com.starry.myne.others.NetworkObserver
+import com.starry.myne.utils.book.BookLanguage
+import com.starry.myne.utils.NetworkObserver
 import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.NoBooksAvailable
@@ -66,7 +66,7 @@ import com.starry.myne.ui.screens.categories.viewmodels.CategoryViewModel
 import com.starry.myne.ui.screens.home.composables.LanguageItem
 import com.starry.myne.ui.screens.other.NetworkError
 import com.starry.myne.ui.theme.pacificoFont
-import com.starry.myne.utils.BookUtils
+import com.starry.myne.utils.book.BookUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Locale

@@ -27,7 +27,7 @@ import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderItem
 import com.starry.myne.epub.createEpubBook
 import com.starry.myne.epub.models.EpubBook
-import com.starry.myne.others.NetworkObserver
+import com.starry.myne.utils.NetworkObserver
 import com.starry.myne.repo.BookRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

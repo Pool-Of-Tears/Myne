@@ -38,7 +38,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import coil.annotation.ExperimentalCoilApi
-import com.starry.myne.others.NetworkObserver
+import com.starry.myne.utils.NetworkObserver
 import com.starry.myne.ui.screens.main.MainScreen
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
