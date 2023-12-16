@@ -3,8 +3,10 @@
     <!-- Others Strings -->
     <string name="not_applicable">N/A</string>
     <string name="woops">"Ups!"</string>
-    <string name="dialog_confirm_button">Confirmă</string>
+    <string name="confirm">Confirmă</string>
     <string name="cancel">Anulează</string>
+    <string name="ok">OK</string>
+    <string name="got_it">Got it</string>
     <string name="storage_perm_error">Te rugăm să acorzi permisiunea de stocare!</string>
     <string name="no_app_to_handle_epub">Nu pot găsi nicio aplicație pentru a deschide un fișier epub.</string>
     <string name="network_error">Ups! Nu a reușit să se conecteze cu serverul.</string>
@@ -16,6 +18,9 @@
     <string name="navigation_categories">Categorii</string>
     <string name="navigation_library">Librărie</string>
     <string name="navigation_settings">Setări</string>
+
+    <!-- ToolTips -->
+    <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
 
     <!-- Welcome Screen -->
     <string name="welcome_screen_text">Mulțumim că ai instalat Myne!\nTe rugăm să selectezi e-book reader-ul tău preferat pentru a trece la viteză.</string>

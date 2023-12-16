@@ -3,8 +3,10 @@
     <!-- Others Strings -->
     <string name="not_applicable">Неизвестно</string>
     <string name="woops">Упс!!</string>
-    <string name="dialog_confirm_button">Подтвердить</string>
+    <string name="confirm">Подтвердить</string>
     <string name="cancel">Отменить</string>
+    <string name="ok">OK</string>
+    <string name="got_it">Got it</string>
     <string name="storage_perm_error">Пожалуйста, предоставьте разрешение на хранение!</string>
     <string name="no_app_to_handle_epub">Не удается найти ни одного приложения для открытия файла epub.</string>
     <string name="network_error">Упс! Не удалось подключиться к серверу.</string>
@@ -16,6 +18,9 @@
     <string name="navigation_categories">Категории</string>
     <string name="navigation_library">Библиотека</string>
     <string name="navigation_settings">Настройки</string>
+
+    <!-- ToolTips -->
+    <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
 
     <!-- Welcome Screen -->
     <string name="welcome_screen_text">Спасибо за установку Myne!\nПожалуйста выберите способ чтения книг.</string>

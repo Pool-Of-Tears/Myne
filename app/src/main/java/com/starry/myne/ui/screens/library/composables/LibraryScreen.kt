@@ -44,10 +44,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -104,13 +109,18 @@ import java.io.File
 fun LibraryScreen(navController: NavController) {
     val viewModel: LibraryViewModel = hiltViewModel()
     val state = viewModel.allItems.observeAsState(listOf()).value
+
     val context = LocalContext.current
     val settingsViewModel = (context.getActivity() as MainActivity).settingsViewModel
 
+    val snackBarHostState = remember { SnackbarHostState() }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(MaterialTheme.colorScheme.background)
+            .padding(bottom = 70.dp),
         topBar = {
             CustomTopAppBar(
                 headerText = stringResource(id = R.string.library_header),
@@ -123,7 +133,6 @@ fun LibraryScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(bottom = 70.dp)
             ) {
                 if (state.isEmpty()) {
                     NoLibraryItemAnimation()
@@ -211,7 +220,7 @@ fun LibraryScreen(navController: NavController) {
                                                 context.getString(R.string.error).toToast(context)
                                             }
                                         }) {
-                                            Text(stringResource(id = R.string.dialog_confirm_button))
+                                            Text(stringResource(id = R.string.confirm))
                                         }
                                     }, dismissButton = {
                                         TextButton(onClick = {
@@ -224,6 +233,24 @@ fun LibraryScreen(navController: NavController) {
 
                             } else {
                                 viewModel.deleteItem(item)
+                            }
+                        }
+                    }
+
+                    // Show tooltip for library screen.
+                    LaunchedEffect(key1 = true) {
+                        if (viewModel.shouldShowLibraryTooltip()) {
+                            val result = snackBarHostState.showSnackbar(
+                                message = context.getString(R.string.library_tooltip),
+                                actionLabel = context.getString(R.string.got_it),
+                                duration = SnackbarDuration.Indefinite
+                            )
+
+                            when (result) {
+                                SnackbarResult.ActionPerformed -> {
+                                    viewModel.libraryTooltipDismissed()
+                                }
+                                SnackbarResult.Dismissed -> {}
                             }
                         }
                     }

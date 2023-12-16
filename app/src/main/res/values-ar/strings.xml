@@ -3,8 +3,10 @@
     <!-- Others Strings -->
     <string name="not_applicable">غير معروف</string>
     <string name="woops">اووبس!!</string>
-    <string name="dialog_confirm_button">تأكيد</string>
+    <string name="confirm">تأكيد</string>
     <string name="cancel">الغاء</string>
+    <string name="ok">OK</string>
+    <string name="got_it">Got it</string>
     <string name="storage_perm_error">امنح اذن التخزين من فضلك</string>
     <string name="no_app_to_handle_epub">لا يوجد اى تطبيق لفتح ملف epub</string>
     <string name="network_error">أُووبس! فشل الاتصال بالخادم.</string>
@@ -16,6 +18,9 @@
     <string name="navigation_categories">الفئات</string>
     <string name="navigation_library">المكتبة</string>
     <string name="navigation_settings">الاعدادات</string>
+
+    <!-- ToolTips -->
+    <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
 
     <!-- Welcome Screen -->
     <string name="welcome_screen_text">شكرًا لك على تثبيت Myne!\nالرجاء تحديد قارئ الكتب الإلكترونية المفضل لديك للحصول على السرعة.</string>

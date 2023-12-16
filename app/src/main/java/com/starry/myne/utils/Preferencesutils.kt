@@ -31,6 +31,9 @@ class PreferenceUtil(context: Context) {
         const val READER_FONT_SIZE_INT = "reader_font_size"
         const val READER_FONT_STYLE_STR = "reader_font_style"
         const val PREFERRED_BOOK_LANG_STR = "preferred_book_language"
+
+        // Temporary preference keys
+        const val SHOW_LIBRARY_TOOLTIP_BOOL = "show_library_tooltip"
     }
 
     private var prefs: SharedPreferences

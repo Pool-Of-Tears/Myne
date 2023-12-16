@@ -41,4 +41,12 @@ class LibraryViewModel @Inject constructor(
     fun getInternalReaderSetting() = preferenceUtil.getBoolean(
         PreferenceUtil.INTERNAL_READER_BOOL, true
     )
+
+    fun shouldShowLibraryTooltip() = preferenceUtil.getBoolean(
+        PreferenceUtil.SHOW_LIBRARY_TOOLTIP_BOOL, true
+    )
+
+    fun libraryTooltipDismissed() = preferenceUtil.putBoolean(
+        PreferenceUtil.SHOW_LIBRARY_TOOLTIP_BOOL, false
+    )
 }
