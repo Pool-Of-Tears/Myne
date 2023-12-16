@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.starry.myne.others
+package com.starry.myne.utils
 
 import android.content.Context
 import android.net.ConnectivityManager

@@ -17,9 +17,9 @@ limitations under the License.
 package com.starry.myne.repo
 
 import com.google.gson.Gson
-import com.starry.myne.others.BookLanguage
 import com.starry.myne.repo.models.BookSet
 import com.starry.myne.repo.models.ExtraInfo
+import com.starry.myne.utils.book.BookLanguage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Call
@@ -43,9 +43,11 @@ class BookRepository {
     private val googleBooksUrl = "https://www.googleapis.com/books/v1/volumes"
     private val googleApiKey = "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE"
 
-
-    private val okHttpClient = OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(60, TimeUnit.SECONDS).readTimeout(100, TimeUnit.SECONDS).build()
+    private val okHttpClient = OkHttpClient.Builder()
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(100, TimeUnit.SECONDS)
+        .build()
 
     private val gsonClient = Gson()
 
@@ -102,9 +104,7 @@ class BookRepository {
                     response.use {
                         continuation.resume(
                             Result.success(
-                                gsonClient.fromJson(
-                                    response.body!!.string(), BookSet::class.java
-                                )
+                                gsonClient.fromJson(response.body!!.string(), BookSet::class.java)
                             )
                         )
                     }
@@ -124,9 +124,7 @@ class BookRepository {
 
             override fun onResponse(call: Call, response: Response) {
                 response.use {
-                    continuation.resume(
-                        parseExtraInfoJson(response.body!!.string())
-                    )
+                    continuation.resume(parseExtraInfoJson(response.body!!.string()))
                 }
             }
         })
@@ -175,11 +173,7 @@ class BookRepository {
                     }
 
                     override fun onResponse(call: Call, response: Response) {
-                        response.use {
-                            continuation.resume(
-                                response.body!!.string()
-                            )
-                        }
+                        response.use { continuation.resume(response.body!!.string()) }
                     }
                 })
             }

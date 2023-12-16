@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 
-package com.starry.myne.others
+package com.starry.myne.ui.screens.welcome.viewmodels
 
 import android.content.Context
 import androidx.datastore.core.DataStore

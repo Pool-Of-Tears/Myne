@@ -80,7 +80,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.starry.myne.MainActivity
 import com.starry.myne.R
-import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.common.simpleVerticalScrollbar
@@ -88,6 +87,7 @@ import com.starry.myne.ui.screens.reader.activities.ReaderActivity
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.utils.NetworkObserver
 import com.starry.myne.utils.getActivity
 
 @ExperimentalCoilApi

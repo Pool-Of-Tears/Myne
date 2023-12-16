@@ -46,16 +46,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.navigation.NavGraph
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.utils.NetworkObserver
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalAnimationApi
@@ -69,7 +69,7 @@ fun MainScreen(
     networkStatus: NetworkObserver.Status,
     settingsViewModel: SettingsViewModel,
 ) {
-    val navController = rememberAnimatedNavController()
+    val navController = rememberNavController()
     val systemUiController = rememberSystemUiController()
 
     systemUiController.setStatusBarColor(

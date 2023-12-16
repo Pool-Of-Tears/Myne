@@ -2,7 +2,7 @@ package com.starry.myne
 
 
 import com.google.common.truth.Truth.assertThat
-import com.starry.myne.others.Paginator
+import com.starry.myne.utils.Paginator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before

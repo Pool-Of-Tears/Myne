@@ -38,11 +38,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import coil.annotation.ExperimentalCoilApi
-import com.starry.myne.others.NetworkObserver
 import com.starry.myne.ui.screens.main.MainScreen
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.MyneTheme
+import com.starry.myne.utils.NetworkObserver
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalMaterialApi
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         settingsViewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        ThemeMode.entries.find { it.ordinal == settingsViewModel.getThemeValue()}
+        ThemeMode.entries.find { it.ordinal == settingsViewModel.getThemeValue() }
             ?.let { settingsViewModel.setTheme(it) }
         settingsViewModel.setMaterialYou(settingsViewModel.getMaterialYouValue())
 

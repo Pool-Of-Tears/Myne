@@ -23,13 +23,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.starry.myne.others.BookLanguage
-import com.starry.myne.others.NetworkObserver
-import com.starry.myne.others.Paginator
 import com.starry.myne.repo.BookRepository
 import com.starry.myne.repo.models.Book
 import com.starry.myne.repo.models.BookSet
+import com.starry.myne.utils.NetworkObserver
+import com.starry.myne.utils.Paginator
 import com.starry.myne.utils.PreferenceUtil
+import com.starry.myne.utils.book.BookLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -53,8 +53,8 @@ data class TopBarState(
 )
 
 sealed class UserAction {
-    object SearchIconClicked : UserAction()
-    object CloseIconClicked : UserAction()
+    data object SearchIconClicked : UserAction()
+    data object CloseIconClicked : UserAction()
     data class TextFieldInput(
         val text: String,
         val networkStatus: NetworkObserver.Status
@@ -97,19 +97,7 @@ class HomeViewModel @Inject constructor(
          * null in this case and can cause crashes.
          */
         val books = if (bookSet.books != null) {
-            val books: ArrayList<Book> =
-                bookSet.books.filter { it.formats.applicationepubzip != null } as ArrayList<Book>
-
-            // pls ignore (this line doesn't exists)...
-            if (setOf(
-                    BookLanguage.English,
-                    BookLanguage.AllBooks
-                ).contains(language.value) && allBooksState.page == 1L
-            ) {
-                books.removeAt(0)
-            }
-            // returning value
-            books
+            bookSet.books.filter { it.formats.applicationepubzip != null } as ArrayList<Book>
         } else {
             ArrayList()
         }
