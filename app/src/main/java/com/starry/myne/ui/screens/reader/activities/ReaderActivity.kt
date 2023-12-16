@@ -28,6 +28,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -82,6 +83,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -252,7 +254,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
         setContent {
             MyneTheme(settingsViewModel = settingsViewModel) {
                 TransparentSystemBars()
-                val textSizeValue = remember { mutableStateOf(viewModel.getFontSize()) }
+                val textSizeValue = remember { mutableIntStateOf(viewModel.getFontSize()) }
                 val readerFontFamily = remember { mutableStateOf(viewModel.getFontFamily()) }
                 ReaderScreen(
                     viewModel = viewModel,
@@ -491,18 +493,23 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
                     )
                 }
             },
-            content = {
-                if (viewModel.state.isLoading) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = 65.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+            content = { paddingValues ->
+                Crossfade(
+                    targetState = viewModel.state.isLoading,
+                    label = "reader content loading cross fade"
+                ) { loading ->
+                    if (loading) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(bottom = 65.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                        }
+                    } else {
+                        readerContent(paddingValues)
                     }
-                } else {
-                    readerContent(it)
                 }
             }
         )

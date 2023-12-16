@@ -96,7 +96,7 @@ class HomeViewModel @Inject constructor(
          * this: {"detail": "Invalid page."}. Hence the [BookSet] attributes become
          * null in this case and can cause crashes.
          */
-        val books = if (bookSet.books != null) {
+        @Suppress("SENSELESS_COMPARISON") val books = if (bookSet.books != null) {
             bookSet.books.filter { it.formats.applicationepubzip != null } as ArrayList<Book>
         } else {
             ArrayList()
