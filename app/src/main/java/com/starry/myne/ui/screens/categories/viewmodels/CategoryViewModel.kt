@@ -24,12 +24,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.starry.myne.utils.book.BookLanguage
-import com.starry.myne.utils.Paginator
 import com.starry.myne.repo.BookRepository
 import com.starry.myne.repo.models.Book
 import com.starry.myne.repo.models.BookSet
+import com.starry.myne.utils.Paginator
 import com.starry.myne.utils.PreferenceUtil
+import com.starry.myne.utils.book.BookLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

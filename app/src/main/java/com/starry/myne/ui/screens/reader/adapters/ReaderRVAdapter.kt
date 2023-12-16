@@ -51,6 +51,7 @@ import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.ui.screens.reader.activities.ReaderActivity
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.theme.MyneTheme
+import com.starry.myne.utils.noRippleClickable
 
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
@@ -78,13 +79,13 @@ class ReaderRVAdapter(
         set(value) = differ.submitList(value)
 
     inner class ReaderComposeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val composeView: ComposeView = view.findViewById(R.id.ReaderRVItem)
-        fun bind(position: Int) {
+        private val composeView: ComposeView = view.findViewById(R.id.ReaderRVItem)
+        fun bind(position: Int, onClick: () -> Unit) {
             val chapter = allChapters[position]
             composeView.setContent {
                 MyneTheme(settingsViewModel = activity.settingsViewModel) {
                     SelectionContainer {
-                        ReaderItem(chapter = chapter, viewModel = viewModel)
+                        ReaderItem(chapter = chapter, viewModel = viewModel, onClick = onClick)
                     }
                 }
             }
@@ -92,11 +93,9 @@ class ReaderRVAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReaderComposeViewHolder {
-        val viewHolder = ReaderComposeViewHolder(
+        return ReaderComposeViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.reader_item, parent, false)
         )
-        viewHolder.composeView.setOnClickListener { clickListener.onReaderClick() }
-        return viewHolder
     }
 
     override fun getItemCount(): Int {
@@ -104,14 +103,15 @@ class ReaderRVAdapter(
     }
 
     override fun onBindViewHolder(holder: ReaderComposeViewHolder, position: Int) {
-        holder.bind(position)
+        holder.bind(position, onClick = { clickListener.onReaderClick() })
     }
 }
 
 @Composable
 private fun ReaderItem(
     chapter: EpubChapter,
-    viewModel: ReaderViewModel
+    viewModel: ReaderViewModel,
+    onClick: () -> Unit
 ) {
     val paragraphs = chapter.body
         .splitToSequence("\n\n")
@@ -120,7 +120,9 @@ private fun ReaderItem(
 
     val epubBook = viewModel.state.epubBook
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .noRippleClickable { onClick() }) {
         Text(
             modifier = Modifier.padding(start = 12.dp, end = 4.dp, top = 10.dp),
             text = chapter.title,

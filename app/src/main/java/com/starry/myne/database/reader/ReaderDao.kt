@@ -17,7 +17,10 @@ limitations under the License.
 
 package com.starry.myne.database.reader
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 
 @Dao
 interface ReaderDao {

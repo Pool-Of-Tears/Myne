@@ -11,56 +11,56 @@ sealed class BookLanguage(val name: String, val isoCode: String) {
     }
 
     @Keep
-    object AllBooks : BookLanguage("All Books", "all")
+    data object AllBooks : BookLanguage("All Books", "all")
 
     @Keep
-    object Chinese : BookLanguage("Chinese", "zh")
+    data object Chinese : BookLanguage("Chinese", "zh")
 
     @Keep
-    object Danish : BookLanguage("Danish", "da")
+    data object Danish : BookLanguage("Danish", "da")
 
     @Keep
-    object Dutch : BookLanguage("Dutch", "nl")
+    data object Dutch : BookLanguage("Dutch", "nl")
 
     @Keep
-    object English : BookLanguage("English", "en")
+    data object English : BookLanguage("English", "en")
 
     @Keep
-    object Esperanto : BookLanguage("Esperanto", "eo")
+    data object Esperanto : BookLanguage("Esperanto", "eo")
 
     @Keep
-    object Finnish : BookLanguage("Finnish", "fi")
+    data object Finnish : BookLanguage("Finnish", "fi")
 
     @Keep
-    object French : BookLanguage("French", "fr")
+    data object French : BookLanguage("French", "fr")
 
     @Keep
-    object German : BookLanguage("German", "de")
+    data object German : BookLanguage("German", "de")
 
     @Keep
-    object Greek : BookLanguage("Greek", "el")
+    data object Greek : BookLanguage("Greek", "el")
 
     @Keep
-    object Hungarian : BookLanguage("Hungarian", "hu")
+    data object Hungarian : BookLanguage("Hungarian", "hu")
 
     @Keep
-    object Italian : BookLanguage("Italian", "it")
+    data object Italian : BookLanguage("Italian", "it")
 
     @Keep
-    object Latin : BookLanguage("Latin", "la")
+    data object Latin : BookLanguage("Latin", "la")
 
     @Keep
-    object Portuguese : BookLanguage("Portuguese", "pt")
+    data object Portuguese : BookLanguage("Portuguese", "pt")
 
     @Keep
-    object Russian : BookLanguage("Russian", "ru")
+    data object Russian : BookLanguage("Russian", "ru")
 
     @Keep
-    object Spanish : BookLanguage("Spanish", "es")
+    data object Spanish : BookLanguage("Spanish", "es")
 
     @Keep
-    object Swedish : BookLanguage("Swedish", "sv")
+    data object Swedish : BookLanguage("Swedish", "sv")
 
     @Keep
-    object Tagalog : BookLanguage("Tagalog", "tl")
+    data object Tagalog : BookLanguage("Tagalog", "tl")
 }
