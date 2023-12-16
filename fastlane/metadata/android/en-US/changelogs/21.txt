@@ -1,0 +1,3 @@
+- Added ability to select/copy texts in the reader.
+- Updated dependencies, gradle & kotlin versions
+- Bug fixes & other improvements.
