@@ -1,0 +1,110 @@
+<resources>
+    <string name="app_name" translatable="false">Myne</string>
+    <!-- Others Strings -->
+    <string name="not_applicable">n. a.</string>
+    <string name="woops">"Hoppla!"</string>
+    <string name="confirm">Bestätigen</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="ok">OK</string>
+    <string name="got_it">Verstanden</string>
+    <string name="storage_perm_error">Bitte gewähre Speicherzugriff!</string>
+    <string name="no_app_to_handle_epub">Kann keine App zum Öffnen von Epub-Dateien finden.</string>
+    <string name="network_error">Hoppla! Konnte keine Verbindung zum Server aufbauen.</string>
+    <string name="network_error_retry">Erneut versuchen</string>
+    <string name="error">Hoppla! Etwas ist schiefgelaufen.</string>
+
+    <!-- Navigation titles -->
+    <string name="navigation_home">Start</string>
+    <string name="navigation_categories">Kategorien</string>
+    <string name="navigation_library">Bibliothek</string>
+    <string name="navigation_settings">Einstellungen</string>
+
+    <!-- ToolTips -->
+    <string name="library_tooltip">TIPP! Wische Bibliothekselemente nach links oder rechts, um sie zu teilen oder Buchdetails anzusehen.</string>
+
+    <!-- Welcome Screen -->
+    <string name="welcome_screen_text">Danke, dass du Myne installiert hast!\nBitte wähle deinen bevorzugten E-Book-Reader, um schnell loszulegen.</string>
+    <string name="welcome_screen_button">Loslegen</string>
+
+    <!-- Home screen. -->
+    <string name="home_header">Alle Bücher</string>
+    <string name="home_language_icon_desc">Nach Sprache sortieren</string>
+    <string name="home_search_icon_desc">Bücher suchen</string>
+    <string name="language_menu_title">Nach Sprache durchsuchen</string>
+
+    <!-- Categories screen. -->
+    <string name="categories_header">Kategorien</string>
+    <string name="no_books_found_for_lang_and_cat">Keine Bücher auf %s in dieser Kategorie verfügbar.</string>
+
+    <!-- Library screen. -->
+    <string name="library_header">Bibliothek</string>
+    <string name="empty_library">Nichts vorhanden!</string>
+    <string name="open_app_chooser">Öffnen mit …</string>
+    <string name="share_app_chooser">Teilen mit …</string>
+    <string name="library_read_button">Lesen</string>
+    <string name="library_delete_button">Löschen</string>
+    <string name="library_delete_dialog_title">Bist du dir ganz sicher?</string>
+
+    <!-- Reader Detail Screen -->
+    <string name="reader_detail_header">E-Book-Reader</string>
+    <string name="start_reading_button">Beginnen</string>
+    <string name="continue_reading_button">Weiterlesen</string>
+    <string name="reader_chapters_list">Kapitel</string>
+    <string name="reader_error_title">Hoppla! Konnte E-Book-Datei nicht öffnen :(</string>
+    <string name="reader_error_subtitle">Es könnte mehrere Gründe dafür geben.</string>
+    <string name="reader_error_reason_one_title">1. Die E-Book-Datei wurde gelöscht.</string>
+    <string name="reader_error_reason_one_desc">Bitte überprüfe das im MyneEbooks-Verzeichnis in deinem Download-Verzeichnis und lade das E-Book, wenn es so ist, erneut herunter.</string>
+    <string name="reader_error_reason_two_title">2. Die Datei ist vorhanden, aber du hast die App zwischenrein deinstalliert.</string>
+    <string name="reader_error_reason_two_desc">Myne nutzt die Scoped-Speicher-API von Android. Das bedeutet, dass Myne nur auf die Dateien zugreifen kann, die es selbst erstellt hat und keinen Zugriff auf andere perönliche Dateien hat. Aufgrund dieser Limitierung verliert die App die Berechtigung die Dateien zu lesen &amp; zu modifizieren, selbst wenn sie sie selbst erstellt hat, sobald sie deinstalliert wurde. Falls das der Fall sein sollte, lösche bitte die Epub-Datei des E-Books aus dem MyneEbooks-Verzeichnis in deinem Download-Verzeichnis und lade das E-Book anschließend einfach erneut herunter.</string>
+    <string name="reader_error_back_button">Schließen &amp; zurück gehen</string>
+
+    <!--Reader Screen -->
+    <string name="reader_max_font_size_reached">Entschuldige bitte, größer kann es nicht dargestellt werden!</string>
+    <string name="reader_min_font_size_reached">Entschuldige bitte, kleiner kann es nicht dargestellt werden!</string>
+    <string name="reader_font_style_chooer">Schriftart ändern</string>
+
+    <!-- Settings screen. -->
+    <string name="settings_header">Einstellungen</string>
+    <string name="app_desc">E-Book-Downloader</string>
+    <string name="made_by">Mit ❤ von Shivam erstellt</string>
+    <string name="general_settings_header">Allgemein</string>
+    <string name="default_reader_setting">Standard-Reader</string>
+    <string name="default_reader_dialog_title">E-Books öffnen mit …</string>
+    <string name="display_setting_header">Darstellung</string>
+    <string name="theme_setting">Standard-Theme</string>
+    <string name="theme_dialog_title">Theme ändern</string>
+    <string name="theme_dialog_apply_button">Anwenden</string>
+    <string name="material_you_setting" translatable="false">Material You</string>
+    <string name="material_you_settings_disabled_desc">Material You aktivieren</string>
+    <string name="material_you_settings_enabled_desc">Material You deaktivieren</string>
+    <string name="material_you_error">Diese Funktion gibt es nur für Geräte, auf denen mindestent Android 12 läuft.</string>
+    <string name="miscellaneous_setting_header">Sonstiges</string>
+    <string name="license_setting">Lizenz &amp; Danksagungen</string>
+    <string name="license_setting_desc">Open-Source-Lizenzen.</string>
+    <string name="about_setting">App-Informationen</string>
+    <string name="about_setting_desc">App-Information &amp; nützliche Links anzeigen</string>
+
+    <!-- Books card -->
+    <string name="cover_image_desc">Buch-Cover-Bild</string>
+
+    <!-- Book Detail Screen -->
+    <string name="book_detail_header">Buchdetails</string>
+    <string name="back_button_desc">Zurück gehen.</string>
+    <string name="share_button_desc">Dieses Buch teilen.</string>
+    <string name="share_intent_header">Teilen mit …</string>
+    <string name="read_book_button">Lesen beginnen</string>
+    <string name="download_book_button">Herunterladen</string>
+    <string name="downloading_book">Herunterladen begonnen!</string>
+    <string name="book_synopsis">Zusammenfassung</string>
+    <string name="book_synopsis_not_found">Nicht verfügbar</string>
+
+    <!-- About Screen -->
+    <string name="about_header">Über</string>
+    <string name="about_desc">Eine freie &amp; Open-Source Android-Anwendung zum Herunterladen von E-Books vom Gutenberg-Projekt.</string>
+    <string name="developed_by">Entwickelt von</string>
+    <string name="dev_name" translatable="false">Starry Shivam</string>
+    <string name="dev_username" translatable="false">\@starry-shivam</string>
+
+    <!-- Open source libraries screen -->
+    <string name="open_source_header">Open-Source-Bibliotheken</string>
+</resources>
