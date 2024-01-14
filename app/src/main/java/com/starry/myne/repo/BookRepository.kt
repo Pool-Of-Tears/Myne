@@ -39,7 +39,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class BookRepository {
 
-    private lateinit var baseApiUrl: String
+    private val baseApiUrl = "https://www.pooloftears.cf/books"
     private val googleBooksUrl = "https://www.googleapis.com/books/v1/volumes"
     private val googleApiKey = "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE"
 
@@ -55,7 +55,6 @@ class BookRepository {
         page: Long,
         bookLanguage: BookLanguage = BookLanguage.AllBooks
     ): Result<BookSet> {
-        setApiUrlIfNotSetAlready()
         var url = "${baseApiUrl}?page=$page"
         if (bookLanguage != BookLanguage.AllBooks) {
             url += "&languages=${bookLanguage.isoCode}"
@@ -65,7 +64,6 @@ class BookRepository {
     }
 
     suspend fun searchBooks(query: String): Result<BookSet> {
-        setApiUrlIfNotSetAlready()
         val encodedString = withContext(Dispatchers.IO) {
             URLEncoder.encode(query, "UTF-8")
         }
@@ -74,7 +72,6 @@ class BookRepository {
     }
 
     suspend fun getBookById(bookId: String): Result<BookSet> {
-        setApiUrlIfNotSetAlready()
         val request = Request.Builder().get().url("${baseApiUrl}?ids=$bookId").build()
         return makeApiRequest(request)
     }
@@ -84,7 +81,6 @@ class BookRepository {
         page: Long,
         bookLanguage: BookLanguage = BookLanguage.AllBooks
     ): Result<BookSet> {
-        setApiUrlIfNotSetAlready()
         var url = "${baseApiUrl}?page=$page&topic=$category"
         if (bookLanguage != BookLanguage.AllBooks) {
             url += "&languages=${bookLanguage.isoCode}"
@@ -158,27 +154,6 @@ class BookRepository {
         } catch (exc: JSONException) {
             exc.printStackTrace()
             null
-        }
-    }
-
-    private suspend fun setApiUrlIfNotSetAlready() {
-        if (!this::baseApiUrl.isInitialized) {
-            val request = Request.Builder().get()
-                .url("https://raw.githubusercontent.com/starry-shivam/stuffs/main/myne-api-url")
-                .build()
-            val response = suspendCoroutine { continuation ->
-                okHttpClient.newCall(request).enqueue(object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {
-                        continuation.resumeWithException(e)
-                    }
-
-                    override fun onResponse(call: Call, response: Response) {
-                        response.use { continuation.resume(response.body!!.string()) }
-                    }
-                })
-            }
-            val jsonObj = JSONObject(response)
-            baseApiUrl = jsonObj.getString("api_url")
         }
     }
 

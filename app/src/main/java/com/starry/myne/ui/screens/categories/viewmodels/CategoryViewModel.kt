@@ -100,6 +100,7 @@ class CategoryViewModel @Inject constructor(
                     state = state.copy(error = it?.localizedMessage ?: "unknown-error")
                 },
                 onSuccess = { bookSet, newPage ->
+
                     /**
                      * usually bookSet.books is not nullable and API simply returns empty list
                      * when browsing books all books (i.e. without passing language parameter)
@@ -107,14 +108,7 @@ class CategoryViewModel @Inject constructor(
                      * this: {"detail": "Invalid page."}. Hence the [BookSet] attributes become
                      * null in this case and can cause crashes.
                      */
-                    /**
-                     * usually bookSet.books is not nullable and API simply returns empty list
-                     * when browsing books all books (i.e. without passing language parameter)
-                     * however, when browsing by language it returns a response which looks like
-                     * this: {"detail": "Invalid page."}. Hence the [BookSet] attributes become
-                     * null in this case and can cause crashes.
-                     */
-                    val books = if (bookSet.books != null) {
+                    @Suppress("SENSELESS_COMPARISON") val books = if (bookSet.books != null) {
                         bookSet.books.filter { it.formats.applicationepubzip != null }
                     } else {
                         emptyList()

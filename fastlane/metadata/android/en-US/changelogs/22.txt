@@ -1,0 +1,3 @@
+- Fix loading issues due to github raw domain being blocked by indian ISPs for god knows what reason.
+- Fix Images failing to load due to timeout error.
+- Added German translations, thanks to @vrifox
