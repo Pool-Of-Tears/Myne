@@ -11,7 +11,6 @@
 <p align="center">
   <a href="https://t.me/PotApps"><img src="https://img.shields.io/badge/Telegram-PotApps-green?style=flat&logo=telegram"/></a>
   <a href="https://github.com/Pool-Of-Tears/Myne/releases"><img src="https://img.shields.io/github/downloads/Pool-Of-Tears/Myne/total?label=Downloads&logo=github"</img></a>
-  <a href="https://github.com/Pool-Of-Tears/Myne/stargazers"><img src="https://img.shields.io/github/stars/Pool-Of-Tears/Myne?color=informational&label=Stars"</img></a>
   <img alt="GitHub" src="https://img.shields.io/github/license/Pool-Of-Tears/Myne">
   <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/Pool-Of-Tears/Myne">
   <a href="https://www.repostatus.org/#active"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed." /></a>
