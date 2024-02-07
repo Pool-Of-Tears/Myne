@@ -1,0 +1,1 @@
+- Fix connection errors due to freenom domains being down.
