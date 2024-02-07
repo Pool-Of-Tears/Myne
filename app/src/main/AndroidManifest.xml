@@ -19,7 +19,6 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.Myne"
-        android:usesCleartextTraffic="true"
         tools:targetApi="34">
 
         <activity

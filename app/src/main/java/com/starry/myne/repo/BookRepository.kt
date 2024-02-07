@@ -39,7 +39,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class BookRepository {
 
-    private val baseApiUrl = "https://www.pooloftears.cf/books"
+    private val baseApiUrl = "https://myne.pooloftears.xyz/books"
     private val googleBooksUrl = "https://www.googleapis.com/books/v1/volumes"
     private val googleApiKey = "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE"
 
