@@ -242,8 +242,6 @@ fun ReaderDetailScreen(
                                 fontSize = 24.sp,
                                 fontFamily = figeronaFont,
                                 fontWeight = FontWeight.Bold,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
 
