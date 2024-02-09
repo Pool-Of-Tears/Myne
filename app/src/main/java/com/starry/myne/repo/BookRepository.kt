@@ -111,6 +111,7 @@ class BookRepository {
     suspend fun getExtraInfo(bookName: String): ExtraInfo? = suspendCoroutine { continuation ->
         val encodedName = URLEncoder.encode(bookName, "UTF-8")
         val url = "${googleBooksUrl}?q=$encodedName&startIndex=0&maxResults=1&key=$googleApiKey"
+        println(url)
         val request = Request.Builder().get().url(url).build()
         okHttpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -127,8 +128,8 @@ class BookRepository {
     }
 
     fun parseExtraInfoJson(jsonString: String): ExtraInfo? {
-        val jsonObj = JSONObject(jsonString)
         return try {
+            val jsonObj = JSONObject(jsonString)
             val totalItems = jsonObj.getInt("totalItems")
             if (totalItems != 0) {
                 val items = jsonObj.getJSONArray("items")
@@ -136,7 +137,9 @@ class BookRepository {
                 val volumeInfo = item.getJSONObject("volumeInfo")
                 val imageLinks = volumeInfo.getJSONObject("imageLinks")
                 // Build Extra info.
-                val coverImage = imageLinks.getString("thumbnail")
+                val coverImage = imageLinks.getString("thumbnail").replace(
+                    "http://", "https://"
+                )
                 val pageCount = try {
                     volumeInfo.getInt("pageCount")
                 } catch (exc: JSONException) {
