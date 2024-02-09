@@ -250,6 +250,7 @@ fun LibraryScreen(navController: NavController) {
                                 SnackbarResult.ActionPerformed -> {
                                     viewModel.libraryTooltipDismissed()
                                 }
+
                                 SnackbarResult.Dismissed -> {}
                             }
                         }

@@ -33,75 +33,75 @@
     <string name="language_menu_title">Sfoglia per lingua</string>
 
     <!-- Categories screen. -->
-   <string name="categories_header">Categorie</string>
-   <string name="no_books_found_for_lang_and_cat">Nessun libro disponibile in %s per questa categoria.</string>
+    <string name="categories_header">Categorie</string>
+    <string name="no_books_found_for_lang_and_cat">Nessun libro disponibile in %s per questa categoria.</string>
 
     <!-- Library screen. -->
-   <string name="library_header">Libreria</string>
-   <string name="empty_library">Non c\'è nulla qui!</string>
-   <string name="open_app_chooser">Apri con…</string>
-   <string name="share_app_chooser">Condividi con…</string>
-   <string name="library_read_button">Leggi</string>
-   <string name="library_delete_button">Elimina</string>
-   <string name="library_delete_dialog_title">Sei sicuro?</string>
+    <string name="library_header">Libreria</string>
+    <string name="empty_library">Non c\'è nulla qui!</string>
+    <string name="open_app_chooser">Apri con…</string>
+    <string name="share_app_chooser">Condividi con…</string>
+    <string name="library_read_button">Leggi</string>
+    <string name="library_delete_button">Elimina</string>
+    <string name="library_delete_dialog_title">Sei sicuro?</string>
 
     <!-- Reader Detail Screen -->
-   <string name="reader_detail_header">Ebook Reader</string>
-   <string name="start_reading_button">Inizia</string>
-   <string name="continue_reading_button">Riprendi</string>
-   <string name="reader_chapters_list">Capitoli</string>
-   <string name="reader_error_title">Ops! Non è stato possibile aprire il file e-book :(</string>
-   <string name="reader_error_subtitle">Ci potrebbero essere vari motivi per cui è successo.</string>
-   <string name="reader_error_reason_one_title">1. L\'e-book è stato eliminato.</string>
-   <string name="reader_error_reason_one_desc">Controlla nella cartella MyneEbooks all\'interno della tua directory di download, altrimenti, prova a scaricare nuovamente il libro.</string>
-   <string name="reader_error_reason_two_title">2. Il file esiste, ma hai disinstallato l\'app in precedenza.</string>
-   <string name="reader_error_reason_two_desc">Myne utilizza l\'API scoped-storage di Android e pertanto può accedere solo ai file creati dall\'app, non ai file personali dell\'utente. Per via di questa limitazione, una volta che l\'utente disinstalla l\'app, vengono revocati i permessi di lettura e modifica. In questo caso elimina il file ebook epub dalla cartella MyneEbooks all\'interno della directory di download e scarica nuovamente il libro.</string>
-   <string name="reader_error_back_button">Chiudi e torna indietro</string>
+    <string name="reader_detail_header">Ebook Reader</string>
+    <string name="start_reading_button">Inizia</string>
+    <string name="continue_reading_button">Riprendi</string>
+    <string name="reader_chapters_list">Capitoli</string>
+    <string name="reader_error_title">Ops! Non è stato possibile aprire il file e-book :(</string>
+    <string name="reader_error_subtitle">Ci potrebbero essere vari motivi per cui è successo.</string>
+    <string name="reader_error_reason_one_title">1. L\'e-book è stato eliminato.</string>
+    <string name="reader_error_reason_one_desc">Controlla nella cartella MyneEbooks all\'interno della tua directory di download, altrimenti, prova a scaricare nuovamente il libro.</string>
+    <string name="reader_error_reason_two_title">2. Il file esiste, ma hai disinstallato l\'app in precedenza.</string>
+    <string name="reader_error_reason_two_desc">Myne utilizza l\'API scoped-storage di Android e pertanto può accedere solo ai file creati dall\'app, non ai file personali dell\'utente. Per via di questa limitazione, una volta che l\'utente disinstalla l\'app, vengono revocati i permessi di lettura e modifica. In questo caso elimina il file ebook epub dalla cartella MyneEbooks all\'interno della directory di download e scarica nuovamente il libro.</string>
+    <string name="reader_error_back_button">Chiudi e torna indietro</string>
 
     <!--Reader Screen -->
-   <string name="reader_max_font_size_reached">Spiacenti, non si può andare più in alto!</string>
-   <string name="reader_min_font_size_reached">Spiacenti, non si può andare più in basso!</string>
-   <string name="reader_font_style_chooer">Cambia Font</string>
+    <string name="reader_max_font_size_reached">Spiacenti, non si può andare più in alto!</string>
+    <string name="reader_min_font_size_reached">Spiacenti, non si può andare più in basso!</string>
+    <string name="reader_font_style_chooer">Cambia Font</string>
 
     <!-- Settings screen. -->
-   <string name="settings_header">Impostazioni</string>
-   <string name="app_desc">Ebook Downloader</string>
-   <string name="made_by">Fatto con ❤ da Shivam</string>
-   <string name="general_settings_header">Generale</string>
-   <string name="default_reader_setting">Reader di default</string>
-   <string name="default_reader_dialog_title">Apri ebooks con…</string>
-   <string name="display_setting_header">Mostra</string>
-   <string name="theme_setting">Tema predefinito</string>
-   <string name="theme_dialog_title">Cambia Tema</string>
-   <string name="theme_dialog_apply_button">Applica</string>
-   <string name="material_you_settings_disabled_desc">Abilita Material You</string>
-   <string name="material_you_settings_enabled_desc">Disabilita Material You</string>
-   <string name="material_you_error">Questa funzionalità è disponibile solo per dispositivi Android 12 o superiore.</string>
-   <string name="miscellaneous_setting_header">Varie</string>
-   <string name="license_setting">Licenza &amp; Riconoscimenti</string>
-   <string name="license_setting_desc">Licenze open source.</string>
-   <string name="about_setting">Info sull\'App</string>
-   <string name="about_setting_desc">Mostra info sull\'App &amp; link utili</string>
+    <string name="settings_header">Impostazioni</string>
+    <string name="app_desc">Ebook Downloader</string>
+    <string name="made_by">Fatto con ❤ da Shivam</string>
+    <string name="general_settings_header">Generale</string>
+    <string name="default_reader_setting">Reader di default</string>
+    <string name="default_reader_dialog_title">Apri ebooks con…</string>
+    <string name="display_setting_header">Mostra</string>
+    <string name="theme_setting">Tema predefinito</string>
+    <string name="theme_dialog_title">Cambia Tema</string>
+    <string name="theme_dialog_apply_button">Applica</string>
+    <string name="material_you_settings_disabled_desc">Abilita Material You</string>
+    <string name="material_you_settings_enabled_desc">Disabilita Material You</string>
+    <string name="material_you_error">Questa funzionalità è disponibile solo per dispositivi Android 12 o superiore.</string>
+    <string name="miscellaneous_setting_header">Varie</string>
+    <string name="license_setting">Licenza &amp; Riconoscimenti</string>
+    <string name="license_setting_desc">Licenze open source.</string>
+    <string name="about_setting">Info sull\'App</string>
+    <string name="about_setting_desc">Mostra info sull\'App &amp; link utili</string>
 
     <!-- Books card -->
-   <string name="cover_image_desc">Immagine di copertina</string>
+    <string name="cover_image_desc">Immagine di copertina</string>
 
     <!-- Book Detail Screen -->
-   <string name="book_detail_header">Dettagli del libro</string>
-   <string name="back_button_desc">Indietro.</string>
-   <string name="share_button_desc">Condividi questo libro.</string>
-   <string name="share_intent_header">Condividi con…</string>
-   <string name="read_book_button">Inizia la lettura</string>
-   <string name="download_book_button">Download</string>
-   <string name="downloading_book">Download iniziato!</string>
-   <string name="book_synopsis">Riassunto del libro</string>
-   <string name="book_synopsis_not_found">Non disponibile</string>
+    <string name="book_detail_header">Dettagli del libro</string>
+    <string name="back_button_desc">Indietro.</string>
+    <string name="share_button_desc">Condividi questo libro.</string>
+    <string name="share_intent_header">Condividi con…</string>
+    <string name="read_book_button">Inizia la lettura</string>
+    <string name="download_book_button">Download</string>
+    <string name="downloading_book">Download iniziato!</string>
+    <string name="book_synopsis">Riassunto del libro</string>
+    <string name="book_synopsis_not_found">Non disponibile</string>
 
     <!-- About Screen -->
-   <string name="about_header">Info</string>
-   <string name="about_desc">Un\'applicazione Android gratis &amp; Open Source per scaricare ebooks dal Project GutenBerg.</string>
-   <string name="developed_by">Sviluppato da</string>
+    <string name="about_header">Info</string>
+    <string name="about_desc">Un\'applicazione Android gratis &amp; Open Source per scaricare ebooks dal Project GutenBerg.</string>
+    <string name="developed_by">Sviluppato da</string>
 
     <!-- Open source libraries screen -->
-   <string name="open_source_header">Librerie Open Source</string>
+    <string name="open_source_header">Librerie Open Source</string>
 </resources>

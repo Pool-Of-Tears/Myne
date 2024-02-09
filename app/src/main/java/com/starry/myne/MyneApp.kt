@@ -45,7 +45,7 @@ class MyneApp : Application(), ImageLoaderFactory {
     }
 
     override fun newImageLoader(): ImageLoader {
-        val coilOkhttpClient  = OkHttpClient.Builder()
+        val coilOkhttpClient = OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
             .readTimeout(100, TimeUnit.SECONDS)
