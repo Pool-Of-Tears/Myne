@@ -47,9 +47,7 @@ data class EpubFile(val absPath: String, val data: ByteArray) {
         other as EpubFile
 
         if (absPath != other.absPath) return false
-        if (!data.contentEquals(other.data)) return false
-
-        return true
+        return data.contentEquals(other.data)
     }
 
     override fun hashCode(): Int {
@@ -95,7 +93,7 @@ private suspend fun parseAndCreateEpubBook(inputStream: FileInputStream): EpubBo
             ?: throw Exception(".opf file spine section missing")
 
         val metadataTitle = metadata.selectFirstChildTag("dc:title")?.textContent
-            ?: throw Exception(".opf metadata title tag missing")
+            ?: "Unknown Title"
 
         val metadataCoverId = metadata
             .selectChildTag("meta")
