@@ -11,8 +11,12 @@ apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 String getGoogleApiKey() {
     def propFile = rootProject.file("./local.properties")
     def properties = new Properties()
-    properties.load(new FileInputStream(propFile))
-    return properties['GOOGLE_API_KEY'] ?: ""
+    if (propFile.exists()) {
+        properties.load(new FileInputStream(propFile))
+        return properties.getProperty('GOOGLE_API_KEY', "null")
+    } else {
+        return "null"
+    }
 }
 
 android {
@@ -35,7 +39,7 @@ android {
             arg('room.schemaLocation', "$projectDir/schemas")
         }
 
-        buildConfigField ("String", "GOOGLE_API_KEY", getGoogleApiKey())
+        buildConfigField("String", "GOOGLE_API_KEY", getGoogleApiKey())
     }
 
     buildTypes {

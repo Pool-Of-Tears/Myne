@@ -42,9 +42,9 @@ class BookRepository {
 
     private val baseApiUrl = "https://myne.pooloftears.xyz/books"
     private val googleBooksUrl = "https://www.googleapis.com/books/v1/volumes"
-    private val googleApiKey = BuildConfig.GOOGLE_API_KEY.ifBlank {
-        "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE" // Backup API key
-    }
+    private val googleApiKey =
+        BuildConfig.GOOGLE_API_KEY ?: "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE" // Backup API key
+
 
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(60, TimeUnit.SECONDS)
