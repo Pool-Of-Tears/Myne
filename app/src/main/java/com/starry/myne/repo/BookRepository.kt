@@ -17,6 +17,7 @@
 package com.starry.myne.repo
 
 import com.google.gson.Gson
+import com.starry.myne.BuildConfig
 import com.starry.myne.repo.models.BookSet
 import com.starry.myne.repo.models.ExtraInfo
 import com.starry.myne.utils.book.BookLanguage
@@ -41,7 +42,9 @@ class BookRepository {
 
     private val baseApiUrl = "https://myne.pooloftears.xyz/books"
     private val googleBooksUrl = "https://www.googleapis.com/books/v1/volumes"
-    private val googleApiKey = "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE"
+    private val googleApiKey = BuildConfig.GOOGLE_API_KEY.ifBlank {
+        "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE" // Backup API key
+    }
 
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(60, TimeUnit.SECONDS)
