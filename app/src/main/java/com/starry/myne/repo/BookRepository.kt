@@ -1,4 +1,3 @@
-/*
 /**
  * Copyright (c) [2022 - Present] Stɑrry Shivɑm
  *
@@ -14,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-*/
 
 package com.starry.myne.repo
 
