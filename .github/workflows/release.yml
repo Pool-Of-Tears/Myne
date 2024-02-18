@@ -19,7 +19,7 @@ jobs:
           echo Last build tool version is: $BUILD_TOOL_VERSION
 
       - name: Set GOOGLE_API_KEY in local properties
-        run: echo 'GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}' >> ./local.properties
+        run: echo 'GOOGLE_API_KEY="${{ secrets.GOOGLE_API_KEY }}"' >> ./local.properties
 
       - name: set up JDK 17
         uses: actions/setup-java@v3
