@@ -113,9 +113,8 @@ fun BottomBar(
 
     if (bottomBarDestination) {
         systemUiController.setNavigationBarColor(
-            color = (MaterialTheme.colorScheme.surfaceColorAtElevation(
-                3.dp
-            )), darkIcons = settingsViewModel.getCurrentTheme() == ThemeMode.Light
+            color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp),
+            darkIcons = settingsViewModel.getCurrentTheme() == ThemeMode.Light
         )
     } else {
         systemUiController.setNavigationBarColor(
@@ -145,7 +144,6 @@ fun BottomBar(
                     ) {
                         navController.navigate(screen.route) {
                             popUpTo(navController.graph.findStartDestination().id)
-                            launchSingleTop = true
                         }
                     }
                 }

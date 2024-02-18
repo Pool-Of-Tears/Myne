@@ -16,6 +16,7 @@
 
 package com.starry.myne.repo
 
+import android.content.Context
 import com.google.gson.Gson
 import com.starry.myne.BuildConfig
 import com.starry.myne.repo.models.BookSet
@@ -23,13 +24,17 @@ import com.starry.myne.repo.models.ExtraInfo
 import com.starry.myne.utils.book.BookLanguage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Cache
+import okhttp3.CacheControl
 import okhttp3.Call
 import okhttp3.Callback
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
 import java.io.IOException
 import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
@@ -37,22 +42,37 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+class CacheInterceptor : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val response: Response = chain.proceed(chain.request())
+        val cacheControl = CacheControl.Builder()
+            .maxAge(10, TimeUnit.DAYS)
+            .build()
+        return response.newBuilder()
+            .header("Cache-Control", cacheControl.toString())
+            .build()
+    }
+}
 
-class BookRepository {
+class BookRepository(context: Context) {
 
     private val baseApiUrl = "https://myne.pooloftears.xyz/books"
     private val googleBooksUrl = "https://www.googleapis.com/books/v1/volumes"
+
+    @Suppress("USELESS_ELVIS")
     private val googleApiKey =
         BuildConfig.GOOGLE_API_KEY ?: "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE" // Backup API key
-
 
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)
         .readTimeout(100, TimeUnit.SECONDS)
+        .cache(Cache(File(context.cacheDir, "http-cache"), 16L * 1024L * 1024L)) // 16 MiB
+        .addNetworkInterceptor(CacheInterceptor())
         .build()
 
     private val gsonClient = Gson()
+
 
     suspend fun getAllBooks(
         page: Long,
