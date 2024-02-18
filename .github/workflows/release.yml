@@ -11,17 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup build tool version variable
+      - name: Setup last build tool version
         shell: bash
         run: |
           BUILD_TOOL_VERSION=$(ls /usr/local/lib/android/sdk/build-tools/ | tail -n 1)
           echo "BUILD_TOOL_VERSION=$BUILD_TOOL_VERSION" >> $GITHUB_ENV
           echo Last build tool version is: $BUILD_TOOL_VERSION
 
-      - name: Access GOOGLE_API_KEY
-        env:
-          GOOGLE_API_KEY: $
-        run: echo GOOGLE_API_KEY=\"$GOOGLE_API_KEY\" >> ./local.properties
+      - name: Set GOOGLE_API_KEY in local properties
+        run: echo 'GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}' >> ./local.properties
 
       - name: set up JDK 17
         uses: actions/setup-java@v3
