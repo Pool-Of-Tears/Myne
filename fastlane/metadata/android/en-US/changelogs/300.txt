@@ -1,0 +1,4 @@
+- Added appropriate labels for talkback in bottom navigation bar.
+- Resolved the issue of certain books' metadata occasionally failing to load.
+- Added some caching and fixed the issue where the search bar or language menu would remain open after navigating away from and returning to home screen.
+- Some other minor bug fixes and improvements.
