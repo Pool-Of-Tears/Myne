@@ -226,7 +226,7 @@ fun HomeScreenScaffold(
             ) {
                 Crossfade(
                     targetState = topBarState.isSearchBarVisible,
-                    animationSpec = tween(durationMillis = 200)
+                    animationSpec = tween(durationMillis = 200), label = "search cross fade"
                 ) {
                     if (it) {
                         SearchAppBar(onCloseIconClicked = {

@@ -51,7 +51,7 @@ class MainModule {
 
     @Singleton
     @Provides
-    fun provideBooksApi() = BookRepository()
+    fun provideBooksApi(@ApplicationContext context: Context) = BookRepository(context)
 
     @Singleton
     @Provides
