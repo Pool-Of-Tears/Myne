@@ -105,7 +105,7 @@ Checkout this guide to learn more about translation strings from [Helpshift](htt
 [github]: https://github.com/starry69
 
 ```
-Copyright 2022 - 2023 Stɑrry Shivɑm
+Copyright (c) [2022 - Present] Stɑrry Shivɑm
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
