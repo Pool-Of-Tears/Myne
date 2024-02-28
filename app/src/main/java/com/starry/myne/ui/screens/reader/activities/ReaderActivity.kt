@@ -45,7 +45,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.displayCutoutPadding
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -83,6 +82,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -313,110 +313,15 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
 
         // Font style chooser dialog.
         val showFontDialog = remember { mutableStateOf(false) }
-        val radioOptions = ReaderFont.getAllFonts().map { it.name }
-        val (selectedOption, onOptionSelected) = remember {
-            mutableStateOf(viewModel.getFontFamily())
-        }
+        FontChooserDialog(showFontDialog, viewModel, readerFontFamily)
 
-        if (showFontDialog.value) {
-            AlertDialog(onDismissRequest = {
-                showFontDialog.value = false
-            }, title = {
-                Text(
-                    text = stringResource(id = R.string.reader_font_style_chooer),
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }, text = {
-                Column(
-                    modifier = Modifier.selectableGroup(),
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    radioOptions.forEach { text ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(46.dp)
-                                .selectable(
-                                    selected = (text == selectedOption.name),
-                                    onClick = { onOptionSelected(ReaderFont.getFontByName(text)) },
-                                    role = Role.RadioButton,
-                                ),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            RadioButton(
-                                selected = (text == selectedOption.name),
-                                onClick = null,
-                                colors = RadioButtonDefaults.colors(
-                                    selectedColor = MaterialTheme.colorScheme.primary,
-                                    unselectedColor = MaterialTheme.colorScheme.inversePrimary,
-                                    disabledSelectedColor = Color.Black,
-                                    disabledUnselectedColor = Color.Black
-                                ),
-                            )
-                            Text(
-                                text = text,
-                                modifier = Modifier.padding(start = 16.dp),
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontFamily = figeronaFont
-                            )
-                        }
-                    }
-                }
-            }, confirmButton = {
-                TextButton(onClick = {
-                    showFontDialog.value = false
-                    viewModel.setFontFamily(selectedOption)
-                    readerFontFamily.value = selectedOption
-                }) {
-                    Text(stringResource(id = R.string.theme_dialog_apply_button))
-                }
-            }, dismissButton = {
-                TextButton(onClick = {
-                    showFontDialog.value = false
-                }) {
-                    Text(stringResource(id = R.string.cancel))
-                }
-            })
-        }
-
+        // Chapter chooser dialog.
         val showChaptersDialog = remember { mutableStateOf(false) }
-        if (showChaptersDialog.value) {
-            AlertDialog(onDismissRequest = {
-                showChaptersDialog.value = false
-            }, content = {
-                Column(
-                    modifier = Modifier.background(MaterialTheme.colorScheme.surface)
-                ) {
-                    LazyColumn(content = {
-                        viewModel.state.epubBook?.chapters?.size?.let {
-                            items(it) { index ->
-                                val chapter = viewModel.state.epubBook!!.chapters[index]
-                                TextButton(
-                                    onClick = {
-                                        recyclerViewManager.scrollToPositionWithOffset(index, 0)
-                                        showChaptersDialog.value = false
-                                        viewModel.hideReaderInfo()
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(4.dp)
-                                ) {
-                                    Text(
-                                        text = chapter.title,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Start
-                                    )
-                                }
-                            }
-                        }
-                    })
-                }
-            })
-        }
+        ChaptersDialog(recyclerViewManager, showChaptersDialog)
 
         val snackBarHostState = remember { SnackbarHostState() }
-        val visibleChapterIdx = visibleChapterFlow.collectAsState().value
-        val chapter = viewModel.state.epubBook?.chapters?.get(visibleChapterIdx)
+        val visibleChapterIdx by visibleChapterFlow.collectAsState()
+        val chapter = viewModel.state.epubBook?.chapters?.getOrNull(visibleChapterIdx)
 
         Scaffold(
             snackbarHost = { SnackbarHost(snackBarHostState) },
@@ -516,6 +421,119 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
     }
 
     @Composable
+    private fun FontChooserDialog(
+        showFontDialog: MutableState<Boolean>,
+        viewModel: ReaderViewModel,
+        readerFontFamily: MutableState<ReaderFont>
+    ) {
+        val radioOptions = ReaderFont.getAllFonts().map { it.name }
+        val (selectedOption, onOptionSelected) = remember {
+            mutableStateOf(viewModel.getFontFamily())
+        }
+
+        if (showFontDialog.value) {
+            AlertDialog(onDismissRequest = {
+                showFontDialog.value = false
+            }, title = {
+                Text(
+                    text = stringResource(id = R.string.reader_font_style_chooer),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }, text = {
+                Column(
+                    modifier = Modifier.selectableGroup(),
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    radioOptions.forEach { text ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(46.dp)
+                                .selectable(
+                                    selected = (text == selectedOption.name),
+                                    onClick = { onOptionSelected(ReaderFont.getFontByName(text)) },
+                                    role = Role.RadioButton,
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            RadioButton(
+                                selected = (text == selectedOption.name),
+                                onClick = null,
+                                colors = RadioButtonDefaults.colors(
+                                    selectedColor = MaterialTheme.colorScheme.primary,
+                                    unselectedColor = MaterialTheme.colorScheme.inversePrimary,
+                                    disabledSelectedColor = Color.Black,
+                                    disabledUnselectedColor = Color.Black
+                                ),
+                            )
+                            Text(
+                                text = text,
+                                modifier = Modifier.padding(start = 16.dp),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontFamily = figeronaFont
+                            )
+                        }
+                    }
+                }
+            }, confirmButton = {
+                TextButton(onClick = {
+                    showFontDialog.value = false
+                    viewModel.setFontFamily(selectedOption)
+                    readerFontFamily.value = selectedOption
+                }) {
+                    Text(stringResource(id = R.string.theme_dialog_apply_button))
+                }
+            }, dismissButton = {
+                TextButton(onClick = {
+                    showFontDialog.value = false
+                }) {
+                    Text(stringResource(id = R.string.cancel))
+                }
+            })
+        }
+    }
+
+    @Composable
+    private fun ChaptersDialog(
+        recyclerViewManager: LinearLayoutManager,
+        showChaptersDialog: MutableState<Boolean>
+    ) {
+        if (showChaptersDialog.value) {
+            AlertDialog(onDismissRequest = {
+                showChaptersDialog.value = false
+            }, content = {
+                Column(
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+                ) {
+                    LazyColumn(content = {
+                        viewModel.state.epubBook?.chapters?.size?.let {
+                            items(it) { index ->
+                                val chapter = viewModel.state.epubBook!!.chapters[index]
+                                TextButton(
+                                    onClick = {
+                                        recyclerViewManager.scrollToPositionWithOffset(index, 0)
+                                        showChaptersDialog.value = false
+                                        viewModel.hideReaderInfo()
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(4.dp)
+                                ) {
+                                    Text(
+                                        text = chapter.title,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Start
+                                    )
+                                }
+                            }
+                        }
+                    })
+                }
+            })
+        }
+    }
+
+    @Composable
     private fun BottomSheetContents(
         viewModel: ReaderViewModel,
         textSizeValue: MutableState<Int>,
@@ -524,161 +542,165 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
         snackBarHostState: SnackbarHostState
     ) {
         val coroutineScope = rememberCoroutineScope()
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)),
+                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+                .padding(vertical = 24.dp, horizontal = 16.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 21.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                ReaderTextScaleButton(
-                    buttonType = TextScaleButtonType.DECREASE,
-                    textSizeValue = textSizeValue,
-                    coroutineScope = coroutineScope,
-                    snackBarHostState = snackBarHostState,
-                    onTextSizeValueChanged = { viewModel.setFontSize(it) }
-                )
-                Spacer(modifier = Modifier.width(14.dp))
-                Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(45.dp)
-                        .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
-                        .border(
-                            1.dp,
-                            MaterialTheme.colorScheme.onSurface,
-                            shape = RoundedCornerShape(6.dp)
-                        )
-                        .clip(RoundedCornerShape(6.dp))
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxHeight()
-                        ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_text_size),
-                                contentDescription = null,
-                                //    modifier = Modifier.size(size = 15.dp),
-                                tint = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.size(16.dp)
-                            )
-
-                            Spacer(modifier = Modifier.width(10.dp))
-
-                            Text(
-                                text = textSizeValue.value.toString(),
-                                fontFamily = figeronaFont,
-                                fontSize = 16.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.padding(start = 2.dp, bottom = 1.dp),
-                            )
-                        }
-                    }
-                }
-                Spacer(modifier = Modifier.width(14.dp))
-                ReaderTextScaleButton(
-                    buttonType = TextScaleButtonType.INCREASE,
-                    textSizeValue = textSizeValue,
-                    coroutineScope = coroutineScope,
-                    snackBarHostState = snackBarHostState,
-                    onTextSizeValueChanged = { viewModel.setFontSize(it) }
-                )
-            }
+            TextScaleControls(
+                textSizeValue = textSizeValue,
+                viewModel = viewModel,
+                coroutineScope = coroutineScope,
+                snackBarHostState = snackBarHostState
+            )
 
             Spacer(modifier = Modifier.height(14.dp))
             Divider()
 
+            FontSelectionButton(
+                readerFontFamily = readerFontFamily,
+                showFontDialog = showFontDialog
+            )
+        }
+    }
+
+    @Composable
+    private fun TextScaleControls(
+        textSizeValue: MutableState<Int>,
+        viewModel: ReaderViewModel,
+        coroutineScope: CoroutineScope,
+        snackBarHostState: SnackbarHostState
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            ReaderTextScaleButton(
+                buttonType = TextScaleButtonType.DECREASE,
+                textSizeState = textSizeValue,
+                coroutineScope = coroutineScope,
+                snackBarHostState = snackBarHostState,
+                onTextSizeValueChanged = { viewModel.setFontSize(it) }
+            )
+
+            Spacer(modifier = Modifier.width(14.dp))
+
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
+                    .size(100.dp, 45.dp)
+                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                    .clip(RoundedCornerShape(6.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                OutlinedButton(
-                    onClick = { showFontDialog.value = true },
-                    modifier = Modifier.width(325.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
-                    )
-                ) {
-                    Row {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_font),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = readerFontFamily.value.name,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                }
+                Text(
+                    text = textSizeValue.value.toString(),
+                    fontFamily = figeronaFont,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(start = 2.dp, bottom = 1.dp)
+                )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.width(14.dp))
+
+            ReaderTextScaleButton(
+                buttonType = TextScaleButtonType.INCREASE,
+                textSizeState = textSizeValue,
+                coroutineScope = coroutineScope,
+                snackBarHostState = snackBarHostState,
+                onTextSizeValueChanged = { viewModel.setFontSize(it) }
+            )
+        }
+    }
+
+    @Composable
+    private fun FontSelectionButton(
+        readerFontFamily: MutableState<ReaderFont>,
+        showFontDialog: MutableState<Boolean>
+    ) {
+        OutlinedButton(
+            onClick = { showFontDialog.value = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp),
+            shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
+            )
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_font),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = readerFontFamily.value.name,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
     }
 
     @Composable
     private fun ReaderTextScaleButton(
         buttonType: TextScaleButtonType,
-        textSizeValue: MutableState<Int>,
+        textSizeState: MutableState<Int>,
         coroutineScope: CoroutineScope,
         snackBarHostState: SnackbarHostState,
         onTextSizeValueChanged: (newValue: Int) -> Unit
     ) {
         val context = LocalContext.current
         val iconRes: Int
-        val callback: () -> Unit
+        val adjustment: Int
 
         when (buttonType) {
             TextScaleButtonType.DECREASE -> {
                 iconRes = R.drawable.ic_reader_text_minus
-                callback = {
-                    if (textSizeValue.value <= 50) {
-                        coroutineScope.launch {
-                            snackBarHostState.showSnackbar(
-                                context.getString(R.string.reader_min_font_size_reached),
-                                null
-                            )
-                        }
-                    } else {
-                        coroutineScope.launch {
-                            textSizeValue.value -= 10
-                            onTextSizeValueChanged(textSizeValue.value)
-                        }
-                    }
-                }
+                adjustment = -10
             }
 
             TextScaleButtonType.INCREASE -> {
                 iconRes = R.drawable.ic_reader_text_plus
-                callback = {
-                    if (textSizeValue.value >= 200) {
-                        coroutineScope.launch {
-                            snackBarHostState.showSnackbar(
-                                context.getString(R.string.reader_max_font_size_reached),
-                                null
-                            )
-                        }
-                    } else {
-                        coroutineScope.launch {
-                            textSizeValue.value += 10
-                            onTextSizeValueChanged(textSizeValue.value)
-                        }
+                adjustment = 10
+            }
+        }
+
+        val callback: () -> Unit = {
+            val newSize = textSizeState.value + adjustment
+            when {
+                newSize < 50 -> {
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackbar(
+                            context.getString(R.string.reader_min_font_size_reached),
+                            null
+                        )
+                    }
+                }
+
+                newSize > 200 -> {
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackbar(
+                            context.getString(R.string.reader_max_font_size_reached),
+                            null
+                        )
+                    }
+                }
+
+                else -> {
+                    coroutineScope.launch {
+                        val adjustedSize = textSizeState.value + adjustment
+                        textSizeState.value = adjustedSize
+                        onTextSizeValueChanged(adjustedSize)
                     }
                 }
             }
@@ -686,8 +708,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
 
         Box(
             modifier = Modifier
-                .width(100.dp)
-                .height(45.dp)
+                .size(100.dp, 45.dp)
                 .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
                 .border(
                     1.dp,
@@ -695,7 +716,8 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
                     shape = RoundedCornerShape(6.dp)
                 )
                 .clip(RoundedCornerShape(6.dp))
-                .clickable { callback() }, contentAlignment = Alignment.Center
+                .clickable { callback() },
+            contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = iconRes),
@@ -705,6 +727,7 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
             )
         }
     }
+
 
     @Composable
     private fun TransparentSystemBars(alpha: Float = 0f) {
