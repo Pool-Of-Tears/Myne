@@ -18,6 +18,7 @@
 package com.starry.myne.epub
 
 import android.graphics.BitmapFactory
+import android.util.Log
 import org.jsoup.Jsoup
 import org.jsoup.nodes.TextNode
 import java.io.File
@@ -26,20 +27,70 @@ import kotlin.io.path.invariantSeparatorsPathString
 class EpubXMLFileParser(
     fileAbsolutePath: String,
     val data: ByteArray,
-    private val zipFile: Map<String, EpubFile>
+    private val zipFile: Map<String, EpubFile>,
+    private val fragmentId: String? = null,
+    private val nextFragmentId: String? = null
 ) {
     data class Output(val title: String?, val body: String)
 
-    val fileParentFolder: File = File(fileAbsolutePath).parentFile ?: File("")
+    private val fileParentFolder: File = File(fileAbsolutePath).parentFile ?: File("")
 
 
     fun parseAsDocument(): Output {
-        val body = Jsoup.parse(data.inputStream(), "UTF-8", "").body()
-        val title = body.selectFirst("h1, h2, h3, h4, h5, h6")?.text()
-        body.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
+        val document = Jsoup.parse(data.inputStream(), "UTF-8", "")
+
+        val title: String
+        val bodyContent: String
+        val bodyElement: org.jsoup.nodes.Element?
+
+        if (fragmentId != null) {
+            // Check if the fragment ID represents a <div> tag
+            bodyElement = document.selectFirst("div#$fragmentId")
+
+            if (bodyElement != null) {
+                // If the fragment ID represents a <body> tag, fetch the entire body content
+                Log.d(
+                    "EpubXMLFileParser",
+                    "Fragment ID: $fragmentId represents a <div> tag. Using the fragment ID."
+                )
+                title = document.selectFirst("h1, h2, h3, h4, h5, h6")?.text() ?: ""
+                bodyElement.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
+                bodyContent = getNodeStructuredText(bodyElement)
+            } else {
+                Log.d(
+                    "EpubXMLFileParser",
+                    "Fragment ID: $fragmentId doesn't represent a <div> tag. Using the fragment and next fragment logic."
+                )
+                // If the fragment ID doesn't represent a <body> tag, use the fragment and next fragment logic
+                val fragmentElement = document.selectFirst("#$fragmentId")
+                title = fragmentElement?.selectFirst("h1, h2, h3, h4, h5, h6")?.text() ?: ""
+                val bodyBuilder = StringBuilder()
+                var currentNode: org.jsoup.nodes.Node? = fragmentElement?.nextSibling()
+                val nextFragmentIdElement = if (nextFragmentId != null) {
+                    document.selectFirst("#$nextFragmentId")
+                } else {
+                    null
+                }
+                fragmentElement?.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
+
+                while (currentNode != null && currentNode != nextFragmentIdElement) {
+                    bodyBuilder.append(getNodeStructuredText(currentNode))
+                    currentNode = currentNode.nextSibling()
+                }
+                bodyContent = bodyBuilder.toString()
+            }
+        } else {
+            // If no fragment ID is provided, fetch the entire body content
+            Log.d("EpubXMLFileParser", "No fragment ID provided. Fetching the entire body content.")
+            bodyElement = document.body()
+            title = document.selectFirst("h1, h2, h3, h4, h5, h6")?.text() ?: ""
+            document.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
+            bodyContent = getNodeStructuredText(bodyElement)
+        }
+
         return Output(
             title = title,
-            body = getNodeStructuredText(body)
+            body = bodyContent
         )
     }
 

@@ -24,6 +24,7 @@ import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.epub.models.EpubImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.w3c.dom.Element
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
@@ -67,6 +68,27 @@ private suspend fun getZipFiles(
             .map { EpubFile(absPath = it.name, data = zipInputStream.readBytes()) }
             .associateBy { it.absPath }
     }
+}
+
+private fun findNestedNavPoints(element: Element?): List<Element> {
+    val navPoints = mutableListOf<Element>()
+
+    // Base case: If the element is null, return an empty list
+    if (element == null) {
+        return navPoints
+    }
+
+    // Check if the element is a navPoint
+    if (element.tagName == "navPoint") {
+        navPoints.add(element)
+    }
+
+    // Recursively search for nested navPoints
+    for (child in element.childElements) {
+        navPoints.addAll(findNestedNavPoints(child))
+    }
+
+    return navPoints
 }
 
 private suspend fun parseAndCreateEpubBook(inputStream: FileInputStream): EpubBook =
@@ -115,54 +137,116 @@ private suspend fun parseAndCreateEpubBook(inputStream: FileInputStream): EpubBo
             )
         }.associateBy { it.id }
 
+        /**
+         * Find the table of contents (toc.ncx) file.
+         * If it is not present, fallback to the first file with the "navMap" property.
+         */
+        val tocFileItem =
+            manifestItems.values.firstOrNull { it.absPath.endsWith("toc.ncx", ignoreCase = true) }
+                ?: manifestItems.values.firstOrNull { it.properties.contains("navMap") }
 
-        var chapterIndex = 0
-        val chapterExtensions = listOf("xhtml", "xml", "html").map { ".$it" }
-        val chapters = spine
-            .selectChildTag("itemref")
-            .mapNotNull { manifestItems[it.getAttribute("idref")] }
-            .filter { item ->
-                chapterExtensions.any {
-                    item.absPath.endsWith(it, ignoreCase = true)
-                } || item.mediaType.startsWith("image/")
-            }
-            .mapNotNull { files[it.absPath]?.let { file -> it to file } }
-            .mapIndexed { index, (item, file) ->
-                val parser = EpubXMLFileParser(file.absPath, file.data, files)
-                if (item.mediaType.startsWith("image/")) {
-                    TempEpubChapter(
-                        url = "image_${file.absPath}",
-                        title = null,
-                        body = parser.parseAsImage(item.absPath),
-                        chapterIndex = chapterIndex,
-                    )
+        // try to parse the table of contents file
+        val chapters: List<EpubChapter> = if (tocFileItem != null) {
+            val tocFile = tocFileItem.let { files[it.absPath] }
+            val tocDocument = tocFile?.let { parseXMLFile(it.data) }
+            val tocNavPoints =
+                findNestedNavPoints((tocDocument?.selectFirstTag("navMap") as Element?))
+
+            // Parse each chapter file
+            tocNavPoints.flatMap { navPoint ->
+                val title =
+                    navPoint.selectFirstChildTag("navLabel")
+                        ?.selectFirstChildTag("text")?.textContent
+                val chapterSrc = navPoint.selectFirstChildTag("content")?.getAttributeValue("src")
+                    ?.hrefAbsolutePath(hrefRootPath)
+
+                if (chapterSrc != null) {
+                    val (fragmentPath, fragmentId) = chapterSrc.split("#", limit = 2)
+                    val nextNavPoint = navPoint.nextSibling
+                    val nextFragmentId = nextNavPoint?.nextSibling?.selectFirstChildTag("content")
+                        ?.getAttributeValue("src")
+                        ?.split("#")
+                        ?.lastOrNull()
+
+                    val chapterFile = files[fragmentPath]
+                    val parser = chapterFile?.let {
+                        EpubXMLFileParser(
+                            fileAbsolutePath = it.absPath,
+                            data = it.data,
+                            zipFile = files,
+                            fragmentId = fragmentId,
+                            nextFragmentId = nextFragmentId
+                        )
+                    }
+
+                    val res = parser?.parseAsDocument()
+                    if (res != null) {
+                        listOf(
+                            EpubChapter(
+                                absPath = chapterSrc,
+                                title = title ?: "",
+                                body = res.body
+                            )
+                        )
+                    } else {
+                        emptyList()
+                    }
                 } else {
-                    val res = parser.parseAsDocument()
-                    // A full chapter usually is split in multiple sequential entries,
-                    // try to merge them and extract the main title of each one.
-                    // Is is not perfect but better than dealing with a table of contents
-                    val chapterTitle = res.title ?: if (index == 0) metadataTitle else null
-                    if (chapterTitle != null)
-                        chapterIndex += 1
-
-                    TempEpubChapter(
-                        url = file.absPath,
-                        title = chapterTitle,
-                        body = res.body,
-                        chapterIndex = chapterIndex,
-                    )
+                    emptyList()
                 }
-            }.groupBy {
-                it.chapterIndex
-            }.map { (index, list) ->
-                EpubChapter(
-                    absPath = list.first().url,
-                    title = list.first().title ?: "Chapter $index",
-                    body = list.joinToString("\n\n") { it.body }
-                )
-            }.filter {
-                it.body.isNotBlank()
-            }
+            }.toList()
+
+        } else {
+            // if toc.ncx is not present, fallback to parsing with the spine
+            var chapterIndex = 0
+            val chapterExtensions = listOf("xhtml", "xml", "html").map { ".$it" }
+            spine
+                .selectChildTag("itemref")
+                .mapNotNull { manifestItems[it.getAttribute("idref")] }
+                .filter { item ->
+                    chapterExtensions.any {
+                        item.absPath.endsWith(it, ignoreCase = true)
+                    } || item.mediaType.startsWith("image/")
+                }
+                .mapNotNull { files[it.absPath]?.let { file -> it to file } }
+                .mapIndexed { index, (item, file) ->
+                    val parser = EpubXMLFileParser(file.absPath, file.data, files)
+                    if (item.mediaType.startsWith("image/")) {
+                        TempEpubChapter(
+                            url = "image_${file.absPath}",
+                            title = null,
+                            body = parser.parseAsImage(item.absPath),
+                            chapterIndex = chapterIndex,
+                        )
+                    } else {
+                        val res = parser.parseAsDocument()
+                        // A full chapter usually is split in multiple sequential entries,
+                        // try to merge them and extract the main title of each one.
+                        // It is not perfect but it is better than nothing.
+                        val chapterTitle = res.title ?: if (index == 0) metadataTitle else null
+                        if (chapterTitle != null)
+                            chapterIndex += 1
+
+                        TempEpubChapter(
+                            url = file.absPath,
+                            title = chapterTitle,
+                            body = res.body,
+                            chapterIndex = chapterIndex,
+                        )
+                    }
+                }.groupBy {
+                    it.chapterIndex
+                }.map { (index, list) ->
+                    EpubChapter(
+                        absPath = list.first().url,
+                        title = list.first().title ?: "Chapter $index",
+                        body = list.joinToString("\n\n") { it.body }
+                    )
+                }.filter {
+                    it.body.isNotBlank()
+                }
+        }
+
 
         val imageExtensions =
             listOf("png", "gif", "raw", "png", "jpg", "jpeg", "webp", "svg").map { ".$it" }
@@ -192,6 +276,7 @@ private suspend fun parseAndCreateEpubBook(inputStream: FileInputStream): EpubBo
         } else {
             null
         }
+
         return@withContext EpubBook(
             fileName = metadataTitle.asFileName(),
             title = metadataTitle,
