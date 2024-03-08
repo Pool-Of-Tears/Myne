@@ -25,7 +25,7 @@ import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderItem
-import com.starry.myne.epub.createEpubBook
+import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubBook
 import com.starry.myne.repo.BookRepository
 import com.starry.myne.utils.NetworkObserver
@@ -54,7 +54,8 @@ data class ReaderDetailScreenState(
 class ReaderDetailViewModel @Inject constructor(
     private val bookRepository: BookRepository,
     private val libraryDao: LibraryDao,
-    private val readerDao: ReaderDao
+    private val readerDao: ReaderDao,
+    private val epubParser: EpubParser
 ) : ViewModel() {
 
     companion object Errors {
@@ -79,7 +80,7 @@ class ReaderDetailViewModel @Inject constructor(
                         coverImage,
                         libraryItem.title,
                         libraryItem.authors,
-                        createEpubBook(libraryItem.filePath)
+                        epubParser.createEpubBook(libraryItem.filePath)
                     ), readerItem = readerDao.getReaderItem(bookId.toInt())
                 )
 

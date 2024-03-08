@@ -31,7 +31,7 @@ import com.starry.myne.R
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderItem
-import com.starry.myne.epub.createEpubBook
+import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubBook
 import com.starry.myne.utils.PreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -77,7 +77,8 @@ data class ReaderScreenState(
 class ReaderViewModel @Inject constructor(
     private val libraryDao: LibraryDao,
     private val readerDao: ReaderDao,
-    private val preferenceUtil: PreferenceUtil
+    private val preferenceUtil: PreferenceUtil,
+    private val epubParser: EpubParser
 ) : ViewModel() {
 
     var state by mutableStateOf(ReaderScreenState())
@@ -93,7 +94,7 @@ class ReaderViewModel @Inject constructor(
             val libraryItem = libraryDao.getItemById(bookId)
             val readerData = readerDao.getReaderItem(bookId)
             // parse and create epub book
-            val epubBook = createEpubBook(libraryItem!!.filePath)
+            val epubBook = epubParser.createEpubBook(libraryItem!!.filePath)
             state = state.copy(epubBook = epubBook, readerData = readerData)
             onLoaded(state)
             // Added some delay to avoid choppy animation.
@@ -105,7 +106,7 @@ class ReaderViewModel @Inject constructor(
     fun loadEpubBookExternal(fileStream: FileInputStream, onLoaded: (EpubBook) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             // parse and create epub book
-            val epubBook = createEpubBook(fileStream)
+            val epubBook = epubParser.createEpubBook(fileStream, shouldUseToc = false)
             state = state.copy(epubBook = epubBook)
             onLoaded(state.epubBook!!)
             // Added some delay to avoid choppy animation.

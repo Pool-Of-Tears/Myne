@@ -27,7 +27,7 @@ import kotlin.io.path.invariantSeparatorsPathString
 class EpubXMLFileParser(
     fileAbsolutePath: String,
     val data: ByteArray,
-    private val zipFile: Map<String, EpubFile>,
+    private val zipFile: Map<String, EpubParser.EpubFile>,
     private val fragmentId: String? = null,
     private val nextFragmentId: String? = null
 ) {
