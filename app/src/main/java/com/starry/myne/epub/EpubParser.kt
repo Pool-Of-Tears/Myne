@@ -38,14 +38,33 @@ import java.util.zip.ZipInputStream
  */
 class EpubParser {
 
+    /**
+     * Represents an item in the EPUB manifest.
+     * @param id The ID of the item.
+     * @param absPath The absolute path of the item.
+     * @param mediaType The media type of the item.
+     * @param properties The properties of the item.
+     */
     data class EpubManifestItem(
         val id: String, val absPath: String, val mediaType: String, val properties: String
     )
 
+    /**
+     * Represents a temporary EPUB chapter.
+     * @param url The URL of the chapter.
+     * @param title The title of the chapter.
+     * @param body The body of the chapter.
+     * @param chapterIndex The index of the chapter.
+     */
     data class TempEpubChapter(
         val url: String, val title: String?, val body: String, val chapterIndex: Int
     )
 
+    /**
+     * Represents an EPUB file.
+     * @param absPath The absolute path of the file.
+     * @param data The file data.
+     */
     data class EpubFile(val absPath: String, val data: ByteArray) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -64,10 +83,7 @@ class EpubParser {
         }
     }
 
-
-    companion object {
-        const val TAG = "EpubParser"
-    }
+    companion object { const val TAG = "EpubParser" }
 
     /**
      * Creates an [EpubBook] object from an EPUB file.

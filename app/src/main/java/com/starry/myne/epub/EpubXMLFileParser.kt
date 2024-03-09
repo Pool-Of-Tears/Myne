@@ -24,6 +24,15 @@ import org.jsoup.nodes.TextNode
 import java.io.File
 import kotlin.io.path.invariantSeparatorsPathString
 
+/**
+ * Parses an XML file from an EPUB archive and extracts the title and body content.
+ *
+ * @property fileAbsolutePath The absolute path of the XML file.
+ * @property data The raw data of the XML file.
+ * @property zipFile The map of file paths to their respective [EpubParser.EpubFile] instances.
+ * @property fragmentId The ID of the fragment to extract from the XML file.
+ * @property nextFragmentId The ID of the next fragment to extract from the XML file.
+ */
 class EpubXMLFileParser(
     fileAbsolutePath: String,
     val data: ByteArray,
@@ -31,11 +40,23 @@ class EpubXMLFileParser(
     private val fragmentId: String? = null,
     private val nextFragmentId: String? = null
 ) {
+
+    /**
+     * Represents the output of the XML document parsing.
+     *
+     * @property title The title of the XML document.
+     * @property body The body content of the XML document.
+     */
     data class Output(val title: String?, val body: String)
 
     private val fileParentFolder: File = File(fileAbsolutePath).parentFile ?: File("")
 
 
+    /**
+     * Parses the input data as an XML document and returns the title and body content.
+     *
+     * @return [Output] The title and body content of the XML document.
+     */
     fun parseAsDocument(): Output {
         val document = Jsoup.parse(data.inputStream(), "UTF-8", "")
 
