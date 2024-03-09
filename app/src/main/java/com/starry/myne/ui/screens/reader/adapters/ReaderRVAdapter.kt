@@ -51,6 +51,7 @@ import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.ui.screens.reader.activities.ReaderActivity
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.theme.MyneTheme
+import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.utils.noRippleClickable
 
 @ExperimentalMaterialApi
@@ -128,11 +129,11 @@ private fun ReaderItem(
             text = chapter.title,
             fontSize = 24.sp,
             lineHeight = 32.sp,
-            fontFamily = viewModel.readerFont.value.fontFamily,
-            fontWeight = FontWeight.SemiBold,
+            fontFamily = pacificoFont,
+            fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.88f)
         )
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         paragraphs.forEach { para ->
             when (val imgEntry = BookTextMapper.ImgEntry.fromXMLString(para)) {

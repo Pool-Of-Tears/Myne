@@ -286,6 +286,9 @@ class EpubParser {
                     )
                 } else {
                     val res = parser.parseAsDocument()
+                    // A full chapter usually is split in multiple sequential entries,
+                    // try to merge them and extract the main title of each one.
+                    // Is is not perfect but better than nothing.
                     val chapterTitle = res.title ?: if (chapterIndex == 0) "" else null
                     if (chapterTitle != null)
                         chapterIndex += 1
@@ -350,5 +353,4 @@ class EpubParser {
             null
         }
     }
-
 }

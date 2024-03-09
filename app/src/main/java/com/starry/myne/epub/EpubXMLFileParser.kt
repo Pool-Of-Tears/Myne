@@ -172,7 +172,15 @@ class EpubXMLFileParser(
                 child.nodeName() == "hr" -> "\n\n"
                 child.nodeName() == "img" -> declareImgEntry(child)
                 child.nodeName() == "image" -> declareImgEntry(child)
-                child is TextNode -> child.text().trim()
+                child is TextNode -> {
+                    if (fragmentId != null) {
+                        val text = child.text().trim()
+                        if (text.isEmpty()) "" else text + "\n\n"
+                    } else {
+                        child.text().trim()
+                    }
+                }
+
                 else -> getNodeTextTraverse(child)
             }
         }
