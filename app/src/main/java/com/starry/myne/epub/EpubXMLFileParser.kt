@@ -74,7 +74,7 @@ class EpubXMLFileParser(
                 fragmentElement?.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
 
                 while (currentNode != null && currentNode != nextFragmentIdElement) {
-                    bodyBuilder.append(getNodeStructuredText(currentNode))
+                    bodyBuilder.append(getNodeStructuredText(currentNode) + "\n\n")
                     currentNode = currentNode.nextSibling()
                 }
                 bodyContent = bodyBuilder.toString()
@@ -135,7 +135,7 @@ class EpubXMLFileParser(
             }
 
         val paragraph = innerTraverse(node).trim()
-        return if (paragraph.isEmpty()) "" else innerTraverse(node).trim() + "\n\n"
+        return if (paragraph.isNotEmpty()) "$paragraph\n\n" else ""
     }
 
     private fun getNodeTextTraverse(node: org.jsoup.nodes.Node): String {
@@ -154,7 +154,6 @@ class EpubXMLFileParser(
                     val text = child.text().trim()
                     if (text.isEmpty()) "" else text + "\n\n"
                 }
-
                 else -> getNodeTextTraverse(child)
             }
         }
@@ -172,15 +171,7 @@ class EpubXMLFileParser(
                 child.nodeName() == "hr" -> "\n\n"
                 child.nodeName() == "img" -> declareImgEntry(child)
                 child.nodeName() == "image" -> declareImgEntry(child)
-                child is TextNode -> {
-                    if (fragmentId != null) {
-                        val text = child.text().trim()
-                        if (text.isEmpty()) "" else text + "\n\n"
-                    } else {
-                        child.text().trim()
-                    }
-                }
-
+                child is TextNode -> child.text().trim()
                 else -> getNodeTextTraverse(child)
             }
         }

@@ -256,7 +256,7 @@ class EpubParser {
             } else {
                 emptyList()
             }
-        }.toList()
+        }.filter { it.body.isNotBlank() }.toList()
     }
 
     private fun parseUsingSpine(
@@ -347,10 +347,9 @@ class EpubParser {
             ?.let { EpubImage(absPath = it.absPath, image = it.data) }
 
         return if (coverImage?.image != null) {
-            Log.d(TAG, "Cover image found")
             BitmapFactory.decodeByteArray(coverImage.image, 0, coverImage.image.size)
         } else {
-            null
+            Log.e(TAG, "Cover image not found"); null
         }
     }
 }
