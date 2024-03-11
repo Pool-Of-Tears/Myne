@@ -381,7 +381,6 @@ fun BottomSheetContents(
         )
 
         Spacer(modifier = Modifier.height(14.dp))
-        HorizontalDivider()
 
         FontSelectionButton(
             readerFontFamily = viewModel.readerFont,

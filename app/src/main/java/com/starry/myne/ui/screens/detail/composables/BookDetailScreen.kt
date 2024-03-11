@@ -48,11 +48,11 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -96,9 +96,9 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.starry.myne.MainActivity
 import com.starry.myne.R
+import com.starry.myne.ui.common.NetworkError
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.screens.detail.viewmodels.BookDetailViewModel
-import com.starry.myne.ui.common.NetworkError
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
@@ -534,7 +534,7 @@ fun MiddleBar(
                     }
 
                 }
-                HorizontalDivider(
+                VerticalDivider(
                     modifier = Modifier
                         .fillMaxHeight(0.6f)
                         .width(2.dp)
@@ -562,7 +562,7 @@ fun MiddleBar(
                         )
                     }
                 }
-                HorizontalDivider(
+                VerticalDivider(
                     modifier = Modifier
                         .fillMaxHeight(0.6f)
                         .width(2.dp)

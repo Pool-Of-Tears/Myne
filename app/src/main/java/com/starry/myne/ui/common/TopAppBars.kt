@@ -92,7 +92,10 @@ fun CustomTopAppBar(headerText: String, onBackButtonClicked: () -> Unit) {
         Row(
             modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
         ) {
-            TopBarActionItem(icon = Icons.AutoMirrored.Outlined.ArrowBack, onclick = onBackButtonClicked)
+            TopBarActionItem(
+                icon = Icons.AutoMirrored.Outlined.ArrowBack,
+                onclick = onBackButtonClicked
+            )
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = headerText,
@@ -127,7 +130,10 @@ fun CustomTopAppBar(
         Row(
             modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
         ) {
-            TopBarActionItem(icon = Icons.AutoMirrored.Outlined.ArrowBack, onclick = onBackButtonClicked)
+            TopBarActionItem(
+                icon = Icons.AutoMirrored.Outlined.ArrowBack,
+                onclick = onBackButtonClicked
+            )
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = headerText,
