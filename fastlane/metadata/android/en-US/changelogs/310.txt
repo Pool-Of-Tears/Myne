@@ -1,0 +1,7 @@
+- Major improvements in the internal reader with new ToC-based EPUB parsing logic, allowing it to correctly map chapters instead of relying on a wacky spine-based parser.
+- Redesigned the chapter list dialog inside the ebook reader to comply with the rest of the UI design.
+- Added a progress indicator at the top bar in the ebook reader to track the progress of the current chapter.
+- Fixed the progress percentage not updating immediately when going back to the chapters menu from the reader screen.
+- Added two new fonts in the ebook reader called OpenDyslexia and Figerona.
+- Bunch of code cleanups, optimizations, and other improvements.
+- Updated Compose BOM, Kotlin, and other dependencies.
