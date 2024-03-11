@@ -47,10 +47,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.OutlinedButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
@@ -136,6 +136,12 @@ fun ReaderScreen(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val chapters = viewModel.state.epubBook?.chapters
     val coroutineScope = rememberCoroutineScope()
+
+    BackHandler(drawerState.isOpen) {
+        if (drawerState.isOpen) {
+            coroutineScope.launch { drawerState.close() }
+        }
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -457,7 +463,7 @@ fun FontSelectionButton(
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
         )
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
