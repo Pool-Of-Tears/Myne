@@ -83,7 +83,9 @@ class EpubParser {
         }
     }
 
-    companion object { const val TAG = "EpubParser" }
+    companion object {
+        const val TAG = "EpubParser"
+    }
 
     /**
      * Creates an [EpubBook] object from an EPUB file.

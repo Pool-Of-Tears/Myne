@@ -61,6 +61,7 @@
     <string name="reader_max_font_size_reached">Je nám líto, ale výš už to nejde!</string>
     <string name="reader_min_font_size_reached">Je nám líto, ale níž už to nejde!</string>
     <string name="reader_font_style_chooer">Change FontStyle</string>
+    <string name="reader_chapter_list_title">Kapitoly</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Nastavení</string>

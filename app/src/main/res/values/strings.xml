@@ -62,6 +62,7 @@
     <string name="reader_max_font_size_reached">Sorry, cannot go any higher than that!</string>
     <string name="reader_min_font_size_reached">Sorry, cannot go any lower than that!</string>
     <string name="reader_font_style_chooer">Change FontStyle</string>
+    <string name="reader_chapter_list_title">Chapters</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Settings</string>

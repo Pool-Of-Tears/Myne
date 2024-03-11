@@ -86,7 +86,7 @@ class ReaderRVAdapter(
             composeView.setContent {
                 MyneTheme(settingsViewModel = activity.settingsViewModel) {
                     SelectionContainer {
-                        ReaderItem(chapter = chapter, viewModel = viewModel, onClick = onClick)
+                        ChapterRVItem(chapter = chapter, viewModel = viewModel, onClick = onClick)
                     }
                 }
             }
@@ -109,7 +109,7 @@ class ReaderRVAdapter(
 }
 
 @Composable
-private fun ReaderItem(
+private fun ChapterRVItem(
     chapter: EpubChapter,
     viewModel: ReaderViewModel,
     onClick: () -> Unit

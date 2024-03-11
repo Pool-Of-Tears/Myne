@@ -175,6 +175,7 @@ class EpubXMLFileParser(
                     val text = child.text().trim()
                     if (text.isEmpty()) "" else text + "\n\n"
                 }
+
                 else -> getNodeTextTraverse(child)
             }
         }
