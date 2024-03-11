@@ -42,17 +42,17 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Snackbar
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -96,9 +96,9 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.starry.myne.MainActivity
 import com.starry.myne.R
+import com.starry.myne.ui.common.NetworkError
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.screens.detail.viewmodels.BookDetailViewModel
-import com.starry.myne.ui.screens.other.NetworkError
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
@@ -477,13 +477,13 @@ fun MiddleBar(
             if (progressValue > 0f) {
                 // Determinate progress bar.
                 LinearProgressIndicator(
-                    progress = progress,
-                    color = MaterialTheme.colorScheme.secondary,
+                    progress = { progress },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(16.dp)
                         .padding(start = 14.dp, end = 14.dp, top = 6.dp)
-                        .clip(RoundedCornerShape(40.dp))
+                        .clip(RoundedCornerShape(40.dp)),
+                    color = MaterialTheme.colorScheme.secondary,
                 )
             } else {
                 // Indeterminate progress bar.
@@ -534,7 +534,7 @@ fun MiddleBar(
                     }
 
                 }
-                Divider(
+                VerticalDivider(
                     modifier = Modifier
                         .fillMaxHeight(0.6f)
                         .width(2.dp)
@@ -562,7 +562,7 @@ fun MiddleBar(
                         )
                     }
                 }
-                Divider(
+                VerticalDivider(
                     modifier = Modifier
                         .fillMaxHeight(0.6f)
                         .width(2.dp)
@@ -628,7 +628,7 @@ fun BookDetailTopBar(
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
             .clickable { onBackClicked() }) {
             Icon(
-                imageVector = Icons.Outlined.ArrowBack,
+                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                 contentDescription = stringResource(id = R.string.back_button_desc),
                 tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(14.dp)

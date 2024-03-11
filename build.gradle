@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlin_version = '1.9.21'
+        kotlin_version = '1.9.22'
         gradle_version = '8.3.0'
         hilt_version = '2.49'
         room_version = '2.6.1'
@@ -24,5 +24,5 @@ plugins {
     id 'com.android.application' version "$gradle_version" apply false
     id 'com.android.library' version "$gradle_version" apply false
     id 'org.jetbrains.kotlin.android' version "$kotlin_version" apply false
-    id 'com.google.devtools.ksp' version '1.9.21-1.0.16' apply false
+    id 'com.google.devtools.ksp' version '1.9.22-1.0.17' apply false
 }

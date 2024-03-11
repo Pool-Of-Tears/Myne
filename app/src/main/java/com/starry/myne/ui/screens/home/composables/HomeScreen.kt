@@ -48,8 +48,8 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -91,11 +91,11 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.R
 import com.starry.myne.ui.common.BookItemCard
+import com.starry.myne.ui.common.NetworkError
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.home.viewmodels.HomeViewModel
 import com.starry.myne.ui.screens.home.viewmodels.UserAction
-import com.starry.myne.ui.screens.other.NetworkError
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.utils.NetworkObserver
@@ -256,9 +256,9 @@ fun HomeScreenScaffold(
                         sysBackButtonState.value = false
                     }
                 }
-                Divider(
-                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+                HorizontalDivider(
                     thickness = 2.dp,
+                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
                 )
             }
         },

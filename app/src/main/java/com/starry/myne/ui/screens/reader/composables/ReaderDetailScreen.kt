@@ -42,9 +42,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -279,12 +279,12 @@ fun ReaderDetailScreen(
                     }
                 }
 
-                Divider(
-                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-                    thickness = 2.dp,
+                HorizontalDivider(
                     modifier = Modifier.padding(
                         start = 20.dp, end = 20.dp, top = 2.dp, bottom = 2.dp
-                    )
+                    ),
+                    thickness = 2.dp,
+                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
                 )
 
                 val lazyListState = rememberLazyListState()
