@@ -21,6 +21,8 @@ import androidx.annotation.Keep
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.font.Font
@@ -31,8 +33,9 @@ import com.starry.myne.R
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderItem
-import com.starry.myne.epub.createEpubBook
+import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubBook
+import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.PreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -46,24 +49,33 @@ import javax.inject.Inject
 sealed class ReaderFont(val id: String, val name: String, val fontFamily: FontFamily) {
 
     companion object {
-        fun getAllFonts() = ReaderFont::class.sealedSubclasses.mapNotNull { it.objectInstance }
+        fun getAllFonts() =
+            ReaderFont::class.sealedSubclasses.mapNotNull { it.objectInstance }.sortedBy { it.name }
+
         fun getFontByName(name: String) = getAllFonts().find { it.name == name }!!
     }
 
     @Keep
-    object System : ReaderFont("system", "System Default", FontFamily.Default)
+    data object System : ReaderFont("system", "System Default", FontFamily.Default)
 
     @Keep
-    object Serif : ReaderFont("serif", "Serif Font", FontFamily.Serif)
+    data object Serif : ReaderFont("serif", "Serif", FontFamily.Serif)
 
     @Keep
-    object Cursive : ReaderFont("cursive", "Cursive Font", FontFamily.Cursive)
+    data object Cursive : ReaderFont("cursive", "Cursive", FontFamily.Cursive)
 
     @Keep
-    object SansSerif : ReaderFont("sans-serif", "SansSerif Font", FontFamily.SansSerif)
+    data object SansSerif : ReaderFont("sans-serif", "SansSerif", FontFamily.SansSerif)
 
     @Keep
-    object Inter : ReaderFont("inter", "Inter Font", FontFamily(Font(R.font.reader_inter_font)))
+    data object Inter : ReaderFont("inter", "Inter", FontFamily(Font(R.font.reader_inter_font)))
+
+    @Keep
+    data object Dyslexic :
+        ReaderFont("dyslexic", "OpenDyslexic", FontFamily(Font(R.font.reader_inter_font)))
+
+    @Keep
+    data object Lora : ReaderFont("figerona", "Figerona", figeronaFont)
 }
 
 data class ReaderScreenState(
@@ -77,23 +89,27 @@ data class ReaderScreenState(
 class ReaderViewModel @Inject constructor(
     private val libraryDao: LibraryDao,
     private val readerDao: ReaderDao,
-    private val preferenceUtil: PreferenceUtil
+    private val preferenceUtil: PreferenceUtil,
+    private val epubParser: EpubParser
 ) : ViewModel() {
 
     var state by mutableStateOf(ReaderScreenState())
 
-    private var _textSize: MutableState<Int> = mutableStateOf(getFontSize())
+    private var _textSize: MutableState<Int> = mutableIntStateOf(getFontSize())
     val textSize: State<Int> = _textSize
 
     private var _readerFont: MutableState<ReaderFont> = mutableStateOf(getFontFamily())
     val readerFont: State<ReaderFont> = _readerFont
+
+    private val _itemScrolledPercent = mutableFloatStateOf(0f)
+    val itemScrolledPercent: State<Float> = _itemScrolledPercent
 
     fun loadEpubBook(bookId: Int, onLoaded: (ReaderScreenState) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val libraryItem = libraryDao.getItemById(bookId)
             val readerData = readerDao.getReaderItem(bookId)
             // parse and create epub book
-            val epubBook = createEpubBook(libraryItem!!.filePath)
+            val epubBook = epubParser.createEpubBook(libraryItem!!.filePath)
             state = state.copy(epubBook = epubBook, readerData = readerData)
             onLoaded(state)
             // Added some delay to avoid choppy animation.
@@ -105,7 +121,7 @@ class ReaderViewModel @Inject constructor(
     fun loadEpubBookExternal(fileStream: FileInputStream, onLoaded: (EpubBook) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             // parse and create epub book
-            val epubBook = createEpubBook(fileStream)
+            val epubBook = epubParser.createEpubBook(fileStream, shouldUseToc = false)
             state = state.copy(epubBook = epubBook)
             onLoaded(state.epubBook!!)
             // Added some delay to avoid choppy animation.
@@ -126,6 +142,10 @@ class ReaderViewModel @Inject constructor(
                 readerDao.insert(readerItem = ReaderItem(bookId, chapterIndex, chapterOffset))
             }
         }
+    }
+
+    fun setItemScrolledPercent(percent: Float) {
+        _itemScrolledPercent.floatValue = percent
     }
 
     fun showReaderInfo() {
@@ -155,7 +175,7 @@ class ReaderViewModel @Inject constructor(
         _textSize.value = newValue
     }
 
-    fun getFontSize() = preferenceUtil.getInt(PreferenceUtil.READER_FONT_SIZE_INT, 100)
+    private fun getFontSize() = preferenceUtil.getInt(PreferenceUtil.READER_FONT_SIZE_INT, 100)
 
 
 }

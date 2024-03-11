@@ -62,6 +62,7 @@
     <string name="reader_max_font_size_reached">Entschuldige bitte, größer kann es nicht dargestellt werden!</string>
     <string name="reader_min_font_size_reached">Entschuldige bitte, kleiner kann es nicht dargestellt werden!</string>
     <string name="reader_font_style_chooer">Schriftart ändern</string>
+    <string name="reader_chapter_list_title">Kapitel</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Einstellungen</string>

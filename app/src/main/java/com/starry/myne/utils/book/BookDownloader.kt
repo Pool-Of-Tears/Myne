@@ -24,8 +24,12 @@ import android.net.Uri
 import android.os.Environment
 import com.starry.myne.repo.models.Book
 import com.starry.myne.utils.Constants
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 class BookDownloader(context: Context) {
 

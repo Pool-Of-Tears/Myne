@@ -62,6 +62,7 @@
     <string name="reader_max_font_size_reached">آسف، لا يمكن أن تذهب إلى أعلى من ذلك!</string>
     <string name="reader_min_font_size_reached">آسف، لا يمكن أن تذهب إلى أقل من ذلك!</string>
     <string name="reader_font_style_chooer">تغيير نمط الخط</string>
+    <string name="reader_chapter_list_title">الفصول</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">الاعدادات</string>

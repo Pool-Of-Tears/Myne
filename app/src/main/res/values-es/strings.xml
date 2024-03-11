@@ -62,6 +62,7 @@
     <string name="reader_max_font_size_reached">Lo sentimos, no puede subir más</string>
     <string name="reader_min_font_size_reached">Lo sentimos, no puede bajar más</string>
     <string name="reader_font_style_chooer">Change FontStyle</string>
+    <string name="reader_chapter_list_title">Capítulos</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Ajustes</string>

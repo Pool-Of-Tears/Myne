@@ -25,12 +25,13 @@ import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderItem
-import com.starry.myne.epub.createEpubBook
+import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubBook
 import com.starry.myne.repo.BookRepository
 import com.starry.myne.utils.NetworkObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.io.FileNotFoundException
 import javax.inject.Inject
@@ -47,14 +48,14 @@ data class ReaderDetailScreenState(
     val isLoading: Boolean = true,
     val ebookData: EbookData? = null,
     val error: String? = null,
-    val readerItem: ReaderItem? = null
 )
 
 @HiltViewModel
 class ReaderDetailViewModel @Inject constructor(
     private val bookRepository: BookRepository,
     private val libraryDao: LibraryDao,
-    private val readerDao: ReaderDao
+    private val readerDao: ReaderDao,
+    private val epubParser: EpubParser
 ) : ViewModel() {
 
     companion object Errors {
@@ -62,11 +63,17 @@ class ReaderDetailViewModel @Inject constructor(
     }
 
     var state by mutableStateOf(ReaderDetailScreenState())
+
+    val readerItem: Flow<ReaderItem?>?
+        get() = _readerItem
+    private var _readerItem: Flow<ReaderItem?>? = null
+
     fun loadEbookData(bookId: String, networkStatus: NetworkObserver.Status) {
         viewModelScope.launch(Dispatchers.IO) {
             // build EbookData.
             val libraryItem = libraryDao.getItemById(bookId.toInt())!!
             state = try {
+                _readerItem = readerDao.getReaderItemAsFlow(bookId.toInt())
                 val coverImage: String? = try {
                     if (networkStatus == NetworkObserver.Status.Available) bookRepository.getExtraInfo(
                         libraryItem.title
@@ -79,8 +86,8 @@ class ReaderDetailViewModel @Inject constructor(
                         coverImage,
                         libraryItem.title,
                         libraryItem.authors,
-                        createEpubBook(libraryItem.filePath)
-                    ), readerItem = readerDao.getReaderItem(bookId.toInt())
+                        epubParser.createEpubBook(libraryItem.filePath)
+                    )
                 )
 
             } catch (exc: FileNotFoundException) {

@@ -62,6 +62,7 @@
     <string name="reader_max_font_size_reached">Îmi pare rău, nu pot merge mai sus de atât!</string>
     <string name="reader_min_font_size_reached">Îmi pare rău, nu pot merge mai jos de atât!</string>
     <string name="reader_font_style_chooer">Schimbați FontStyle</string>
+    <string name="reader_chapter_list_title">Capitole</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Setări</string>

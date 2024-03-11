@@ -19,6 +19,7 @@ package com.starry.myne.di
 
 import android.content.Context
 import com.starry.myne.database.MyneDatabase
+import com.starry.myne.epub.EpubParser
 import com.starry.myne.repo.BookRepository
 import com.starry.myne.ui.screens.welcome.viewmodels.WelcomeDataStore
 import com.starry.myne.utils.PreferenceUtil
@@ -60,6 +61,10 @@ class MainModule {
     @Singleton
     @Provides
     fun providePreferenceUtil(@ApplicationContext context: Context) = PreferenceUtil(context)
+
+    @Singleton
+    @Provides
+    fun provideEpubParser() = EpubParser()
 
     @Provides
     @Singleton

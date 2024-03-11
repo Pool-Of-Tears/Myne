@@ -21,14 +21,15 @@ import org.jsoup.Jsoup
 import java.util.Locale
 
 object BookTextMapper {
+
     // <img yrel="{float}"> {uri} </img>
     data class ImgEntry(val path: String, val yrel: Float) {
+
         /**
          * Deprecated versions: v0
          * Current versions: v1
          */
         companion object {
-
 
             fun fromXMLString(text: String): ImgEntry? {
                 return fromXMLStringV0(text) ?: fromXMLStringV1(text)

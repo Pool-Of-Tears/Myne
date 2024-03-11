@@ -62,6 +62,7 @@
     <string name="reader_max_font_size_reached">Spiacenti, non si può andare più in alto!</string>
     <string name="reader_min_font_size_reached">Spiacenti, non si può andare più in basso!</string>
     <string name="reader_font_style_chooer">Cambia Font</string>
+    <string name="reader_chapter_list_title">Capitoli</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Impostazioni</string>
