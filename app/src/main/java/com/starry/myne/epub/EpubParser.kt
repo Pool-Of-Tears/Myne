@@ -232,7 +232,7 @@ class EpubParser {
         val tocNavPoints =
             findNestedNavPoints((tocDocument?.selectFirstTag("navMap") as Element?))
 
-        // Parse each chapter file
+        // Parse each chapter entry.
         return tocNavPoints.flatMap { navPoint ->
             val title =
                 navPoint.selectFirstChildTag("navLabel")

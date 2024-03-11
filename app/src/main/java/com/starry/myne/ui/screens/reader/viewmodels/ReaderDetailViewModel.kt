@@ -31,6 +31,7 @@ import com.starry.myne.repo.BookRepository
 import com.starry.myne.utils.NetworkObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.io.FileNotFoundException
 import javax.inject.Inject
@@ -47,7 +48,6 @@ data class ReaderDetailScreenState(
     val isLoading: Boolean = true,
     val ebookData: EbookData? = null,
     val error: String? = null,
-    val readerItem: ReaderItem? = null
 )
 
 @HiltViewModel
@@ -63,11 +63,17 @@ class ReaderDetailViewModel @Inject constructor(
     }
 
     var state by mutableStateOf(ReaderDetailScreenState())
+
+    val readerItem: Flow<ReaderItem?>?
+        get() = _readerItem
+    private var _readerItem: Flow<ReaderItem?>? = null
+
     fun loadEbookData(bookId: String, networkStatus: NetworkObserver.Status) {
         viewModelScope.launch(Dispatchers.IO) {
             // build EbookData.
             val libraryItem = libraryDao.getItemById(bookId.toInt())!!
             state = try {
+                _readerItem = readerDao.getReaderItemAsFlow(bookId.toInt())
                 val coverImage: String? = try {
                     if (networkStatus == NetworkObserver.Status.Available) bookRepository.getExtraInfo(
                         libraryItem.title
@@ -81,7 +87,7 @@ class ReaderDetailViewModel @Inject constructor(
                         libraryItem.title,
                         libraryItem.authors,
                         epubParser.createEpubBook(libraryItem.filePath)
-                    ), readerItem = readerDao.getReaderItem(bookId.toInt())
+                    )
                 )
 
             } catch (exc: FileNotFoundException) {

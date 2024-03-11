@@ -21,6 +21,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
+
 
 @Dao
 interface ReaderDao {
@@ -41,4 +43,7 @@ interface ReaderDao {
 
     @Query("SELECT * FROM reader_table WHERE book_id = :bookId")
     fun getReaderItem(bookId: Int): ReaderItem?
+
+    @Query("SELECT * FROM reader_table WHERE book_id = :bookId")
+    fun getReaderItemAsFlow(bookId: Int): Flow<ReaderItem?>
 }

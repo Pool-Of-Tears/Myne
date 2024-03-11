@@ -158,7 +158,9 @@ private fun ChapterRVItem(
                                 .build(),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(vertical = 6.dp)
                         )
                     }
                 }

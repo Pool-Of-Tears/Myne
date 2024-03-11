@@ -52,6 +52,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -120,13 +121,14 @@ fun ReaderDetailScreen(
     } else if (state.error != null && state.error == ReaderDetailViewModel.FILE_NOT_FOUND) {
         ReaderError(navController = navController)
     } else {
+        val readerItem = viewModel.readerItem?.collectAsState(initial = null)
         Scaffold(topBar = {
             CustomTopAppBar(headerText = stringResource(id = R.string.reader_detail_header)) {
                 navController.navigateUp()
             }
         }, floatingActionButton = {
             ExtendedFloatingActionButton(
-                text = { Text(text = stringResource(id = if (state.readerItem != null) R.string.continue_reading_button else R.string.start_reading_button)) },
+                text = { Text(text = stringResource(id = if (readerItem != null) R.string.continue_reading_button else R.string.start_reading_button)) },
                 onClick = {
                     val intent = Intent(context, ReaderActivity::class.java)
                     intent.putExtra(ReaderActivity.EXTRA_BOOK_ID, bookId.toInt())
@@ -258,9 +260,9 @@ fun ReaderDetailScreen(
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
 
-                            if (state.readerItem != null) {
+                            if (readerItem?.value != null) {
                                 Text(
-                                    text = "${state.readerItem.getProgressPercent(state.ebookData.epubBook.chapters.size)}% Completed",
+                                    text = "${readerItem.value?.getProgressPercent(state.ebookData.epubBook.chapters.size)}% Completed",
                                     modifier = Modifier.padding(
                                         start = 12.dp, end = 8.dp, top = 8.dp
                                     ),
