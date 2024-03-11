@@ -62,7 +62,7 @@ import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.categories.viewmodels.CategoryViewModel
 import com.starry.myne.ui.screens.home.composables.LanguageItem
-import com.starry.myne.ui.screens.other.NetworkError
+import com.starry.myne.ui.common.NetworkError
 import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.utils.NetworkObserver
 import com.starry.myne.utils.book.BookLanguage

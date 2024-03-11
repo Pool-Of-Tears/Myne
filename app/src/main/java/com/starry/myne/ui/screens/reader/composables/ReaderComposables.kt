@@ -54,9 +54,9 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -153,11 +153,11 @@ fun ReaderScreen(
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
-                Divider(
-                    thickness = 0.5.dp,
+                HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp, bottom = 16.dp),
+                    thickness = 0.5.dp,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
                 )
 
@@ -241,9 +241,9 @@ fun ReaderScreen(
                                 label = "chapter progress bar state animation"
                             )
                             LinearProgressIndicator(
-                                progress = chapterProgressbarState.value,
+                                progress = { chapterProgressbarState.value },
+                                modifier = Modifier.fillMaxWidth(),
                                 color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }
@@ -381,7 +381,7 @@ fun BottomSheetContents(
         )
 
         Spacer(modifier = Modifier.height(14.dp))
-        Divider()
+        HorizontalDivider()
 
         FontSelectionButton(
             readerFontFamily = viewModel.readerFont,

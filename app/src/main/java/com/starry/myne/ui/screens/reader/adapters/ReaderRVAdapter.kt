@@ -27,8 +27,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -167,9 +167,9 @@ private fun ChapterRVItem(
             }
         }
 
-        Divider(
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+        HorizontalDivider(
             thickness = 2.dp,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
         )
     }
 }

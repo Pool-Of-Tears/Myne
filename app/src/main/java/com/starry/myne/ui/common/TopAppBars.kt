@@ -29,8 +29,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material3.Divider
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -75,9 +75,9 @@ fun CustomTopAppBar(headerText: String, iconRes: Int) {
                 modifier = Modifier.size(28.dp)
             )
         }
-        Divider(
-            color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+        HorizontalDivider(
             thickness = 2.dp,
+            color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
         )
     }
 }
@@ -92,7 +92,7 @@ fun CustomTopAppBar(headerText: String, onBackButtonClicked: () -> Unit) {
         Row(
             modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
         ) {
-            TopBarActionItem(icon = Icons.Outlined.ArrowBack, onclick = onBackButtonClicked)
+            TopBarActionItem(icon = Icons.AutoMirrored.Outlined.ArrowBack, onclick = onBackButtonClicked)
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = headerText,
@@ -104,9 +104,9 @@ fun CustomTopAppBar(headerText: String, onBackButtonClicked: () -> Unit) {
             )
             Spacer(modifier = Modifier.weight(2.35f))
         }
-        Divider(
-            color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+        HorizontalDivider(
             thickness = 2.dp,
+            color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
         )
     }
 }
@@ -127,7 +127,7 @@ fun CustomTopAppBar(
         Row(
             modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
         ) {
-            TopBarActionItem(icon = Icons.Outlined.ArrowBack, onclick = onBackButtonClicked)
+            TopBarActionItem(icon = Icons.AutoMirrored.Outlined.ArrowBack, onclick = onBackButtonClicked)
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = headerText,
@@ -143,9 +143,9 @@ fun CustomTopAppBar(
                 onclick = onActionClicked
             )
         }
-        Divider(
-            color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+        HorizontalDivider(
             thickness = 2.dp,
+            color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
         )
     }
 

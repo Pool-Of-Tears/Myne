@@ -39,7 +39,6 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +49,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -331,7 +331,7 @@ fun LibraryCard(
                         fontSize = 14.sp,
                         modifier = Modifier.padding(end = 6.dp)
                     )
-                    Divider(
+                    VerticalDivider(
                         modifier = Modifier
                             .height(17.5.dp)
                             .width(1.dp)
@@ -386,7 +386,7 @@ fun LibraryCardButton(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                modifier = Modifier.size(size = 15.dp),
+                modifier = Modifier.size(size = 14.dp),
                 tint = MaterialTheme.colorScheme.onSurface
             )
 
@@ -396,7 +396,7 @@ fun LibraryCardButton(
                 fontFamily = figeronaFont,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(start = 2.dp, bottom = 1.dp),
+                modifier = Modifier.padding(start = 2.dp),
             )
         }
     }
