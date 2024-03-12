@@ -36,7 +36,7 @@
     <string name="continue_reading_button">继续</string>
     <string name="reader_chapters_list">章节</string>
     <string name="reader_error_title">啊！没能打开这本电子书 :(</string>
-    <string name="reader_error_subtitle">导致整个错误的原因有很多</string>
+    <string name="reader_error_subtitle">导致这个错误的原因有很多</string>
     <string name="reader_error_reason_one_title">1.这本书已经被删除了</string>
     <string name="reader_error_reason_one_desc">请检查手机下载目录（Download）下的MayneEbooks文件夹，若发现这个电子书已经不见了，则需要重新下载该书</string>
     <string name="reader_error_reason_two_title">2. 这本书还在，但之前有卸载过本软件（或者使用过类似于“一键换机”或者“备份还原”的功能）</string>
