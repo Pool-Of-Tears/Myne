@@ -72,9 +72,14 @@
     <string name="general_settings_header">通用</string>
     <string name="default_reader_setting">默认阅读器</string>
     <string name="default_reader_dialog_title">打开方式</string>
+    <string name="reader_option_inbuilt">自带阅读器</string>
+    <string name="reader_option_external">外部阅读器</string>
     <string name="display_setting_header">外观</string>
     <string name="theme_setting">默认主题</string>
     <string name="theme_dialog_title">更改主题</string>
+    <string name="theme_option_light">亮色主题</string>
+    <string name="theme_option_dark">暗色主题</string>
+    <string name="theme_option_system">跟随系统</string>
     <string name="theme_dialog_apply_button">应用</string>
     <string name="material_you_settings_disabled_desc">启用Material You主题</string>
     <string name="material_you_settings_enabled_desc">关闭Material You主题</string>
