@@ -46,6 +46,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -67,14 +68,18 @@ import com.starry.myne.ui.theme.figeronaFont
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
+    val context = LocalContext.current
     val viewModel: WelcomeViewModel = hiltViewModel()
 
     val internalReaderValue = when (viewModel.getInternalReaderSetting()) {
-        true -> "Internal Reader"
-        false -> "External Reader"
+        true -> stringResource(id = R.string.reader_option_inbuilt)
+        false -> stringResource(id = R.string.reader_option_external)
     }
     val internalReaderDialog = remember { mutableStateOf(false) }
-    val radioOptions = listOf("Internal Reader", "External Reader")
+    val radioOptions = listOf(
+        stringResource(id = R.string.reader_option_inbuilt),
+        stringResource(id = R.string.reader_option_external)
+    )
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(internalReaderValue) }
 
 
@@ -204,12 +209,12 @@ fun WelcomeScreen(navController: NavController) {
                     internalReaderDialog.value = false
 
                     when (selectedOption) {
-                        "External Reader" -> {
-                            viewModel.setInternalReaderSetting(false)
+                        context.getString(R.string.reader_option_inbuilt) -> {
+                            viewModel.setInternalReaderSetting(true)
                         }
 
-                        "Internal Reader" -> {
-                            viewModel.setInternalReaderSetting(true)
+                        context.getString(R.string.reader_option_external) -> {
+                            viewModel.setInternalReaderSetting(false)
                         }
                     }
                 }) {

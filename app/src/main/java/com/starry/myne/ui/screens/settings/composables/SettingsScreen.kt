@@ -110,7 +110,7 @@ fun SettingsScreen(navController: NavController) {
             )
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 SettingsCard()
-                GeneralOptionsUI(viewModel = viewModel)
+                GeneralOptionsUI(viewModel = viewModel, context = context)
                 DisplayOptionsUI(viewModel = viewModel, context = context, snackBarHostState)
                 InformationUI(navController = navController)
             }
@@ -191,13 +191,16 @@ fun SettingsCard() {
 
 @ExperimentalMaterial3Api
 @Composable
-fun GeneralOptionsUI(viewModel: SettingsViewModel) {
+fun GeneralOptionsUI(viewModel: SettingsViewModel, context: Context) {
     val internalReaderValue = when (viewModel.getInternalReaderValue()) {
-        true -> "Internal Reader"
-        false -> "External Reader"
+        true -> stringResource(id = R.string.reader_option_inbuilt)
+        false -> stringResource(id = R.string.reader_option_external)
     }
-    val internalReaderDialog = remember { mutableStateOf(false) }
-    val radioOptions = listOf("Internal Reader", "External Reader")
+    val showReaderDialog = remember { mutableStateOf(false) }
+    val radioOptions = listOf(
+        stringResource(id = R.string.reader_option_inbuilt),
+        stringResource(id = R.string.reader_option_external)
+    )
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(internalReaderValue) }
 
     Column(
@@ -216,12 +219,12 @@ fun GeneralOptionsUI(viewModel: SettingsViewModel) {
         SettingItem(icon = R.drawable.ic_settings_reader,
             mainText = stringResource(id = R.string.default_reader_setting),
             subText = internalReaderValue,
-            onClick = { internalReaderDialog.value = true })
+            onClick = { showReaderDialog.value = true })
     }
 
-    if (internalReaderDialog.value) {
+    if (showReaderDialog.value) {
         AlertDialog(onDismissRequest = {
-            internalReaderDialog.value = false
+            showReaderDialog.value = false
         }, title = {
             Text(
                 text = stringResource(id = R.string.default_reader_dialog_title),
@@ -265,15 +268,15 @@ fun GeneralOptionsUI(viewModel: SettingsViewModel) {
             }
         }, confirmButton = {
             TextButton(onClick = {
-                internalReaderDialog.value = false
+                showReaderDialog.value = false
 
                 when (selectedOption) {
-                    "External Reader" -> {
-                        viewModel.setInternalReaderValue(false)
+                    context.getString(R.string.reader_option_inbuilt) -> {
+                        viewModel.setInternalReaderValue(true)
                     }
 
-                    "Internal Reader" -> {
-                        viewModel.setInternalReaderValue(true)
+                    context.getString(R.string.reader_option_external) -> {
+                        viewModel.setInternalReaderValue(false)
                     }
                 }
             }) {
@@ -281,7 +284,7 @@ fun GeneralOptionsUI(viewModel: SettingsViewModel) {
             }
         }, dismissButton = {
             TextButton(onClick = {
-                internalReaderDialog.value = false
+                showReaderDialog.value = false
             }) {
                 Text(stringResource(id = R.string.cancel))
             }
@@ -298,18 +301,22 @@ fun GeneralOptionsUI(viewModel: SettingsViewModel) {
 fun DisplayOptionsUI(
     viewModel: SettingsViewModel,
     context: Context,
-    snackbarHostState: SnackbarHostState,
+    snackBarHostState: SnackbarHostState,
 ) {
-    val coroutiScope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
 
     val displayValue =
         when (viewModel.getThemeValue()) {
-            ThemeMode.Light.ordinal -> "Light"
-            ThemeMode.Dark.ordinal -> "Dark"
-            else -> "System"
+            ThemeMode.Light.ordinal -> stringResource(id = R.string.theme_option_light)
+            ThemeMode.Dark.ordinal -> stringResource(id = R.string.theme_option_dark)
+            else -> stringResource(id = R.string.theme_option_system)
         }
     val displayDialog = remember { mutableStateOf(false) }
-    val radioOptions = listOf("Light", "Dark", "System")
+    val radioOptions = listOf(
+        stringResource(id = R.string.theme_option_light),
+        stringResource(id = R.string.theme_option_dark),
+        stringResource(id = R.string.theme_option_system)
+    )
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(displayValue) }
 
     val materialYouSwitch = remember { mutableStateOf(viewModel.getMaterialYouValue()) }
@@ -348,7 +355,7 @@ fun DisplayOptionsUI(
                 } else {
                     viewModel.setMaterialYou(false)
                     materialYouSwitch.value = false
-                    coroutiScope.launch { snackbarHostState.showSnackbar(context.getString(R.string.material_you_error)) }
+                    coroutineScope.launch { snackBarHostState.showSnackbar(context.getString(R.string.material_you_error)) }
                 }
             }
         )
@@ -403,22 +410,16 @@ fun DisplayOptionsUI(
                 displayDialog.value = false
 
                 when (selectedOption) {
-                    "Light" -> {
-                        viewModel.setTheme(
-                            ThemeMode.Light
-                        )
+                    context.getString(R.string.theme_option_light) -> {
+                        viewModel.setTheme(ThemeMode.Light)
                     }
 
-                    "Dark" -> {
-                        viewModel.setTheme(
-                            ThemeMode.Dark
-                        )
+                    context.getString(R.string.theme_option_dark) -> {
+                        viewModel.setTheme(ThemeMode.Dark)
                     }
 
-                    "System" -> {
-                        viewModel.setTheme(
-                            ThemeMode.Auto
-                        )
+                    context.getString(R.string.theme_option_system) -> {
+                        viewModel.setTheme(ThemeMode.Auto)
                     }
                 }
             }) {

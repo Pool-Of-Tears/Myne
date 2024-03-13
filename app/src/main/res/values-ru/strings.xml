@@ -71,9 +71,14 @@
     <string name="general_settings_header">Общие</string>
     <string name="default_reader_setting">Ридер по умолчанию</string>
     <string name="default_reader_dialog_title">Открыть с помощью…</string>
+    <string name="reader_option_inbuilt">Встроенная читалка</string>
+    <string name="reader_option_external">Внешняя читалка</string>
     <string name="display_setting_header">Дисплей</string>
     <string name="theme_setting">Тема по умолчанию</string>
     <string name="theme_dialog_title">Изменить тему</string>
+    <string name="theme_option_light">Светлая</string>
+    <string name="theme_option_dark">Тёмная</string>
+    <string name="theme_option_system">Системная</string>
     <string name="theme_dialog_apply_button">Применить</string>
     <string name="material_you_settings_disabled_desc">Включить Material You</string>
     <string name="material_you_settings_enabled_desc">Отключить Material You</string>

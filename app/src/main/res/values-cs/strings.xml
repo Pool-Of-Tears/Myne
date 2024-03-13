@@ -70,9 +70,14 @@
     <string name="general_settings_header">Obecné</string>
     <string name="default_reader_setting">Výchozí čtečka</string>
     <string name="default_reader_dialog_title">Otevírat e-knihy pomocí…</string>
+    <string name="reader_option_inbuilt">Vestavěný čtečka</string>
+    <string name="reader_option_external">Externí čtečka</string>
     <string name="display_setting_header">Zobrazení</string>
     <string name="theme_setting">Výchozí motiv</string>
     <string name="theme_dialog_title">Změnit motiv</string>
+    <string name="theme_option_light">Světlé</string>
+    <string name="theme_option_dark">Temné</string>
+    <string name="theme_option_system">Systémová výchozí</string>
     <string name="theme_dialog_apply_button">Použít</string>
     <string name="material_you_settings_disabled_desc">Povolit Material You</string>
     <string name="material_you_settings_enabled_desc">Zakázat Material You</string>
