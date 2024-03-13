@@ -71,9 +71,14 @@
     <string name="general_settings_header">General</string>
     <string name="default_reader_setting">Cititor implicit</string>
     <string name="default_reader_dialog_title">Deschideți ebook-uri cu…</string>
+    <string name="reader_option_inbuilt">Cititor încorporat</string>
+    <string name="reader_option_external">Cititor extern</string>
     <string name="display_setting_header">Afișare</string>
     <string name="theme_setting">Tema implicită</string>
     <string name="theme_dialog_title">Tema implicită</string>
+    <string name="theme_option_light">Lumină</string>
+    <string name="theme_option_dark">Întuneric</string>
+    <string name="theme_option_system">Implicit în sistem</string>
     <string name="theme_dialog_apply_button">Aplicați</string>
     <string name="material_you_setting" translatable="false">Material You</string>
     <string name="material_you_settings_disabled_desc">Activați Material You</string>
