@@ -70,10 +70,15 @@
     <string name="made_by">"صنع ب  ❤ بواسطة Shivam"</string>
     <string name="general_settings_header">عام</string>
     <string name="default_reader_setting">القارئ الافتراضي</string>
-    <string name="default_reader_dialog_title">فتح الكتب الإلكترونية مع ...</string>
+    <string name="default_reader_dialog_title">فتح الكتب الإلكترونية مع …</string>
+    <string name="reader_option_inbuilt">القارئ المدمج</string>
+    <string name="reader_option_external">القارئ الخارجي</string>
     <string name="display_setting_header">العرض</string>
     <string name="theme_setting">المظهر الافتراضى</string>
     <string name="theme_dialog_title">تغيير المظهر</string>
+    <string name="theme_option_light">فاتح</string>
+    <string name="theme_option_dark">داكن</string>
+    <string name="theme_option_system">الافتراضي للنظام</string>
     <string name="theme_dialog_apply_button">تطبيق</string>
     <string name="material_you_settings_disabled_desc">تفعيل</string>
     <string name="material_you_settings_enabled_desc">تعطيل</string>

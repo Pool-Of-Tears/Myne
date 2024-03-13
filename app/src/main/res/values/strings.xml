@@ -71,9 +71,14 @@
     <string name="general_settings_header">General</string>
     <string name="default_reader_setting">Default Reader</string>
     <string name="default_reader_dialog_title">Open ebooks with…</string>
+    <string name="reader_option_inbuilt">Inbuilt Reader</string>
+    <string name="reader_option_external">External Reader</string>
     <string name="display_setting_header">Display</string>
     <string name="theme_setting">Default Theme</string>
     <string name="theme_dialog_title">Change Theme</string>
+    <string name="theme_option_light">Light</string>
+    <string name="theme_option_dark">Dark</string>
+    <string name="theme_option_system">System Default</string>
     <string name="theme_dialog_apply_button">Apply</string>
     <string name="material_you_setting" translatable="false">Material You</string>
     <string name="material_you_settings_disabled_desc">Enable Material You</string>
