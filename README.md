@@ -1,6 +1,6 @@
 <div align="center">
 <img src="https://te.legra.ph/file/3bb56bd348c898f1f56a1.png" align="center" style="width: 100%" />
-<h1>Myne: Download & Read eBooks 📕</h1>
+<h2>Myne: Download & Read eBooks</h2>
 </div>
 
 <p align="center">
