@@ -1,6 +1,6 @@
 <div align="center">
-<img src="https://te.legra.ph/file/8234db16f1e9418b73005.png" align="center" style="width: 100%" />
-<h1>Myne | Ebook Downloader</h1>
+<img src="https://te.legra.ph/file/3bb56bd348c898f1f56a1.png" align="center" style="width: 100%" />
+<h2>Myne: Download & Read eBooks</h2>
 </div>
 
 <p align="center">
@@ -19,12 +19,11 @@
 
 ------
 
-**Myne** is a [FOSS](https://en.m.wikipedia.org/wiki/Free_and_open-source_software) Android application to download ebooks from the [Project GutenBerg](https://gutenberg.org), it uses [GutenDex](https://gutendex.com) API to fetch metadata of ebooks in the backend.
+**Myne** is a [FOSS](https://en.m.wikipedia.org/wiki/Free_and_open-source_software) Android application to download and read ebooks from [Project GutenBerg](https://gutenberg.org). It uses the [GutenDex](https://github.com/garethbjohnson/gutendex) API to fetch metadata of ebooks in the backend.
 
 *The name of the app is inspired from the main character of an anime called [Ascendance of a Bookworm](https://myanimelist.net/anime/39468/Honzuki_no_Gekokujou__Shisho_ni_Naru_Tame_ni_wa_Shudan_wo_Erandeiraremasen)*.
 
-**Note** The app also uses [Google Books](https://books.google.co.in/) API to fetch some extra data like book summary and pages count etc, as the GutenBerg project don't include those values in their metadata. It tries it's best to map the data received from Google books with Gutenberg's
-metadata but the mapping is not 100% accurate and not all books available on GutenBerg is also available on Google books or is available but with different title, so you may find some books without summary or page count etc.
+The app also utilizes the Google Books API to retrieve additional data such as synopsis and page count. As the Gutenberg project does not include these values in their metadata. While the app attempts to map the data received from Google Books with Gutenberg's metadata, the mapping is not always 100% accurate. Additionally, not all books available on Gutenberg are accessible on Google Books, or they may be available under different titles. As a result, you may find some books without synopsis or page count, etc.
 
 ------
 
@@ -33,13 +32,13 @@ metadata but the mapping is not 100% accurate and not all books available on Gut
 If this project helped you a little bit, please consider donating a small amount to keep the projects going, Your donations helps ensure that my open source projects are actively maintained. You can donate via following mediums:
 
 [![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/starry-shivam)
-[![Bitcoin](https://img.shields.io/badge/Bitcoin-000?style=for-the-badge&logo=bitcoin&logoColor=white)](https://www.blockchain.com/btc/address/bc1q82qh9hw5xupwlf0f3ddfud63sek53lavk6cf0k)
-[![Ethereum](https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white)](https://www.blockchain.com/eth/address/0x9ef20ad6FBf1985e6eF6ea6337ad800Cb8126eD3)
 ![](https://img.shields.io/badge/starry%40airtel-UPI-red?style=for-the-badge)
+[![Bitcoin](https://img.shields.io/badge/Bitcoin-000?style=for-the-badge&logo=bitcoin&logoColor=white)](https://www.blockchain.com/btc/address/bc1q82qh9hw5xupwlf0f3ddfud63sek53lavk6cf0k)
 
 Or you could just buy the app from Google Play Store. You'll get constant updates without the need to get all the way here and download the release all by yourself and install the release all by yourself and then you realize you have a different package name so you contact me but I really don't have time for this so I update it on google play and then you realize your installer doesn't work and then you realize your whole life is like this, miserable and not working but then you see a point of light in the distance so you run towards and it's the "Buy" button in the Myne's page on google play, it'll make your life easier.
 
 ------
+
 <h2 align="center">Downloads</h2>
 
 <div align="center">
