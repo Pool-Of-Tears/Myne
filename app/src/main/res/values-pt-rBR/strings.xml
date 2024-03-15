@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Others Strings -->
+    <string name="not_applicable">N/D</string>
+    <string name="woops">Ops!!</string>
+    <string name="confirm">Confirmar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">OK</string>
+    <string name="got_it">Entendi</string>
+    <string name="storage_perm_error">Por favor, conceda permissão de armazenamento!</string>
+    <string name="no_app_to_handle_epub">Não foi encontrado nenhum aplicativo para abrir o arquivo epub.</string>
+    <string name="network_error">Ops! Falha ao conectar com o servidor.</string>
+    <string name="network_error_retry">Tente Novamente</string>
+    <string name="error">Ops! Algo deu errado.</string>
+
+    <!-- Navigation titles -->
+    <string name="navigation_home">Home</string>
+    <string name="navigation_categories">Categorias</string>
+    <string name="navigation_library">Biblioteca</string>
+    <string name="navigation_settings">Configurações</string>
+
+    <!-- ToolTips -->
+    <string name="library_tooltip">DICA! Deslize os itens da biblioteca para a esquerda ou direita para compartilhar ou visualizar detalhes do livro.</string>
+
+    <!-- Welcome Screen -->
+    <string name="welcome_screen_text">Obrigado por instalar o Myne!\nSelecione seu leitor de e-book preferido para acelerar.</string>
+    <string name="welcome_screen_button">Começar</string>
+
+    <!-- Home screen. -->
+    <string name="home_header">Todos os livros</string>
+    <string name="home_language_icon_desc">Classificar por idioma</string>
+    <string name="home_search_icon_desc">Pesquisar livros</string>
+    <string name="language_menu_title">Navegue por idioma</string>
+
+    <!-- Categories screen. -->
+    <string name="categories_header">Categorias</string>
+    <string name="no_books_found_for_lang_and_cat">Nenhum livro disponível em %s para essa categoria.</string>
+
+    <!-- Library screen. -->
+    <string name="library_header">Biblioteca</string>
+    <string name="empty_library">Nada por aqui!</string>
+    <string name="open_app_chooser">Abrir com…</string>
+    <string name="share_app_chooser">Compartilhar com…</string>
+    <string name="library_read_button">Ler</string>
+    <string name="library_delete_button">Excluir</string>
+    <string name="library_delete_dialog_title">Tem certeza?</string>
+
+    <!-- Reader Detail Screen -->
+    <string name="reader_detail_header">Leitor Ebook</string>
+    <string name="start_reading_button">Começar</string>
+    <string name="continue_reading_button">Retomar</string>
+    <string name="reader_chapters_list">Capítulos</string>
+    <string name="reader_error_title">Poxa! Falha ao abrir o arquivo do e-book :(</string>
+    <string name="reader_error_subtitle">Pode haver vários motivos para isso acontecer.</string>
+    <string name="reader_error_reason_one_title">1. O arquivo do e-book foi excluído.</string>
+    <string name="reader_error_reason_one_desc">Verifique dentro da pasta MyneEbooks em seu diretório de download e, se for o caso, baixe o livro novamente o livro.</string>
+    <string name="reader_error_reason_two_title">2. O arquivo existe, mas você desinstalou o aplicativo anteriormente.</string>
+    <string name="reader_error_reason_two_desc">Myne usa API de armazenamento com escopo do Android, o que significa que ele só pode acessar os arquivos que foram criados por ele mesmo e não pode acessar nenhum dos arquivos pessoais do usuário. Devido a esta limitação, uma vez que o usuário desinstala o aplicativo, ele perde a permissão de ler &amp; modificar arquivos mesmo que tenha sido criado por ele mesmo, se for esse o caso, exclua o arquivo epub do e-book da pasta MyneEbooks dentro do seu diretório de download e simplesmente baixe o livro novamente.</string>
+    <string name="reader_error_back_button">Fechar &amp; Voltar</string>
+
+    <!--Reader Screen -->
+    <string name="reader_max_font_size_reached">Foi mal, não vai mais alto que isso!</string>
+    <string name="reader_min_font_size_reached">Foi mal, não vai mais baixo que isso!</string>
+    <string name="reader_font_style_chooer">Mudar estilo da fonte</string>
+    <string name="reader_chapter_list_title">Capítulos</string>
+
+    <!-- Settings screen. -->
+    <string name="settings_header">Configurações</string>
+    <string name="app_desc">Downloader Ebook</string>
+    <string name="made_by">Feito com ❤ por Shivam</string>
+    <string name="general_settings_header">Geral</string>
+    <string name="default_reader_setting">Leitor Padrão</string>
+    <string name="default_reader_dialog_title">Abrir ebooks com…</string>
+    <string name="reader_option_inbuilt">Leitor Embutido</string>
+    <string name="reader_option_external">Leitor Externo</string>
+    <string name="display_setting_header">Display</string>
+    <string name="theme_setting">Tema Padrão</string>
+    <string name="theme_dialog_title">Mudar Tema</string>
+    <string name="theme_option_light">Claro</string>
+    <string name="theme_option_dark">Escuro</string>
+    <string name="theme_option_system">Padrão do sistema</string>
+    <string name="theme_dialog_apply_button">Aplicar</string>
+    <string name="material_you_settings_disabled_desc">Ativar Material You</string>
+    <string name="material_you_settings_enabled_desc">Desativar Material You</string>
+    <string name="material_you_error">Este recurso é apenas para dispositivos com Android 12 ou superior.</string>
+    <string name="miscellaneous_setting_header">Diversos</string>
+    <string name="license_setting">Licença &amp; Agradecimentos</string>
+    <string name="license_setting_desc">Licenças de código aberto.</string>
+    <string name="about_setting">Informações do aplicativo</string>
+    <string name="about_setting_desc">Mostrar informações do aplicativo &amp; links úteis</string>
+
+    <!-- Books card -->
+    <string name="cover_image_desc">Imagem da capa do livro</string>
+
+    <!-- Book Detail Screen -->
+    <string name="book_detail_header">Detalhes do livro</string>
+    <string name="back_button_desc">Voltar.</string>
+    <string name="share_button_desc">Compartilhar esse livro.</string>
+    <string name="share_intent_header">Compartilhar usando…</string>
+    <string name="read_book_button">Começar Ler</string>
+    <string name="download_book_button">Baixar</string>
+    <string name="downloading_book">Download iniciado!</string>
+    <string name="book_synopsis">Sinopse</string>
+    <string name="book_synopsis_not_found">Não disponível</string>
+
+    <!-- About Screen -->
+    <string name="about_header">Sobre</string>
+    <string name="about_desc">Um aplicativo Android gratuito &amp; de código aberto para baixar e-books do Projeto GutenBerg.</string>
+    <string name="developed_by">Desenvolvido por</string>
+
+    <!-- Open source libraries screen -->
+    <string name="open_source_header">Bibliotecas de código aberto</string>
+</resources>
