@@ -48,13 +48,6 @@
     <string name="start_reading_button">Začít</string>
     <string name="continue_reading_button">Pokračovat</string>
     <string name="reader_chapters_list">Kapitoly</string>
-    <string name="reader_error_title">Jejda! Nepodařilo se otevřít soubor e-knihy :(</string>
-    <string name="reader_error_subtitle">Důvodů, proč se tak stalo, může být několik.</string>
-    <string name="reader_error_reason_one_title">1. Soubor e-knihy byl odstraněn.</string>
-    <string name="reader_error_reason_one_desc">Zkontrolujte prosím složku MyneEbooks v adresáři pro stahování, a pokud tomu tak je, stáhněte knihu znovu.</string>
-    <string name="reader_error_reason_two_title">2. Soubor tam je, ale aplikaci jste již dříve odinstalovali.</string>
-    <string name="reader_error_reason_two_desc">Aplikace Myne používá rozhraní API systému Android s omezeným rozsahem úložiště, což znamená, že může přistupovat pouze k souborům, které sama vytvořila, a nemůže přistupovat k osobním souborům uživatele. Kvůli tomuto omezení, jakmile uživatel aplikaci odinstaluje, ztratí oprávnění číst a upravovat soubory, i když je sama vytvořila, v takovém případě prosím odstraňte soubor epub e-knihy ze složky MyneEbooks uvnitř adresáře pro stahování a jednoduše knihu stáhněte znovu.</string>
-    <string name="reader_error_back_button">Zavřít a vrátit se</string>
 
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Je nám líto, ale výš už to nejde!</string>

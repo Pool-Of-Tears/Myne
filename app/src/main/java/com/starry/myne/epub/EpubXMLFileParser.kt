@@ -69,7 +69,7 @@ class EpubXMLFileParser(
             bodyElement = document.selectFirst("div#$fragmentId")
 
             if (bodyElement != null) {
-                // If the fragment ID represents a <body> tag, fetch the entire body content
+                // If the fragment ID represents a <div> tag, fetch the entire body content
                 Log.d(
                     "EpubXMLFileParser",
                     "Fragment ID: $fragmentId represents a <div> tag. Using the fragment ID."

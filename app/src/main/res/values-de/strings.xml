@@ -49,13 +49,6 @@
     <string name="start_reading_button">Beginnen</string>
     <string name="continue_reading_button">Weiterlesen</string>
     <string name="reader_chapters_list">Kapitel</string>
-    <string name="reader_error_title">Hoppla! Konnte E-Book-Datei nicht öffnen :(</string>
-    <string name="reader_error_subtitle">Es könnte mehrere Gründe dafür geben.</string>
-    <string name="reader_error_reason_one_title">1. Die E-Book-Datei wurde gelöscht.</string>
-    <string name="reader_error_reason_one_desc">Bitte überprüfe das im MyneEbooks-Verzeichnis in deinem Download-Verzeichnis und lade das E-Book, wenn es so ist, erneut herunter.</string>
-    <string name="reader_error_reason_two_title">2. Die Datei ist vorhanden, aber du hast die App zwischenrein deinstalliert.</string>
-    <string name="reader_error_reason_two_desc">Myne nutzt die Scoped-Speicher-API von Android. Das bedeutet, dass Myne nur auf die Dateien zugreifen kann, die es selbst erstellt hat und keinen Zugriff auf andere perönliche Dateien hat. Aufgrund dieser Limitierung verliert die App die Berechtigung die Dateien zu lesen &amp; zu modifizieren, selbst wenn sie sie selbst erstellt hat, sobald sie deinstalliert wurde. Falls das der Fall sein sollte, lösche bitte die Epub-Datei des E-Books aus dem MyneEbooks-Verzeichnis in deinem Download-Verzeichnis und lade das E-Book anschließend einfach erneut herunter.</string>
-    <string name="reader_error_back_button">Schließen &amp; zurück gehen</string>
 
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Entschuldige bitte, größer kann es nicht dargestellt werden!</string>

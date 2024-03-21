@@ -49,13 +49,6 @@
     <string name="start_reading_button">Comenzar</string>
     <string name="continue_reading_button">Continuar</string>
     <string name="reader_chapters_list">Capítulos</string>
-    <string name="reader_error_title">¡Ups! No se ha podido abrir el fichero del e-book :(</string>
-    <string name="reader_error_subtitle">Esto puede deberse a varios motivos.</string>
-    <string name="reader_error_reason_one_title">1. El fichero del e-book ha sido eliminado.</string>
-    <string name="reader_error_reason_one_desc">Por favor, compruebe dentro de la carpeta MyneEbooks en su directorio de descarga, y si ese es el caso, por favor vuelva a descargar el libro.</string>
-    <string name="reader_error_reason_two_title">2. El archivo está ahí, pero has desinstalado la aplicación previamente.</string>
-    <string name="reader_error_reason_two_desc">Myne utiliza la API de almacenamiento de Android, lo que significa que sólo puede acceder a los archivos que fueron creados por sí mismo y no puede acceder a los archivos personales del usuario. Debido a esta limitación, una vez que el usuario desinstala la aplicación, pierde el permiso para leer y modificar archivos, incluso si fue creado por sí mismo, si ese es el caso, por favor, elimine el archivo epub del libro electrónico de la carpeta MyneEbooks dentro de su directorio de descarga y simplemente volver a descargar el libro.</string>
-    <string name="reader_error_back_button">Cerrar e ir atrás</string>
 
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Lo sentimos, no puede subir más</string>

@@ -33,7 +33,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import java.io.FileNotFoundException
 import javax.inject.Inject
 
 
@@ -58,10 +57,6 @@ class ReaderDetailViewModel @Inject constructor(
     private val epubParser: EpubParser
 ) : ViewModel() {
 
-    companion object Errors {
-        const val FILE_NOT_FOUND = "epub_file_not_found"
-    }
-
     var state by mutableStateOf(ReaderDetailScreenState())
 
     val readerItem: Flow<ReaderItem?>?
@@ -72,28 +67,22 @@ class ReaderDetailViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             // build EbookData.
             val libraryItem = libraryDao.getItemById(bookId.toInt())!!
-            state = try {
-                _readerItem = readerDao.getReaderItemAsFlow(bookId.toInt())
-                val coverImage: String? = try {
-                    if (networkStatus == NetworkObserver.Status.Available) bookRepository.getExtraInfo(
-                        libraryItem.title
-                    )?.coverImage else null
-                } catch (exc: Exception) {
-                    null
-                }
-                state.copy(
-                    isLoading = false, ebookData = EbookData(
-                        coverImage,
-                        libraryItem.title,
-                        libraryItem.authors,
-                        epubParser.createEpubBook(libraryItem.filePath)
-                    )
-                )
-
-            } catch (exc: FileNotFoundException) {
-                exc.printStackTrace()
-                state.copy(isLoading = false, error = FILE_NOT_FOUND)
+            _readerItem = readerDao.getReaderItemAsFlow(bookId.toInt())
+            val coverImage: String? = try {
+                if (networkStatus == NetworkObserver.Status.Available) bookRepository.getExtraInfo(
+                    libraryItem.title
+                )?.coverImage else null
+            } catch (exc: Exception) {
+                null
             }
+            state = state.copy(
+                isLoading = false, ebookData = EbookData(
+                    coverImage,
+                    libraryItem.title,
+                    libraryItem.authors,
+                    epubParser.createEpubBook(libraryItem.filePath)
+                )
+            )
         }
     }
 }
