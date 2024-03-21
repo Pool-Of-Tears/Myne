@@ -1,0 +1,6 @@
+- Switch to the internal files directory for storing books instead of external download directory.
+- Fixed books not getting saved in the library when using with multi user mode / work profiles.
+- Added Chinese translations, thanks to @WeiguangTWK
+- Added Brazilian Portuguese translations, thanks to @guiBrisson
+- Updated Russian translations, thanks to @Palvenok
+- Some other minor bug fixes and improvements.
