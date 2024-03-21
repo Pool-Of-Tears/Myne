@@ -93,18 +93,19 @@ class BookDetailViewModel @Inject constructor(
         bookDownloader.downloadBook(book = book,
             downloadProgressListener = downloadProgressListener,
             onDownloadSuccess = { fileName ->
-                insertIntoDB(book, fileName)
+                val filepath = bookDownloader.getFilePathForBook(fileName)
+                insertIntoDB(book = book, filepath = filepath)
                 state = state.copy(bookLibraryItem = libraryDao.getItemById(book.id))
             }
         )
     }
 
-    private fun insertIntoDB(book: Book, filename: String) {
+    private fun insertIntoDB(book: Book, filepath: String) {
         val libraryItem = LibraryItem(
             bookId = book.id,
             title = book.title,
             authors = BookUtils.getAuthorsAsString(book.authors),
-            filePath = BookDownloader.FILE_FOLDER_PATH + File.separator + filename,
+            filePath = filepath,
             createdAt = System.currentTimeMillis()
         )
         libraryDao.insert(libraryItem)

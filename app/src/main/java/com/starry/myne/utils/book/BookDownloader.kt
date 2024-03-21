@@ -23,7 +23,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
 import com.starry.myne.repo.models.Book
-import com.starry.myne.utils.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -32,25 +31,23 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 
-class BookDownloader(context: Context) {
 
-    companion object {
-        /** Path of the directory where the downloaded books are stored. */
-        val FILE_FOLDER_PATH = getDownloadDirectory()
-
-        private fun getDownloadDirectory(): String {
-            val externalStorageDir = Environment.getExternalStorageDirectory()
-            val downloadDir = File(externalStorageDir, Environment.DIRECTORY_DOWNLOADS)
-            val customDir = File(downloadDir, Constants.DOWNLOAD_DIR)
-            println("Custom dir: ${customDir.absolutePath}")
-            return customDir.absolutePath
-        }
-    }
+/**
+ * Class to handle downloading of books.
+ * @param context [Context] required to access [DownloadManager] and to get file path for the downloaded file.
+ */
+class BookDownloader(private val context: Context) {
 
     private val downloadJob = Job()
     private val downloadScope = CoroutineScope(Dispatchers.IO + downloadJob)
     private val downloadManager by lazy { context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager }
 
+    /**
+     * Data class to store download info for a book.
+     * @param downloadId id of the download.
+     * @param status status of the download.
+     * @param progress progress of the download.
+     */
     data class DownloadInfo(
         val downloadId: Long,
         var status: Int = DownloadManager.STATUS_RUNNING,
@@ -79,11 +76,7 @@ class BookDownloader(context: Context) {
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             .setAllowedOverRoaming(true).setAllowedOverMetered(true).setTitle(book.title)
             .setDescription(BookUtils.getAuthorsAsString(book.authors))
-            .setDestinationInExternalPublicDir(
-                Environment.DIRECTORY_DOWNLOADS,
-                getDownloadDirectory().split(File.separator).last()
-                    .plus("${File.separator}$filename")
-            )
+            .setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, filename)
         val downloadId = downloadManager.enqueue(request)
 
         downloadScope.launch {
@@ -144,20 +137,35 @@ class BookDownloader(context: Context) {
         }
     }
 
+
+    /**
+     * Returns file path for the given book's file name.
+     * @param fileName name of the file for which file path is required.
+     * @return [String] file path for the given file name.
+     */
+    fun getFilePathForBook(fileName: String): String {
+        val externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+        return File(externalFilesDir, fileName).canonicalPath
+    }
+
     /**
      * Returns true if book with the given id is currently being downloaded
      * false otherwise.
+     * @param bookId id of the book for which download status is required.
+     * @return [Boolean] true if book is currently being downloaded, false otherwise.
      */
     fun isBookCurrentlyDownloading(bookId: Int) = runningDownloads.containsKey(bookId)
 
     /**
-     * Returns [DownloadInfo] for the given book id if it's currently
-     * being downloaded, null otherwise.
+     * Returns [DownloadInfo] if book with the given id is currently being downloaded.
+     * @param bookId id of the book for which download info is required.
+     * @return [DownloadInfo] if book is currently being downloaded, null otherwise.
      */
     fun getRunningDownload(bookId: Int) = runningDownloads[bookId]
 
     /**
      * Cancels download of book by using it's download id (if download is running).
+     * @param downloadId id of the download which needs to be cancelled.
      */
     fun cancelDownload(downloadId: Long?) = downloadId?.let { downloadManager.remove(it) }
 
@@ -165,6 +173,8 @@ class BookDownloader(context: Context) {
      * Sanitizes book title by replacing forbidden chars which are not allowed
      * as the file name & builds file name for the epub file by joining all of
      * the words in the  book title at the end.
+     * @param book [Book] for which file name is required.
+     * @return [String] file name for the given book.
      */
     private fun getFilenameForBook(book: Book) = book.title.replace(":", ";")
         .replace("\"", "").split(" ").joinToString(separator = "+") + ".epub"

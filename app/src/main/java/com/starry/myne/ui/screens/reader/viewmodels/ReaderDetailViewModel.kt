@@ -91,6 +91,7 @@ class ReaderDetailViewModel @Inject constructor(
                 )
 
             } catch (exc: FileNotFoundException) {
+                exc.printStackTrace()
                 state.copy(isLoading = false, error = FILE_NOT_FOUND)
             }
         }
