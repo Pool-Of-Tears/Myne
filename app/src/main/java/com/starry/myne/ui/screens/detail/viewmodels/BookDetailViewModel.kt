@@ -37,7 +37,6 @@ import com.starry.myne.utils.book.BookUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 data class BookDetailScreenState(
@@ -92,20 +91,19 @@ class BookDetailViewModel @Inject constructor(
     ) {
         bookDownloader.downloadBook(book = book,
             downloadProgressListener = downloadProgressListener,
-            onDownloadSuccess = { fileName ->
-                val filepath = bookDownloader.getFilePathForBook(fileName)
-                insertIntoDB(book = book, filepath = filepath)
+            onDownloadSuccess = { filePath ->
+                insertIntoDB(book = book, filePath = filePath)
                 state = state.copy(bookLibraryItem = libraryDao.getItemById(book.id))
             }
         )
     }
 
-    private fun insertIntoDB(book: Book, filepath: String) {
+    private fun insertIntoDB(book: Book, filePath: String) {
         val libraryItem = LibraryItem(
             bookId = book.id,
             title = book.title,
             authors = BookUtils.getAuthorsAsString(book.authors),
-            filePath = filepath,
+            filePath = filePath,
             createdAt = System.currentTimeMillis()
         )
         libraryDao.insert(libraryItem)

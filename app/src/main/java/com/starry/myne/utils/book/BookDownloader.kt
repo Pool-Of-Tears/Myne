@@ -68,7 +68,7 @@ class BookDownloader(private val context: Context) {
     @SuppressLint("Range")
     fun downloadBook(
         book: Book, downloadProgressListener: (progress: Float, status: Int) -> Unit,
-        onDownloadSuccess: (fileName: String) -> Unit
+        onDownloadSuccess: (filePath: String) -> Unit
     ) {
         val filename = getFilenameForBook(book)
         val uri = Uri.parse(book.formats.applicationepubzip)
@@ -104,7 +104,10 @@ class BookDownloader(private val context: Context) {
                         DownloadManager.STATUS_SUCCESSFUL -> {
                             isDownloadFinished = true
                             progress = 1f
-                            onDownloadSuccess(filename)
+                            val externalFilesDir =
+                                context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                            val filePath = File(externalFilesDir, filename).canonicalPath
+                            onDownloadSuccess(filePath)
                         }
 
                         DownloadManager.STATUS_PAUSED, DownloadManager.STATUS_PENDING -> {}
@@ -135,17 +138,6 @@ class BookDownloader(private val context: Context) {
             delay(500L)
             runningDownloads.remove(book.id)
         }
-    }
-
-
-    /**
-     * Returns file path for the given book's file name.
-     * @param fileName name of the file for which file path is required.
-     * @return [String] file path for the given file name.
-     */
-    fun getFilePathForBook(fileName: String): String {
-        val externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-        return File(externalFilesDir, fileName).canonicalPath
     }
 
     /**
