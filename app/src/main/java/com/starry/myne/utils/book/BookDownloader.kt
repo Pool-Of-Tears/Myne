@@ -30,12 +30,21 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 
 class BookDownloader(context: Context) {
 
     companion object {
-        val FILE_FOLDER_PATH =
-            "/storage/emulated/0/${Environment.DIRECTORY_DOWNLOADS}/${Constants.DOWNLOAD_DIR}"
+        /** Path of the directory where the downloaded books are stored. */
+        val FILE_FOLDER_PATH = getDownloadDirectory()
+
+        private fun getDownloadDirectory(): String {
+            val externalStorageDir = Environment.getExternalStorageDirectory()
+            val downloadDir = File(externalStorageDir, Environment.DIRECTORY_DOWNLOADS)
+            val customDir = File(downloadDir, Constants.DOWNLOAD_DIR)
+            println("Custom dir: ${customDir.absolutePath}")
+            return customDir.absolutePath
+        }
     }
 
     private val downloadJob = Job()
@@ -61,7 +70,8 @@ class BookDownloader(context: Context) {
      */
     @SuppressLint("Range")
     fun downloadBook(
-        book: Book, downloadProgressListener: (Float, Int) -> Unit, onDownloadSuccess: () -> Unit
+        book: Book, downloadProgressListener: (progress: Float, status: Int) -> Unit,
+        onDownloadSuccess: (fileName: String) -> Unit
     ) {
         val filename = getFilenameForBook(book)
         val uri = Uri.parse(book.formats.applicationepubzip)
@@ -70,7 +80,9 @@ class BookDownloader(context: Context) {
             .setAllowedOverRoaming(true).setAllowedOverMetered(true).setTitle(book.title)
             .setDescription(BookUtils.getAuthorsAsString(book.authors))
             .setDestinationInExternalPublicDir(
-                Environment.DIRECTORY_DOWNLOADS, Constants.DOWNLOAD_DIR + "/" + filename
+                Environment.DIRECTORY_DOWNLOADS,
+                getDownloadDirectory().split(File.separator).last()
+                    .plus("${File.separator}$filename")
             )
         val downloadId = downloadManager.enqueue(request)
 
@@ -99,7 +111,7 @@ class BookDownloader(context: Context) {
                         DownloadManager.STATUS_SUCCESSFUL -> {
                             isDownloadFinished = true
                             progress = 1f
-                            onDownloadSuccess()
+                            onDownloadSuccess(filename)
                         }
 
                         DownloadManager.STATUS_PAUSED, DownloadManager.STATUS_PENDING -> {}
@@ -154,7 +166,7 @@ class BookDownloader(context: Context) {
      * as the file name & builds file name for the epub file by joining all of
      * the words in the  book title at the end.
      */
-    fun getFilenameForBook(book: Book) = book.title.replace(":", ";")
+    private fun getFilenameForBook(book: Book) = book.title.replace(":", ";")
         .replace("\"", "").split(" ").joinToString(separator = "+") + ".epub"
 
 }

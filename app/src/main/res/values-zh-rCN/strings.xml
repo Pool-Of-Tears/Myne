@@ -100,7 +100,7 @@
     <string name="share_intent_header">分享至…</string>
     <string name="read_book_button">开始阅读</string>
     <string name="download_book_button">下载</string>
-    <string name="downloading_book">下载已开始</string>
+    <string name="download_started">下载已开始</string>
     <string name="book_synopsis">概要</string>
     <string name="book_synopsis_not_found">不可用</string>
 

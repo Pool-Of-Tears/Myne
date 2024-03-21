@@ -6,7 +6,6 @@
     <string name="cancel">Zrušit</string>
     <string name="ok">OK</string>
     <string name="got_it">Got it</string>
-    <string name="storage_perm_error">Udělte prosím přístup k úložišti!</string>
     <string name="no_app_to_handle_epub">Nepodařilo se najít aplikaci, která by dokázala otevřít soubor epub.</string>
     <string name="network_error">Oops! Failed to connect with the server.</string>
     <string name="network_error_retry">Try Again</string>
@@ -98,7 +97,7 @@
     <string name="share_intent_header">Sdílet pomocí…</string>
     <string name="read_book_button">Začít číst</string>
     <string name="download_book_button">Stáhnout</string>
-    <string name="downloading_book">Stahování spuštěno!</string>
+    <string name="download_started">Stahování spuštěno!</string>
     <string name="book_synopsis">Stručný obsah knihy</string>
     <string name="book_synopsis_not_found">Nedostupné</string>
 

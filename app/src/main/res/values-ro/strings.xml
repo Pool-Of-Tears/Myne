@@ -100,7 +100,7 @@
     <string name="share_intent_header">Împărtășiți asta folosind…</string>
     <string name="read_book_button">Începeți să citiți</string>
     <string name="download_book_button">Descarcă</string>
-    <string name="downloading_book">Descărcarea începută!</string>
+    <string name="download_started">Descărcarea începută!</string>
     <string name="book_synopsis">Sinopsis</string>
     <string name="book_synopsis_not_found">Indisponibil</string>
 

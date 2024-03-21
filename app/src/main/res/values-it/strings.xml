@@ -7,7 +7,6 @@
     <string name="cancel">Annulla</string>
     <string name="ok">OK</string>
     <string name="got_it">Got it</string>
-    <string name="storage_perm_error">Per favore consenti l\'accesso allo spazio di archiviazione!</string>
     <string name="no_app_to_handle_epub">Non è stata trovata nessuna app per aprire i file epub.</string>
     <string name="network_error">Ops! Connessione al server fallita.</string>
     <string name="network_error_retry">Riprova</string>
@@ -99,7 +98,7 @@
     <string name="share_intent_header">Condividi con…</string>
     <string name="read_book_button">Inizia la lettura</string>
     <string name="download_book_button">Download</string>
-    <string name="downloading_book">Download iniziato!</string>
+    <string name="download_started">Download iniziato!</string>
     <string name="book_synopsis">Riassunto del libro</string>
     <string name="book_synopsis_not_found">Non disponibile</string>
 

@@ -16,12 +16,7 @@
 
 package com.starry.myne
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -34,7 +29,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import coil.annotation.ExperimentalCoilApi
@@ -91,22 +85,6 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
             }
-        }
-        checkStoragePermission()
-    }
-
-    fun checkStoragePermission(): Boolean {
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                Log.d("MainActivity::Storage", "Permission is granted"); true
-            } else {
-                Log.d("MainActivity::Storage", "Permission is revoked")
-                ActivityCompat.requestPermissions(
-                    this, arrayOf(WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE), 1
-                ); false
-            }
-        } else {
-            true
         }
     }
 }

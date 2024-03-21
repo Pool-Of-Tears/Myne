@@ -99,7 +99,7 @@
     <string name="share_intent_header">Поделиться через…</string>
     <string name="read_book_button">Начать чтение</string>
     <string name="download_book_button">Загрузить</string>
-    <string name="downloading_book">Загрузка началась!</string>
+    <string name="download_started">Загрузка началась!</string>
     <string name="book_synopsis">Краткий обзор</string>
     <string name="book_synopsis_not_found">Недоступно</string>
 

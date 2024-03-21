@@ -16,7 +16,6 @@
 
 package com.starry.myne.ui.screens.detail.viewmodels
 
-import android.annotation.SuppressLint
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
@@ -26,8 +25,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.annotation.ExperimentalCoilApi
-import com.starry.myne.MainActivity
-import com.starry.myne.R
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.repo.BookRepository
@@ -40,6 +37,7 @@ import com.starry.myne.utils.book.BookUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 data class BookDetailScreenState(
@@ -89,21 +87,16 @@ class BookDetailViewModel @Inject constructor(
         }
     }
 
-    @SuppressLint("Range")
     fun downloadBook(
-        book: Book, activity: MainActivity, downloadProgressListener: (Float, Int) -> Unit
-    ): String {
-        return if (activity.checkStoragePermission()) {
-            bookDownloader.downloadBook(book = book,
-                downloadProgressListener = downloadProgressListener,
-                onDownloadSuccess = {
-                    insertIntoDB(book, bookDownloader.getFilenameForBook(book))
-                    state = state.copy(bookLibraryItem = libraryDao.getItemById(book.id))
-                })
-            activity.getString(R.string.downloading_book)
-        } else {
-            activity.getString(R.string.storage_perm_error)
-        }
+        book: Book, downloadProgressListener: (Float, Int) -> Unit
+    ) {
+        bookDownloader.downloadBook(book = book,
+            downloadProgressListener = downloadProgressListener,
+            onDownloadSuccess = { fileName ->
+                insertIntoDB(book, fileName)
+                state = state.copy(bookLibraryItem = libraryDao.getItemById(book.id))
+            }
+        )
     }
 
     private fun insertIntoDB(book: Book, filename: String) {
@@ -111,7 +104,7 @@ class BookDetailViewModel @Inject constructor(
             bookId = book.id,
             title = book.title,
             authors = BookUtils.getAuthorsAsString(book.authors),
-            filePath = "${BookDownloader.FILE_FOLDER_PATH}/$filename",
+            filePath = BookDownloader.FILE_FOLDER_PATH + File.separator + filename,
             createdAt = System.currentTimeMillis()
         )
         libraryDao.insert(libraryItem)
