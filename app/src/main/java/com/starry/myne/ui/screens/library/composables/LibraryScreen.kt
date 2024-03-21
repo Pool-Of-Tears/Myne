@@ -57,6 +57,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -93,7 +94,6 @@ import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.Utils
 import com.starry.myne.utils.getActivity
-import com.starry.myne.utils.toToast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeAction
@@ -114,6 +114,7 @@ fun LibraryScreen(navController: NavController) {
     val settingsViewModel = (context.getActivity() as MainActivity).settingsViewModel
 
     val snackBarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
@@ -144,8 +145,8 @@ fun LibraryScreen(navController: NavController) {
                     ) {
                         items(state.size) { i ->
                             val item = state[i]
-                            if (item.fileExist()) {
 
+                            if (item.fileExist()) {
                                 val openDeleteDialog = remember { mutableStateOf(false) }
 
                                 val detailsAction = SwipeAction(icon = painterResource(
@@ -215,9 +216,15 @@ fun LibraryScreen(navController: NavController) {
                                             openDeleteDialog.value = false
                                             val fileDeleted = item.deleteFile()
                                             if (fileDeleted) {
-                                                viewModel.deleteItem(item)
+                                                viewModel.deleteItemFromDB(item)
                                             } else {
-                                                context.getString(R.string.error).toToast(context)
+                                                coroutineScope.launch {
+                                                    snackBarHostState.showSnackbar(
+                                                        message = context.getString(R.string.error),
+                                                        actionLabel = context.getString(R.string.ok),
+                                                        duration = SnackbarDuration.Short
+                                                    )
+                                                }
                                             }
                                         }) {
                                             Text(stringResource(id = R.string.confirm))
@@ -232,7 +239,7 @@ fun LibraryScreen(navController: NavController) {
                                 }
 
                             } else {
-                                viewModel.deleteItem(item)
+                                viewModel.deleteItemFromDB(item)
                             }
                         }
                     }

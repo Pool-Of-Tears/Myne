@@ -7,7 +7,6 @@
     <string name="cancel">الغاء</string>
     <string name="ok">OK</string>
     <string name="got_it">Got it</string>
-    <string name="storage_perm_error">امنح اذن التخزين من فضلك</string>
     <string name="no_app_to_handle_epub">لا يوجد اى تطبيق لفتح ملف epub</string>
     <string name="network_error">أُووبس! فشل الاتصال بالخادم.</string>
     <string name="network_error_retry">حاول ثانية</string>
@@ -50,13 +49,6 @@
     <string name="start_reading_button">يبدأ</string>
     <string name="continue_reading_button">استمرار</string>
     <string name="reader_chapters_list">فصول</string>
-    <string name="reader_error_title">أُووبس! فشل في فتح ملف الكتاب الإلكتروني :(</string>
-    <string name="reader_error_subtitle">يمكن أن يكون هناك عدة أسباب لحدوث ذلك.</string>
-    <string name="reader_error_reason_one_title">1. تم حذف ملف الكتاب الإلكتروني.</string>
-    <string name="reader_error_reason_one_desc">يرجى التحقق من مجلد MyneEbooks في دليل التنزيل الخاص بك، وإذا كان الأمر كذلك، فيرجى إعادة تنزيل الكتاب.</string>
-    <string name="reader_error_reason_two_title">2. الملف موجود، لكنك قمت بإلغاء تثبيت التطبيق مسبقًا.</string>
-    <string name="reader_error_reason_two_desc">يستخدم Myne واجهة برمجة تطبيقات التخزين النطاقي لنظام Android مما يعني أنه يمكنه فقط الوصول إلى تلك الملفات التي تم إنشاؤها بنفسه ولا يمكنه الوصول إلى أي من ملفات المستخدم الشخصية. بسبب هذا القيد, مرة واحدة لنا</string>
-    <string name="reader_error_back_button">إغلاق والعودة</string>
 
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">آسف، لا يمكن أن تذهب إلى أعلى من ذلك!</string>
@@ -99,7 +91,7 @@
     <string name="share_intent_header">مشاركة من خلال</string>
     <string name="read_book_button">ابدأ القراءه</string>
     <string name="download_book_button">تحميل</string>
-    <string name="downloading_book">تم بدأ التحميل</string>
+    <string name="download_started">تم بدأ التحميل</string>
     <string name="book_synopsis">موجز</string>
     <string name="book_synopsis_not_found">غير متاح</string>
 

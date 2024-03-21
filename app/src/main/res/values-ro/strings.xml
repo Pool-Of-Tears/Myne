@@ -7,7 +7,6 @@
     <string name="cancel">Anulează</string>
     <string name="ok">OK</string>
     <string name="got_it">Got it</string>
-    <string name="storage_perm_error">Te rugăm să acorzi permisiunea de stocare!</string>
     <string name="no_app_to_handle_epub">Nu pot găsi nicio aplicație pentru a deschide un fișier epub.</string>
     <string name="network_error">Ups! Nu a reușit să se conecteze cu serverul.</string>
     <string name="network_error_retry">Încearcă din nou</string>
@@ -50,13 +49,6 @@
     <string name="start_reading_button">Începe</string>
     <string name="continue_reading_button">Rezumă</string>
     <string name="reader_chapters_list">Capitole</string>
-    <string name="reader_error_title">Ups! Nu a reușit să deschidă fișierul e-book :(</string>
-    <string name="reader_error_subtitle">Ar putea exista mai multe cauze pentru ca acest lucru să se întâmple.</string>
-    <string name="reader_error_reason_one_title">1. Fișierul e-book a fost șters.</string>
-    <string name="reader_error_reason_one_desc">Te rugăm să verifici în dosarul MyneEbooks din directorul de descărcare și, dacă este cazul, te rugăm să descarci din nou cartea.</string>
-    <string name="reader_error_reason_two_title">2. Fișierul există, dar ați dezinstalat anterior aplicația.</string>
-    <string name="reader_error_reason_two_desc">Myne utilizează API-ul de stocare cu scop (scoped-storage API) al Android, ceea ce înseamnă că poate accesa numai acele fișiere care au fost create de ea însăși și nu poate accesa niciunul dintre fișierele personale ale utilizatorului. Din cauza acestei limitări, odată ce utilizatorul dezinstalează aplicația, aceasta își pierde permisiunea de a citi și modifica fișiere, chiar dacă a fost creată de ea însăși, dacă acesta este cazul, te rugăm să ștergi fișierul epub al ebook-ului din dosarul MyneEbooks din directorul de descărcare și pur și simplu să reîncarci cartea.</string>
-    <string name="reader_error_back_button">Închideți &amp; Înapoi</string>
 
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Îmi pare rău, nu pot merge mai sus de atât!</string>
@@ -100,7 +92,7 @@
     <string name="share_intent_header">Împărtășiți asta folosind…</string>
     <string name="read_book_button">Începeți să citiți</string>
     <string name="download_book_button">Descarcă</string>
-    <string name="downloading_book">Descărcarea începută!</string>
+    <string name="download_started">Descărcarea începută!</string>
     <string name="book_synopsis">Sinopsis</string>
     <string name="book_synopsis_not_found">Indisponibil</string>
 

@@ -34,7 +34,7 @@ class LibraryViewModel @Inject constructor(
 ) : ViewModel() {
     val allItems: LiveData<List<LibraryItem>> = libraryDao.getAllItems()
 
-    fun deleteItem(item: LibraryItem) {
+    fun deleteItemFromDB(item: LibraryItem) {
         viewModelScope.launch(Dispatchers.IO) { libraryDao.delete(item) }
     }
 

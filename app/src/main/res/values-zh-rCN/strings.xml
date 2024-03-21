@@ -8,7 +8,6 @@
     <string name="cancel">取消</string>
     <string name="ok">OK</string>
     <string name="got_it">好的</string>
-    <string name="storage_perm_error">请授予存储权限</string>
     <string name="no_app_to_handle_epub">没能找到用于打开epub文件的软件</string>
     <string name="network_error">噢！服务器没连上</string>
     <string name="network_error_retry">重试</string>
@@ -51,13 +50,6 @@
     <string name="start_reading_button">开始</string>
     <string name="continue_reading_button">继续</string>
     <string name="reader_chapters_list">章节</string>
-    <string name="reader_error_title">啊！没能打开这本电子书 :(</string>
-    <string name="reader_error_subtitle">导致这个错误的原因有很多</string>
-    <string name="reader_error_reason_one_title">1.这本书已经被删除了</string>
-    <string name="reader_error_reason_one_desc">请检查手机下载目录（Download）下的MayneEbooks文件夹，若发现这个电子书已经不见了，则需要重新下载该书</string>
-    <string name="reader_error_reason_two_title">2. 这本书还在，但之前有卸载过本软件（或者使用过类似于“一键换机”或者“备份还原”的功能）</string>
-    <string name="reader_error_reason_two_desc">Myne使用安卓的分区存储/沙盒存储API，在这个特性下软件只可以访问由自身产生的文件而不能访问其他的用户个人文件。在这个限制下一旦用户卸载该软件，系统会撤去包括由它自己创建的文件在内的文件读写权限。此时你只需要删除MayneEbooks文件夹下的电子书再重新下载即可</string>
-    <string name="reader_error_back_button">关闭并返回</string>
 
     <!--Reader Screen 阅读界面-->
     <string name="reader_max_font_size_reached">抱歉，不能再大了</string>
@@ -100,7 +92,7 @@
     <string name="share_intent_header">分享至…</string>
     <string name="read_book_button">开始阅读</string>
     <string name="download_book_button">下载</string>
-    <string name="downloading_book">下载已开始</string>
+    <string name="download_started">下载已开始</string>
     <string name="book_synopsis">概要</string>
     <string name="book_synopsis_not_found">不可用</string>
 

@@ -7,7 +7,6 @@
     <string name="cancel">Annulla</string>
     <string name="ok">OK</string>
     <string name="got_it">Got it</string>
-    <string name="storage_perm_error">Per favore consenti l\'accesso allo spazio di archiviazione!</string>
     <string name="no_app_to_handle_epub">Non è stata trovata nessuna app per aprire i file epub.</string>
     <string name="network_error">Ops! Connessione al server fallita.</string>
     <string name="network_error_retry">Riprova</string>
@@ -50,13 +49,6 @@
     <string name="start_reading_button">Inizia</string>
     <string name="continue_reading_button">Riprendi</string>
     <string name="reader_chapters_list">Capitoli</string>
-    <string name="reader_error_title">Ops! Non è stato possibile aprire il file e-book :(</string>
-    <string name="reader_error_subtitle">Ci potrebbero essere vari motivi per cui è successo.</string>
-    <string name="reader_error_reason_one_title">1. L\'e-book è stato eliminato.</string>
-    <string name="reader_error_reason_one_desc">Controlla nella cartella MyneEbooks all\'interno della tua directory di download, altrimenti, prova a scaricare nuovamente il libro.</string>
-    <string name="reader_error_reason_two_title">2. Il file esiste, ma hai disinstallato l\'app in precedenza.</string>
-    <string name="reader_error_reason_two_desc">Myne utilizza l\'API scoped-storage di Android e pertanto può accedere solo ai file creati dall\'app, non ai file personali dell\'utente. Per via di questa limitazione, una volta che l\'utente disinstalla l\'app, vengono revocati i permessi di lettura e modifica. In questo caso elimina il file ebook epub dalla cartella MyneEbooks all\'interno della directory di download e scarica nuovamente il libro.</string>
-    <string name="reader_error_back_button">Chiudi e torna indietro</string>
 
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Spiacenti, non si può andare più in alto!</string>
@@ -99,7 +91,7 @@
     <string name="share_intent_header">Condividi con…</string>
     <string name="read_book_button">Inizia la lettura</string>
     <string name="download_book_button">Download</string>
-    <string name="downloading_book">Download iniziato!</string>
+    <string name="download_started">Download iniziato!</string>
     <string name="book_synopsis">Riassunto del libro</string>
     <string name="book_synopsis_not_found">Non disponibile</string>
 

@@ -7,7 +7,6 @@
     <string name="cancel">Cancelar</string>
     <string name="ok">OK</string>
     <string name="got_it">Entendi</string>
-    <string name="storage_perm_error">Por favor, conceda permissão de armazenamento!</string>
     <string name="no_app_to_handle_epub">Não foi encontrado nenhum aplicativo para abrir o arquivo epub.</string>
     <string name="network_error">Ops! Falha ao conectar com o servidor.</string>
     <string name="network_error_retry">Tente Novamente</string>
@@ -50,13 +49,6 @@
     <string name="start_reading_button">Começar</string>
     <string name="continue_reading_button">Retomar</string>
     <string name="reader_chapters_list">Capítulos</string>
-    <string name="reader_error_title">Poxa! Falha ao abrir o arquivo do e-book :(</string>
-    <string name="reader_error_subtitle">Pode haver vários motivos para isso acontecer.</string>
-    <string name="reader_error_reason_one_title">1. O arquivo do e-book foi excluído.</string>
-    <string name="reader_error_reason_one_desc">Verifique dentro da pasta MyneEbooks em seu diretório de download e, se for o caso, baixe o livro novamente o livro.</string>
-    <string name="reader_error_reason_two_title">2. O arquivo existe, mas você desinstalou o aplicativo anteriormente.</string>
-    <string name="reader_error_reason_two_desc">Myne usa API de armazenamento com escopo do Android, o que significa que ele só pode acessar os arquivos que foram criados por ele mesmo e não pode acessar nenhum dos arquivos pessoais do usuário. Devido a esta limitação, uma vez que o usuário desinstala o aplicativo, ele perde a permissão de ler &amp; modificar arquivos mesmo que tenha sido criado por ele mesmo, se for esse o caso, exclua o arquivo epub do e-book da pasta MyneEbooks dentro do seu diretório de download e simplesmente baixe o livro novamente.</string>
-    <string name="reader_error_back_button">Fechar &amp; Voltar</string>
 
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Foi mal, não vai mais alto que isso!</string>
@@ -99,7 +91,7 @@
     <string name="share_intent_header">Compartilhar usando…</string>
     <string name="read_book_button">Começar Ler</string>
     <string name="download_book_button">Baixar</string>
-    <string name="downloading_book">Download iniciado!</string>
+    <string name="download_started">Download iniciado!</string>
     <string name="book_synopsis">Sinopse</string>
     <string name="book_synopsis_not_found">Não disponível</string>
 

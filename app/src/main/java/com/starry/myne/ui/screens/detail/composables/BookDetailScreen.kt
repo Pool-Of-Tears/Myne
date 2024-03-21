@@ -38,19 +38,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Snackbar
-import androidx.compose.material.SnackbarHost
+import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.surfaceColorAtElevation
@@ -123,20 +122,11 @@ fun BookDetailScreen(
     val context = LocalContext.current
     val settingsVM = (context.getActivity() as MainActivity).settingsViewModel
 
-    val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
+    val snackBarHostState = remember { SnackbarHostState() }
     Scaffold(
-        scaffoldState = scaffoldState,
-        snackbarHost = {
-            SnackbarHost(hostState = it) { data ->
-                Snackbar(
-                    backgroundColor = MaterialTheme.colorScheme.inverseSurface,
-                    contentColor = MaterialTheme.colorScheme.inverseOnSurface,
-                    snackbarData = data,
-                )
-            }
-        },
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         content = { paddingValues ->
             LaunchedEffect(key1 = true, block = {
                 viewModel.getBookDetails(bookId)
@@ -176,7 +166,9 @@ fun BookDetailScreen(
                         viewModel.getBookDetails(bookId)
                     })
                 } else {
-                    val book = state.bookSet.books.first()
+                    // Get book details for this bookId.
+                    val book = remember { state.bookSet.books.first() }
+
                     Column(
                         Modifier
                             .fillMaxSize()
@@ -370,19 +362,18 @@ fun BookDetailScreen(
                                             navController = navController
                                         )
                                     }
-
                                 }
 
                                 context.getString(R.string.download_book_button) -> {
-                                    val message = viewModel.downloadBook(
-                                        book, (context.getActivity() as MainActivity)
-                                    ) { downloadProgress, downloadStatus ->
-                                        progressState = downloadProgress
-                                        updateBtnText(downloadStatus)
-                                    }
+                                    viewModel.downloadBook(
+                                        book = book,
+                                        downloadProgressListener = { downloadProgress, downloadStatus ->
+                                            progressState = downloadProgress
+                                            updateBtnText(downloadStatus)
+                                        })
                                     coroutineScope.launch {
-                                        scaffoldState.snackbarHostState.showSnackbar(
-                                            message = message,
+                                        snackBarHostState.showSnackbar(
+                                            message = context.getString(R.string.download_started),
                                         )
                                     }
                                 }
@@ -414,47 +405,12 @@ fun BookDetailScreen(
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
                         } else {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                val compositionResult: LottieCompositionResult =
-                                    rememberLottieComposition(
-                                        spec = LottieCompositionSpec.RawRes(R.raw.synopis_not_found_lottie)
-                                    )
-                                val progressAnimation by animateLottieCompositionAsState(
-                                    compositionResult.value,
-                                    isPlaying = true,
-                                    iterations = LottieConstants.IterateForever,
-                                    speed = 1f
-                                )
-
-                                Spacer(modifier = Modifier.weight(2f))
-                                LottieAnimation(
-                                    composition = compositionResult.value,
-                                    progress = progressAnimation,
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.85f)
-                                        .height(200.dp),
-                                    enableMergePaths = true
-                                )
-
-                                Text(
-                                    text = stringResource(id = R.string.book_synopsis_not_found),
-                                    modifier = Modifier.padding(14.dp),
-                                    fontFamily = figeronaFont,
-                                    fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                )
-                                Spacer(modifier = Modifier.weight(1f))
-                            }
+                            NoSynopsisUI()
                         }
                     }
                 }
             }
         })
-
-
 }
 
 @ExperimentalMaterial3Api
@@ -660,6 +616,44 @@ fun BookDetailTopBar(
                 modifier = Modifier.padding(14.dp)
             )
         }
+    }
+}
+
+@Composable
+fun NoSynopsisUI() {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val compositionResult: LottieCompositionResult =
+            rememberLottieComposition(
+                spec = LottieCompositionSpec.RawRes(R.raw.synopis_not_found_lottie)
+            )
+        val progressAnimation by animateLottieCompositionAsState(
+            compositionResult.value,
+            isPlaying = true,
+            iterations = LottieConstants.IterateForever,
+            speed = 1f
+        )
+
+        Spacer(modifier = Modifier.weight(2f))
+        LottieAnimation(
+            composition = compositionResult.value,
+            progress = progressAnimation,
+            modifier = Modifier
+                .fillMaxWidth(0.85f)
+                .height(200.dp),
+            enableMergePaths = true
+        )
+
+        Text(
+            text = stringResource(id = R.string.book_synopsis_not_found),
+            modifier = Modifier.padding(14.dp),
+            fontFamily = figeronaFont,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
