@@ -20,7 +20,7 @@
     <string name="navigation_settings">Настройки</string>
 
     <!-- ToolTips -->
-    <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
+    <string name="library_tooltip">СОВЕТ! Проведите пальцем по элементам библиотеки влево или вправо, чтобы поделиться или просмотреть подробную информацию о книге.</string>
 
     <!-- Welcome Screen -->
     <string name="welcome_screen_text">Спасибо за установку Myne!\nПожалуйста выберите способ чтения книг.</string>
