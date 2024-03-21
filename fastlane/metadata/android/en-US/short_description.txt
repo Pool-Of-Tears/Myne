@@ -1,1 +1,1 @@
- Android application to download ebooks from the Project GutenBerg.
+ Android application to download & read ebooks from the Project GutenBerg.

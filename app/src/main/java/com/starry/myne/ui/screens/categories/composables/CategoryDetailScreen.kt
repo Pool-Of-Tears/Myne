@@ -180,7 +180,12 @@ fun CategoryDetailScaffold(
                 .padding(it)
         ) {
             if (state.page == 1L && state.isLoading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 75.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             } else if (!state.isLoading && state.error != null) {

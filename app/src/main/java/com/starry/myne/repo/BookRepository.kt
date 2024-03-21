@@ -43,10 +43,16 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class CacheInterceptor : Interceptor {
+
+    companion object {
+        const val CACHE_SIZE = 32L * 1024L * 1024L // 32 MiB
+        private const val CACHE_MAX_AGE = 10 // 10 days
+    }
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val response: Response = chain.proceed(chain.request())
         val cacheControl = CacheControl.Builder()
-            .maxAge(10, TimeUnit.DAYS)
+            .maxAge(CACHE_MAX_AGE, TimeUnit.DAYS)
             .build()
         return response.newBuilder()
             .header("Cache-Control", cacheControl.toString())
@@ -67,7 +73,7 @@ class BookRepository(context: Context) {
         .connectTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)
         .readTimeout(100, TimeUnit.SECONDS)
-        .cache(Cache(File(context.cacheDir, "http-cache"), 16L * 1024L * 1024L)) // 16 MiB
+        .cache(Cache(File(context.cacheDir, "http-cache"), CacheInterceptor.CACHE_SIZE))
         .addNetworkInterceptor(CacheInterceptor())
         .build()
 
