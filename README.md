@@ -6,7 +6,6 @@
 <p align="center">
   <a href="https://www.android.com"><img src="https://forthebadge.com/images/badges/built-for-android.svg"></a>
   <a href="https://www.github.com/starry-shivam"><img src="https://forthebadge.com/images/badges/built-with-love.svg"/></a>
-</a>
 </p>
 
 <p align="center">
@@ -45,7 +44,6 @@ The app also utilizes the Google Books API to retrieve additional data such as s
 - Supports [Material You](https://www.androidpolice.com/everything-we-love-about-material-you/amp/) theming in devices running on Android 12+
 - Comes in both light and dark mode.
 - MAD: UI and logic written with pure Kotlin. Single activity, no fragments, only composable destinations.
-- 
 ------
 
 <h2 align="center">Downloads</h2>
