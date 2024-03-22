@@ -117,7 +117,10 @@ fun ReaderDetailScreen(
     } else if (state.error != null) {
         stringResource(id = R.string.error).toToast(context)
     } else {
-        val readerItem = viewModel.readerItem?.collectAsState(initial = null)
+
+        // Collect saved reader progress for the current book.
+        val readerItem = viewModel.readerItem?.collectAsState(initial = null)?.value
+
         Scaffold(topBar = {
             CustomTopAppBar(headerText = stringResource(id = R.string.reader_detail_header)) {
                 navController.navigateUp()
@@ -256,9 +259,9 @@ fun ReaderDetailScreen(
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
 
-                            if (readerItem?.value != null) {
+                            if (readerItem != null) {
                                 Text(
-                                    text = "${readerItem.value?.getProgressPercent(state.ebookData.epubBook.chapters.size)}% Completed",
+                                    text = "${readerItem.getProgressPercent(state.ebookData.epubBook.chapters.size)}% Completed",
                                     modifier = Modifier.padding(
                                         start = 12.dp, end = 8.dp, top = 8.dp
                                     ),
