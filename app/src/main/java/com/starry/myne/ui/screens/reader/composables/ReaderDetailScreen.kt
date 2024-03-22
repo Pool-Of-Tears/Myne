@@ -118,7 +118,7 @@ fun ReaderDetailScreen(
         stringResource(id = R.string.error).toToast(context)
     } else {
 
-        //
+        // Collect saved reader progress for the current book.
         val readerItem = viewModel.readerItem?.collectAsState(initial = null)?.value
 
         Scaffold(topBar = {
