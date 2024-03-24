@@ -21,7 +21,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.os.Environment
+import android.util.Log
 import com.starry.myne.repo.models.Book
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +37,13 @@ import java.io.File
  * @param context [Context] required to access [DownloadManager] and to get file path for the downloaded file.
  */
 class BookDownloader(private val context: Context) {
+
+    companion object {
+        private const val TAG = "BookDownloader"
+        private const val BOOKS_FOLDER = "ebooks"
+        private const val TEMP_FOLDER = "temp_books"
+        private const val MAX_FILENAME_LENGTH = 200
+    }
 
     private val downloadJob = Job()
     private val downloadScope = CoroutineScope(Dispatchers.IO + downloadJob)
@@ -70,15 +77,30 @@ class BookDownloader(private val context: Context) {
         book: Book, downloadProgressListener: (progress: Float, status: Int) -> Unit,
         onDownloadSuccess: (filePath: String) -> Unit
     ) {
+        // Check if book is already being downloaded.
+        if (runningDownloads.containsKey(book.id)) return
+
+        // Create file for the downloaded book.
         val filename = getFilenameForBook(book)
-        val uri = Uri.parse(book.formats.applicationepubzip)
-        val request = DownloadManager.Request(uri)
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setAllowedOverRoaming(true).setAllowedOverMetered(true).setTitle(book.title)
+        val tempFolder = File(context.getExternalFilesDir(null), TEMP_FOLDER)
+        if (!tempFolder.exists()) tempFolder.mkdirs()
+        val tempFile = File(tempFolder, filename)
+        Log.d(TAG, "downloadBook: Destination file path: ${tempFile.absolutePath}")
+
+        // Start download...
+        val downloadUri = Uri.parse(book.formats.applicationepubzip)
+        val request = DownloadManager.Request(downloadUri)
+        request.setTitle(book.title)
             .setDescription(BookUtils.getAuthorsAsString(book.authors))
-            .setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, filename)
+            .setDestinationUri(Uri.fromFile(tempFile))
+            .setAllowedOverRoaming(true)
+            .setAllowedOverMetered(true)
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+
+        Log.d(TAG, "downloadBook: Starting download for book: ${book.title}")
         val downloadId = downloadManager.enqueue(request)
 
+        // Start coroutine to listen for download progress.
         downloadScope.launch {
             var isDownloadFinished = false
             var progress = 0f
@@ -102,16 +124,25 @@ class BookDownloader(private val context: Context) {
                         }
 
                         DownloadManager.STATUS_SUCCESSFUL -> {
+                            Log.d(TAG, "downloadBook: Download successful for book: ${book.title}")
                             isDownloadFinished = true
                             progress = 1f
-                            val externalFilesDir =
-                                context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                            val filePath = File(externalFilesDir, filename).canonicalPath
-                            onDownloadSuccess(filePath)
+                            // Move file to books folder.
+                            val booksFolder = File(context.filesDir, BOOKS_FOLDER)
+                            if (!booksFolder.exists()) booksFolder.mkdirs()
+                            val bookFile = File(booksFolder, filename)
+                            tempFile.copyTo(bookFile, true)
+                            tempFile.delete()
+                            onDownloadSuccess(bookFile.absolutePath)
                         }
 
-                        DownloadManager.STATUS_PAUSED, DownloadManager.STATUS_PENDING -> {}
+                        DownloadManager.STATUS_PAUSED, DownloadManager.STATUS_PENDING -> {
+                            // Do nothing, wait for download to resume.
+                            Log.d(TAG, "downloadBook: Download pending for book: ${book.title}")
+                        }
+
                         DownloadManager.STATUS_FAILED -> {
+                            Log.d(TAG, "downloadBook: Download failed for book: ${book.title}")
                             isDownloadFinished = true
                             progress = 0f
                         }
@@ -119,6 +150,7 @@ class BookDownloader(private val context: Context) {
 
                 } else {
                     /** Download cancelled by the user. */
+                    Log.d(TAG, "downloadBook: Download cancelled for book: ${book.title}")
                     isDownloadFinished = true
                     progress = 0f
                     status = DownloadManager.STATUS_FAILED
@@ -168,7 +200,17 @@ class BookDownloader(private val context: Context) {
      * @param book [Book] for which file name is required.
      * @return [String] file name for the given book.
      */
-    private fun getFilenameForBook(book: Book) = book.title.replace(":", ";")
-        .replace("\"", "").split(" ").joinToString(separator = "+") + ".epub"
+    private fun getFilenameForBook(book: Book): String {
+        val sanitizedTitle = book.title
+            .replace(":", ";")
+            .replace("\"", "")
+            .replace("/", "-")
+            .replace("\\", "-")
+            .split(" ")
+            .joinToString(separator = "+") { word ->
+                word.replace(Regex("[^\\p{ASCII}]"), "")
+            }.take(MAX_FILENAME_LENGTH).trim()
+        return "$sanitizedTitle.epub"
+    }
 
 }

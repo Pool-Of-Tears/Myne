@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.Flow
 interface ReaderDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(readerItem: ReaderItem)
+    fun insert(readerData: ReaderData)
 
     @Query("DELETE FROM reader_table WHERE book_id = :bookId")
     fun delete(bookId: Int)
@@ -42,8 +42,8 @@ interface ReaderDao {
     fun update(bookId: Int, lastChapterIndex: Int, lastChapterOffset: Int)
 
     @Query("SELECT * FROM reader_table WHERE book_id = :bookId")
-    fun getReaderItem(bookId: Int): ReaderItem?
+    fun getReaderData(bookId: Int): ReaderData?
 
     @Query("SELECT * FROM reader_table WHERE book_id = :bookId")
-    fun getReaderItemAsFlow(bookId: Int): Flow<ReaderItem?>
+    fun getReaderDataAsFlow(bookId: Int): Flow<ReaderData?>
 }

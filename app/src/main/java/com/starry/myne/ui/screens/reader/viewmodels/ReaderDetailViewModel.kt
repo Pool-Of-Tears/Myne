@@ -24,13 +24,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.reader.ReaderDao
-import com.starry.myne.database.reader.ReaderItem
+import com.starry.myne.database.reader.ReaderData
 import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubBook
 import com.starry.myne.repo.BookRepository
 import com.starry.myne.utils.NetworkObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -59,15 +60,15 @@ class ReaderDetailViewModel @Inject constructor(
 
     var state by mutableStateOf(ReaderDetailScreenState())
 
-    val readerItem: Flow<ReaderItem?>?
-        get() = _readerItem
-    private var _readerItem: Flow<ReaderItem?>? = null
+    val readerData: Flow<ReaderData?>?
+        get() = _readerData
+    private var _readerData: Flow<ReaderData?>? = null
 
     fun loadEbookData(bookId: String, networkStatus: NetworkObserver.Status) {
         viewModelScope.launch(Dispatchers.IO) {
             // build EbookData.
             val libraryItem = libraryDao.getItemById(bookId.toInt())!!
-            _readerItem = readerDao.getReaderItemAsFlow(bookId.toInt())
+            _readerData = readerDao.getReaderDataAsFlow(bookId.toInt())
             val coverImage: String? = try {
                 if (networkStatus == NetworkObserver.Status.Available) bookRepository.getExtraInfo(
                     libraryItem.title
@@ -75,13 +76,15 @@ class ReaderDetailViewModel @Inject constructor(
             } catch (exc: Exception) {
                 null
             }
+            val ebookData = EbookData(
+                coverImage,
+                libraryItem.title,
+                libraryItem.authors,
+                epubParser.createEpubBook(libraryItem.filePath)
+            )
+            delay(500) // Add delay to avoid flickering.
             state = state.copy(
-                isLoading = false, ebookData = EbookData(
-                    coverImage,
-                    libraryItem.title,
-                    libraryItem.authors,
-                    epubParser.createEpubBook(libraryItem.filePath)
-                )
+                isLoading = false, ebookData = ebookData
             )
         }
     }
