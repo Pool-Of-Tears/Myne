@@ -27,8 +27,8 @@ android {
         applicationId "com.starry.myne"
         minSdk 26
         targetSdk 34
-        versionCode 320
-        versionName "3.2.0"
+        versionCode 325
+        versionName "3.2.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
