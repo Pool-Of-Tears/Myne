@@ -22,7 +22,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "reader_table")
-data class ReaderItem(
+data class ReaderData(
     @ColumnInfo(name = "book_id") val bookId: Int,
     @ColumnInfo(name = "last_chapter_index") val lastChapterIndex: Int,
     @ColumnInfo(name = "last_chapter_offset") val lastChapterOffset: Int

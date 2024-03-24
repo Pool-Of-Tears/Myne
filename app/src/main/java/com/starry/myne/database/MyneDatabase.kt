@@ -24,11 +24,11 @@ import androidx.room.RoomDatabase
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.database.reader.ReaderDao
-import com.starry.myne.database.reader.ReaderItem
+import com.starry.myne.database.reader.ReaderData
 import com.starry.myne.utils.Constants
 
 @Database(
-    entities = [LibraryItem::class, ReaderItem::class],
+    entities = [LibraryItem::class, ReaderData::class],
     version = 2,
     exportSchema = true,
     autoMigrations = [AutoMigration(from = 1, to = 2)]

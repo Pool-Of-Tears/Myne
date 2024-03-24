@@ -32,7 +32,7 @@ import androidx.lifecycle.viewModelScope
 import com.starry.myne.R
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.reader.ReaderDao
-import com.starry.myne.database.reader.ReaderItem
+import com.starry.myne.database.reader.ReaderData
 import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubBook
 import com.starry.myne.ui.theme.figeronaFont
@@ -82,7 +82,7 @@ data class ReaderScreenState(
     val isLoading: Boolean = true,
     val showReaderMenu: Boolean = false,
     val epubBook: EpubBook? = null,
-    val readerData: ReaderItem? = null
+    val readerData: ReaderData? = null
 )
 
 @HiltViewModel
@@ -107,13 +107,13 @@ class ReaderViewModel @Inject constructor(
     fun loadEpubBook(bookId: Int, onLoaded: (ReaderScreenState) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val libraryItem = libraryDao.getItemById(bookId)
-            val readerData = readerDao.getReaderItem(bookId)
+            val readerData = readerDao.getReaderData(bookId)
             // parse and create epub book
             val epubBook = epubParser.createEpubBook(libraryItem!!.filePath)
             state = state.copy(epubBook = epubBook, readerData = readerData)
             onLoaded(state)
             // Added some delay to avoid choppy animation.
-            delay(200L)
+            delay(350L)
             state = state.copy(isLoading = false)
         }
     }
@@ -132,14 +132,14 @@ class ReaderViewModel @Inject constructor(
 
     fun updateReaderProgress(bookId: Int, chapterIndex: Int, chapterOffset: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            if (readerDao.getReaderItem(bookId) != null && chapterIndex != state.epubBook?.chapters!!.size - 1) {
+            if (readerDao.getReaderData(bookId) != null && chapterIndex != state.epubBook?.chapters!!.size - 1) {
                 readerDao.update(bookId, chapterIndex, chapterOffset)
             } else if (chapterIndex == state.epubBook?.chapters!!.size - 1) {
                 // if the user has reached last chapter, delete this book
                 // from reader database instead of saving it's progress .
-                readerDao.getReaderItem(bookId)?.let { readerDao.delete(it.bookId) }
+                readerDao.getReaderData(bookId)?.let { readerDao.delete(it.bookId) }
             } else {
-                readerDao.insert(readerItem = ReaderItem(bookId, chapterIndex, chapterOffset))
+                readerDao.insert(readerData = ReaderData(bookId, chapterIndex, chapterOffset))
             }
         }
     }
