@@ -77,7 +77,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 <h2 align="center">Translations</h2>
 
-If you want to make the app available in your language, you're very welcome to create a pull request with your translation file. The base string resources can be found under:
+If you want to make the app available in your language, you're welcome to create a pull request with your translation file. The base string resources can be found under:
 ```
 /app/src/main/res/values/strings.xml
 ```
