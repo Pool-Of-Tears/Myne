@@ -21,7 +21,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -90,11 +89,17 @@ class ReaderRVAdapter(
         fun bind(position: Int, onClick: () -> Unit) {
             val chapter = allChapters[position]
             composeView.setContent {
-                SelectionContainer {
-                    MyneTheme(settingsViewModel = activity.settingsViewModel) {
+                MyneTheme(settingsViewModel = activity.settingsViewModel) {
+                    SelectionContainer {
+                        println("ChapterRVItem: $chapter")
+                        // SelectionContainer is used to enable text selection
+                        // in the text displayed in the Text composable
+                        // This is required to enable text selection in the reader screen
+                        // as the Text composable does not support text selection by default
                         ChapterRVItem(chapter = chapter, viewModel = viewModel, onClick = onClick)
                     }
                 }
+
             }
         }
     }
@@ -149,38 +154,37 @@ private fun ChapterRVItem(
         )
         Spacer(modifier = Modifier.height(12.dp))
 
-        Box(
-            modifier = Modifier
-                .padding(start = 14.dp, end = 14.dp, bottom = 8.dp)
-        ) {
-            paragraphs.forEach { para ->
-                val imgEntry = BookTextMapper.ImgEntry.fromXMLString(para)
-                when {
-                    imgEntry == null -> {
-                        Text(
-                            text = para,
-                            fontSize = fontSize.sp,
-                            lineHeight = 1.3.em,
-                            fontFamily = viewModel.readerFont.value.fontFamily,
-                        )
-                    }
+        paragraphs.forEach { para ->
+            val imgEntry = BookTextMapper.ImgEntry.fromXMLString(para)
+            when {
+                imgEntry == null -> {
+                    Text(
+                        text = para,
+                        fontSize = fontSize.sp,
+                        lineHeight = 1.3.em,
+                        fontFamily = viewModel.readerFont.value.fontFamily,
+                        modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 8.dp),
+                    )
+                }
 
-                    else -> {
-                        val image = epubBook?.images?.find { it.absPath == imgEntry.path }
-                        image?.let {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(image.image)
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
+                else -> {
+                    val image = epubBook?.images?.find { it.absPath == imgEntry.path }
+                    image?.let {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(image.image)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(vertical = 6.dp)
+                        )
                     }
                 }
             }
+
         }
 
         HorizontalDivider(
