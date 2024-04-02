@@ -41,6 +41,11 @@ class SettingsViewModel @Inject constructor(
     val theme: LiveData<ThemeMode> = _theme
     val materialYou: LiveData<Boolean> = _materialYou
 
+    init {
+        _theme.value = ThemeMode.entries.toTypedArray()[getThemeValue()]
+        _materialYou.value = getMaterialYouValue()
+    }
+
     fun setTheme(newTheme: ThemeMode) {
         _theme.postValue(newTheme)
         preferenceUtil.putInt(PreferenceUtil.APP_THEME_INT, newTheme.ordinal)

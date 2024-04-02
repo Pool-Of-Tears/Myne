@@ -101,7 +101,6 @@ import androidx.compose.ui.unit.sp
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.R
-import com.starry.myne.ui.screens.reader.activities.ReaderActivity
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderFont
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
@@ -110,6 +109,9 @@ import com.starry.myne.ui.theme.figeronaFont
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+
+
+enum class TextScaleButtonType { INCREASE, DECREASE }
 
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
@@ -408,11 +410,11 @@ fun TextScaleControls(
         horizontalArrangement = Arrangement.Center
     ) {
         ReaderTextScaleButton(
-            buttonType = ReaderActivity.TextScaleButtonType.DECREASE,
-            textSizeState = viewModel.textSize,
+            buttonType = TextScaleButtonType.DECREASE,
+            fontSizeState = viewModel.fontSize,
             coroutineScope = coroutineScope,
             snackBarHostState = snackBarHostState,
-            onTextSizeValueChanged = { viewModel.setFontSize(it) }
+            onFontSizeChanged = { viewModel.setFontSize(it) }
         )
 
         Spacer(modifier = Modifier.width(14.dp))
@@ -430,7 +432,7 @@ fun TextScaleControls(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = viewModel.textSize.value.toString(),
+                text = viewModel.fontSize.value.toString(),
                 fontFamily = figeronaFont,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -441,11 +443,11 @@ fun TextScaleControls(
         Spacer(modifier = Modifier.width(14.dp))
 
         ReaderTextScaleButton(
-            buttonType = ReaderActivity.TextScaleButtonType.INCREASE,
-            textSizeState = viewModel.textSize,
+            buttonType = TextScaleButtonType.INCREASE,
+            fontSizeState = viewModel.fontSize,
             coroutineScope = coroutineScope,
             snackBarHostState = snackBarHostState,
-            onTextSizeValueChanged = { viewModel.setFontSize(it) }
+            onFontSizeChanged = { viewModel.setFontSize(it) }
         )
     }
 }
@@ -485,30 +487,30 @@ fun FontSelectionButton(
 @ExperimentalMaterial3Api
 @Composable
 fun ReaderTextScaleButton(
-    buttonType: ReaderActivity.TextScaleButtonType,
-    textSizeState: State<Int>,
+    buttonType: TextScaleButtonType,
+    fontSizeState: State<Int>,
     coroutineScope: CoroutineScope,
     snackBarHostState: SnackbarHostState,
-    onTextSizeValueChanged: (newValue: Int) -> Unit
+    onFontSizeChanged: (newValue: Int) -> Unit
 ) {
     val context = LocalContext.current
     val iconRes: Int
     val adjustment: Int
 
     when (buttonType) {
-        ReaderActivity.TextScaleButtonType.DECREASE -> {
+        TextScaleButtonType.DECREASE -> {
             iconRes = R.drawable.ic_reader_text_minus
             adjustment = -10
         }
 
-        ReaderActivity.TextScaleButtonType.INCREASE -> {
+        TextScaleButtonType.INCREASE -> {
             iconRes = R.drawable.ic_reader_text_plus
             adjustment = 10
         }
     }
 
     val callback: () -> Unit = {
-        val newSize = textSizeState.value + adjustment
+        val newSize = fontSizeState.value + adjustment
         when {
             newSize < 50 -> {
                 coroutineScope.launch {
@@ -530,8 +532,8 @@ fun ReaderTextScaleButton(
 
             else -> {
                 coroutineScope.launch {
-                    val adjustedSize = textSizeState.value + adjustment
-                    onTextSizeValueChanged(adjustedSize)
+                    val adjustedSize = fontSizeState.value + adjustment
+                    onFontSizeChanged(adjustedSize)
                 }
             }
         }

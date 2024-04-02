@@ -95,8 +95,8 @@ class ReaderViewModel @Inject constructor(
 
     var state by mutableStateOf(ReaderScreenState())
 
-    private var _textSize: MutableState<Int> = mutableIntStateOf(getFontSize())
-    val textSize: State<Int> = _textSize
+    private var _fontSize: MutableState<Int> = mutableIntStateOf(getFontSize())
+    val fontSize: State<Int> = _fontSize
 
     private var _readerFont: MutableState<ReaderFont> = mutableStateOf(getFontFamily())
     val readerFont: State<ReaderFont> = _readerFont
@@ -172,7 +172,7 @@ class ReaderViewModel @Inject constructor(
 
     fun setFontSize(newValue: Int) {
         preferenceUtil.putInt(PreferenceUtil.READER_FONT_SIZE_INT, newValue)
-        _textSize.value = newValue
+        _fontSize.value = newValue
     }
 
     private fun getFontSize() = preferenceUtil.getInt(PreferenceUtil.READER_FONT_SIZE_INT, 100)

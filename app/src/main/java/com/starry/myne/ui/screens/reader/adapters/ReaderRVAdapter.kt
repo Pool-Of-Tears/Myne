@@ -19,6 +19,9 @@ package com.starry.myne.ui.screens.reader.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +35,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
@@ -81,11 +86,12 @@ class ReaderRVAdapter(
 
     inner class ReaderComposeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val composeView: ComposeView = view.findViewById(R.id.ReaderRVItem)
+
         fun bind(position: Int, onClick: () -> Unit) {
             val chapter = allChapters[position]
             composeView.setContent {
-                MyneTheme(settingsViewModel = activity.settingsViewModel) {
-                    SelectionContainer {
+                SelectionContainer {
+                    MyneTheme(settingsViewModel = activity.settingsViewModel) {
                         ChapterRVItem(chapter = chapter, viewModel = viewModel, onClick = onClick)
                     }
                 }
@@ -106,6 +112,10 @@ class ReaderRVAdapter(
     override fun onBindViewHolder(holder: ReaderComposeViewHolder, position: Int) {
         holder.bind(position, onClick = { clickListener.onReaderClick() })
     }
+
+    override fun getItemId(position: Int): Long {
+        return allChapters[position].hashCode().toLong()
+    }
 }
 
 @Composable
@@ -114,16 +124,20 @@ private fun ChapterRVItem(
     viewModel: ReaderViewModel,
     onClick: () -> Unit
 ) {
-    val paragraphs = chapter.body
-        .splitToSequence("\n\n")
-        .filter { it.isNotBlank() }
-        .toList()
-
     val epubBook = viewModel.state.epubBook
+    val paragraphs = remember { chunkText(chapter.body) }
+    val targetFontSize = (viewModel.fontSize.value / 10) * 1.8f
+    val fontSize by animateFloatAsState(
+        targetValue = targetFontSize,
+        animationSpec = tween(durationMillis = 300),
+        label = "fontSize"
+    )
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .noRippleClickable { onClick() }) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .noRippleClickable { onClick() }
+    ) {
         Text(
             modifier = Modifier.padding(start = 12.dp, end = 4.dp, top = 10.dp),
             text = chapter.title,
@@ -135,33 +149,35 @@ private fun ChapterRVItem(
         )
         Spacer(modifier = Modifier.height(12.dp))
 
-        paragraphs.forEach { para ->
-            when (val imgEntry = BookTextMapper.ImgEntry.fromXMLString(para)) {
-                null -> {
-                    val fontSize = (viewModel.textSize.value / 10) * 1.8
-                    Text(
-                        text = para,
-                        fontSize = fontSize.sp,
-                        lineHeight = 1.3.em,
-                        fontFamily = viewModel.readerFont.value.fontFamily,
-                        modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 8.dp),
-                    )
-                }
-
-                else -> {
-                    val image = epubBook!!.images.find { it.absPath == imgEntry.path }
-                    image?.let {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(image.image)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(vertical = 6.dp)
+        Box(
+            modifier = Modifier
+                .padding(start = 14.dp, end = 14.dp, bottom = 8.dp)
+        ) {
+            paragraphs.forEach { para ->
+                val imgEntry = BookTextMapper.ImgEntry.fromXMLString(para)
+                when {
+                    imgEntry == null -> {
+                        Text(
+                            text = para,
+                            fontSize = fontSize.sp,
+                            lineHeight = 1.3.em,
+                            fontFamily = viewModel.readerFont.value.fontFamily,
                         )
+                    }
+
+                    else -> {
+                        val image = epubBook?.images?.find { it.absPath == imgEntry.path }
+                        image?.let {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(image.image)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
                     }
                 }
             }
@@ -172,4 +188,10 @@ private fun ChapterRVItem(
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
         )
     }
+}
+
+private fun chunkText(text: String): List<String> {
+    return text.splitToSequence("\n\n")
+        .filter { it.isNotBlank() }
+        .toList()
 }

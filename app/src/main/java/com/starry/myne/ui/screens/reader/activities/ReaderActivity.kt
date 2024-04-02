@@ -43,7 +43,6 @@ import com.starry.myne.ui.screens.reader.composables.ReaderScreen
 import com.starry.myne.ui.screens.reader.composables.TransparentSystemBars
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
-import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.MyneTheme
 import com.starry.myne.utils.toToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,8 +54,6 @@ import kotlin.properties.Delegates
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 class ReaderActivity : AppCompatActivity(), ReaderClickListener {
-
-    enum class TextScaleButtonType { INCREASE, DECREASE }
 
     companion object {
         const val EXTRA_BOOK_ID = "reader_book_id"
@@ -95,12 +92,6 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
 
         // Set app theme.
         settingsViewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
-        when (settingsViewModel.getThemeValue()) {
-            ThemeMode.Auto.ordinal -> settingsViewModel.setTheme(ThemeMode.Auto)
-            ThemeMode.Dark.ordinal -> settingsViewModel.setTheme(ThemeMode.Dark)
-            ThemeMode.Light.ordinal -> settingsViewModel.setTheme(ThemeMode.Light)
-        }
-        settingsViewModel.setMaterialYou(settingsViewModel.getMaterialYouValue())
 
         // Setup reader's recycler view.
         val adapter = ReaderRVAdapter(
