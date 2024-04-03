@@ -69,7 +69,6 @@ android {
     }
     buildFeatures {
         compose true
-        viewBinding true
         buildConfig = true
     }
     composeOptions {
@@ -108,8 +107,6 @@ dependencies {
     implementation "androidx.compose.material3:material3"
     // Accompanist compose.
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
-    // Recycler View for reader.
-    implementation "androidx.recyclerview:recyclerview:1.3.2"
     // Material theme for main activity.
     implementation 'com.google.android.material:material:1.11.0'
     // Android 12+ splash API.

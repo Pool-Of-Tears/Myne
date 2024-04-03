@@ -44,6 +44,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -79,9 +80,6 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -98,7 +96,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.R
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderFont
@@ -106,8 +103,6 @@ import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
@@ -118,8 +113,7 @@ enum class TextScaleButtonType { INCREASE, DECREASE }
 @Composable
 fun ReaderScreen(
     viewModel: ReaderViewModel,
-    recyclerViewManager: LinearLayoutManager,
-    visibleChapterFlow: StateFlow<Int>,
+    lazyListState: LazyListState,
     readerContent: @Composable (paddingValues: PaddingValues) -> Unit
 ) {
     // Hide reader menu on back press.
@@ -132,8 +126,8 @@ fun ReaderScreen(
     FontChooserDialog(showFontDialog, viewModel)
 
     val snackBarHostState = remember { SnackbarHostState() }
-    val visibleChapterIdx by visibleChapterFlow.collectAsState()
-    val currentChapter = viewModel.state.epubBook?.chapters?.getOrNull(visibleChapterIdx)
+    val currentChapter =
+        viewModel.state.epubBook?.chapters?.getOrNull(viewModel.visibleChapterIndex.value)
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val chapters = viewModel.state.epubBook?.chapters
@@ -173,11 +167,19 @@ fun ReaderScreen(
                     LazyColumn {
                         items(chapters.size) { idx ->
                             NavigationDrawerItem(
-                                label = { Text(text = chapters[idx].title) },
-                                selected = idx == visibleChapterIdx,
+                                label = {
+                                    Text(
+                                        text = chapters[idx].title,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                selected = idx == viewModel.visibleChapterIndex.value,
                                 onClick = {
-                                    coroutineScope.launch { drawerState.close() }
-                                    recyclerViewManager.scrollToPositionWithOffset(idx, 0)
+                                    coroutineScope.launch {
+                                        drawerState.close()
+                                        lazyListState.scrollToItem(idx)
+                                    }
                                 }
                             )
                         }
@@ -245,7 +247,7 @@ fun ReaderScreen(
                                 }
                             }
                             val chapterProgressbarState = animateFloatAsState(
-                                targetValue = viewModel.itemScrolledPercent.value,
+                                targetValue = viewModel.chapterScrolledPercent.value,
                                 label = "chapter progress bar state animation"
                             )
                             LinearProgressIndicator(
@@ -291,7 +293,6 @@ fun ReaderScreen(
             }
         )
     }
-
 }
 
 @Composable
@@ -374,8 +375,6 @@ fun BottomSheetContents(
     showFontDialog: MutableState<Boolean>,
     snackBarHostState: SnackbarHostState
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -384,14 +383,13 @@ fun BottomSheetContents(
     ) {
         TextScaleControls(
             viewModel = viewModel,
-            coroutineScope = coroutineScope,
             snackBarHostState = snackBarHostState
         )
 
         Spacer(modifier = Modifier.height(14.dp))
 
         FontSelectionButton(
-            readerFontFamily = viewModel.readerFont,
+            readerFontFamily = viewModel.state.fontFamily,
             showFontDialog = showFontDialog
         )
     }
@@ -402,7 +400,6 @@ fun BottomSheetContents(
 @Composable
 fun TextScaleControls(
     viewModel: ReaderViewModel,
-    coroutineScope: CoroutineScope,
     snackBarHostState: SnackbarHostState
 ) {
     Row(
@@ -411,8 +408,7 @@ fun TextScaleControls(
     ) {
         ReaderTextScaleButton(
             buttonType = TextScaleButtonType.DECREASE,
-            fontSizeState = viewModel.fontSize,
-            coroutineScope = coroutineScope,
+            fontSize = viewModel.state.fontSize,
             snackBarHostState = snackBarHostState,
             onFontSizeChanged = { viewModel.setFontSize(it) }
         )
@@ -432,7 +428,7 @@ fun TextScaleControls(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = viewModel.fontSize.value.toString(),
+                text = viewModel.state.fontSize.toString(),
                 fontFamily = figeronaFont,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -444,8 +440,7 @@ fun TextScaleControls(
 
         ReaderTextScaleButton(
             buttonType = TextScaleButtonType.INCREASE,
-            fontSizeState = viewModel.fontSize,
-            coroutineScope = coroutineScope,
+            fontSize = viewModel.state.fontSize,
             snackBarHostState = snackBarHostState,
             onFontSizeChanged = { viewModel.setFontSize(it) }
         )
@@ -454,7 +449,7 @@ fun TextScaleControls(
 
 @Composable
 fun FontSelectionButton(
-    readerFontFamily: State<ReaderFont>,
+    readerFontFamily: ReaderFont,
     showFontDialog: MutableState<Boolean>
 ) {
     OutlinedButton(
@@ -476,7 +471,7 @@ fun FontSelectionButton(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = readerFontFamily.value.name,
+                text = readerFontFamily.name,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
@@ -488,11 +483,12 @@ fun FontSelectionButton(
 @Composable
 fun ReaderTextScaleButton(
     buttonType: TextScaleButtonType,
-    fontSizeState: State<Int>,
-    coroutineScope: CoroutineScope,
+    fontSize: Int,
     snackBarHostState: SnackbarHostState,
     onFontSizeChanged: (newValue: Int) -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     val context = LocalContext.current
     val iconRes: Int
     val adjustment: Int
@@ -510,7 +506,7 @@ fun ReaderTextScaleButton(
     }
 
     val callback: () -> Unit = {
-        val newSize = fontSizeState.value + adjustment
+        val newSize = fontSize + adjustment
         when {
             newSize < 50 -> {
                 coroutineScope.launch {
@@ -532,7 +528,7 @@ fun ReaderTextScaleButton(
 
             else -> {
                 coroutineScope.launch {
-                    val adjustedSize = fontSizeState.value + adjustment
+                    val adjustedSize = fontSize + adjustment
                     onFontSizeChanged(adjustedSize)
                 }
             }

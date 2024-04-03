@@ -80,6 +80,7 @@ import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.common.simpleVerticalScrollbar
 import com.starry.myne.ui.screens.reader.activities.ReaderActivity
+import com.starry.myne.ui.screens.reader.activities.ReaderConstants
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
@@ -129,7 +130,7 @@ fun ReaderDetailScreen(
                 text = { Text(text = stringResource(id = if (readerItem != null) R.string.continue_reading_button else R.string.start_reading_button)) },
                 onClick = {
                     val intent = Intent(context, ReaderActivity::class.java)
-                    intent.putExtra(ReaderActivity.EXTRA_BOOK_ID, bookId.toInt())
+                    intent.putExtra(ReaderConstants.EXTRA_BOOK_ID, bookId.toInt())
                     context.startActivity(intent)
                 },
                 icon = {
@@ -295,8 +296,8 @@ fun ReaderDetailScreen(
                         val chapter = state.ebookData.epubBook.chapters[idx]
                         ChapterItem(chapterTitle = chapter.title, onClick = {
                             val intent = Intent(context, ReaderActivity::class.java)
-                            intent.putExtra(ReaderActivity.EXTRA_BOOK_ID, bookId.toInt())
-                            intent.putExtra(ReaderActivity.EXTRA_CHAPTER_IDX, idx)
+                            intent.putExtra(ReaderConstants.EXTRA_BOOK_ID, bookId.toInt())
+                            intent.putExtra(ReaderConstants.EXTRA_CHAPTER_IDX, idx)
                             context.startActivity(intent)
                         })
                     }

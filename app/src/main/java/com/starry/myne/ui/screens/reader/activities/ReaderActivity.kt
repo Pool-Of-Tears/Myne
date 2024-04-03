@@ -16,29 +16,27 @@
 
 package com.starry.myne.ui.screens.reader.activities
 
-import android.content.res.Configuration
+import android.content.ContentResolver
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.starry.myne.R
-import com.starry.myne.databinding.ActivityReaderBinding
-import com.starry.myne.ui.screens.reader.adapters.ReaderClickListener
-import com.starry.myne.ui.screens.reader.adapters.ReaderRVAdapter
+import com.starry.myne.ui.screens.reader.composables.ReaderContent
 import com.starry.myne.ui.screens.reader.composables.ReaderScreen
 import com.starry.myne.ui.screens.reader.composables.TransparentSystemBars
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
@@ -46,39 +44,30 @@ import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.theme.MyneTheme
 import com.starry.myne.utils.toToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import java.io.FileInputStream
-import kotlin.properties.Delegates
+
+object ReaderConstants {
+    const val EXTRA_BOOK_ID = "reader_book_id"
+    const val EXTRA_CHAPTER_IDX = "reader_chapter_index"
+    const val DEFAULT_NONE = -100000
+
+}
+
+data class IntentData(
+    val bookId: Int?, val chapterIndex: Int?, val isExternalBook: Boolean
+)
 
 @AndroidEntryPoint
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
-class ReaderActivity : AppCompatActivity(), ReaderClickListener {
+class ReaderActivity : AppCompatActivity() {
 
-    companion object {
-        const val EXTRA_BOOK_ID = "reader_book_id"
-        const val EXTRA_CHAPTER_IDX = "reader_chapter_index"
-        private const val DEFAULT_NONE = -100000
-
-    }
-
-    private lateinit var binding: ActivityReaderBinding
-    lateinit var settingsViewModel: SettingsViewModel
+    private lateinit var settingsViewModel: SettingsViewModel
     private val viewModel: ReaderViewModel by viewModels()
-
-    // Weather book was opened from external epub file.
-    private var isExternalBook by Delegates.notNull<Boolean>()
-
-    // Flow which stores currently visible chapter index.
-    private val visibleChapterFlow = MutableStateFlow(0)
-
-    // Store recycler view position and offset when activity
-    // gets paused, so we can restore it on orientation changes.
-    private var mRVPositionAndOffset: Pair<Int, Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityReaderBinding.inflate(layoutInflater)
 
         // Fullscreen mode that ignores any cutout, notch etc.
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -93,166 +82,152 @@ class ReaderActivity : AppCompatActivity(), ReaderClickListener {
         // Set app theme.
         settingsViewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
 
-        // Setup reader's recycler view.
-        val adapter = ReaderRVAdapter(
-            activity = this,
-            viewModel = viewModel,
-            clickListener = this
-        )
-        binding.readerRecyclerView.layoutManager = LinearLayoutManager(this)
-        binding.readerRecyclerView.adapter = adapter
-        val layoutManager = (binding.readerRecyclerView.layoutManager as LinearLayoutManager)
-
-        // Fetch data from intent.
-        val bookId = intent.extras?.getInt(EXTRA_BOOK_ID, DEFAULT_NONE)
-        val chapterIndex = intent.extras?.getInt(EXTRA_CHAPTER_IDX, DEFAULT_NONE)
-        isExternalBook = intent.type == "application/epub+zip"
-
-        // Internal book
-        if (bookId != null && bookId != DEFAULT_NONE) {
-            // Load epub book from given id and set chapters as items in
-            // reader's recycler view adapter.
-            viewModel.loadEpubBook(bookId = bookId, onLoaded = {
-                adapter.allChapters = it.epubBook!!.chapters
-                // if there is saved progress for this book, then scroll to
-                // last page at exact position were used had left.
-                if (it.readerData != null && chapterIndex == DEFAULT_NONE) {
-                    layoutManager.scrollToPositionWithOffset(
-                        it.readerData.lastChapterIndex,
-                        it.readerData.lastChapterOffset
-                    )
-                }
-            })
-            // if user clicked on specific chapter, then scroll to
-            // that chapter directly.
-            if (chapterIndex != null && chapterIndex != DEFAULT_NONE) {
-                layoutManager.scrollToPosition(chapterIndex)
-            }
-
-            // External book.
-        } else if (isExternalBook) {
-            intent?.data?.let {
-                contentResolver.openInputStream(it)?.let { ips ->
-                    viewModel.loadEpubBookExternal(ips as FileInputStream, onLoaded = { epubBook ->
-                        adapter.allChapters = epubBook.chapters
-                        ips.close()
-                    })
-                }
-            }
-        } else {
-            getString(R.string.error).toToast(this, Toast.LENGTH_LONG)
-            finish()
-        }
-
-        // Listener for updating reading progress in database.
-        binding.readerRecyclerView.addOnScrollListener(object :
-            RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                // fetch last visible chapter position and offset.
-                val progressChIndex = layoutManager.findFirstVisibleItemPosition()
-                val progressChOffset = layoutManager.findViewByPosition(progressChIndex)!!.top
-                // Emit currently visible chapter.
-                visibleChapterFlow.value = progressChIndex
-                // If book was not opened from external epub file, update the
-                // reading progress into the database.
-                if (!isExternalBook) {
-                    viewModel.updateReaderProgress(
-                        bookId = bookId!!,
-                        chapterIndex = progressChIndex,
-                        chapterOffset = progressChOffset
-                    )
-                }
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
-                // Calculate the scroll percentage for the currently visible chapter
-                // and store its value in view model.
-                viewModel.setItemScrolledPercent(
-                    calculateItemScrollPercentage(recyclerView, firstVisiblePosition)
-                )
-            }
-        })
-
         // Set UI contents.
         setContent {
             MyneTheme(settingsViewModel = settingsViewModel) {
+
+                val lazyListState = rememberLazyListState()
+                val coroutineScope = rememberCoroutineScope()
+
+                // Handle intent and load epub book.
+                val intentData = handleIntent(intent = intent,
+                    viewModel = viewModel,
+                    contentResolver = contentResolver,
+                    scrollToPosition = { index, offset ->
+                        coroutineScope.launch {
+                            lazyListState.scrollToItem(index, offset)
+                        }
+                    },
+                    onError = {
+                        getString(R.string.error).toToast(this)
+                        finish()
+                    })
+
                 TransparentSystemBars(settingsViewModel = settingsViewModel)
+
                 ReaderScreen(
                     viewModel = viewModel,
-                    recyclerViewManager = layoutManager,
-                    visibleChapterFlow = visibleChapterFlow,
-                    readerContent = { AndroidView(factory = { binding.root }) }
-                )
+                    lazyListState = lazyListState,
+                    readerContent = {
+                        LaunchedEffect(lazyListState) {
+                            snapshotFlow {
+                                lazyListState.firstVisibleItemScrollOffset
+                            }.collect { visibleChapterOffset ->
+                                // fetch last visible chapter position and offset.
+                                val visibleChapterIdx = lazyListState.firstVisibleItemIndex
+                                // Set currently visible chapter & index.
+                                viewModel.setVisibleChapterIndex(visibleChapterIdx)
+                                viewModel.setChapterScrollPercent(
+                                    calculateChapterPercentage(lazyListState)
+                                )
+
+                                // If book was not opened from external epub file, update the
+                                // reading progress into the database.
+                                if (!intentData.isExternalBook) {
+                                    viewModel.updateReaderProgress(
+                                        // Book ID is not null here since we are not opening
+                                        // an external book.
+                                        bookId = intentData.bookId!!,
+                                        chapterIndex = visibleChapterIdx,
+                                        chapterOffset = visibleChapterOffset
+                                    )
+                                }
+                            }
+                        }
+
+                        // Reader content lazy column.
+                        ReaderContent(viewModel = viewModel, lazyListState = lazyListState)
+                    })
             }
         }
     }
-
-    override fun onPause() {
-        super.onPause()
-        val layoutManager = (binding.readerRecyclerView.layoutManager as LinearLayoutManager)
-        val currentPosition = layoutManager.findLastVisibleItemPosition()
-        layoutManager.findViewByPosition(currentPosition)?.let {
-            mRVPositionAndOffset = Pair(currentPosition, it.top)
-        }
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (mRVPositionAndOffset != null) {
-                val layoutManager =
-                    (binding.readerRecyclerView.layoutManager as LinearLayoutManager)
-                layoutManager.scrollToPositionWithOffset(
-                    mRVPositionAndOffset!!.first,
-                    mRVPositionAndOffset!!.second
-                )
-            }
-        }, 50)
-    }
-
-    override fun onReaderClick() {
-        if (!viewModel.state.showReaderMenu) {
-            viewModel.showReaderInfo()
-        } else {
-            viewModel.hideReaderInfo()
-        }
-    }
-
-    /**
-     * Calculate the scroll percentage for a specific item in a RecyclerView.
-     *
-     * @param recyclerView The RecyclerView containing the item
-     * @param itemPosition The position of the item in the RecyclerView
-     * @return The scroll percentage for the item, or -1 if the item is not visible
-     */
-    fun calculateItemScrollPercentage(recyclerView: RecyclerView, itemPosition: Int): Float {
-        val layoutManager = recyclerView.layoutManager!!
-        // Find the view corresponding to the item position
-        val itemView = layoutManager.findViewByPosition(itemPosition) ?: return -1f
-        // Calculate the vertical offset of the item relative to the RecyclerView
-        val itemTop = itemView.top.toFloat()
-        val itemBottom = itemView.bottom.toFloat()
-        // Calculate the visible height of the RecyclerView
-        val recyclerViewHeight = recyclerView.height.toFloat()
-        // Calculate the height of the item
-        val itemHeight = itemView.height.toFloat()
-        // Calculate the scroll percentage for the item
-        return if (itemTop >= recyclerViewHeight || itemBottom <= 0f) {
-            1f // Item is completely scrolled out of view
-        } else {
-            // Calculate the visible portion of the item
-            val visiblePortion = if (itemTop < 0) {
-                itemBottom
-            } else {
-                recyclerViewHeight - itemTop
-            }
-            // Calculate the scroll percentage based on the visible portion
-            ((1 - visiblePortion / itemHeight)).coerceIn(0f, 1f)
-        }
-    }
-
 
 }
+
+
+/**
+ * Handle intent and load epub book from given id or external file.
+ *
+ * @param intent Intent to handle.
+ * @param viewModel ReaderViewModel to load book.
+ * @param contentResolver ContentResolver to open input stream.
+ * @param scrollToPosition Function to scroll to specific position.
+ * @param onError Function to handle error.
+ *
+ * @return IntentData object containing book id, chapter index and isExternalBook.
+ */
+fun handleIntent(
+    intent: Intent,
+    viewModel: ReaderViewModel,
+    contentResolver: ContentResolver,
+    scrollToPosition: (index: Int, offset: Int) -> Unit,
+    onError: () -> Unit
+): IntentData {
+    val bookId = intent.extras?.getInt(
+        ReaderConstants.EXTRA_BOOK_ID, ReaderConstants.DEFAULT_NONE
+    )
+    val chapterIndex = intent.extras?.getInt(
+        ReaderConstants.EXTRA_CHAPTER_IDX, ReaderConstants.DEFAULT_NONE
+    )
+    val isExternalBook = intent.type == "application/epub+zip"
+
+    // Internal book
+    if (bookId != null && bookId != ReaderConstants.DEFAULT_NONE) {
+        // Load epub book from given id and set chapters as items in
+        // reader's recycler view adapter.
+        viewModel.loadEpubBook(bookId = bookId, onLoaded = {
+            // if there is saved progress for this book, then scroll to
+            // last page at exact position were used had left.
+            if (it.readerData != null && chapterIndex == ReaderConstants.DEFAULT_NONE) {
+                scrollToPosition(it.readerData.lastChapterIndex, it.readerData.lastChapterOffset)
+            }
+        })
+        // if user clicked on specific chapter, then scroll to
+        // that chapter directly.
+        if (chapterIndex != null && chapterIndex != ReaderConstants.DEFAULT_NONE) {
+            scrollToPosition(chapterIndex, 0)
+        }
+
+        // External book.
+    } else if (isExternalBook) {
+        intent.data?.let {
+            contentResolver.openInputStream(it)?.let { ips ->
+                viewModel.loadEpubBookExternal(ips as FileInputStream)
+            }
+        }
+    } else {
+        onError() // If no book id is provided, then show error.
+    }
+
+    return IntentData(bookId, chapterIndex, isExternalBook)
+}
+
+/**
+ * Calculate the scroll percentage for the first visible item in a LazyColumn.
+ *
+ * @param lazyListState The LazyListState of the LazyColumn
+ * @return The scroll percentage for the first visible item, or -1 if no item is visible
+ */
+fun calculateChapterPercentage(lazyListState: LazyListState): Float {
+    val firstVisibleItem = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull() ?: return -1f
+    val listHeight =
+        lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
+
+    // Calculate the scroll percentage for the first visible item
+    val itemTop = firstVisibleItem.offset.toFloat()
+    val itemBottom = itemTop + firstVisibleItem.size.toFloat()
+
+    return if (itemTop >= listHeight || itemBottom <= 0f) {
+        1f // Item is completely scrolled out of view
+    } else {
+        // Calculate the visible portion of the item
+        val visiblePortion = if (itemTop < 0f) {
+            itemBottom
+        } else {
+            listHeight - itemTop
+        }
+        // Calculate the scroll percentage based on the visible portion
+        ((1f - visiblePortion / firstVisibleItem.size.toFloat())).coerceIn(0f, 1f)
+    }
+}
+
