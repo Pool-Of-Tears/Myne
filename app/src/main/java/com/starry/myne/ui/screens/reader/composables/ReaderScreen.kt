@@ -26,10 +26,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,6 +53,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -64,7 +62,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -296,7 +293,7 @@ fun ReaderScreen(
 }
 
 @Composable
-fun FontChooserDialog(
+private fun FontChooserDialog(
     showFontDialog: MutableState<Boolean>,
     viewModel: ReaderViewModel,
 ) {
@@ -370,7 +367,7 @@ fun FontChooserDialog(
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
-fun BottomSheetContents(
+private fun BottomSheetContents(
     viewModel: ReaderViewModel,
     showFontDialog: MutableState<Boolean>,
     snackBarHostState: SnackbarHostState
@@ -378,6 +375,7 @@ fun BottomSheetContents(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
             .padding(vertical = 24.dp, horizontal = 16.dp)
     ) {
@@ -398,7 +396,7 @@ fun BottomSheetContents(
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
-fun TextScaleControls(
+private fun TextScaleControls(
     viewModel: ReaderViewModel,
     snackBarHostState: SnackbarHostState
 ) {
@@ -418,13 +416,8 @@ fun TextScaleControls(
         Box(
             modifier = Modifier
                 .size(100.dp, 45.dp)
-                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    shape = RoundedCornerShape(6.dp)
-                )
-                .clip(RoundedCornerShape(6.dp)),
+                .clip(RoundedCornerShape(16.dp))
+                .background(ButtonDefaults.filledTonalButtonColors().containerColor),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -448,20 +441,16 @@ fun TextScaleControls(
 }
 
 @Composable
-fun FontSelectionButton(
+private fun FontSelectionButton(
     readerFontFamily: ReaderFont,
     showFontDialog: MutableState<Boolean>
 ) {
-    OutlinedButton(
+    FilledTonalButton(
         onClick = { showFontDialog.value = true },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 14.dp),
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
-        )
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
@@ -481,7 +470,7 @@ fun FontSelectionButton(
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
-fun ReaderTextScaleButton(
+private fun ReaderTextScaleButton(
     buttonType: TextScaleButtonType,
     fontSize: Int,
     snackBarHostState: SnackbarHostState,
@@ -490,18 +479,10 @@ fun ReaderTextScaleButton(
     val coroutineScope = rememberCoroutineScope()
 
     val context = LocalContext.current
-    val iconRes: Int
-    val adjustment: Int
-
-    when (buttonType) {
-        TextScaleButtonType.DECREASE -> {
-            iconRes = R.drawable.ic_reader_text_minus
-            adjustment = -10
-        }
-
-        TextScaleButtonType.INCREASE -> {
-            iconRes = R.drawable.ic_reader_text_plus
-            adjustment = 10
+    val (iconRes, adjustment) = remember(buttonType) {
+        when (buttonType) {
+            TextScaleButtonType.DECREASE -> Pair(R.drawable.ic_reader_text_minus, -10)
+            TextScaleButtonType.INCREASE -> Pair(R.drawable.ic_reader_text_plus, 10)
         }
     }
 
@@ -535,24 +516,15 @@ fun ReaderTextScaleButton(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .size(100.dp, 45.dp)
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
-            .border(
-                1.dp,
-                MaterialTheme.colorScheme.onSurface,
-                shape = RoundedCornerShape(6.dp)
-            )
-            .clip(RoundedCornerShape(6.dp))
-            .clickable { callback() },
-        contentAlignment = Alignment.Center
+    FilledTonalButton(
+        onClick = { callback() },
+        modifier = Modifier.size(100.dp, 45.dp),
+        shape = RoundedCornerShape(18.dp),
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(id = iconRes),
-            contentDescription = stringResource(id = R.string.back_button_desc),
-            tint = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(14.dp)
+            contentDescription = null,
+            modifier = Modifier.size(ButtonDefaults.IconSize)
         )
     }
 }
