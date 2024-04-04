@@ -26,10 +26,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +41,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -55,6 +53,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -63,7 +62,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -79,9 +77,6 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -98,26 +93,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.R
-import com.starry.myne.ui.screens.reader.activities.ReaderActivity
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderFont
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+
+
+enum class TextScaleButtonType { INCREASE, DECREASE }
 
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
 fun ReaderScreen(
     viewModel: ReaderViewModel,
-    recyclerViewManager: LinearLayoutManager,
-    visibleChapterFlow: StateFlow<Int>,
+    lazyListState: LazyListState,
     readerContent: @Composable (paddingValues: PaddingValues) -> Unit
 ) {
     // Hide reader menu on back press.
@@ -130,8 +123,8 @@ fun ReaderScreen(
     FontChooserDialog(showFontDialog, viewModel)
 
     val snackBarHostState = remember { SnackbarHostState() }
-    val visibleChapterIdx by visibleChapterFlow.collectAsState()
-    val currentChapter = viewModel.state.epubBook?.chapters?.getOrNull(visibleChapterIdx)
+    val currentChapter =
+        viewModel.state.epubBook?.chapters?.getOrNull(viewModel.visibleChapterIndex.value)
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val chapters = viewModel.state.epubBook?.chapters
@@ -171,11 +164,19 @@ fun ReaderScreen(
                     LazyColumn {
                         items(chapters.size) { idx ->
                             NavigationDrawerItem(
-                                label = { Text(text = chapters[idx].title) },
-                                selected = idx == visibleChapterIdx,
+                                label = {
+                                    Text(
+                                        text = chapters[idx].title,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                selected = idx == viewModel.visibleChapterIndex.value,
                                 onClick = {
-                                    coroutineScope.launch { drawerState.close() }
-                                    recyclerViewManager.scrollToPositionWithOffset(idx, 0)
+                                    coroutineScope.launch {
+                                        drawerState.close()
+                                        lazyListState.scrollToItem(idx)
+                                    }
                                 }
                             )
                         }
@@ -243,7 +244,7 @@ fun ReaderScreen(
                                 }
                             }
                             val chapterProgressbarState = animateFloatAsState(
-                                targetValue = viewModel.itemScrolledPercent.value,
+                                targetValue = viewModel.chapterScrolledPercent.value,
                                 label = "chapter progress bar state animation"
                             )
                             LinearProgressIndicator(
@@ -289,11 +290,10 @@ fun ReaderScreen(
             }
         )
     }
-
 }
 
 @Composable
-fun FontChooserDialog(
+private fun FontChooserDialog(
     showFontDialog: MutableState<Boolean>,
     viewModel: ReaderViewModel,
 ) {
@@ -367,29 +367,27 @@ fun FontChooserDialog(
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
-fun BottomSheetContents(
+private fun BottomSheetContents(
     viewModel: ReaderViewModel,
     showFontDialog: MutableState<Boolean>,
     snackBarHostState: SnackbarHostState
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
             .padding(vertical = 24.dp, horizontal = 16.dp)
     ) {
         TextScaleControls(
             viewModel = viewModel,
-            coroutineScope = coroutineScope,
             snackBarHostState = snackBarHostState
         )
 
         Spacer(modifier = Modifier.height(14.dp))
 
         FontSelectionButton(
-            readerFontFamily = viewModel.readerFont,
+            readerFontFamily = viewModel.state.fontFamily,
             showFontDialog = showFontDialog
         )
     }
@@ -398,9 +396,8 @@ fun BottomSheetContents(
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
-fun TextScaleControls(
+private fun TextScaleControls(
     viewModel: ReaderViewModel,
-    coroutineScope: CoroutineScope,
     snackBarHostState: SnackbarHostState
 ) {
     Row(
@@ -408,11 +405,10 @@ fun TextScaleControls(
         horizontalArrangement = Arrangement.Center
     ) {
         ReaderTextScaleButton(
-            buttonType = ReaderActivity.TextScaleButtonType.DECREASE,
-            textSizeState = viewModel.textSize,
-            coroutineScope = coroutineScope,
+            buttonType = TextScaleButtonType.DECREASE,
+            fontSize = viewModel.state.fontSize,
             snackBarHostState = snackBarHostState,
-            onTextSizeValueChanged = { viewModel.setFontSize(it) }
+            onFontSizeChanged = { viewModel.setFontSize(it) }
         )
 
         Spacer(modifier = Modifier.width(14.dp))
@@ -420,17 +416,12 @@ fun TextScaleControls(
         Box(
             modifier = Modifier
                 .size(100.dp, 45.dp)
-                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    shape = RoundedCornerShape(6.dp)
-                )
-                .clip(RoundedCornerShape(6.dp)),
+                .clip(RoundedCornerShape(16.dp))
+                .background(ButtonDefaults.filledTonalButtonColors().containerColor),
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = viewModel.textSize.value.toString(),
+                text = viewModel.state.fontSize.toString(),
                 fontFamily = figeronaFont,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -441,30 +432,25 @@ fun TextScaleControls(
         Spacer(modifier = Modifier.width(14.dp))
 
         ReaderTextScaleButton(
-            buttonType = ReaderActivity.TextScaleButtonType.INCREASE,
-            textSizeState = viewModel.textSize,
-            coroutineScope = coroutineScope,
+            buttonType = TextScaleButtonType.INCREASE,
+            fontSize = viewModel.state.fontSize,
             snackBarHostState = snackBarHostState,
-            onTextSizeValueChanged = { viewModel.setFontSize(it) }
+            onFontSizeChanged = { viewModel.setFontSize(it) }
         )
     }
 }
 
 @Composable
-fun FontSelectionButton(
-    readerFontFamily: State<ReaderFont>,
+private fun FontSelectionButton(
+    readerFontFamily: ReaderFont,
     showFontDialog: MutableState<Boolean>
 ) {
-    OutlinedButton(
+    FilledTonalButton(
         onClick = { showFontDialog.value = true },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 14.dp),
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
-        )
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
@@ -474,7 +460,7 @@ fun FontSelectionButton(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = readerFontFamily.value.name,
+                text = readerFontFamily.name,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
@@ -484,31 +470,24 @@ fun FontSelectionButton(
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
-fun ReaderTextScaleButton(
-    buttonType: ReaderActivity.TextScaleButtonType,
-    textSizeState: State<Int>,
-    coroutineScope: CoroutineScope,
+private fun ReaderTextScaleButton(
+    buttonType: TextScaleButtonType,
+    fontSize: Int,
     snackBarHostState: SnackbarHostState,
-    onTextSizeValueChanged: (newValue: Int) -> Unit
+    onFontSizeChanged: (newValue: Int) -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     val context = LocalContext.current
-    val iconRes: Int
-    val adjustment: Int
-
-    when (buttonType) {
-        ReaderActivity.TextScaleButtonType.DECREASE -> {
-            iconRes = R.drawable.ic_reader_text_minus
-            adjustment = -10
-        }
-
-        ReaderActivity.TextScaleButtonType.INCREASE -> {
-            iconRes = R.drawable.ic_reader_text_plus
-            adjustment = 10
+    val (iconRes, adjustment) = remember(buttonType) {
+        when (buttonType) {
+            TextScaleButtonType.DECREASE -> Pair(R.drawable.ic_reader_text_minus, -10)
+            TextScaleButtonType.INCREASE -> Pair(R.drawable.ic_reader_text_plus, 10)
         }
     }
 
     val callback: () -> Unit = {
-        val newSize = textSizeState.value + adjustment
+        val newSize = fontSize + adjustment
         when {
             newSize < 50 -> {
                 coroutineScope.launch {
@@ -530,31 +509,22 @@ fun ReaderTextScaleButton(
 
             else -> {
                 coroutineScope.launch {
-                    val adjustedSize = textSizeState.value + adjustment
-                    onTextSizeValueChanged(adjustedSize)
+                    val adjustedSize = fontSize + adjustment
+                    onFontSizeChanged(adjustedSize)
                 }
             }
         }
     }
 
-    Box(
-        modifier = Modifier
-            .size(100.dp, 45.dp)
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
-            .border(
-                1.dp,
-                MaterialTheme.colorScheme.onSurface,
-                shape = RoundedCornerShape(6.dp)
-            )
-            .clip(RoundedCornerShape(6.dp))
-            .clickable { callback() },
-        contentAlignment = Alignment.Center
+    FilledTonalButton(
+        onClick = { callback() },
+        modifier = Modifier.size(100.dp, 45.dp),
+        shape = RoundedCornerShape(18.dp),
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(id = iconRes),
-            contentDescription = stringResource(id = R.string.back_button_desc),
-            tint = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(14.dp)
+            contentDescription = null,
+            modifier = Modifier.size(ButtonDefaults.IconSize)
         )
     }
 }

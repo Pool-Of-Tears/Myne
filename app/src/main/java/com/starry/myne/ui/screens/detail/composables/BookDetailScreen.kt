@@ -22,7 +22,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -66,17 +65,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -85,8 +78,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionResult
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -95,10 +86,10 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.starry.myne.MainActivity
 import com.starry.myne.R
+import com.starry.myne.ui.common.BookDetailTopUI
 import com.starry.myne.ui.common.NetworkError
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.screens.detail.viewmodels.BookDetailViewModel
-import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
 import com.starry.myne.utils.Utils
@@ -175,109 +166,21 @@ fun BookDetailScreen(
                             .background(MaterialTheme.colorScheme.background)
                             .verticalScroll(rememberScrollState())
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(240.dp)
-                        ) {
-                            AsyncImage(
-                                model = R.drawable.book_details_bg,
-                                contentDescription = null,
-                                alpha = 0.35f,
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(
-                                        Brush.verticalGradient(
-                                            colors = listOf(
-                                                MaterialTheme.colorScheme.background,
-                                                Color.Transparent,
-                                                MaterialTheme.colorScheme.background
-                                            ), startY = 8f
-                                        )
-                                    )
-                            )
+                        val authors = remember { BookUtils.getAuthorsAsString(book.authors) }
 
-                            Row(modifier = Modifier.fillMaxSize()) {
+                        BookDetailTopUI(
+                            title = book.title,
+                            authors = authors,
+                            imageData = state.extraInfo.coverImage.ifEmpty { book.formats.imagejpeg },
+                            currentThemeMode = settingsVM.getCurrentTheme()
+                        )
 
-                                val imageUrl = state.extraInfo.coverImage.ifEmpty {
-                                    book.formats.imagejpeg
-                                }
-
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .padding(16.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    val imageBackground =
-                                        if (settingsVM.getCurrentTheme() == ThemeMode.Dark) {
-                                            MaterialTheme.colorScheme.onSurface
-                                        } else {
-                                            MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
-                                        }
-                                    Box(
-                                        modifier = Modifier
-                                            .shadow(24.dp)
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(imageBackground)
-                                    ) {
-                                        AsyncImage(
-                                            model = ImageRequest.Builder(context)
-                                                .data(imageUrl)
-                                                .crossfade(true).build(),
-                                            placeholder = painterResource(id = R.drawable.placeholder_cat),
-                                            contentDescription = null,
-                                            modifier = Modifier
-                                                .width(118.dp)
-                                                .height(169.dp),
-                                            contentScale = ContentScale.Crop
-                                        )
-                                    }
-                                }
-
-                                Column(
-                                    modifier = Modifier.fillMaxSize(),
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = book.title,
-                                        modifier = Modifier
-                                            .padding(
-                                                start = 12.dp, end = 12.dp, top = 20.dp
-                                            )
-                                            .fillMaxWidth(),
-                                        fontSize = 24.sp,
-                                        fontFamily = figeronaFont,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                    )
-
-                                    Text(
-                                        text = BookUtils.getAuthorsAsString(book.authors),
-                                        modifier = Modifier.padding(
-                                            start = 12.dp, end = 8.dp, top = 4.dp
-                                        ),
-                                        fontSize = 18.sp,
-                                        fontFamily = figeronaFont,
-                                        fontWeight = FontWeight.SemiBold,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                    )
-
-                                    Spacer(modifier = Modifier.height(50.dp))
-                                }
+                        val pageCount = remember {
+                            if (state.extraInfo.pageCount > 0) {
+                                state.extraInfo.pageCount.toString()
+                            } else {
+                                context.getString(R.string.not_applicable)
                             }
-                        }
-
-                        val pageCount = if (state.extraInfo.pageCount > 0) {
-                            state.extraInfo.pageCount.toString()
-                        } else {
-                            stringResource(id = R.string.not_applicable)
                         }
 
                         // Check if this book is in downloadQueue.

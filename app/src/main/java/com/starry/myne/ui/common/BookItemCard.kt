@@ -65,7 +65,7 @@ fun BookItemCard(
 ) {
     Card(
         modifier = Modifier
-            .height(165.dp)
+            .height(160.dp)
             .fillMaxWidth(),
         onClick = onClick,
         colors = CardDefaults.cardColors(
@@ -84,7 +84,7 @@ fun BookItemCard(
             Box(
                 modifier = Modifier
                     .weight(1.5f)
-                    .padding(8.dp)
+                    .padding(10.dp)
                     .clip(RoundedCornerShape(6.dp))
                     .background(imageBackground)
             ) {

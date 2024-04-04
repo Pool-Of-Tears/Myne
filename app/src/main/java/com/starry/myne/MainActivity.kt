@@ -34,7 +34,6 @@ import androidx.lifecycle.ViewModelProvider
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.ui.screens.main.MainScreen
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
-import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.MyneTheme
 import com.starry.myne.utils.NetworkObserver
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,10 +56,6 @@ class MainActivity : AppCompatActivity() {
         networkObserver = NetworkObserver(applicationContext)
         settingsViewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-
-        ThemeMode.entries.find { it.ordinal == settingsViewModel.getThemeValue() }
-            ?.let { settingsViewModel.setTheme(it) }
-        settingsViewModel.setMaterialYou(settingsViewModel.getMaterialYouValue())
 
         // Install splash screen before setting content.
         installSplashScreen().setKeepOnScreenCondition {

@@ -40,7 +40,7 @@ import javax.inject.Inject
 data class EbookData(
     val coverImage: String?,
     val title: String,
-    val author: String,
+    val authors: String,
     val epubBook: EpubBook,
 )
 
@@ -66,8 +66,9 @@ class ReaderDetailViewModel @Inject constructor(
 
     fun loadEbookData(bookId: String, networkStatus: NetworkObserver.Status) {
         viewModelScope.launch(Dispatchers.IO) {
-            // build EbookData.
+            // Library item is not null as this screen is only accessible from the library.
             val libraryItem = libraryDao.getItemById(bookId.toInt())!!
+            // Get reader data if it exists.
             _readerData = readerDao.getReaderDataAsFlow(bookId.toInt())
             val coverImage: String? = try {
                 if (networkStatus == NetworkObserver.Status.Available) bookRepository.getExtraInfo(
@@ -76,16 +77,15 @@ class ReaderDetailViewModel @Inject constructor(
             } catch (exc: Exception) {
                 null
             }
+            // Create EbookData object.
             val ebookData = EbookData(
-                coverImage,
-                libraryItem.title,
-                libraryItem.authors,
-                epubParser.createEpubBook(libraryItem.filePath)
+                coverImage = coverImage,
+                title = libraryItem.title,
+                authors = libraryItem.authors,
+                epubBook = epubParser.createEpubBook(libraryItem.filePath)
             )
             delay(500) // Add delay to avoid flickering.
-            state = state.copy(
-                isLoading = false, ebookData = ebookData
-            )
+            state = state.copy(isLoading = false, ebookData = ebookData)
         }
     }
 }

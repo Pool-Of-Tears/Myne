@@ -18,7 +18,6 @@
 package com.starry.myne.ui.screens.reader.viewmodels
 
 import androidx.annotation.Keep
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -81,6 +80,8 @@ sealed class ReaderFont(val id: String, val name: String, val fontFamily: FontFa
 data class ReaderScreenState(
     val isLoading: Boolean = true,
     val showReaderMenu: Boolean = false,
+    val fontSize: Int = 18,
+    val fontFamily: ReaderFont = ReaderFont.System,
     val epubBook: EpubBook? = null,
     val readerData: ReaderData? = null
 )
@@ -93,16 +94,18 @@ class ReaderViewModel @Inject constructor(
     private val epubParser: EpubParser
 ) : ViewModel() {
 
-    var state by mutableStateOf(ReaderScreenState())
+    var state by mutableStateOf(
+        ReaderScreenState(
+            fontFamily = getFontFamily(),
+            fontSize = getFontSize()
+        )
+    )
 
-    private var _textSize: MutableState<Int> = mutableIntStateOf(getFontSize())
-    val textSize: State<Int> = _textSize
+    private val _chapterScrolledPercent = mutableFloatStateOf(0f)
+    val chapterScrolledPercent: State<Float> = _chapterScrolledPercent
 
-    private var _readerFont: MutableState<ReaderFont> = mutableStateOf(getFontFamily())
-    val readerFont: State<ReaderFont> = _readerFont
-
-    private val _itemScrolledPercent = mutableFloatStateOf(0f)
-    val itemScrolledPercent: State<Float> = _itemScrolledPercent
+    private val _visibleChapterIndex = mutableIntStateOf(0)
+    val visibleChapterIndex: State<Int> = _visibleChapterIndex
 
     fun loadEpubBook(bookId: Int, onLoaded: (ReaderScreenState) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -118,12 +121,12 @@ class ReaderViewModel @Inject constructor(
         }
     }
 
-    fun loadEpubBookExternal(fileStream: FileInputStream, onLoaded: (EpubBook) -> Unit) {
+    fun loadEpubBookExternal(fileStream: FileInputStream) {
         viewModelScope.launch(Dispatchers.IO) {
             // parse and create epub book
             val epubBook = epubParser.createEpubBook(fileStream, shouldUseToc = false)
+            fileStream.close() // close the file stream
             state = state.copy(epubBook = epubBook)
-            onLoaded(state.epubBook!!)
             // Added some delay to avoid choppy animation.
             delay(200L)
             state = state.copy(isLoading = false)
@@ -144,12 +147,20 @@ class ReaderViewModel @Inject constructor(
         }
     }
 
-    fun setItemScrolledPercent(percent: Float) {
-        _itemScrolledPercent.floatValue = percent
+    fun setChapterScrollPercent(percent: Float) {
+        _chapterScrolledPercent.floatValue = percent
     }
 
-    fun showReaderInfo() {
-        state = state.copy(showReaderMenu = true)
+    fun setVisibleChapterIndex(index: Int) {
+        _visibleChapterIndex.intValue = index
+    }
+
+    fun toggleReaderMenu() {
+        state = if (state.showReaderMenu) {
+            state.copy(showReaderMenu = false)
+        } else {
+            state.copy(showReaderMenu = true)
+        }
     }
 
     fun hideReaderInfo() {
@@ -158,7 +169,7 @@ class ReaderViewModel @Inject constructor(
 
     fun setFontFamily(font: ReaderFont) {
         preferenceUtil.putString(PreferenceUtil.READER_FONT_STYLE_STR, font.id)
-        _readerFont.value = font
+        state = state.copy(fontFamily = font)
     }
 
     fun getFontFamily(): ReaderFont {
@@ -172,10 +183,9 @@ class ReaderViewModel @Inject constructor(
 
     fun setFontSize(newValue: Int) {
         preferenceUtil.putInt(PreferenceUtil.READER_FONT_SIZE_INT, newValue)
-        _textSize.value = newValue
+        state = state.copy(fontSize = newValue)
     }
 
     private fun getFontSize() = preferenceUtil.getInt(PreferenceUtil.READER_FONT_SIZE_INT, 100)
-
 
 }
