@@ -22,7 +22,8 @@
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_title">ThankYou for installing Myne!\nPlease Select your preferred e-book reader to get on speed.</string>
+    <string name="welcome_screen_title">¡Gracias por instalar Myne!</string>
+    <string name="welcome_screen_desc">Elige tu lector de libros electrónicos preferido para embarcarte en tu viaje de lectura.</string>
     <string name="welcome_screen_button">Get Started</string>
 
     <!-- Home screen. -->
@@ -99,6 +100,20 @@
     <string name="about_header">A cerca de</string>
     <string name="about_desc">Una aplicación Android gratuita y de código abierto para descargar libros electrónicos del Proyecto GutenBerg.</string>
     <string name="developed_by">Desarrollado por</string>
+    <string name="project_contributors">Projektmitwirkende</string>
+    <string name="project_contributors_desc">Lernen Sie unsere wunderbaren Mitwirkenden kennen.</string>
+    <string name="useful_links">Nützliche Links</string>
+    <string name="link_readme">README</string>
+    <string name="link_readme_desc">Schauen Sie sich das README der App auf Github an.</string>
+    <string name="link_privacy_policy">Datenschutzrichtlinie</string>
+    <string name="link_privacy_policy_desc">Lesen Sie unsere neueste Datenschutzrichtlinie.</string>
+    <string name="link_gh_issue">Github-Probleme</string>
+    <string name="link_gh_issue_desc">Erstellen Sie ein Problem auf Github.</string>
+    <string name="link_telegram">Telegram Gruppe</string>
+    <string name="link_telegram_desc">Hängen Sie bei uns auf Telegram ab!</string>
+    <string name="link_support">Entwicklung unterstützen</string>
+    <string name="link_support_desc">Denken Sie, ich verdiene Kekse? Klicken Sie hier!</string>
+
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Librerías de código abierto</string>

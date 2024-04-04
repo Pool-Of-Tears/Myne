@@ -22,7 +22,8 @@
     <string name="library_tooltip">СОВЕТ! Проведите пальцем по элементам библиотеки влево или вправо, чтобы поделиться или просмотреть подробную информацию о книге.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_title">Спасибо за установку Myne!\nПожалуйста выберите способ чтения книг.</string>
+    <string name="welcome_screen_title">Спасибо за установку Myne!</string>
+    <string name="welcome_screen_desc">Выберите вашего предпочтительного читателя электронных книг, чтобы начать свое чтение.</string>
     <string name="welcome_screen_button">Приступим</string>
 
     <!-- Home screen. -->
@@ -99,6 +100,20 @@
     <string name="about_header">Описание</string>
     <string name="about_desc">Бесплатное приложение для Android с открытым исходным кодом для загрузки электронных книг из проекта GutenBerg.</string>
     <string name="developed_by">Разработано</string>
+    <string name="project_contributors">Участники Проекта</string>
+    <string name="project_contributors_desc">Познакомьтесь с нашими замечательными участниками.</string>
+    <string name="useful_links">Полезные Ссылки</string>
+    <string name="link_readme">README</string>
+    <string name="link_readme_desc">Ознакомьтесь с README приложения на Github.</string>
+    <string name="link_privacy_policy">Политика Конфиденциальности</string>
+    <string name="link_privacy_policy_desc">Прочтите нашу последнюю политику конфиденциальности.</string>
+    <string name="link_gh_issue">Проблемы на Github</string>
+    <string name="link_gh_issue_desc">Создайте проблему на Github.</string>
+    <string name="link_telegram">Группа Telegram</string>
+    <string name="link_telegram_desc">Общайтесь с нами в Telegram!</string>
+    <string name="link_support">Поддержать Разработку</string>
+    <string name="link_support_desc">Думаете, что заслуживаю печенья? Нажмите здесь!</string>
+
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Библиотеки с открытым исходным кодом</string>

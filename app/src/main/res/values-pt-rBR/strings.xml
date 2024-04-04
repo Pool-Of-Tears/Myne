@@ -22,7 +22,8 @@
     <string name="library_tooltip">DICA! Deslize os itens da biblioteca para a esquerda ou direita para compartilhar ou visualizar detalhes do livro.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_title">Obrigado por instalar o Myne!\nSelecione seu leitor de e-book preferido para acelerar.</string>
+    <string name="welcome_screen_title">Obrigado por instalar o Myne!</string>
+    <string name="welcome_screen_desc">Escolha o seu leitor de ebooks preferido para embarcar em sua jornada de leitura.</string>
     <string name="welcome_screen_button">Começar</string>
 
     <!-- Home screen. -->
@@ -99,6 +100,20 @@
     <string name="about_header">Sobre</string>
     <string name="about_desc">Um aplicativo Android gratuito &amp; de código aberto para baixar e-books do Projeto GutenBerg.</string>
     <string name="developed_by">Desenvolvido por</string>
+    <string name="project_contributors">Contributori al Progetto</string>
+    <string name="project_contributors_desc">Incontra i nostri meravigliosi contributori.</string>
+    <string name="useful_links">Link Utili</string>
+    <string name="link_readme">README</string>
+    <string name="link_readme_desc">Consulta il README dell'app su Github.</string>
+    <string name="link_privacy_policy">Informativa sulla Privacy</string>
+    <string name="link_privacy_policy_desc">Leggi la nostra ultima informativa sulla privacy.</string>
+    <string name="link_gh_issue">Problemi Github</string>
+    <string name="link_gh_issue_desc">Crea un problema su Github.</string>
+    <string name="link_telegram">Gruppo Telegram</string>
+    <string name="link_telegram_desc">Chiacchiera con noi su Telegram!</string>
+    <string name="link_support">Supporta lo Sviluppo</string>
+    <string name="link_support_desc">Pensi che meriti dei biscotti? Clicca qui!</string>
+
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Bibliotecas de código aberto</string>

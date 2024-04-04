@@ -22,7 +22,8 @@
     <string name="library_tooltip">TIPP! Wische Bibliothekselemente nach links oder rechts, um sie zu teilen oder Buchdetails anzusehen.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_title">Danke, dass du Myne installiert hast!\nBitte wähle deinen bevorzugten E-Book-Reader, um schnell loszulegen.</string>
+    <string name="welcome_screen_title">Danke für die Installation von Myne!</string>
+    <string name="welcome_screen_desc">Wählen Sie Ihren bevorzugten E-Book-Reader, um Ihre Lese-Reise zu beginnen.</string>
     <string name="welcome_screen_button">Loslegen</string>
 
     <!-- Home screen. -->
@@ -100,8 +101,20 @@
     <string name="about_header">Über</string>
     <string name="about_desc">Eine freie &amp; Open-Source Android-Anwendung zum Herunterladen von E-Books vom Gutenberg-Projekt.</string>
     <string name="developed_by">Entwickelt von</string>
-    <string name="dev_name" translatable="false">Starry Shivam</string>
-    <string name="dev_username" translatable="false">\@starry-shivam</string>
+    <string name="project_contributors">Projektmitwirkende</string>
+    <string name="project_contributors_desc">Lernen Sie unsere wunderbaren Mitwirkenden kennen.</string>
+    <string name="useful_links">Nützliche Links</string>
+    <string name="link_readme">README</string>
+    <string name="link_readme_desc">Schauen Sie sich das README der App auf Github an.</string>
+    <string name="link_privacy_policy">Datenschutzrichtlinie</string>
+    <string name="link_privacy_policy_desc">Lesen Sie unsere neueste Datenschutzrichtlinie.</string>
+    <string name="link_gh_issue">Github-Probleme</string>
+    <string name="link_gh_issue_desc">Erstellen Sie ein Problem auf Github.</string>
+    <string name="link_telegram">Telegram Gruppe</string>
+    <string name="link_telegram_desc">Hängen Sie bei uns auf Telegram ab!</string>
+    <string name="link_support">Entwicklung unterstützen</string>
+    <string name="link_support_desc">Denken Sie, ich verdiene Kekse? Klicken Sie hier!</string>
+
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Open-Source-Bibliotheken</string>

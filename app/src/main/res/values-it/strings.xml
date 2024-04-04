@@ -22,7 +22,8 @@
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_title">Grazie per avere installato Myne! Seleziona il tuo e-book reader per cominciare.</string>
+    <string name="welcome_screen_title">Grazie per aver installato Myne!</string>
+    <string name="welcome_screen_desc">Scegli il tuo lettore di ebook preferito per intraprendere il tuo viaggio di lettura.</string>
     <string name="welcome_screen_button">Inizia</string>
 
     <!-- Home screen. -->
@@ -99,6 +100,20 @@
     <string name="about_header">Info</string>
     <string name="about_desc">Un\'applicazione Android gratis &amp; Open Source per scaricare ebooks dal Project GutenBerg.</string>
     <string name="developed_by">Sviluppato da</string>
+    <string name="project_contributors">Contributori al Progetto</string>
+    <string name="project_contributors_desc">Incontra i nostri meravigliosi contributori.</string>
+    <string name="useful_links">Link Utili</string>
+    <string name="link_readme">README</string>
+    <string name="link_readme_desc">Consulta il README dell'app su Github.</string>
+    <string name="link_privacy_policy">Informativa sulla Privacy</string>
+    <string name="link_privacy_policy_desc">Leggi la nostra ultima informativa sulla privacy.</string>
+    <string name="link_gh_issue">Problemi Github</string>
+    <string name="link_gh_issue_desc">Crea un problema su Github.</string>
+    <string name="link_telegram">Gruppo Telegram</string>
+    <string name="link_telegram_desc">Chiacchiera con noi su Telegram!</string>
+    <string name="link_support">Supporta lo Sviluppo</string>
+    <string name="link_support_desc">Pensi che meriti dei biscotti? Clicca qui!</string>
+
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Librerie Open Source</string>
