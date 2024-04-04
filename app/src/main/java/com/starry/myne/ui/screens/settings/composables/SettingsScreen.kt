@@ -61,9 +61,11 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -216,10 +218,12 @@ fun GeneralOptionsUI(viewModel: SettingsViewModel, context: Context) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(vertical = 8.dp)
         )
-        SettingItem(icon = R.drawable.ic_settings_reader,
+        SettingItem(
+            icon = ImageVector.vectorResource(id = R.drawable.ic_settings_reader),
             mainText = stringResource(id = R.string.default_reader_setting),
             subText = internalReaderValue,
-            onClick = { showReaderDialog.value = true })
+            onClick = { showReaderDialog.value = true }
+        )
     }
 
     if (showReaderDialog.value) {
@@ -339,12 +343,14 @@ fun DisplayOptionsUI(
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(vertical = 8.dp)
         )
-        SettingItem(icon = R.drawable.ic_settings_theme,
+        SettingItem(
+            icon = ImageVector.vectorResource(id = R.drawable.ic_settings_theme),
             mainText = stringResource(id = R.string.theme_setting),
             subText = displayValue,
-            onClick = { displayDialog.value = true })
+            onClick = { displayDialog.value = true }
+        )
         SettingItemWIthSwitch(
-            icon = R.drawable.ic_settings_material_you,
+            icon = ImageVector.vectorResource(id = R.drawable.ic_settings_material_you),
             mainText = stringResource(id = R.string.material_you_setting),
             subText = materialYouDesc,
             switchState = materialYouSwitch,
@@ -455,12 +461,14 @@ fun InformationUI(navController: NavController) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
-            SettingItem(icon = R.drawable.ic_settings_license,
+            SettingItem(
+                icon = ImageVector.vectorResource(id = R.drawable.ic_settings_license),
                 mainText = stringResource(id = R.string.license_setting),
                 subText = stringResource(id = R.string.license_setting_desc),
-                onClick = { navController.navigate(Screens.OSLScreen.route) })
+                onClick = { navController.navigate(Screens.OSLScreen.route) }
+            )
             SettingItem(
-                icon = R.drawable.ic_settings_about,
+                icon = ImageVector.vectorResource(id = R.drawable.ic_settings_about),
                 mainText = stringResource(id = R.string.about_setting),
                 subText = stringResource(id = R.string.about_setting_desc),
                 onClick = { navController.navigate(Screens.AboutScreen.route) }

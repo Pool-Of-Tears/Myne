@@ -107,6 +107,8 @@ dependencies {
     implementation "androidx.compose.material3:material3"
     // Accompanist compose.
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
+    // Material icons.
+    implementation 'androidx.compose.material:material-icons-extended:1.6.4'
     // Material theme for main activity.
     implementation 'com.google.android.material:material:1.11.0'
     // Android 12+ splash API.

@@ -102,6 +102,19 @@
     <string name="developed_by">Developed By</string>
     <string name="dev_name" translatable="false">Starry Shivam</string>
     <string name="dev_username" translatable="false">\@starry-shivam</string>
+    <string name="project_contributors">Project Contributors</string>
+    <string name="project_contributors_desc">Meet our wonderful contributors.</string>
+    <string name="useful_links">Useful Links</string>
+    <string name="link_readme">README</string>
+    <string name="link_readme_desc">Checkout app\'s README on Github.</string>
+    <string name="link_privacy_policy">Privacy Policy</string>
+    <string name="link_privacy_policy_desc">Read our latest privacy policy.</string>
+    <string name="link_gh_issue">Github Issues</string>
+    <string name="link_gh_issue_desc">Create an issue on Github.</string>
+    <string name="link_telegram">Telegram Group</string>
+    <string name="link_telegram_desc">Hang out with us on Telegram!</string>
+    <string name="link_support">Support Development</string>
+    <string name="link_support_desc">Think I deserve cookies? Click here!</string>
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Open Source Libraries</string>
