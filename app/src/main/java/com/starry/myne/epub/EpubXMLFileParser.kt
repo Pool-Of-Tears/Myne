@@ -34,7 +34,7 @@ import kotlin.io.path.invariantSeparatorsPathString
  * @property nextFragmentId The ID of the next fragment to extract from the XML file.
  */
 class EpubXMLFileParser(
-    fileAbsolutePath: String,
+    val fileAbsolutePath: String,
     val data: ByteArray,
     private val zipFile: Map<String, EpubParser.EpubFile>,
     private val fragmentId: String? = null,
