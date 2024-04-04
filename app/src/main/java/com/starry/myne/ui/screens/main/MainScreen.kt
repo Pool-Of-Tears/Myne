@@ -128,9 +128,7 @@ fun BottomBar(
     }
 
     AnimatedVisibility(visible = bottomBarDestination,
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it }),
         content = {

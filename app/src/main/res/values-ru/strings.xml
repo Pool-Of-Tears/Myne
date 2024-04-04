@@ -22,7 +22,7 @@
     <string name="library_tooltip">СОВЕТ! Проведите пальцем по элементам библиотеки влево или вправо, чтобы поделиться или просмотреть подробную информацию о книге.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_text">Спасибо за установку Myne!\nПожалуйста выберите способ чтения книг.</string>
+    <string name="welcome_screen_title">Спасибо за установку Myne!\nПожалуйста выберите способ чтения книг.</string>
     <string name="welcome_screen_button">Приступим</string>
 
     <!-- Home screen. -->

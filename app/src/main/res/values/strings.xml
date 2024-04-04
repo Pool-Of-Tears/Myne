@@ -22,7 +22,8 @@
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_text">ThankYou for installing Myne!\nPlease Select your preferred e-book reader to get on speed.</string>
+    <string name="welcome_screen_title">ThankYou for installing Myne!</string>
+    <string name="welcome_screen_desc">Choose your preferred ebook reader to embark on your reading journey.</string>
     <string name="welcome_screen_button">Get Started</string>
 
     <!-- Home screen. -->
@@ -102,6 +103,19 @@
     <string name="developed_by">Developed By</string>
     <string name="dev_name" translatable="false">Starry Shivam</string>
     <string name="dev_username" translatable="false">\@starry-shivam</string>
+    <string name="project_contributors">Project Contributors</string>
+    <string name="project_contributors_desc">Meet our wonderful contributors.</string>
+    <string name="useful_links">Useful Links</string>
+    <string name="link_readme">README</string>
+    <string name="link_readme_desc">Checkout app\'s README on Github.</string>
+    <string name="link_privacy_policy">Privacy Policy</string>
+    <string name="link_privacy_policy_desc">Read our latest privacy policy.</string>
+    <string name="link_gh_issue">Github Issues</string>
+    <string name="link_gh_issue_desc">Create an issue on Github.</string>
+    <string name="link_telegram">Telegram Group</string>
+    <string name="link_telegram_desc">Hang out with us on Telegram!</string>
+    <string name="link_support">Support Development</string>
+    <string name="link_support_desc">Think I deserve cookies? Click here!</string>
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Open Source Libraries</string>

@@ -22,7 +22,7 @@
     <string name="library_tooltip">TIPP! Wische Bibliothekselemente nach links oder rechts, um sie zu teilen oder Buchdetails anzusehen.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_text">Danke, dass du Myne installiert hast!\nBitte wähle deinen bevorzugten E-Book-Reader, um schnell loszulegen.</string>
+    <string name="welcome_screen_title">Danke, dass du Myne installiert hast!\nBitte wähle deinen bevorzugten E-Book-Reader, um schnell loszulegen.</string>
     <string name="welcome_screen_button">Loslegen</string>
 
     <!-- Home screen. -->

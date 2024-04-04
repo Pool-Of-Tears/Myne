@@ -22,7 +22,7 @@
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_text">Mulțumim că ai instalat Myne!\nTe rugăm să selectezi e-book reader-ul tău preferat pentru a trece la viteză.</string>
+    <string name="welcome_screen_title">Mulțumim că ai instalat Myne!\nTe rugăm să selectezi e-book reader-ul tău preferat pentru a trece la viteză.</string>
     <string name="welcome_screen_button">Începeți</string>
 
     <!-- Home screen. -->

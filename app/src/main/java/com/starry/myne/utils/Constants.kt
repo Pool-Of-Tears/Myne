@@ -18,8 +18,15 @@ package com.starry.myne.utils
 
 object Constants {
     const val DATABASE_NAME = "myne.db"
-    const val TELEGRAM_GROUP_URL = "https:t.me/PotApps"
-    const val REPO_URL = "https://github.com/Pool-Of-Tears/Myne"
+
+    // URLs
     const val DEV_GITHUB_URL = "https://github.com/starry-shivam"
     const val DEV_TELEGRAM_URL = "https://t.me/starryboi"
+    const val PROJECT_CONTRIBUTORS = "https://github.com/Pool-Of-Tears/Myne/graphs/contributors"
+    const val GITHUB_REPO = "https://github.com/Pool-Of-Tears/Myne"
+    const val PRIVACY_POLICY =
+        "https://github.com/Pool-Of-Tears/Myne/blob/main/legal/PRIVACY-POLICY.md"
+    const val GITHUB_ISSUE = "https://github.com/Pool-Of-Tears/Myne/issues/new/choose"
+    const val TELEGRAM_GROUP = "https://t.me/PotApps"
+    const val SUPPORT = "https://github.com/sponsors/starry-shivam"
 }

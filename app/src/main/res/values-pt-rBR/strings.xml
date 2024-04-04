@@ -22,7 +22,7 @@
     <string name="library_tooltip">DICA! Deslize os itens da biblioteca para a esquerda ou direita para compartilhar ou visualizar detalhes do livro.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_text">Obrigado por instalar o Myne!\nSelecione seu leitor de e-book preferido para acelerar.</string>
+    <string name="welcome_screen_title">Obrigado por instalar o Myne!\nSelecione seu leitor de e-book preferido para acelerar.</string>
     <string name="welcome_screen_button">Começar</string>
 
     <!-- Home screen. -->
