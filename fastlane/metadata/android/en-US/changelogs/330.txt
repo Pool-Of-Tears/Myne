@@ -1,0 +1,3 @@
+- Fixed ebook reader jumping to top of the chapter when selecting texts in the middle of the chapter.
+- Improved about screen to show more information and links.
+- Some other minor bug fixes and improvements.
