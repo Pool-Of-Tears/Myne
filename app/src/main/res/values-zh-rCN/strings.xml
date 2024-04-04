@@ -23,7 +23,8 @@
     <string name="library_tooltip">提示：通过在图书条目上左右滑动可实现分享或者查看信息操作</string>
 
     <!-- Welcome Screen 欢迎屏幕-->
-    <string name="welcome_screen_title">感谢安装Myne！\n请选择你希望使用的电子书阅读器.</string>
+    <string name="welcome_screen_title">感谢安装 Myne！</string>
+    <string name="welcome_screen_desc">选择您喜欢的电子书阅读器，开始您的阅读之旅。</string>
     <string name="welcome_screen_button">开始使用</string>
 
     <!-- Home screen. 主页-->
@@ -100,6 +101,20 @@
     <string name="about_header">关于</string>
     <string name="about_desc">一个从Project GutenBerg下载电子书的自由开源安卓APP</string>
     <string name="developed_by">开发者</string>
+    <string name="project_contributors">项目贡献者</string>
+    <string name="project_contributors_desc">结识我们出色的贡献者。</string>
+    <string name="useful_links">有用链接</string>
+    <string name="link_readme">自述文件</string>
+    <string name="link_readme_desc">在Github上查看应用的自述文件。</string>
+    <string name="link_privacy_policy">隐私政策</string>
+    <string name="link_privacy_policy_desc">阅读我们的最新隐私政策。</string>
+    <string name="link_gh_issue">Github问题</string>
+    <string name="link_gh_issue_desc">在Github上创建一个问题。</string>
+    <string name="link_telegram">Telegram群组</string>
+    <string name="link_telegram_desc">在Telegram上与我们一起交流！</string>
+    <string name="link_support">支持开发</string>
+    <string name="link_support_desc">认为我应该得到饼干吗？点击这里！</string>
+
 
     <!-- Open source libraries screen 开放源代码库界面-->
     <string name="open_source_header">开源库</string>

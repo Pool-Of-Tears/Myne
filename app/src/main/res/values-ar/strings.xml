@@ -22,7 +22,8 @@
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_title">شكرًا لك على تثبيت Myne!\nالرجاء تحديد قارئ الكتب الإلكترونية المفضل لديك للحصول على السرعة.</string>
+    <string name="welcome_screen_title">شكرًا لتثبيت Myne!</string>
+    <string name="welcome_screen_desc">اختر قارئ الكتب الإلكترونية المفضل لديك للانطلاق في رحلتك في القراءة.</string>
     <string name="welcome_screen_button">البدء</string>
 
     <!-- Home screen. -->
@@ -99,6 +100,20 @@
     <string name="about_header">لمحة</string>
     <string name="about_desc">تطبيق اندرويد لتحميل الكتب المجانية من GutenBerg</string>
     <string name="developed_by">تم التطوير بواسطة</string>
+    <string name="project_contributors">مساهمو المشروع</string>
+    <string name="project_contributors_desc">تعرف على مساهمينا الرائعين.</string>
+    <string name="useful_links">روابط مفيدة</string>
+    <string name="link_readme">README</string>
+    <string name="link_readme_desc">تفقد README للتطبيق على Github.</string>
+    <string name="link_privacy_policy">سياسة الخصوصية</string>
+    <string name="link_privacy_policy_desc">اقرأ سياسة الخصوصية الأخيرة لدينا.</string>
+    <string name="link_gh_issue">مشاكل Github</string>
+    <string name="link_gh_issue_desc">إنشاء مشكلة على Github.</string>
+    <string name="link_telegram">مجموعة تيليجرام</string>
+    <string name="link_telegram_desc">استمتع بوقتك معنا على Telegram!</string>
+    <string name="link_support">دعم التطوير</string>
+    <string name="link_support_desc">تعتقد أنني أستحق الكوكيز؟ انقر هنا!</string>
+
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">المكتبات مفتوحة المصدر</string>

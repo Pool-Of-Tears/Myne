@@ -21,7 +21,8 @@
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_title">ThankYou for installing Myne!\nPlease Select your preferred e-book reader to get on speed.</string>
+    <string name="welcome_screen_title">Děkujeme za instalaci Myne!</string>
+    <string name="welcome_screen_desc">Vyberte si svůj preferovaný čtečku elektronických knih a vydejte se na cestu čtení.</string>
     <string name="welcome_screen_button">Get Started</string>
 
     <!-- Home screen. -->
@@ -98,6 +99,20 @@
     <string name="about_header">O aplikaci</string>
     <string name="about_desc">Bezplatná aplikace pro Android s otevřeným zdrojovým kódem ke stahování elektronických knih z projektu GutenBerg.</string>
     <string name="developed_by">Vyvinul</string>
+    <string name="project_contributors">Přispěvatelé projektu</string>
+    <string name="project_contributors_desc">Seznamte se s našimi úžasnými přispěvateli.</string>
+    <string name="useful_links">Užitečné odkazy</string>
+    <string name="link_readme">README</string>
+    <string name="link_readme_desc">Zkontrolujte README aplikace na Githubu.</string>
+    <string name="link_privacy_policy">Zásady ochrany osobních údajů</string>
+    <string name="link_privacy_policy_desc">Přečtěte si naše nejnovější zásady ochrany osobních údajů.</string>
+    <string name="link_gh_issue">Problémy na Githubu</string>
+    <string name="link_gh_issue_desc">Vytvořte problém na Githubu.</string>
+    <string name="link_telegram">Telegramová skupina</string>
+    <string name="link_telegram_desc">Pobavte se s námi na Telegramu!</string>
+    <string name="link_support">Podpora vývoje</string>
+    <string name="link_support_desc">Myslíte si, že si zasloužím sušenky? Klikněte sem!</string>
+
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Knihovny open source</string>

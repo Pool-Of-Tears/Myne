@@ -22,7 +22,8 @@
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_title">Mulțumim că ai instalat Myne!\nTe rugăm să selectezi e-book reader-ul tău preferat pentru a trece la viteză.</string>
+    <string name="welcome_screen_title">Mulțumim pentru instalarea Myne!</string>
+    <string name="welcome_screen_desc">Alegeți cititorul preferat de cărți electronice pentru a vă începe călătoria de citire.</string>
     <string name="welcome_screen_button">Începeți</string>
 
     <!-- Home screen. -->
@@ -100,8 +101,20 @@
     <string name="about_header">Despre</string>
     <string name="about_desc">O aplicație Android gratuită &amp; sursă deschisă pentru a descărca ebook-uri de la Project GutenBerg.</string>
     <string name="developed_by">Dezvoltat de</string>
-    <string name="dev_name" translatable="false">Starry Shivam</string>
-    <string name="dev_username" translatable="false">\@starry-shivam</string>
+    <string name="project_contributors">Contribuitori la Proiect</string>
+    <string name="project_contributors_desc">Întâlnește-i pe contribuitorii noștri minunați.</string>
+    <string name="useful_links">Link-uri Utile</string>
+    <string name="link_readme">README</string>
+    <string name="link_readme_desc">Consultă README-ul aplicației pe Github.</string>
+    <string name="link_privacy_policy">Politica de Confidențialitate</string>
+    <string name="link_privacy_policy_desc">Citește ultima noastră politică de confidențialitate.</string>
+    <string name="link_gh_issue">Probleme Github</string>
+    <string name="link_gh_issue_desc">Creează o problemă pe Github.</string>
+    <string name="link_telegram">Grup Telegram</string>
+    <string name="link_telegram_desc">Petrece timp cu noi pe Telegram!</string>
+    <string name="link_support">Susține Dezvoltarea</string>
+    <string name="link_support_desc">Crezi că merit biscuiți? Dă clic aici!</string>
+
 
     <!-- Open source libraries screen -->
     <string name="open_source_header">Biblioteci de sursă deschisă</string>
