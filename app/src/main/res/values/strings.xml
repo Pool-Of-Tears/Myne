@@ -22,7 +22,8 @@
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
 
     <!-- Welcome Screen -->
-    <string name="welcome_screen_text">ThankYou for installing Myne!\nPlease Select your preferred e-book reader to get on speed.</string>
+    <string name="welcome_screen_title">ThankYou for installing Myne!</string>
+    <string name="welcome_screen_desc">Choose your preferred ebook reader to embark on your reading journey.</string>
     <string name="welcome_screen_button">Get Started</string>
 
     <!-- Home screen. -->

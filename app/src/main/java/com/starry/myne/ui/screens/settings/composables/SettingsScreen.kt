@@ -39,11 +39,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BrightnessMedium
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocalPolice
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -271,19 +277,24 @@ fun GeneralOptionsUI(viewModel: SettingsViewModel, context: Context) {
                 }
             }
         }, confirmButton = {
-            TextButton(onClick = {
-                showReaderDialog.value = false
+            FilledTonalButton(
+                onClick = {
+                    showReaderDialog.value = false
 
-                when (selectedOption) {
-                    context.getString(R.string.reader_option_inbuilt) -> {
-                        viewModel.setInternalReaderValue(true)
-                    }
+                    when (selectedOption) {
+                        context.getString(R.string.reader_option_inbuilt) -> {
+                            viewModel.setInternalReaderValue(true)
+                        }
 
-                    context.getString(R.string.reader_option_external) -> {
-                        viewModel.setInternalReaderValue(false)
+                        context.getString(R.string.reader_option_external) -> {
+                            viewModel.setInternalReaderValue(false)
+                        }
                     }
-                }
-            }) {
+                }, colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
                 Text(stringResource(id = R.string.confirm))
             }
         }, dismissButton = {
@@ -344,13 +355,13 @@ fun DisplayOptionsUI(
             modifier = Modifier.padding(vertical = 8.dp)
         )
         SettingItem(
-            icon = ImageVector.vectorResource(id = R.drawable.ic_settings_theme),
+            icon = Icons.Filled.BrightnessMedium,
             mainText = stringResource(id = R.string.theme_setting),
             subText = displayValue,
             onClick = { displayDialog.value = true }
         )
         SettingItemWIthSwitch(
-            icon = ImageVector.vectorResource(id = R.drawable.ic_settings_material_you),
+            icon = Icons.Filled.Palette,
             mainText = stringResource(id = R.string.material_you_setting),
             subText = materialYouDesc,
             switchState = materialYouSwitch,
@@ -412,23 +423,28 @@ fun DisplayOptionsUI(
                 }
             }
         }, confirmButton = {
-            TextButton(onClick = {
-                displayDialog.value = false
+            FilledTonalButton(
+                onClick = {
+                    displayDialog.value = false
 
-                when (selectedOption) {
-                    context.getString(R.string.theme_option_light) -> {
-                        viewModel.setTheme(ThemeMode.Light)
-                    }
+                    when (selectedOption) {
+                        context.getString(R.string.theme_option_light) -> {
+                            viewModel.setTheme(ThemeMode.Light)
+                        }
 
-                    context.getString(R.string.theme_option_dark) -> {
-                        viewModel.setTheme(ThemeMode.Dark)
-                    }
+                        context.getString(R.string.theme_option_dark) -> {
+                            viewModel.setTheme(ThemeMode.Dark)
+                        }
 
-                    context.getString(R.string.theme_option_system) -> {
-                        viewModel.setTheme(ThemeMode.Auto)
+                        context.getString(R.string.theme_option_system) -> {
+                            viewModel.setTheme(ThemeMode.Auto)
+                        }
                     }
-                }
-            }) {
+                }, colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
                 Text(stringResource(id = R.string.theme_dialog_apply_button))
             }
         }, dismissButton = {
@@ -462,13 +478,13 @@ fun InformationUI(navController: NavController) {
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             SettingItem(
-                icon = ImageVector.vectorResource(id = R.drawable.ic_settings_license),
+                icon = Icons.Filled.LocalPolice,
                 mainText = stringResource(id = R.string.license_setting),
                 subText = stringResource(id = R.string.license_setting_desc),
                 onClick = { navController.navigate(Screens.OSLScreen.route) }
             )
             SettingItem(
-                icon = ImageVector.vectorResource(id = R.drawable.ic_settings_about),
+                icon = Icons.Filled.Info,
                 mainText = stringResource(id = R.string.about_setting),
                 subText = stringResource(id = R.string.about_setting_desc),
                 onClick = { navController.navigate(Screens.AboutScreen.route) }

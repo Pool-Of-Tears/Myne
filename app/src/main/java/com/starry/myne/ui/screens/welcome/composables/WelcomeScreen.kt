@@ -28,17 +28,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +68,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.starry.myne.R
+import com.starry.myne.ui.common.SlideInAnimatedContainer
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.screens.welcome.viewmodels.WelcomeViewModel
 import com.starry.myne.ui.theme.figeronaFont
@@ -87,19 +94,17 @@ fun WelcomeScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.Center
     ) {
-        val compositionResult: LottieCompositionResult =
-            rememberLottieComposition(
-                spec = LottieCompositionSpec.RawRes(R.raw.welcome_lottie)
-            )
+        val compositionResult: LottieCompositionResult = rememberLottieComposition(
+            spec = LottieCompositionSpec.RawRes(R.raw.welcome_lottie)
+        )
         val progressAnimation by animateLottieCompositionAsState(
             compositionResult.value,
             isPlaying = true,
             iterations = LottieConstants.IterateForever,
             speed = 1f
         )
-
-        Spacer(modifier = Modifier.weight(1f))
 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             LottieAnimation(
@@ -109,56 +114,22 @@ fun WelcomeScreen(navController: NavController) {
                 enableMergePaths = true
             )
         }
-        Text(
-            text = stringResource(id = R.string.welcome_screen_text),
-            fontWeight = FontWeight.SemiBold,
-            textAlign = TextAlign.Center,
-            fontSize = 16.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 30.dp, end = 30.dp),
-        )
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            OutlinedButton(
-                onClick = { internalReaderDialog.value = true },
-                modifier = Modifier
-                    .padding(top = 30.dp, bottom = 16.dp)
-                    .height(50.dp)
-                    .fillMaxWidth(0.8f),
-                shape = RoundedCornerShape(12.dp),
-            ) {
-                Text(
-                    text = internalReaderValue,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-
-            Button(
-                onClick = {
+        SlideInAnimatedContainer(initialDelay = 2500L) {
+            ReaderSelectionCard(
+                internalReaderValue = internalReaderValue,
+                onReaderClicked = {
+                    internalReaderDialog.value = true
+                },
+                onContinueClicked = {
                     viewModel.saveOnBoardingState(completed = true)
                     navController.popBackStack()
                     navController.navigate(BottomBarScreen.Home.route)
-                },
-                modifier = Modifier
-                    .height(50.dp)
-                    .fillMaxWidth(0.8f),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.welcome_screen_button),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
+                }
+            )
         }
 
-        Spacer(modifier = Modifier.weight(1.8f))
+        Spacer(modifier = Modifier.height(60.dp))
 
         if (internalReaderDialog.value) {
             AlertDialog(onDismissRequest = {
@@ -205,19 +176,24 @@ fun WelcomeScreen(navController: NavController) {
                     }
                 }
             }, confirmButton = {
-                TextButton(onClick = {
-                    internalReaderDialog.value = false
+                FilledTonalButton(
+                    onClick = {
+                        internalReaderDialog.value = false
 
-                    when (selectedOption) {
-                        context.getString(R.string.reader_option_inbuilt) -> {
-                            viewModel.setInternalReaderSetting(true)
-                        }
+                        when (selectedOption) {
+                            context.getString(R.string.reader_option_inbuilt) -> {
+                                viewModel.setInternalReaderSetting(true)
+                            }
 
-                        context.getString(R.string.reader_option_external) -> {
-                            viewModel.setInternalReaderSetting(false)
+                            context.getString(R.string.reader_option_external) -> {
+                                viewModel.setInternalReaderSetting(false)
+                            }
                         }
-                    }
-                }) {
+                    }, colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                ) {
                     Text(stringResource(id = R.string.confirm))
                 }
             }, dismissButton = {
@@ -228,5 +204,77 @@ fun WelcomeScreen(navController: NavController) {
                 }
             })
         }
+    }
+}
+
+@Composable
+fun ReaderSelectionCard(
+    internalReaderValue: String,
+    onReaderClicked: () -> Unit,
+    onContinueClicked: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 18.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                4.dp
+            )
+        ),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(14.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.welcome_screen_title),
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Text(
+                text = stringResource(id = R.string.welcome_screen_desc),
+                textAlign = TextAlign.Center,
+                fontSize = 15.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp, vertical = 10.dp)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+                OutlinedButton(
+                    onClick = onReaderClicked,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = internalReaderValue,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Button(
+                    onClick = onContinueClicked,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.welcome_screen_button),
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+
+        }
+
     }
 }

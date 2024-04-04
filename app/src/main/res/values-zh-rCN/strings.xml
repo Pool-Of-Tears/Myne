@@ -23,7 +23,7 @@
     <string name="library_tooltip">提示：通过在图书条目上左右滑动可实现分享或者查看信息操作</string>
 
     <!-- Welcome Screen 欢迎屏幕-->
-    <string name="welcome_screen_text">感谢安装Myne！\n请选择你希望使用的电子书阅读器.</string>
+    <string name="welcome_screen_title">感谢安装Myne！\n请选择你希望使用的电子书阅读器.</string>
     <string name="welcome_screen_button">开始使用</string>
 
     <!-- Home screen. 主页-->
