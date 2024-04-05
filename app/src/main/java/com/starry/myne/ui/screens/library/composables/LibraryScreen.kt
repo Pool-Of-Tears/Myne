@@ -34,7 +34,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
@@ -62,7 +61,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -80,7 +78,6 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import coil.annotation.ExperimentalCoilApi
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionResult
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -104,11 +101,7 @@ import me.saket.swipe.SwipeableActionsBox
 import java.io.File
 
 
-@ExperimentalFoundationApi
-@ExperimentalCoilApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LibraryScreen(navController: NavController) {
     val viewModel: LibraryViewModel = hiltViewModel()

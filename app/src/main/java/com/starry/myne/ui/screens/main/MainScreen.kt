@@ -18,7 +18,6 @@ package com.starry.myne.ui.screens.main
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -29,17 +28,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -47,11 +43,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.ui.navigation.BottomBarScreen
@@ -61,12 +57,8 @@ import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.NetworkObserver
 
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@ExperimentalAnimationApi
-@ExperimentalMaterialApi
-@ExperimentalCoilApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterial3Api
 @Composable
 fun MainScreen(
     startDestination: String,
@@ -187,6 +179,7 @@ fun CustomBottomNavigationItem(
                     text = stringResource(id = screen.title),
                     color = contentColor,
                     fontFamily = figeronaFont,
+                    fontSize = 14.sp,
                     modifier = Modifier.padding(start = 4.dp)
                 )
             }

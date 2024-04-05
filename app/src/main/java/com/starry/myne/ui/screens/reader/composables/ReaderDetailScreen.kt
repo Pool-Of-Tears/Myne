@@ -73,10 +73,8 @@ import com.starry.myne.utils.NetworkObserver
 import com.starry.myne.utils.getActivity
 import com.starry.myne.utils.toToast
 
-@ExperimentalCoilApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterial3Api
-@ExperimentalMaterialApi
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ReaderDetailScreen(
     bookId: String,
@@ -136,7 +134,6 @@ fun ReaderDetailScreen(
                     .background(MaterialTheme.colorScheme.background)
                     .padding(it)
             ) {
-
                 val imageData = state.ebookData!!.coverImage
                     ?: state.ebookData.epubBook.coverImage?.asImageBitmap()
 
@@ -162,7 +159,7 @@ fun ReaderDetailScreen(
                         lazyListState, color = MaterialTheme.colorScheme.primary
                     )
                 ) {
-                    items(state.ebookData!!.epubBook.chapters.size) { idx ->
+                    items(state.ebookData.epubBook.chapters.size) { idx ->
                         val chapter = state.ebookData.epubBook.chapters[idx]
                         ChapterItem(chapterTitle = chapter.title, onClick = {
                             val intent = Intent(context, ReaderActivity::class.java)

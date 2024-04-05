@@ -104,10 +104,11 @@ import com.starry.myne.utils.book.BookUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@ExperimentalMaterialApi
-@ExperimentalCoilApi
-@ExperimentalMaterial3Api
-@ExperimentalComposeUiApi
+
+@OptIn(
+    ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalComposeUiApi::class, ExperimentalCoilApi::class
+)
 @Composable
 fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Status) {
 

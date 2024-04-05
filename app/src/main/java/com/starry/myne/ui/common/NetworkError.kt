@@ -49,7 +49,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.starry.myne.R
 import com.starry.myne.ui.theme.figeronaFont
 
-@ExperimentalComposeUiApi
+
 @Composable
 fun NetworkError(onRetryClicked: () -> Unit) {
     Column(

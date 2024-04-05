@@ -71,10 +71,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-@ExperimentalMaterialApi
-@ExperimentalCoilApi
-@ExperimentalMaterial3Api
-@ExperimentalComposeUiApi
+
+@OptIn(
+    ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalComposeUiApi::class, ExperimentalCoilApi::class
+)
 @Composable
 fun CategoryDetailScreen(
     category: String, navController: NavController, networkStatus: NetworkObserver.Status

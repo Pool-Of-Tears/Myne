@@ -91,11 +91,12 @@ import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.getActivity
 import kotlinx.coroutines.launch
 
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
+    ExperimentalMaterialApi::class, ExperimentalCoilApi::class
+)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@ExperimentalCoilApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
+
 @Composable
 fun SettingsScreen(navController: NavController) {
     val context = LocalContext.current

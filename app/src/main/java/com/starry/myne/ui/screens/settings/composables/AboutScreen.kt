@@ -76,7 +76,7 @@ import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.Constants
 
 
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(navController: NavController) {
     val context = LocalContext.current

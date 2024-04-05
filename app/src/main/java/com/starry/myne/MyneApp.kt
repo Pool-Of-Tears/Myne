@@ -18,13 +18,9 @@
 package com.starry.myne
 
 import android.app.Application
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.ui.ExperimentalComposeUiApi
 import cat.ereza.customactivityoncrash.config.CaocConfig
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import coil.annotation.ExperimentalCoilApi
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.CachePolicy
@@ -34,10 +30,6 @@ import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
 
-@ExperimentalCoilApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterial3Api
-@ExperimentalMaterialApi
 @HiltAndroidApp
 class MyneApp : Application(), ImageLoaderFactory {
     override fun onCreate() {

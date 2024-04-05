@@ -52,7 +52,8 @@ import com.starry.myne.ui.screens.categories.viewmodels.CategoryViewModel
 import com.starry.myne.ui.theme.figeronaFont
 import java.util.Locale
 
-@ExperimentalMaterial3Api
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesScreen(navController: NavController) {
     Scaffold(

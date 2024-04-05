@@ -16,7 +16,6 @@
 
 package com.starry.myne.ui.navigation
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -24,18 +23,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.ui.screens.categories.composables.CategoriesScreen
 import com.starry.myne.ui.screens.categories.composables.CategoryDetailScreen
 import com.starry.myne.ui.screens.detail.composables.BookDetailScreen
@@ -76,11 +71,7 @@ private fun popExitTransition() = slideOutHorizontally(
     )
 ) + fadeOut(animationSpec = tween(NAVIGATION_ANIM_DURATION))
 
-@ExperimentalAnimationApi
-@ExperimentalMaterialApi
-@ExperimentalCoilApi
-@ExperimentalMaterial3Api
-@ExperimentalComposeUiApi
+
 @Composable
 fun NavGraph(
     startDestination: String,
