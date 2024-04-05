@@ -17,6 +17,7 @@
 package com.starry.myne.ui.screens.library.composables
 
 import android.content.Intent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,9 +38,11 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -101,6 +104,7 @@ import me.saket.swipe.SwipeableActionsBox
 import java.io.File
 
 
+@ExperimentalFoundationApi
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @ExperimentalMaterialApi
@@ -143,9 +147,11 @@ fun LibraryScreen(navController: NavController) {
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.background)
                     ) {
-                        items(state.size) { i ->
+                        items(
+                            count = state.size,
+                            key = { i -> state[i].bookId }
+                        ) { i ->
                             val item = state[i]
-
                             if (item.fileExist()) {
                                 val openDeleteDialog = remember { mutableStateOf(false) }
 
@@ -183,7 +189,9 @@ fun LibraryScreen(navController: NavController) {
                                 })
 
                                 SwipeableActionsBox(
-                                    modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
+                                    modifier = Modifier
+                                        .padding(top = 4.dp, bottom = 4.dp)
+                                        .animateItemPlacement(),
                                     startActions = listOf(shareAction),
                                     endActions = listOf(detailsAction),
                                     swipeThreshold = 85.dp
@@ -212,21 +220,27 @@ fun LibraryScreen(navController: NavController) {
                                             color = MaterialTheme.colorScheme.onSurface,
                                         )
                                     }, confirmButton = {
-                                        TextButton(onClick = {
-                                            openDeleteDialog.value = false
-                                            val fileDeleted = item.deleteFile()
-                                            if (fileDeleted) {
-                                                viewModel.deleteItemFromDB(item)
-                                            } else {
-                                                coroutineScope.launch {
-                                                    snackBarHostState.showSnackbar(
-                                                        message = context.getString(R.string.error),
-                                                        actionLabel = context.getString(R.string.ok),
-                                                        duration = SnackbarDuration.Short
-                                                    )
+                                        FilledTonalButton(
+                                            onClick = {
+                                                openDeleteDialog.value = false
+                                                val fileDeleted = item.deleteFile()
+                                                if (fileDeleted) {
+                                                    viewModel.deleteItemFromDB(item)
+                                                } else {
+                                                    coroutineScope.launch {
+                                                        snackBarHostState.showSnackbar(
+                                                            message = context.getString(R.string.error),
+                                                            actionLabel = context.getString(R.string.ok),
+                                                            duration = SnackbarDuration.Short
+                                                        )
+                                                    }
                                                 }
-                                            }
-                                        }) {
+                                            },
+                                            colors = ButtonDefaults.filledTonalButtonColors(
+                                                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                                                containerColor = MaterialTheme.colorScheme.errorContainer
+                                            )
+                                        ) {
                                             Text(stringResource(id = R.string.confirm))
                                         }
                                     }, dismissButton = {
