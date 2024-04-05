@@ -59,13 +59,10 @@ The app also utilizes the Google Books API to retrieve additional data such as s
 
 <h2 align="center">Donations</h2>
 
-If this project helped you a little bit, please consider donating a small amount to keep the projects going, Your donations helps ensure that my open source projects are actively maintained. You can donate via following mediums:
+Myne doesn't contain any ads and doesn't sell your data.
+The development of the app is financed by individual user contributions, such as you purchasing the app via Google Play or becoming a sponsor on Github. ❤️
 
-[![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/starry-shivam)
-![](https://img.shields.io/badge/starry%40airtel-UPI-red?style=for-the-badge)
-[![Bitcoin](https://img.shields.io/badge/Bitcoin-000?style=for-the-badge&logo=bitcoin&logoColor=white)](https://www.blockchain.com/btc/address/bc1q82qh9hw5xupwlf0f3ddfud63sek53lavk6cf0k)
-
-Or you could just buy the app from Google Play Store. You'll get constant updates without the need to get all the way here and download the release all by yourself and install the release all by yourself and then you realize you have a different package name so you contact me but I really don't have time for this so I update it on google play and then you realize your installer doesn't work and then you realize your whole life is like this, miserable and not working but then you see a point of light in the distance so you run towards and it's the "Buy" button in the Myne's page on google play, it'll make your life easier.
+Become a [Sponser](https://github.com/sponsors/starry-shivam) on Github | Purchase it on [Google Play](https://play.google.com/store/apps/details?id=com.starry.myne)
 
 ------
 
