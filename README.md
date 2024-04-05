@@ -60,7 +60,7 @@ The app also utilizes the Google Books API to retrieve additional data such as s
 <h2 align="center">Donations</h2>
 
 Myne doesn't contain any ads and doesn't sell your data.
-The development of the app is financed by individual user contributions, such as you purchasing the app via Google Play or becoming a sponsor on Github. ❤️
+The development of the app is financed by individual user contributions, such as you purchasing the app via Google Play or becoming a sponsor on Github ❤️
 
 Become a [Sponser](https://github.com/sponsors/starry-shivam) on Github | Purchase it on [Google Play](https://play.google.com/store/apps/details?id=com.starry.myne)
 
