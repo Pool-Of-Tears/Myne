@@ -19,29 +19,21 @@ package com.starry.myne
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
-import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.ui.screens.main.MainScreen
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.theme.MyneTheme
 import com.starry.myne.utils.NetworkObserver
 import dagger.hilt.android.AndroidEntryPoint
 
-@ExperimentalMaterialApi
-@ExperimentalCoilApi
-@ExperimentalMaterial3Api
-@ExperimentalComposeUiApi
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -49,7 +41,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var settingsViewModel: SettingsViewModel
     private lateinit var mainViewModel: MainViewModel
 
-    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

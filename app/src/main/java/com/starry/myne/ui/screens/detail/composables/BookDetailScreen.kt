@@ -99,10 +99,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@ExperimentalMaterialApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterial3Api
-@ExperimentalCoilApi
+
+@OptIn(
+    ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class,
+    ExperimentalMaterial3Api::class, ExperimentalCoilApi::class
+)
 @Composable
 fun BookDetailScreen(
     bookId: String, navController: NavController
