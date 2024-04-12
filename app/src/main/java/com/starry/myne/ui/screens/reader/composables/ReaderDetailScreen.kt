@@ -45,7 +45,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -134,8 +133,8 @@ fun ReaderDetailScreen(
                     .background(MaterialTheme.colorScheme.background)
                     .padding(it)
             ) {
-                val imageData = state.ebookData!!.coverImage
-                    ?: state.ebookData.epubBook.coverImage?.asImageBitmap()
+                // Get the cover image data.
+                val imageData = state.ebookData!!.coverImage ?: state.ebookData.epubBook.coverImage
 
                 BookDetailTopUI(
                     title = state.ebookData.title,
