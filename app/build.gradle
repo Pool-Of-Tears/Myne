@@ -27,8 +27,8 @@ android {
         applicationId "com.starry.myne"
         minSdk 26
         targetSdk 34
-        versionCode 330
-        versionName "3.3.0"
+        versionCode 340
+        versionName "3.4.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -88,7 +88,7 @@ aboutLibraries {
 
 
 dependencies {
-    def composeBom = platform('androidx.compose:compose-bom:2024.03.00')
+    def composeBom = platform('androidx.compose:compose-bom:2024.04.00')
     implementation composeBom
     androidTestImplementation composeBom
 

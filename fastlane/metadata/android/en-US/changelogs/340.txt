@@ -1,0 +1,3 @@
+- Fixed crash in ebook details screen in some cases.
+- Updated Russian translation.
+- Other minor fixes and improvements.
