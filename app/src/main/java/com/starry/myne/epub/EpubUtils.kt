@@ -20,6 +20,7 @@ package com.starry.myne.epub
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
+import org.jsoup.nodes.Node as JsoupNode
 import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import java.io.File
@@ -58,3 +59,13 @@ fun Node.getAttributeValue(attribute: String): String? =
 
 val NodeList.elements get() = (0..length).asSequence().mapNotNull { item(it) as? Element }
 val Node.childElements get() = childNodes.elements
+
+fun JsoupNode.nextSiblingNodes(): List<org.jsoup.nodes.Node> {
+    val siblings = mutableListOf<org.jsoup.nodes.Node>()
+    var nextSibling = nextSibling()
+    while (nextSibling != null) {
+        siblings.add(nextSibling)
+        nextSibling = nextSibling.nextSibling()
+    }
+    return siblings
+}

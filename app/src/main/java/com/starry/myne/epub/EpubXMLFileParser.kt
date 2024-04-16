@@ -22,6 +22,7 @@ import android.util.Log
 import org.jsoup.Jsoup
 import org.jsoup.nodes.TextNode
 import java.io.File
+import org.jsoup.nodes.Node
 import kotlin.io.path.invariantSeparatorsPathString
 
 /**
@@ -86,7 +87,7 @@ class EpubXMLFileParser(
                 val fragmentElement = document.selectFirst("#$fragmentId")
                 title = fragmentElement?.selectFirst("h1, h2, h3, h4, h5, h6")?.text() ?: ""
                 val bodyBuilder = StringBuilder()
-                var currentNode: org.jsoup.nodes.Node? = fragmentElement?.nextSibling()
+                var currentNode: Node? = fragmentElement?.nextSibling()
                 val nextFragmentIdElement = if (nextFragmentId != null) {
                     document.selectFirst("#$nextFragmentId")
                 } else {
@@ -96,7 +97,7 @@ class EpubXMLFileParser(
 
                 while (currentNode != null && currentNode != nextFragmentIdElement) {
                     bodyBuilder.append(getNodeStructuredText(currentNode) + "\n\n")
-                    currentNode = currentNode.nextSibling()
+                    currentNode = getNextSibling(currentNode)
                 }
                 bodyContent = bodyBuilder.toString()
             }
@@ -115,6 +116,39 @@ class EpubXMLFileParser(
         )
     }
 
+    private fun getNextSibling(currentNode: Node?): Node? {
+        var nextSibling: Node? = currentNode?.nextSibling()
+
+        if (nextSibling == null) {
+            var parentNode = currentNode?.parent()
+            while (parentNode != null) {
+                nextSibling = parentNode.nextSibling()
+                if (nextSibling != null) {
+                    // If the parent's next sibling is not null, traverse its descendants
+                    // to find the next node
+                    return traverseDescendants(nextSibling)
+                }
+                parentNode = parentNode.parent()
+            }
+        }
+
+        return nextSibling
+    }
+
+    private fun traverseDescendants(node: Node): Node? {
+        val children = node.childNodes()
+        if (children.isNotEmpty()) {
+            return children.first()
+        }
+
+        val siblings = node.nextSiblingNodes()
+        if (siblings.isNotEmpty()) {
+            return traverseDescendants(siblings.first())
+        }
+
+        return null
+    }
+
     fun parseAsImage(absolutePathImage: String): String {
         // Use run catching so it can be run locally without crash
         val bitmap = zipFile[absolutePathImage]?.data?.runCatching {
@@ -130,7 +164,7 @@ class EpubXMLFileParser(
     }
 
     // Rewrites the image node to xml for the next stage.
-    private fun declareImgEntry(node: org.jsoup.nodes.Node): String {
+    private fun declareImgEntry(node: Node): String {
         val attrs = node.attributes().associate { it.key to it.value }
         val relPathEncoded = attrs["src"] ?: attrs["xlink:href"] ?: ""
 
@@ -143,8 +177,8 @@ class EpubXMLFileParser(
         return parseAsImage(absolutePathImage)
     }
 
-    private fun getPTraverse(node: org.jsoup.nodes.Node): String {
-        fun innerTraverse(node: org.jsoup.nodes.Node): String =
+    private fun getPTraverse(node: Node): String {
+        fun innerTraverse(node: Node): String =
             node.childNodes().joinToString("") { child ->
                 when {
                     child.nodeName() == "br" -> "\n"
@@ -159,7 +193,7 @@ class EpubXMLFileParser(
         return if (paragraph.isNotEmpty()) "$paragraph\n\n" else ""
     }
 
-    private fun getNodeTextTraverse(node: org.jsoup.nodes.Node): String {
+    private fun getNodeTextTraverse(node: Node): String {
         val children = node.childNodes()
         if (children.isEmpty())
             return ""
@@ -181,7 +215,7 @@ class EpubXMLFileParser(
         }
     }
 
-    private fun getNodeStructuredText(node: org.jsoup.nodes.Node): String {
+    private fun getNodeStructuredText(node: Node): String {
         val children = node.childNodes()
         if (children.isEmpty())
             return ""
