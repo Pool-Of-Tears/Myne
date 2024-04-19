@@ -283,7 +283,7 @@ class EpubParser {
         files: Map<String, EpubFile>,
     ): List<EpubChapter> {
         var chapterIndex = 0
-        val chapterExtensions = listOf("xhtml", "xml", "html").map { ".$it" }
+        val chapterExtensions = listOf("xhtml", "xml", "html", "htm").map { ".$it" }
         return spine
             .selectChildTag("itemref")
             .mapNotNull { manifestItems[it.getAttribute("idref")] }
