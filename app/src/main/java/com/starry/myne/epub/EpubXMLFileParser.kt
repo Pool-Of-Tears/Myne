@@ -96,7 +96,7 @@ class EpubXMLFileParser(
                 fragmentElement?.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
 
                 while (currentNode != null && currentNode != nextFragmentIdElement) {
-                    bodyBuilder.append(getNodeStructuredText(currentNode) + "\n\n")
+                    bodyBuilder.append(getNodeStructuredText(currentNode, true) + "\n\n")
                     currentNode = getNextSibling(currentNode)
                 }
                 bodyContent = bodyBuilder.toString()
@@ -215,21 +215,26 @@ class EpubXMLFileParser(
         }
     }
 
-    private fun getNodeStructuredText(node: Node): String {
-        val children = node.childNodes()
-        if (children.isEmpty())
-            return ""
+    private fun getNodeStructuredText(node: Node, singleNode: Boolean = false): String {
+        val nodeActions = mapOf(
+            "p" to { n: Node -> getPTraverse(n) },
+            "br" to { "\n" },
+            "hr" to { "\n\n" },
+            "img" to ::declareImgEntry,
+            "image" to ::declareImgEntry
+        )
 
-        return children.joinToString("") { child ->
-            when {
-                child.nodeName() == "p" -> getPTraverse(child)
-                child.nodeName() == "br" -> "\n"
-                child.nodeName() == "hr" -> "\n\n"
-                child.nodeName() == "img" -> declareImgEntry(child)
-                child.nodeName() == "image" -> declareImgEntry(child)
-                child is TextNode -> child.text().trim()
-                else -> getNodeTextTraverse(child)
+        val action: (Node) -> String = { n: Node ->
+            if (n is TextNode) {
+                n.text().trim()
+            } else {
+                getNodeTextTraverse(n)
             }
+        }
+
+        val children = if (singleNode) listOf(node) else node.childNodes()
+        return children.joinToString("") { child ->
+            nodeActions[child.nodeName()]?.invoke(child) ?: action(child)
         }
     }
 }
