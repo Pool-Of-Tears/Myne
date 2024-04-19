@@ -17,6 +17,8 @@
 package com.starry.myne.ui.screens.library.composables
 
 import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,12 +37,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -87,6 +91,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
+import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
@@ -99,6 +104,7 @@ import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 import java.io.File
+import java.io.FileInputStream
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -108,10 +114,16 @@ fun LibraryScreen(navController: NavController) {
     val state = viewModel.allItems.observeAsState(listOf()).value
 
     val context = LocalContext.current
-    val settingsViewModel = (context.getActivity() as MainActivity).settingsViewModel
-
     val snackBarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
+
+    val importBookLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) {uri ->
+            uri?.let {
+                (context as MainActivity).contentResolver.openInputStream(uri)?.let {ips ->
+                    viewModel.importBook(context, ips as FileInputStream)
+                }
+            }
+        }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
@@ -125,6 +137,25 @@ fun LibraryScreen(navController: NavController) {
                 iconRes = R.drawable.ic_nav_library
             )
         },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(onClick = {
+                importBookLauncher.launch(arrayOf("application/epub+zip"))
+            }) {
+                Icon(
+                    imageVector = Icons.Outlined.Add,
+                    contentDescription = "Add Book", // TODO: Add string resource
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Import", // TODO: Add string resource
+                    fontWeight = FontWeight.Medium,
+                    fontFamily = figeronaFont,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+            }
+        }
     ) {
         Box(modifier = Modifier.padding(it)) {
             Column(
@@ -142,109 +173,17 @@ fun LibraryScreen(navController: NavController) {
                     ) {
                         items(
                             count = state.size,
-                            key = { i -> state[i].bookId }
+                            key = { i -> state[i].id }
                         ) { i ->
                             val item = state[i]
                             if (item.fileExist()) {
-                                val openDeleteDialog = remember { mutableStateOf(false) }
-
-                                val detailsAction = SwipeAction(icon = painterResource(
-                                    id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_info else R.drawable.ic_info_white
-                                ), background = MaterialTheme.colorScheme.primary, onSwipe = {
-                                    viewModel.viewModelScope.launch {
-                                        delay(250L)
-                                        navController.navigate(
-                                            Screens.BookDetailScreen.withBookId(
-                                                item.bookId.toString()
-                                            )
-                                        )
-                                    }
-                                })
-
-                                val shareAction = SwipeAction(icon = painterResource(
-                                    id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_share else R.drawable.ic_share_white
-                                ), background = MaterialTheme.colorScheme.primary, onSwipe = {
-                                    val uri = FileProvider.getUriForFile(
-                                        context,
-                                        BuildConfig.APPLICATION_ID + ".provider",
-                                        File(item.filePath)
-                                    )
-                                    val intent = Intent(Intent.ACTION_SEND)
-                                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                    intent.type = context.contentResolver.getType(uri)
-                                    intent.putExtra(Intent.EXTRA_STREAM, uri)
-                                    context.startActivity(
-                                        Intent.createChooser(
-                                            intent,
-                                            context.getString(R.string.share_app_chooser)
-                                        )
-                                    )
-                                })
-
-                                SwipeableActionsBox(
-                                    modifier = Modifier
-                                        .padding(top = 4.dp, bottom = 4.dp)
-                                        .animateItemPlacement(),
-                                    startActions = listOf(shareAction),
-                                    endActions = listOf(detailsAction),
-                                    swipeThreshold = 85.dp
-                                ) {
-                                    LibraryCard(title = item.title,
-                                        author = item.authors,
-                                        item.getFileSize(),
-                                        item.getDownloadDate(),
-                                        onReadClick = {
-                                            Utils.openBookFile(
-                                                context = context,
-                                                internalReader = viewModel.getInternalReaderSetting(),
-                                                libraryItem = item,
-                                                navController = navController
-                                            )
-                                        },
-                                        onDeleteClick = { openDeleteDialog.value = true })
-                                }
-
-                                if (openDeleteDialog.value) {
-                                    AlertDialog(onDismissRequest = {
-                                        openDeleteDialog.value = false
-                                    }, title = {
-                                        Text(
-                                            text = stringResource(id = R.string.library_delete_dialog_title),
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                        )
-                                    }, confirmButton = {
-                                        FilledTonalButton(
-                                            onClick = {
-                                                openDeleteDialog.value = false
-                                                val fileDeleted = item.deleteFile()
-                                                if (fileDeleted) {
-                                                    viewModel.deleteItemFromDB(item)
-                                                } else {
-                                                    coroutineScope.launch {
-                                                        snackBarHostState.showSnackbar(
-                                                            message = context.getString(R.string.error),
-                                                            actionLabel = context.getString(R.string.ok),
-                                                            duration = SnackbarDuration.Short
-                                                        )
-                                                    }
-                                                }
-                                            },
-                                            colors = ButtonDefaults.filledTonalButtonColors(
-                                                contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                                                containerColor = MaterialTheme.colorScheme.errorContainer
-                                            )
-                                        ) {
-                                            Text(stringResource(id = R.string.confirm))
-                                        }
-                                    }, dismissButton = {
-                                        TextButton(onClick = {
-                                            openDeleteDialog.value = false
-                                        }) {
-                                            Text(stringResource(id = R.string.cancel))
-                                        }
-                                    })
-                                }
-
+                                LibraryLazyItem(
+                                    modifier = Modifier.animateItemPlacement(),
+                                    item = item,
+                                    snackBarHostState = snackBarHostState,
+                                    navController = navController,
+                                    viewModel = viewModel
+                                )
                             } else {
                                 viewModel.deleteItemFromDB(item)
                             }
@@ -272,6 +211,116 @@ fun LibraryScreen(navController: NavController) {
                 }
             }
         }
+    }
+}
+
+@Composable
+fun LibraryLazyItem(
+    modifier: Modifier,
+    item: LibraryItem,
+    snackBarHostState: SnackbarHostState,
+    navController: NavController,
+    viewModel: LibraryViewModel,
+) {
+    val context = LocalContext.current
+    val settingsViewModel = (context.getActivity() as MainActivity).settingsViewModel
+
+    val coroutineScope = rememberCoroutineScope()
+    val openDeleteDialog = remember { mutableStateOf(false) }
+
+    val detailsAction = SwipeAction(icon = painterResource(
+        id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_info else R.drawable.ic_info_white
+    ), background = MaterialTheme.colorScheme.primary, onSwipe = {
+        viewModel.viewModelScope.launch {
+            delay(250L)
+            navController.navigate(
+                Screens.BookDetailScreen.withBookId(
+                    item.bookId.toString()
+                )
+            )
+        }
+    })
+
+    val shareAction = SwipeAction(icon = painterResource(
+        id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_share else R.drawable.ic_share_white
+    ), background = MaterialTheme.colorScheme.primary, onSwipe = {
+        val uri = FileProvider.getUriForFile(
+            context,
+            BuildConfig.APPLICATION_ID + ".provider",
+            File(item.filePath)
+        )
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.type = context.contentResolver.getType(uri)
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
+        context.startActivity(
+            Intent.createChooser(
+                intent,
+                context.getString(R.string.share_app_chooser)
+            )
+        )
+    })
+
+    SwipeableActionsBox(
+        modifier = modifier.padding(vertical = 4.dp),
+        startActions = listOf(shareAction),
+        endActions = listOf(detailsAction),
+        swipeThreshold = 85.dp
+    ) {
+        LibraryCard(title = item.title,
+            author = item.authors,
+            item.getFileSize(),
+            item.getDownloadDate(),
+            onReadClick = {
+                Utils.openBookFile(
+                    context = context,
+                    internalReader = viewModel.getInternalReaderSetting(),
+                    libraryItem = item,
+                    navController = navController
+                )
+            },
+            onDeleteClick = { openDeleteDialog.value = true })
+    }
+
+    if (openDeleteDialog.value) {
+        AlertDialog(onDismissRequest = {
+            openDeleteDialog.value = false
+        }, title = {
+            Text(
+                text = stringResource(id = R.string.library_delete_dialog_title),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }, confirmButton = {
+            FilledTonalButton(
+                onClick = {
+                    openDeleteDialog.value = false
+                    val fileDeleted = item.deleteFile()
+                    if (fileDeleted) {
+                        viewModel.deleteItemFromDB(item)
+                    } else {
+                        coroutineScope.launch {
+                            snackBarHostState.showSnackbar(
+                                message = context.getString(R.string.error),
+                                actionLabel = context.getString(R.string.ok),
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    }
+                },
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    containerColor = MaterialTheme.colorScheme.errorContainer
+                )
+            ) {
+                Text(stringResource(id = R.string.confirm))
+            }
+        }, dismissButton = {
+            TextButton(onClick = {
+                openDeleteDialog.value = false
+            }) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        })
     }
 }
 

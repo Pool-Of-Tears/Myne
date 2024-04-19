@@ -26,8 +26,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
@@ -48,19 +46,17 @@ import kotlinx.coroutines.launch
 import java.io.FileInputStream
 
 object ReaderConstants {
-    const val EXTRA_BOOK_ID = "reader_book_id"
+    const val EXTRA_LIBRARY_ITEM_ID = "reader_book_id"
     const val EXTRA_CHAPTER_IDX = "reader_chapter_index"
     const val DEFAULT_NONE = -100000
 
 }
 
 data class IntentData(
-    val bookId: Int?, val chapterIndex: Int?, val isExternalBook: Boolean
+    val libraryItemId: Int?, val chapterIndex: Int?, val isExternalBook: Boolean
 )
 
 @AndroidEntryPoint
-@ExperimentalMaterial3Api
-@ExperimentalMaterialApi
 class ReaderActivity : AppCompatActivity() {
 
     private lateinit var settingsViewModel: SettingsViewModel
@@ -127,7 +123,7 @@ class ReaderActivity : AppCompatActivity() {
                                     viewModel.updateReaderProgress(
                                         // Book ID is not null here since we are not opening
                                         // an external book.
-                                        bookId = intentData.bookId!!,
+                                        libraryItemId = intentData.libraryItemId!!,
                                         chapterIndex = visibleChapterIdx,
                                         chapterOffset = visibleChapterOffset
                                     )
@@ -163,8 +159,8 @@ fun handleIntent(
     scrollToPosition: (index: Int, offset: Int) -> Unit,
     onError: () -> Unit
 ): IntentData {
-    val bookId = intent.extras?.getInt(
-        ReaderConstants.EXTRA_BOOK_ID, ReaderConstants.DEFAULT_NONE
+    val libraryItemId = intent.extras?.getInt(
+        ReaderConstants.EXTRA_LIBRARY_ITEM_ID, ReaderConstants.DEFAULT_NONE
     )
     val chapterIndex = intent.extras?.getInt(
         ReaderConstants.EXTRA_CHAPTER_IDX, ReaderConstants.DEFAULT_NONE
@@ -172,10 +168,10 @@ fun handleIntent(
     val isExternalBook = intent.type == "application/epub+zip"
 
     // Internal book
-    if (bookId != null && bookId != ReaderConstants.DEFAULT_NONE) {
+    if (libraryItemId != null && libraryItemId != ReaderConstants.DEFAULT_NONE) {
         // Load epub book from given id and set chapters as items in
         // reader's recycler view adapter.
-        viewModel.loadEpubBook(bookId = bookId, onLoaded = {
+        viewModel.loadEpubBook(libraryItemId = libraryItemId, onLoaded = {
             // if there is saved progress for this book, then scroll to
             // last page at exact position were used had left.
             if (it.readerData != null && chapterIndex == ReaderConstants.DEFAULT_NONE) {
@@ -199,7 +195,7 @@ fun handleIntent(
         onError() // If no book id is provided, then show error.
     }
 
-    return IntentData(bookId, chapterIndex, isExternalBook)
+    return IntentData(libraryItemId, chapterIndex, isExternalBook)
 }
 
 /**

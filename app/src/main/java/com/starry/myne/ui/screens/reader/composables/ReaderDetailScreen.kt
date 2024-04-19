@@ -73,17 +73,17 @@ import com.starry.myne.utils.getActivity
 import com.starry.myne.utils.toToast
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReaderDetailScreen(
-    bookId: String,
+    libraryItemId: String,
     navController: NavController,
     networkStatus: NetworkObserver.Status
 ) {
     val viewModel: ReaderDetailViewModel = hiltViewModel()
     val state = viewModel.state
 
-    LaunchedEffect(key1 = true) { viewModel.loadEbookData(bookId, networkStatus) }
+    LaunchedEffect(key1 = true) { viewModel.loadEbookData(libraryItemId, networkStatus) }
 
     val context = LocalContext.current
     val settingsVM = (context.getActivity() as MainActivity).settingsViewModel
@@ -114,7 +114,7 @@ fun ReaderDetailScreen(
                     text = { Text(text = stringResource(id = if (readerItem != null) R.string.continue_reading_button else R.string.start_reading_button)) },
                     onClick = {
                         val intent = Intent(context, ReaderActivity::class.java)
-                        intent.putExtra(ReaderConstants.EXTRA_BOOK_ID, bookId.toInt())
+                        intent.putExtra(ReaderConstants.EXTRA_LIBRARY_ITEM_ID, libraryItemId.toInt())
                         context.startActivity(intent)
                     },
                     icon = {
@@ -162,7 +162,7 @@ fun ReaderDetailScreen(
                         val chapter = state.ebookData.epubBook.chapters[idx]
                         ChapterItem(chapterTitle = chapter.title, onClick = {
                             val intent = Intent(context, ReaderActivity::class.java)
-                            intent.putExtra(ReaderConstants.EXTRA_BOOK_ID, bookId.toInt())
+                            intent.putExtra(ReaderConstants.EXTRA_LIBRARY_ITEM_ID, libraryItemId.toInt())
                             intent.putExtra(ReaderConstants.EXTRA_CHAPTER_IDX, idx)
                             context.startActivity(intent)
                         })

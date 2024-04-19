@@ -17,7 +17,11 @@
 package com.starry.myne.utils
 
 object Constants {
+    // Database
     const val DATABASE_NAME = "myne.db"
+
+    // Error placeholder
+    const val UNKNOWN_ERR = "unknown-error"
 
     // URLs
     const val DEV_GITHUB_URL = "https://github.com/starry-shivam"

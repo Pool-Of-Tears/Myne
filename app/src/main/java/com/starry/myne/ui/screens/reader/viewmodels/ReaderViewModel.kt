@@ -107,10 +107,10 @@ class ReaderViewModel @Inject constructor(
     private val _visibleChapterIndex = mutableIntStateOf(0)
     val visibleChapterIndex: State<Int> = _visibleChapterIndex
 
-    fun loadEpubBook(bookId: Int, onLoaded: (ReaderScreenState) -> Unit) {
+    fun loadEpubBook(libraryItemId: Int, onLoaded: (ReaderScreenState) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            val libraryItem = libraryDao.getItemById(bookId)
-            val readerData = readerDao.getReaderData(bookId)
+            val libraryItem = libraryDao.getItemById(libraryItemId)
+            val readerData = readerDao.getReaderData(libraryItemId)
             // parse and create epub book
             val epubBook = epubParser.createEpubBook(libraryItem!!.filePath)
             state = state.copy(epubBook = epubBook, readerData = readerData)
@@ -123,26 +123,27 @@ class ReaderViewModel @Inject constructor(
 
     fun loadEpubBookExternal(fileStream: FileInputStream) {
         viewModelScope.launch(Dispatchers.IO) {
-            // parse and create epub book
-            val epubBook = epubParser.createEpubBook(fileStream, shouldUseToc = false)
-            fileStream.close() // close the file stream
-            state = state.copy(epubBook = epubBook)
-            // Added some delay to avoid choppy animation.
-            delay(200L)
-            state = state.copy(isLoading = false)
+            fileStream.use { fis ->
+                // parse and create epub book
+                val epubBook = epubParser.createEpubBook(fis, shouldUseToc = false)
+                state = state.copy(epubBook = epubBook)
+                // Added some delay to avoid choppy animation.
+                delay(200L)
+                state = state.copy(isLoading = false)
+            }
         }
     }
 
-    fun updateReaderProgress(bookId: Int, chapterIndex: Int, chapterOffset: Int) {
+    fun updateReaderProgress(libraryItemId: Int, chapterIndex: Int, chapterOffset: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            if (readerDao.getReaderData(bookId) != null && chapterIndex != state.epubBook?.chapters!!.size - 1) {
-                readerDao.update(bookId, chapterIndex, chapterOffset)
+            if (readerDao.getReaderData(libraryItemId) != null && chapterIndex != state.epubBook?.chapters!!.size - 1) {
+                readerDao.update(libraryItemId, chapterIndex, chapterOffset)
             } else if (chapterIndex == state.epubBook?.chapters!!.size - 1) {
                 // if the user has reached last chapter, delete this book
                 // from reader database instead of saving it's progress .
-                readerDao.getReaderData(bookId)?.let { readerDao.delete(it.bookId) }
+                readerDao.getReaderData(libraryItemId)?.let { readerDao.delete(it.libraryItemId) }
             } else {
-                readerDao.insert(readerData = ReaderData(bookId, chapterIndex, chapterOffset))
+                readerDao.insert(readerData = ReaderData(libraryItemId, chapterIndex, chapterOffset))
             }
         }
     }

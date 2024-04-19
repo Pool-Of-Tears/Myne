@@ -38,7 +38,10 @@ data class LibraryItem(
     @ColumnInfo(name = "file_path")
     val filePath: String,
     @ColumnInfo(name = "created_at")
-    val createdAt: Long
+    val createdAt: Long,
+    // Added in database schema version 3
+    @ColumnInfo(name = "is_external_book", defaultValue = "false")
+    val isExternalBook: Boolean = false
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

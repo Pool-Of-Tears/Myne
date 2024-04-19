@@ -31,6 +31,7 @@ import com.starry.myne.repo.BookRepository
 import com.starry.myne.repo.models.Book
 import com.starry.myne.repo.models.BookSet
 import com.starry.myne.repo.models.ExtraInfo
+import com.starry.myne.utils.Constants
 import com.starry.myne.utils.PreferenceUtil
 import com.starry.myne.utils.book.BookDownloader
 import com.starry.myne.utils.book.BookUtils
@@ -77,11 +78,14 @@ class BookDetailViewModel @Inject constructor(
                     state.copy(bookSet = bookSet)
                 }
                 state = state.copy(
-                    bookLibraryItem = libraryDao.getItemById(bookId.toInt()), isLoading = false
+                    bookLibraryItem = libraryDao.getItemByBookId(bookId.toInt()), isLoading = false
                 )
             } catch (exc: Exception) {
                 state =
-                    state.copy(error = exc.localizedMessage ?: "unknown-error", isLoading = false)
+                    state.copy(
+                        error = exc.localizedMessage ?: Constants.UNKNOWN_ERR,
+                        isLoading = false
+                    )
             }
         }
     }

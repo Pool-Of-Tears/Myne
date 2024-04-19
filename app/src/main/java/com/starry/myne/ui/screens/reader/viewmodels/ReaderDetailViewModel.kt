@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
+import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderData
 import com.starry.myne.epub.EpubParser
@@ -64,16 +65,16 @@ class ReaderDetailViewModel @Inject constructor(
         get() = _readerData
     private var _readerData: Flow<ReaderData?>? = null
 
-    fun loadEbookData(bookId: String, networkStatus: NetworkObserver.Status) {
+    fun loadEbookData(libraryItemId: String, networkStatus: NetworkObserver.Status) {
         viewModelScope.launch(Dispatchers.IO) {
             // Library item is not null as this screen is only accessible from the library.
-            val libraryItem = libraryDao.getItemById(bookId.toInt())!!
+            val libraryItem = libraryDao.getItemById(libraryItemId.toInt())!!
             // Get reader data if it exists.
-            _readerData = readerDao.getReaderDataAsFlow(bookId.toInt())
+            _readerData = readerDao.getReaderDataAsFlow(libraryItemId.toInt())
             val coverImage: String? = try {
-                if (networkStatus == NetworkObserver.Status.Available) bookRepository.getExtraInfo(
-                    libraryItem.title
-                )?.coverImage else null
+                if (!libraryItem.isExternalBook
+                    && networkStatus == NetworkObserver.Status.Available
+                ) bookRepository.getExtraInfo(libraryItem.title)?.coverImage else null
             } catch (exc: Exception) {
                 null
             }

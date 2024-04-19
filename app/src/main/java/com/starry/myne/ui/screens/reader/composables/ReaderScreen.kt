@@ -105,8 +105,7 @@ import kotlinx.coroutines.launch
 
 enum class TextScaleButtonType { INCREASE, DECREASE }
 
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReaderScreen(
     viewModel: ReaderViewModel,
@@ -364,8 +363,6 @@ private fun FontChooserDialog(
 }
 
 
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
 @Composable
 private fun BottomSheetContents(
     viewModel: ReaderViewModel,
@@ -393,8 +390,7 @@ private fun BottomSheetContents(
     }
 }
 
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
+
 @Composable
 private fun TextScaleControls(
     viewModel: ReaderViewModel,
@@ -467,8 +463,7 @@ private fun FontSelectionButton(
     }
 }
 
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
+
 @Composable
 private fun ReaderTextScaleButton(
     buttonType: TextScaleButtonType,

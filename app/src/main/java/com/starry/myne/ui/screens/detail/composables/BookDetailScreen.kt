@@ -92,6 +92,7 @@ import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.screens.detail.viewmodels.BookDetailViewModel
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
+import com.starry.myne.utils.Constants
 import com.starry.myne.utils.Utils
 import com.starry.myne.utils.book.BookUtils
 import com.starry.myne.utils.getActivity
@@ -154,7 +155,13 @@ fun BookDetailScreen(
                         ProgressDots()
                     }
                 } else if (state.error != null) {
-                    NetworkError(onRetryClicked = {
+                    // TODO: make utils function to handle error messages.
+                    val errMessage = if (state.error == Constants.UNKNOWN_ERR) {
+                        stringResource(id = R.string.error)
+                    } else {
+                        state.error
+                    }
+                    NetworkError(errorMessage = errMessage, onRetryClicked = {
                         viewModel.getBookDetails(bookId)
                     })
                 } else {
@@ -248,7 +255,7 @@ fun BookDetailScreen(
                                     if (bookLibraryItem == null) {
                                         viewModel.viewModelScope.launch(Dispatchers.IO) {
                                             val libraryItem =
-                                                viewModel.libraryDao.getItemById(book.id)!!
+                                                viewModel.libraryDao.getItemByBookId(book.id)!!
                                             withContext(Dispatchers.Main) {
                                                 Utils.openBookFile(
                                                     context = context,

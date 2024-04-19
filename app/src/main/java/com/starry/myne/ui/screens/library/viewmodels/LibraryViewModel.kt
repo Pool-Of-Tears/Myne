@@ -16,20 +16,27 @@
 
 package com.starry.myne.ui.screens.library.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
+import com.starry.myne.epub.EpubParser
 import com.starry.myne.utils.PreferenceUtil
+import com.starry.myne.utils.book.BookDownloader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileInputStream
 import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val libraryDao: LibraryDao,
+    private val epubParser: EpubParser,
     private val preferenceUtil: PreferenceUtil
 ) : ViewModel() {
     val allItems: LiveData<List<LibraryItem>> = libraryDao.getAllItems()
@@ -49,4 +56,42 @@ class LibraryViewModel @Inject constructor(
     fun libraryTooltipDismissed() = preferenceUtil.putBoolean(
         PreferenceUtil.SHOW_LIBRARY_TOOLTIP_BOOL, false
     )
+
+    fun importBook(context: Context, fileStream: FileInputStream) {
+        viewModelScope.launch(Dispatchers.IO) {
+            fileStream.use {fis ->
+                val epubBook = epubParser.createEpubBook(fis)
+                // reset the stream position to 0 so that it can be read again
+                fis.channel.position(0)
+                // copy the book to internal storage
+                val filePath = copyBookToInternalStorage(
+                    context, fis,
+                    BookDownloader.createFileName(epubBook.title)
+                )
+                // insert the book into the database
+                val libraryItem = LibraryItem(
+                    bookId = 0,
+                    title = epubBook.title,
+                    authors = epubBook.author,
+                    filePath = filePath,
+                    createdAt = System.currentTimeMillis(),
+                    isExternalBook = true
+                )
+                libraryDao.insert(libraryItem)
+            }
+        }
+    }
+
+    private suspend fun copyBookToInternalStorage(
+        context: Context,
+        fileStream: FileInputStream,
+        filename: String
+    ): String = withContext(Dispatchers.IO) {
+        val booksFolder = File(context.filesDir, BookDownloader.BOOKS_FOLDER)
+        if (!booksFolder.exists()) booksFolder.mkdirs()
+        val bookFile = File(booksFolder, filename)
+        // write the file to the internal storage
+        bookFile.outputStream().use { fileStream.copyTo(it) }
+        bookFile.absolutePath
+    }
 }

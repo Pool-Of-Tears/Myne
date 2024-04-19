@@ -138,6 +138,8 @@ class EpubParser {
 
             val metadataTitle = metadata.selectFirstChildTag("dc:title")?.textContent
                 ?: "Unknown Title"
+            val metadatAuthor = metadata.selectFirstChildTag("dc:creator")?.textContent
+                ?: "Unknown Author"
 
             val metadataCoverId = metadata
                 .selectChildTag("meta")
@@ -188,6 +190,7 @@ class EpubParser {
             return@withContext EpubBook(
                 fileName = metadataTitle.asFileName(),
                 title = metadataTitle,
+                author = metadatAuthor,
                 coverImage = coverImage,
                 chapters = chapters,
                 images = images
@@ -198,7 +201,7 @@ class EpubParser {
     private suspend fun getZipFiles(
         inputStream: InputStream
     ): Map<String, EpubFile> = withContext(Dispatchers.IO) {
-        ZipInputStream(inputStream).use { zipInputStream ->
+        ZipInputStream(inputStream).let { zipInputStream ->
             zipInputStream
                 .entries()
                 .filterNot { it.isDirectory }
