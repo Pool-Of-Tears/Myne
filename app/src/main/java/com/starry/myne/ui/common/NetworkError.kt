@@ -75,7 +75,7 @@ fun NetworkError(errorMessage: String? = null, onRetryClicked: () -> Unit) {
 
         LottieAnimation(
             composition = compositionResult.value,
-            progress = progressAnimation,
+            progress = { progressAnimation },
             modifier = Modifier.size(280.dp),
             enableMergePaths = true
         )

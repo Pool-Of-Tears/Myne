@@ -19,7 +19,12 @@ package com.starry.myne.ui.screens.library.composables
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,10 +37,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -71,6 +79,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -102,6 +111,7 @@ import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.Utils
 import com.starry.myne.utils.getActivity
+import com.starry.myne.utils.isScrollingUp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeAction
@@ -116,6 +126,7 @@ fun LibraryScreen(navController: NavController) {
 
     val context = LocalContext.current
     val snackBarHostState = remember { SnackbarHostState() }
+    val lazyListState = rememberLazyListState()
 
     val importBookLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -125,6 +136,11 @@ fun LibraryScreen(navController: NavController) {
                 }
             }
         }
+
+    val shouldShowImporting = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = viewModel.importStatus.value) {
+        shouldShowImporting.value = viewModel.importStatus.value != ImportStatus.IDLE
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
@@ -139,30 +155,38 @@ fun LibraryScreen(navController: NavController) {
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = {
-                importBookLauncher.launch(arrayOf("application/epub+zip"))
-            }) {
-                Icon(
-                    imageVector = Icons.Outlined.Add,
-                    contentDescription = "Add Book", // TODO: Add string resource
+            val density = LocalDensity.current
+            AnimatedVisibility(
+                visible = !shouldShowImporting.value && lazyListState.isScrollingUp(),
+                enter = slideInVertically {
+                    with(density) { 40.dp.roundToPx() }
+                } + fadeIn(),
+                exit = fadeOut(
+                    animationSpec = keyframes {
+                        this.durationMillis = 120
+                    }
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Import", // TODO: Add string resource
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = figeronaFont,
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+            ) {
+                ExtendedFloatingActionButton(onClick = {
+                    importBookLauncher.launch(arrayOf("application/epub+zip"))
+                }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Add,
+                        contentDescription = "Add Book", // TODO: Add string resource
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Import", // TODO: Add string resource
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = figeronaFont,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
 
+                }
             }
         }
     ) { paddingValues ->
-
-        val shouldShowImporting = remember { mutableStateOf(false) }
-        LaunchedEffect(key1 = viewModel.importStatus.value) {
-            shouldShowImporting.value = viewModel.importStatus.value != ImportStatus.IDLE
-        }
 
         Crossfade(
             targetState = shouldShowImporting.value,
@@ -173,6 +197,7 @@ fun LibraryScreen(navController: NavController) {
             } else {
                 LibraryContents(
                     viewModel = viewModel,
+                    lazyListState = lazyListState,
                     snackBarHostState = snackBarHostState,
                     navController = navController,
                     paddingValues = paddingValues
@@ -188,6 +213,7 @@ fun LibraryScreen(navController: NavController) {
 @Composable
 private fun LibraryContents(
     viewModel: LibraryViewModel,
+    lazyListState: LazyListState,
     snackBarHostState: SnackbarHostState,
     navController: NavController,
     paddingValues: PaddingValues
@@ -207,7 +233,8 @@ private fun LibraryContents(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(MaterialTheme.colorScheme.background),
+                state = lazyListState
             ) {
                 items(
                     count = libraryItems.size,
@@ -264,19 +291,26 @@ private fun LibraryLazyItem(
     val coroutineScope = rememberCoroutineScope()
     val openDeleteDialog = remember { mutableStateOf(false) }
 
+    // Swipe actions to show book details.
     val detailsAction = SwipeAction(icon = painterResource(
         id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_info else R.drawable.ic_info_white
     ), background = MaterialTheme.colorScheme.primary, onSwipe = {
         viewModel.viewModelScope.launch {
             delay(250L)
-            navController.navigate(
-                Screens.BookDetailScreen.withBookId(
-                    item.bookId.toString()
+            if (item.isExternalBook) {
+                // TODO: Add string resource
+                snackBarHostState.showSnackbar("Only available for internal books.", "OK")
+            } else {
+                navController.navigate(
+                    Screens.BookDetailScreen.withBookId(
+                        item.bookId.toString()
+                    )
                 )
-            )
+            }
         }
     })
 
+    // Swipe actions to share book.
     val shareAction = SwipeAction(icon = painterResource(
         id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_share else R.drawable.ic_share_white
     ), background = MaterialTheme.colorScheme.primary, onSwipe = {
@@ -307,6 +341,7 @@ private fun LibraryLazyItem(
             author = item.authors,
             item.getFileSize(),
             item.getDownloadDate(),
+            isExternalBook = item.isExternalBook,
             onReadClick = {
                 Utils.openBookFile(
                     context = context,
@@ -366,6 +401,7 @@ private fun LibraryCard(
     author: String,
     fileSize: String,
     date: String,
+    isExternalBook: Boolean,
     onReadClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
@@ -390,7 +426,10 @@ private fun LibraryCard(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_library_item),
+                    imageVector = ImageVector.vectorResource(
+                        id = if (isExternalBook) R.drawable.ic_library_external_item
+                        else R.drawable.ic_library_item
+                    ),
                     contentDescription = stringResource(id = R.string.back_button_desc),
                     tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(32.dp)
@@ -519,7 +558,7 @@ private fun NoLibraryItemAnimation() {
         Spacer(modifier = Modifier.weight(1f))
         LottieAnimation(
             composition = compositionResult.value,
-            progress = progressAnimation,
+            progress = { progressAnimation },
             modifier = Modifier.size(300.dp),
             enableMergePaths = true
         )
@@ -540,50 +579,59 @@ private fun NoLibraryItemAnimation() {
 @Composable
 private fun ImportingEpubAnimation(importStatus: ImportStatus) {
     Column(
-        modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val compositionResult: LottieCompositionResult? = when (importStatus) {
-            ImportStatus.IMPORTING -> rememberLottieComposition(
-                spec = LottieCompositionSpec.RawRes(R.raw.importing_epub_lottie)
-            )
+        val (compositionSpec, text) = when (importStatus) {
+            ImportStatus.IMPORTING -> {
+                rememberLottieComposition(
+                    spec = LottieCompositionSpec.RawRes(R.raw.epub_importing_lottie)
+                ) to "Importing... Please wait." // TODO: Add string resource
+            }
 
-            ImportStatus.SUCCESS -> rememberLottieComposition(
-                spec = LottieCompositionSpec.RawRes(R.raw.import_epub_success_lottie)
-            )
+            ImportStatus.SUCCESS -> {
+                rememberLottieComposition(
+                    spec = LottieCompositionSpec.RawRes(R.raw.epub_import_success_lottie)
+                ) to "Imported successfully!" // TODO: Add string resource
+            }
 
-            ImportStatus.ERROR -> rememberLottieComposition(
-                spec = LottieCompositionSpec.RawRes(R.raw.import_epub_error_lottie)
-            )
+            ImportStatus.ERROR -> {
+                rememberLottieComposition(
+                    spec = LottieCompositionSpec.RawRes(R.raw.epub_import_error_lottie)
+                ) to "Error importing book!" // TODO: Add string resource
+            }
 
-            ImportStatus.IDLE -> null
+            ImportStatus.IDLE -> null to ""
         }
 
-        compositionResult?.let {
+        compositionSpec?.let { result ->
             val progressAnimation by animateLottieCompositionAsState(
-                compositionResult.value,
+                result.value,
                 isPlaying = true,
                 iterations = LottieConstants.IterateForever,
-                speed = 1f
+                speed = 1f,
+                restartOnPlay = true
             )
 
             Spacer(modifier = Modifier.weight(1f))
             LottieAnimation(
-                composition = compositionResult.value,
-                progress = progressAnimation,
-                modifier = Modifier.size(300.dp),
+                composition = result.value,
+                progress = { progressAnimation },
+                modifier = Modifier.size(280.dp),
                 enableMergePaths = true
             )
 
             Text(
-                text = stringResource(id = R.string.empty_library),
-                fontWeight = FontWeight.Medium,
-                fontSize = 18.sp,
+                text = text,
+                style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 12.dp, end = 12.dp)
+                    .padding(horizontal = 12.dp)
+                    .offset(y = (-34).dp),
+                fontFamily = figeronaFont
             )
-            Spacer(modifier = Modifier.weight(1.4f))
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
@@ -597,6 +645,7 @@ fun LibraryScreenPreview() {
         author = "Fyodor Dostoevsky",
         fileSize = "5.9MB",
         date = "01- Jan -2020",
+        isExternalBook = false,
         onReadClick = {},
         onDeleteClick = {})
 }

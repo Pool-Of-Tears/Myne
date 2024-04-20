@@ -62,7 +62,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.starry.myne.ui.theme.figeronaFont
 
-@ExperimentalMaterial3Api
+
 @Composable
 fun SettingItem(icon: ImageVector, mainText: String, subText: String, onClick: () -> Unit) {
     Card(
@@ -134,7 +134,6 @@ fun SettingItem(icon: ImageVector, mainText: String, subText: String, onClick: (
     }
 }
 
-@ExperimentalMaterial3Api
 @Composable
 fun SettingItemWIthSwitch(
     icon: ImageVector,
@@ -223,7 +222,7 @@ fun SettingItemWIthSwitch(
     }
 }
 
-@ExperimentalMaterial3Api
+
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {

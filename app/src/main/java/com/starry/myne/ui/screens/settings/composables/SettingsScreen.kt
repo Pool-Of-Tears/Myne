@@ -38,7 +38,6 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrightnessMedium
 import androidx.compose.material.icons.filled.Info
@@ -63,7 +62,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -79,7 +77,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
@@ -91,12 +88,7 @@ import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.getActivity
 import kotlinx.coroutines.launch
 
-@OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
-    ExperimentalMaterialApi::class, ExperimentalCoilApi::class
-)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavController) {
     val context = LocalContext.current
@@ -107,11 +99,12 @@ fun SettingsScreen(navController: NavController) {
     Scaffold(
         modifier = Modifier.padding(bottom = 70.dp),
         snackbarHost = { SnackbarHost(snackBarHostState) },
-    ) {
+    ) {paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
+                .padding(paddingValues)
         ) {
             CustomTopAppBar(
                 headerText = stringResource(id = R.string.settings_header),
@@ -129,7 +122,7 @@ fun SettingsScreen(navController: NavController) {
 
 @Composable
 @ExperimentalMaterial3Api
-fun SettingsCard() {
+private fun SettingsCard() {
     Card(
         modifier = Modifier
             .height(150.dp)
@@ -198,9 +191,9 @@ fun SettingsCard() {
     }
 }
 
-@ExperimentalMaterial3Api
+
 @Composable
-fun GeneralOptionsUI(viewModel: SettingsViewModel, context: Context) {
+private fun GeneralOptionsUI(viewModel: SettingsViewModel, context: Context) {
     val internalReaderValue = when (viewModel.getInternalReaderValue()) {
         true -> stringResource(id = R.string.reader_option_inbuilt)
         false -> stringResource(id = R.string.reader_option_external)
@@ -309,12 +302,9 @@ fun GeneralOptionsUI(viewModel: SettingsViewModel, context: Context) {
 }
 
 
-@ExperimentalCoilApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterial3Api
-@ExperimentalMaterialApi
+
 @Composable
-fun DisplayOptionsUI(
+private fun DisplayOptionsUI(
     viewModel: SettingsViewModel,
     context: Context,
     snackBarHostState: SnackbarHostState,
@@ -458,12 +448,8 @@ fun DisplayOptionsUI(
     }
 }
 
-@ExperimentalCoilApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
 @Composable
-fun InformationUI(navController: NavController) {
+private fun InformationUI(navController: NavController) {
     Box {
         Column(
             modifier = Modifier
@@ -496,10 +482,7 @@ fun InformationUI(navController: NavController) {
 
 }
 
-@ExperimentalCoilApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
+
 @Composable
 @Preview
 fun SettingsScreenPreview() {

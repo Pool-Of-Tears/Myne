@@ -131,7 +131,7 @@ dependencies {
     // Jsoup HTML Parser.
     implementation "org.jsoup:jsoup:1.17.2"
     // Lottie animations.
-    implementation "com.airbnb.android:lottie-compose:4.1.0"
+    implementation "com.airbnb.android:lottie-compose:6.4.0"
     // DataStore Preferences
     implementation("androidx.datastore:datastore-preferences:1.1.0")
     // Open Source Libraries Screen.

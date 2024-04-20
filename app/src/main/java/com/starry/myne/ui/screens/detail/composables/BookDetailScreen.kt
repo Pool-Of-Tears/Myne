@@ -326,7 +326,7 @@ fun BookDetailScreen(
 
 @ExperimentalMaterial3Api
 @Composable
-fun MiddleBar(
+private fun MiddleBar(
     bookLang: String,
     pageCount: String,
     downloadCount: String,
@@ -485,7 +485,7 @@ fun MiddleBar(
 }
 
 @Composable
-fun BookDetailTopBar(
+private fun BookDetailTopBar(
     onBackClicked: () -> Unit, onShareClicked: () -> Unit
 ) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -531,7 +531,7 @@ fun BookDetailTopBar(
 }
 
 @Composable
-fun NoSynopsisUI() {
+private fun NoSynopsisUI() {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -550,7 +550,7 @@ fun NoSynopsisUI() {
         Spacer(modifier = Modifier.weight(2f))
         LottieAnimation(
             composition = compositionResult.value,
-            progress = progressAnimation,
+            progress = { progressAnimation },
             modifier = Modifier
                 .fillMaxWidth(0.85f)
                 .height(200.dp),
@@ -568,10 +568,7 @@ fun NoSynopsisUI() {
     }
 }
 
-@ExperimentalCoilApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
+
 @Composable
 @Preview(showBackground = true)
 fun BookDetailScreenPreview() {

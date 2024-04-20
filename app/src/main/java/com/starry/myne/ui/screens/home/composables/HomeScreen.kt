@@ -27,10 +27,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,8 +43,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -69,7 +65,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalFocusManager
@@ -81,7 +76,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -91,6 +85,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.R
 import com.starry.myne.ui.common.BookItemCard
+import com.starry.myne.ui.common.BookLanguageButton
 import com.starry.myne.ui.common.NetworkError
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.navigation.Screens
@@ -165,7 +160,7 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
                 ) {
                     items(languages.size) { idx ->
                         val language = languages[idx]
-                        LanguageItem(
+                        BookLanguageButton(
                             language = language,
                             isSelected = language == viewModel.language.value,
                             onClick = {
@@ -200,7 +195,7 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
 @Composable
-fun HomeScreenScaffold(
+private fun HomeScreenScaffold(
     viewModel: HomeViewModel,
     networkStatus: NetworkObserver.Status,
     navController: NavController,
@@ -394,7 +389,7 @@ fun HomeScreenScaffold(
 }
 
 @Composable
-fun HomeTopAppBar(
+private fun HomeTopAppBar(
     bookLanguage: BookLanguage,
     onSearchIconClicked: () -> Unit,
     onLanguageIconClicked: () -> Unit,
@@ -435,7 +430,7 @@ fun HomeTopAppBar(
 
 @ExperimentalMaterial3Api
 @Composable
-fun SearchAppBar(
+private fun SearchAppBar(
     onCloseIconClicked: () -> Unit,
     onInputValueChange: (String) -> Unit,
     text: String,
@@ -497,44 +492,6 @@ fun SearchAppBar(
     )
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
-    }
-}
-
-@ExperimentalMaterial3Api
-@Composable
-fun LanguageItem(language: BookLanguage, isSelected: Boolean, onClick: () -> Unit) {
-    val buttonColor: Color
-    val textColor: Color
-    if (isSelected) {
-        buttonColor = MaterialTheme.colorScheme.primary
-        textColor = MaterialTheme.colorScheme.onPrimary
-    } else {
-        buttonColor = MaterialTheme.colorScheme.secondaryContainer
-        textColor = MaterialTheme.colorScheme.onSecondaryContainer
-    }
-
-    Card(
-        modifier = Modifier
-            .height(60.dp)
-            .width(70.dp)
-            .padding(6.dp),
-        colors = CardDefaults.cardColors(containerColor = buttonColor),
-        shape = RoundedCornerShape(14.dp),
-        onClick = onClick
-    ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                modifier = Modifier.padding(2.dp),
-                text = language.name,
-                fontSize = 18.sp,
-                fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
-                fontFamily = figeronaFont,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                color = textColor,
-            )
-        }
     }
 }
 

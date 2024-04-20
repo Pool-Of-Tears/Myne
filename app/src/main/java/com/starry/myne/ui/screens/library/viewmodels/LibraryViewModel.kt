@@ -90,14 +90,16 @@ class LibraryViewModel @Inject constructor(
                         isExternalBook = true
                     )
                     libraryDao.insert(libraryItem)
+                    delay(500)
                     _importStatus.value = ImportStatus.SUCCESS
                 }
             } catch (exc: Exception) {
+                delay(500)
                 _importStatus.value = ImportStatus.ERROR
                 exc.printStackTrace()
                 return@launch
             } finally {
-                delay(2000) // delay to show either success or error message
+                delay(1800) // delay to show either success or error message
                 _importStatus.value = ImportStatus.IDLE
             }
         }
