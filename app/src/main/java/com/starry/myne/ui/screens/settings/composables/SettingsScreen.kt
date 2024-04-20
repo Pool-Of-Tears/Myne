@@ -16,7 +16,6 @@
 
 package com.starry.myne.ui.screens.settings.composables
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.Image
@@ -99,7 +98,7 @@ fun SettingsScreen(navController: NavController) {
     Scaffold(
         modifier = Modifier.padding(bottom = 70.dp),
         snackbarHost = { SnackbarHost(snackBarHostState) },
-    ) {paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -300,7 +299,6 @@ private fun GeneralOptionsUI(viewModel: SettingsViewModel, context: Context) {
         })
     }
 }
-
 
 
 @Composable

@@ -112,7 +112,13 @@ class ReaderViewModel @Inject constructor(
             val libraryItem = libraryDao.getItemById(libraryItemId)
             val readerData = readerDao.getReaderData(libraryItemId)
             // parse and create epub book
-            val epubBook = epubParser.createEpubBook(libraryItem!!.filePath)
+            var epubBook = epubParser.createEpubBook(libraryItem!!.filePath)
+            // Gutenberg for some reason don't include proper navMap in chinese books
+            // in toc, so we need to parse the book based on spine, instead of toc.
+            // This is a workaround for internal chinese books.
+            if (epubBook.language == "zh" && !libraryItem.isExternalBook) {
+                epubBook = epubParser.createEpubBook(libraryItem.filePath, shouldUseToc = false)
+            }
             state = state.copy(epubBook = epubBook, readerData = readerData)
             onLoaded(state)
             // Added some delay to avoid choppy animation.
@@ -143,7 +149,13 @@ class ReaderViewModel @Inject constructor(
                 // from reader database instead of saving it's progress .
                 readerDao.getReaderData(libraryItemId)?.let { readerDao.delete(it.libraryItemId) }
             } else {
-                readerDao.insert(readerData = ReaderData(libraryItemId, chapterIndex, chapterOffset))
+                readerDao.insert(
+                    readerData = ReaderData(
+                        libraryItemId,
+                        chapterIndex,
+                        chapterOffset
+                    )
+                )
             }
         }
     }

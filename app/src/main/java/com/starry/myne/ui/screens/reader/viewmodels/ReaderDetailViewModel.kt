@@ -17,13 +17,13 @@
 
 package com.starry.myne.ui.screens.reader.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
-import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderData
 import com.starry.myne.epub.EpubParser
@@ -78,12 +78,20 @@ class ReaderDetailViewModel @Inject constructor(
             } catch (exc: Exception) {
                 null
             }
-            // Create EbookData object.
+            // Gutenberg for some reason don't include proper navMap in chinese books
+            // in toc, so we need to parse the book based on spine, instead of toc.
+            // This is a workaround for internal chinese books.
+            var epubBook = epubParser.createEpubBook(libraryItem.filePath)
+            if (epubBook.language == "zh" && !libraryItem.isExternalBook) {
+                Log.d("ReaderDetailViewModel", "Parsing book without toc for chinese book.")
+                epubBook = epubParser.createEpubBook(libraryItem.filePath, shouldUseToc = false)
+            }
+            // Create ebook data.
             val ebookData = EbookData(
                 coverImage = coverImage,
                 title = libraryItem.title,
                 authors = libraryItem.authors,
-                epubBook = epubParser.createEpubBook(libraryItem.filePath)
+                epubBook = epubBook
             )
             delay(500) // Add delay to avoid flickering.
             state = state.copy(isLoading = false, ebookData = ebookData)

@@ -70,7 +70,6 @@ import com.starry.myne.ui.screens.reader.activities.ReaderActivity
 import com.starry.myne.ui.screens.reader.activities.ReaderConstants
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailScreenState
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailViewModel
-import com.starry.myne.ui.screens.reader.viewmodels.ReaderScreenState
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.NetworkObserver
 import com.starry.myne.utils.getActivity

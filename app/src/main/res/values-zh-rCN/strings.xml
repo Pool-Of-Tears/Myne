@@ -40,6 +40,12 @@
     <!-- Library screen. 书架/书库页面-->
     <string name="library_header">书库</string>
     <string name="empty_library">这里是空的</string>
+    <string name="import_button_text">导入</string>
+    <string name="import_button_desc">导入 EPUB 书籍</string>
+    <string name="external_book_info_unavailable">仅适用于内部书籍。</string>
+    <string name="epub_importing">正在导入… 请稍候。</string>
+    <string name="epub_imported">成功导入！</string>
+    <string name="epub_import_error">导入失败！</string>
     <string name="open_app_chooser">打开方式</string>
     <string name="share_app_chooser">分享</string>
     <string name="library_read_button">阅读</string>
@@ -55,7 +61,7 @@
     <!--Reader Screen 阅读界面-->
     <string name="reader_max_font_size_reached">抱歉，不能再大了</string>
     <string name="reader_min_font_size_reached">抱歉，不能再小了</string>
-    <string name="reader_font_style_chooer">改变字体风格</string>
+    <string name="reader_font_style_chooser">改变字体风格</string>
     <string name="reader_chapter_list_title">章节</string>
 
     <!-- Settings screen. 设置页面-->

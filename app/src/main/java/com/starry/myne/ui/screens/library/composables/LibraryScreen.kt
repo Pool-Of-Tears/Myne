@@ -172,11 +172,11 @@ fun LibraryScreen(navController: NavController) {
                 }) {
                     Icon(
                         imageVector = Icons.Outlined.Add,
-                        contentDescription = "Add Book", // TODO: Add string resource
+                        contentDescription = stringResource(id = R.string.import_button_desc)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Import", // TODO: Add string resource
+                        text = stringResource(id = R.string.import_button_text),
                         fontWeight = FontWeight.Medium,
                         fontFamily = figeronaFont,
                         fontSize = 14.sp,
@@ -298,8 +298,11 @@ private fun LibraryLazyItem(
         viewModel.viewModelScope.launch {
             delay(250L)
             if (item.isExternalBook) {
-                // TODO: Add string resource
-                snackBarHostState.showSnackbar("Only available for internal books.", "OK")
+                snackBarHostState.showSnackbar(
+                    message = context.getString(R.string.external_book_info_unavailable),
+                    actionLabel = context.getString(R.string.ok),
+                    duration = SnackbarDuration.Short
+                )
             } else {
                 navController.navigate(
                     Screens.BookDetailScreen.withBookId(
@@ -582,40 +585,38 @@ private fun ImportingEpubAnimation(importStatus: ImportStatus) {
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val (compositionSpec, text) = when (importStatus) {
+        val (spec, text) = when (importStatus) {
             ImportStatus.IMPORTING -> {
-                rememberLottieComposition(
-                    spec = LottieCompositionSpec.RawRes(R.raw.epub_importing_lottie)
-                ) to "Importing... Please wait." // TODO: Add string resource
+                (LottieCompositionSpec.RawRes(R.raw.epub_importing_lottie)
+                        to stringResource(id = R.string.epub_importing))
             }
 
             ImportStatus.SUCCESS -> {
-                rememberLottieComposition(
-                    spec = LottieCompositionSpec.RawRes(R.raw.epub_import_success_lottie)
-                ) to "Imported successfully!" // TODO: Add string resource
+                (LottieCompositionSpec.RawRes(R.raw.epub_import_success_lottie)
+                        to stringResource(id = R.string.epub_imported))
             }
 
             ImportStatus.ERROR -> {
-                rememberLottieComposition(
-                    spec = LottieCompositionSpec.RawRes(R.raw.epub_import_error_lottie)
-                ) to "Error importing book!" // TODO: Add string resource
+                (LottieCompositionSpec.RawRes(R.raw.epub_import_error_lottie)
+                        to stringResource(id = R.string.epub_import_error))
+
             }
 
             ImportStatus.IDLE -> null to ""
         }
 
-        compositionSpec?.let { result ->
+        spec?.let { result ->
+            val compositionSpec = rememberLottieComposition(spec = result)
             val progressAnimation by animateLottieCompositionAsState(
-                result.value,
+                compositionSpec.value,
                 isPlaying = true,
                 iterations = LottieConstants.IterateForever,
                 speed = 1f,
                 restartOnPlay = true
             )
-
             Spacer(modifier = Modifier.weight(1f))
             LottieAnimation(
-                composition = result.value,
+                composition = compositionSpec.value,
                 progress = { progressAnimation },
                 modifier = Modifier.size(280.dp),
                 enableMergePaths = true

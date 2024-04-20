@@ -339,7 +339,7 @@ private fun DeveloperCard(context: Context) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = stringResource(id = R.string.dev_username),
+                    text = stringResource(id = R.string.dev_email),
                     fontSize = 16.sp,
                     fontFamily = figeronaFont,
                     fontWeight = FontWeight.Medium,

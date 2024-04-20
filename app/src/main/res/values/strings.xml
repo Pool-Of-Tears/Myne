@@ -39,6 +39,12 @@
     <!-- Library screen. -->
     <string name="library_header">Library</string>
     <string name="empty_library">Nothing Here!</string>
+    <string name="import_button_text">Import</string>
+    <string name="import_button_desc">Import epub book</string>
+    <string name="external_book_info_unavailable">Only available for internal books.</string>
+    <string name="epub_importing">Importing… Please wait.</string>
+    <string name="epub_imported">Imported successfully!</string>
+    <string name="epub_import_error">Failed to import!</string>
     <string name="open_app_chooser">Open with…</string>
     <string name="share_app_chooser">Share with…</string>
     <string name="library_read_button">Read</string>
@@ -54,7 +60,7 @@
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Sorry, cannot go any higher than that!</string>
     <string name="reader_min_font_size_reached">Sorry, cannot go any lower than that!</string>
-    <string name="reader_font_style_chooer">Change FontStyle</string>
+    <string name="reader_font_style_chooser">Change FontStyle</string>
     <string name="reader_chapter_list_title">Chapters</string>
 
     <!-- Settings screen. -->
@@ -99,10 +105,10 @@
 
     <!-- About Screen -->
     <string name="about_header">About</string>
-    <string name="about_desc">A Free &amp; Open Source Android application to download ebooks from the Project GutenBerg.</string>
+    <string name="about_desc">A Free &amp; Open Source Android application to download ebooks from the Project Gutenberg.</string>
     <string name="developed_by">Developed By</string>
     <string name="dev_name" translatable="false">Starry Shivam</string>
-    <string name="dev_username" translatable="false">\@starry-shivam</string>
+    <string name="dev_email" translatable="false">starry@krsh.dev</string>
     <string name="project_contributors">Project Contributors</string>
     <string name="project_contributors_desc">Meet our wonderful contributors.</string>
     <string name="useful_links">Useful Links</string>

@@ -45,7 +45,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
@@ -306,7 +305,7 @@ private fun FontChooserDialog(
             showFontDialog.value = false
         }, title = {
             Text(
-                text = stringResource(id = R.string.reader_font_style_chooer),
+                text = stringResource(id = R.string.reader_font_style_chooser),
                 color = MaterialTheme.colorScheme.onSurface,
             )
         }, text = {

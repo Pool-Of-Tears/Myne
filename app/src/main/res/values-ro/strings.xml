@@ -39,6 +39,12 @@
     <!-- Library screen. -->
     <string name="library_header">Librărie</string>
     <string name="empty_library">Nimic aici!</string>
+    <string name="import_button_text">Importă</string>
+    <string name="import_button_desc">Importează carte EPUB</string>
+    <string name="external_book_info_unavailable">Disponibil doar pentru cărți interne.</string>
+    <string name="epub_importing">Se importă… Vă rugăm să așteptați.</string>
+    <string name="epub_imported">Importat cu succes!</string>
+    <string name="epub_import_error">Import eșuat!</string>
     <string name="open_app_chooser">Deschide cu…</string>
     <string name="share_app_chooser">Împărtășiți cu…</string>
     <string name="library_read_button">Citește</string>
@@ -54,7 +60,7 @@
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Îmi pare rău, nu pot merge mai sus de atât!</string>
     <string name="reader_min_font_size_reached">Îmi pare rău, nu pot merge mai jos de atât!</string>
-    <string name="reader_font_style_chooer">Schimbați FontStyle</string>
+    <string name="reader_font_style_chooser">Schimbați FontStyle</string>
     <string name="reader_chapter_list_title">Capitole</string>
 
     <!-- Settings screen. -->
