@@ -17,6 +17,12 @@
 
 package com.starry.myne.epub.models
 
+/**
+ * Represents an image in an epub book.
+ *
+ * @param absPath The absolute path of the image.
+ * @param image The image data.
+ */
 data class EpubImage(val absPath: String, val image: ByteArray) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

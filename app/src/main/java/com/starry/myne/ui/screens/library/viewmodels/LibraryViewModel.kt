@@ -17,6 +17,8 @@
 package com.starry.myne.ui.screens.library.viewmodels
 
 import android.content.Context
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,11 +29,16 @@ import com.starry.myne.utils.PreferenceUtil
 import com.starry.myne.utils.book.BookDownloader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
+
+enum class ImportStatus {
+    IMPORTING, SUCCESS, ERROR, IDLE
+}
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
@@ -40,6 +47,9 @@ class LibraryViewModel @Inject constructor(
     private val preferenceUtil: PreferenceUtil
 ) : ViewModel() {
     val allItems: LiveData<List<LibraryItem>> = libraryDao.getAllItems()
+
+    val importStatus: State<ImportStatus> get() = _importStatus
+    private val _importStatus = mutableStateOf(ImportStatus.IDLE)
 
     fun deleteItemFromDB(item: LibraryItem) {
         viewModelScope.launch(Dispatchers.IO) { libraryDao.delete(item) }
@@ -59,25 +69,36 @@ class LibraryViewModel @Inject constructor(
 
     fun importBook(context: Context, fileStream: FileInputStream) {
         viewModelScope.launch(Dispatchers.IO) {
-            fileStream.use {fis ->
-                val epubBook = epubParser.createEpubBook(fis)
-                // reset the stream position to 0 so that it can be read again
-                fis.channel.position(0)
-                // copy the book to internal storage
-                val filePath = copyBookToInternalStorage(
-                    context, fis,
-                    BookDownloader.createFileName(epubBook.title)
-                )
-                // insert the book into the database
-                val libraryItem = LibraryItem(
-                    bookId = 0,
-                    title = epubBook.title,
-                    authors = epubBook.author,
-                    filePath = filePath,
-                    createdAt = System.currentTimeMillis(),
-                    isExternalBook = true
-                )
-                libraryDao.insert(libraryItem)
+            try {
+                _importStatus.value = ImportStatus.IMPORTING
+                fileStream.use { fis ->
+                    val epubBook = epubParser.createEpubBook(fis)
+                    // reset the stream position to 0 so that it can be read again
+                    fis.channel.position(0)
+                    // copy the book to internal storage
+                    val filePath = copyBookToInternalStorage(
+                        context, fis,
+                        BookDownloader.createFileName(epubBook.title)
+                    )
+                    // insert the book into the database
+                    val libraryItem = LibraryItem(
+                        bookId = 0,
+                        title = epubBook.title,
+                        authors = epubBook.author,
+                        filePath = filePath,
+                        createdAt = System.currentTimeMillis(),
+                        isExternalBook = true
+                    )
+                    libraryDao.insert(libraryItem)
+                    _importStatus.value = ImportStatus.SUCCESS
+                }
+            } catch (exc: Exception) {
+                _importStatus.value = ImportStatus.ERROR
+                exc.printStackTrace()
+                return@launch
+            } finally {
+                delay(2000) // delay to show either success or error message
+                _importStatus.value = ImportStatus.IDLE
             }
         }
     }

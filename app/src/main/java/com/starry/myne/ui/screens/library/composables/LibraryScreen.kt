@@ -19,12 +19,14 @@ package com.starry.myne.ui.screens.library.composables
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -94,6 +96,7 @@ import com.starry.myne.R
 import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.navigation.Screens
+import com.starry.myne.ui.screens.library.viewmodels.ImportStatus
 import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
@@ -107,19 +110,17 @@ import java.io.File
 import java.io.FileInputStream
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LibraryScreen(navController: NavController) {
     val viewModel: LibraryViewModel = hiltViewModel()
-    val state = viewModel.allItems.observeAsState(listOf()).value
 
     val context = LocalContext.current
     val snackBarHostState = remember { SnackbarHostState() }
 
     val importBookLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) {uri ->
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             uri?.let {
-                (context as MainActivity).contentResolver.openInputStream(uri)?.let {ips ->
+                (context as MainActivity).contentResolver.openInputStream(uri)?.let { ips ->
                     viewModel.importBook(context, ips as FileInputStream)
                 }
             }
@@ -156,57 +157,92 @@ fun LibraryScreen(navController: NavController) {
 
             }
         }
+    ) { paddingValues ->
+
+        val shouldShowImporting = remember { mutableStateOf(false) }
+        LaunchedEffect(key1 = viewModel.importStatus.value) {
+            shouldShowImporting.value = viewModel.importStatus.value != ImportStatus.IDLE
+        }
+
+        Crossfade(
+            targetState = shouldShowImporting.value,
+            label = "ImportCrossFade"
+        ) { isImporting ->
+            if (isImporting) {
+                ImportingEpubAnimation(viewModel.importStatus.value)
+            } else {
+                LibraryContents(
+                    viewModel = viewModel,
+                    snackBarHostState = snackBarHostState,
+                    navController = navController,
+                    paddingValues = paddingValues
+                )
+            }
+        }
+
+
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun LibraryContents(
+    viewModel: LibraryViewModel,
+    snackBarHostState: SnackbarHostState,
+    navController: NavController,
+    paddingValues: PaddingValues
+) {
+    val context = LocalContext.current
+    val libraryItems = viewModel.allItems.observeAsState(listOf()).value
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(paddingValues)
     ) {
-        Box(modifier = Modifier.padding(it)) {
-            Column(
+        if (libraryItems.isEmpty()) {
+            NoLibraryItemAnimation()
+        } else {
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
             ) {
-                if (state.isEmpty()) {
-                    NoLibraryItemAnimation()
-                } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background)
-                    ) {
-                        items(
-                            count = state.size,
-                            key = { i -> state[i].id }
-                        ) { i ->
-                            val item = state[i]
-                            if (item.fileExist()) {
-                                LibraryLazyItem(
-                                    modifier = Modifier.animateItemPlacement(),
-                                    item = item,
-                                    snackBarHostState = snackBarHostState,
-                                    navController = navController,
-                                    viewModel = viewModel
-                                )
-                            } else {
-                                viewModel.deleteItemFromDB(item)
-                            }
-                        }
+                items(
+                    count = libraryItems.size,
+                    key = { i -> libraryItems[i].id }
+                ) { i ->
+                    val item = libraryItems[i]
+                    if (item.fileExist()) {
+                        LibraryLazyItem(
+                            modifier = Modifier.animateItemPlacement(),
+                            item = item,
+                            snackBarHostState = snackBarHostState,
+                            navController = navController,
+                            viewModel = viewModel
+                        )
+                    } else {
+                        viewModel.deleteItemFromDB(item)
                     }
+                }
+            }
 
-                    // Show tooltip for library screen.
-                    LaunchedEffect(key1 = true) {
-                        if (viewModel.shouldShowLibraryTooltip()) {
-                            val result = snackBarHostState.showSnackbar(
-                                message = context.getString(R.string.library_tooltip),
-                                actionLabel = context.getString(R.string.got_it),
-                                duration = SnackbarDuration.Indefinite
-                            )
+            // Show tooltip for library screen.
+            LaunchedEffect(key1 = true) {
+                if (viewModel.shouldShowLibraryTooltip()) {
+                    val result = snackBarHostState.showSnackbar(
+                        message = context.getString(R.string.library_tooltip),
+                        actionLabel = context.getString(R.string.got_it),
+                        duration = SnackbarDuration.Indefinite
+                    )
 
-                            when (result) {
-                                SnackbarResult.ActionPerformed -> {
-                                    viewModel.libraryTooltipDismissed()
-                                }
-
-                                SnackbarResult.Dismissed -> {}
-                            }
+                    when (result) {
+                        SnackbarResult.ActionPerformed -> {
+                            viewModel.libraryTooltipDismissed()
                         }
+
+                        SnackbarResult.Dismissed -> {}
                     }
                 }
             }
@@ -215,7 +251,7 @@ fun LibraryScreen(navController: NavController) {
 }
 
 @Composable
-fun LibraryLazyItem(
+private fun LibraryLazyItem(
     modifier: Modifier,
     item: LibraryItem,
     snackBarHostState: SnackbarHostState,
@@ -325,7 +361,7 @@ fun LibraryLazyItem(
 }
 
 @Composable
-fun LibraryCard(
+private fun LibraryCard(
     title: String,
     author: String,
     fileSize: String,
@@ -431,7 +467,7 @@ fun LibraryCard(
 }
 
 @Composable
-fun LibraryCardButton(
+private fun LibraryCardButton(
     text: String,
     icon: ImageVector,
     onClick: () -> Unit,
@@ -466,7 +502,7 @@ fun LibraryCardButton(
 }
 
 @Composable
-fun NoLibraryItemAnimation() {
+private fun NoLibraryItemAnimation() {
     Column(
         modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -498,6 +534,57 @@ fun NoLibraryItemAnimation() {
                 .padding(start = 12.dp, end = 12.dp)
         )
         Spacer(modifier = Modifier.weight(1.4f))
+    }
+}
+
+@Composable
+private fun ImportingEpubAnimation(importStatus: ImportStatus) {
+    Column(
+        modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val compositionResult: LottieCompositionResult? = when (importStatus) {
+            ImportStatus.IMPORTING -> rememberLottieComposition(
+                spec = LottieCompositionSpec.RawRes(R.raw.importing_epub_lottie)
+            )
+
+            ImportStatus.SUCCESS -> rememberLottieComposition(
+                spec = LottieCompositionSpec.RawRes(R.raw.import_epub_success_lottie)
+            )
+
+            ImportStatus.ERROR -> rememberLottieComposition(
+                spec = LottieCompositionSpec.RawRes(R.raw.import_epub_error_lottie)
+            )
+
+            ImportStatus.IDLE -> null
+        }
+
+        compositionResult?.let {
+            val progressAnimation by animateLottieCompositionAsState(
+                compositionResult.value,
+                isPlaying = true,
+                iterations = LottieConstants.IterateForever,
+                speed = 1f
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+            LottieAnimation(
+                composition = compositionResult.value,
+                progress = progressAnimation,
+                modifier = Modifier.size(300.dp),
+                enableMergePaths = true
+            )
+
+            Text(
+                text = stringResource(id = R.string.empty_library),
+                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 12.dp, end = 12.dp)
+            )
+            Spacer(modifier = Modifier.weight(1.4f))
+        }
     }
 }
 
