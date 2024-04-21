@@ -1,0 +1,3 @@
+- Now you can import external EPUB books in your library!
+- Bunch of fixes and improvements in epub parser to make it more stable and reliable.
+- Some minor UI improvements and bug fixes.
