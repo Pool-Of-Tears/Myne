@@ -34,13 +34,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModelProvider
 import com.starry.myne.R
+import com.starry.myne.helpers.toToast
 import com.starry.myne.ui.screens.reader.composables.ReaderContent
 import com.starry.myne.ui.screens.reader.composables.ReaderScreen
 import com.starry.myne.ui.screens.reader.composables.TransparentSystemBars
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.theme.MyneTheme
-import com.starry.myne.utils.toToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.FileInputStream

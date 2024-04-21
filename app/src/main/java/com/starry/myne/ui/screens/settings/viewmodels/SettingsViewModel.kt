@@ -22,7 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.starry.myne.utils.PreferenceUtil
+import com.starry.myne.helpers.PreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

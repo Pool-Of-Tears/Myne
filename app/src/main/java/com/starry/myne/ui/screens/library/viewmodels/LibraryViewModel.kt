@@ -26,8 +26,8 @@ import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.epub.EpubParser
-import com.starry.myne.utils.PreferenceUtil
-import com.starry.myne.utils.book.BookDownloader
+import com.starry.myne.helpers.PreferenceUtil
+import com.starry.myne.helpers.book.BookDownloader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

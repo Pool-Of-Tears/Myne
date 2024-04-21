@@ -34,8 +34,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.starry.myne.helpers.book.BookLanguage
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.utils.book.BookLanguage
 
 @Composable
 fun BookLanguageButton(language: BookLanguage, isSelected: Boolean, onClick: () -> Unit) {

@@ -21,16 +21,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.starry.myne.api.BookAPI
+import com.starry.myne.api.models.Book
+import com.starry.myne.api.models.BookSet
+import com.starry.myne.api.models.ExtraInfo
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
-import com.starry.myne.repo.BookRepository
-import com.starry.myne.repo.models.Book
-import com.starry.myne.repo.models.BookSet
-import com.starry.myne.repo.models.ExtraInfo
-import com.starry.myne.utils.Constants
-import com.starry.myne.utils.PreferenceUtil
-import com.starry.myne.utils.book.BookDownloader
-import com.starry.myne.utils.book.BookUtils
+import com.starry.myne.helpers.Constants
+import com.starry.myne.helpers.PreferenceUtil
+import com.starry.myne.helpers.book.BookDownloader
+import com.starry.myne.helpers.book.BookUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,7 +47,7 @@ data class BookDetailScreenState(
 
 @HiltViewModel
 class BookDetailViewModel @Inject constructor(
-    private val bookRepository: BookRepository,
+    private val bookAPI: BookAPI,
     val libraryDao: LibraryDao,
     val bookDownloader: BookDownloader,
     private val preferenceUtil: PreferenceUtil
@@ -61,8 +61,8 @@ class BookDetailViewModel @Inject constructor(
     fun getBookDetails(bookId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val bookSet = bookRepository.getBookById(bookId).getOrNull()!!
-                val extraInfo = bookRepository.getExtraInfo(bookSet.books.first().title)
+                val bookSet = bookAPI.getBookById(bookId).getOrNull()!!
+                val extraInfo = bookAPI.getExtraInfo(bookSet.books.first().title)
                 // This function is called again when user clicks on retry
                 // button. So, we need to reset the state to default values
                 state = BookDetailScreenState()

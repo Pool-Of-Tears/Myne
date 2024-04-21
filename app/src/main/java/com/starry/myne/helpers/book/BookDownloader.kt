@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.starry.myne.utils.book
+package com.starry.myne.helpers.book
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
@@ -22,7 +22,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.util.Log
-import com.starry.myne.repo.models.Book
+import com.starry.myne.api.models.Book
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

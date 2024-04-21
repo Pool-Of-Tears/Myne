@@ -79,12 +79,12 @@ import androidx.navigation.compose.rememberNavController
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
+import com.starry.myne.helpers.getActivity
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.utils.getActivity
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

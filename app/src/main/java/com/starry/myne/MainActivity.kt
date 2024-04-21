@@ -27,10 +27,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
+import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.ui.screens.main.MainScreen
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.theme.MyneTheme
-import com.starry.myne.utils.NetworkObserver
 import dagger.hilt.android.AndroidEntryPoint
 
 

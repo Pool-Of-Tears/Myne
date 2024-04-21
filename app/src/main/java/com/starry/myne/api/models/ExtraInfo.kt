@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package com.starry.myne.repo.models
-
+package com.starry.myne.api.models
 
 import androidx.annotation.Keep
-import com.google.gson.annotations.SerializedName
 
+/** Extra info from google books API */
 @Keep
-data class Translator(
-    @SerializedName("name")
-    val name: String = "N/A",
-    @SerializedName("birth_year")
-    val birthYear: Int,
-    @SerializedName("death_year")
-    val deathYear: Int
+data class ExtraInfo(
+    val coverImage: String = "",
+    val pageCount: Int = 0,
+    val description: String = ""
 )

@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package com.starry.myne.repo
+package com.starry.myne.api
 
 import android.content.Context
 import com.google.gson.Gson
 import com.starry.myne.BuildConfig
-import com.starry.myne.repo.models.BookSet
-import com.starry.myne.repo.models.ExtraInfo
-import com.starry.myne.utils.book.BookLanguage
+import com.starry.myne.api.models.BookSet
+import com.starry.myne.api.models.ExtraInfo
+import com.starry.myne.helpers.book.BookLanguage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Cache
-import okhttp3.CacheControl
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -42,30 +40,17 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class CacheInterceptor : Interceptor {
 
-    companion object {
-        const val CACHE_SIZE = 32L * 1024L * 1024L // 32 MiB
-        private const val CACHE_MAX_AGE = 10 // 10 days
-    }
-
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val response: Response = chain.proceed(chain.request())
-        val cacheControl = CacheControl.Builder()
-            .maxAge(CACHE_MAX_AGE, TimeUnit.DAYS)
-            .build()
-        return response.newBuilder()
-            .header("Cache-Control", cacheControl.toString())
-            .build()
-    }
-}
-
-class BookRepository(context: Context) {
+/**
+ * This class is responsible for handling all the API requests related to books.
+ * It uses OkHttp for making network requests and Gson for parsing JSON responses.
+ * @param context The context of the application.
+ */
+class BookAPI(context: Context) {
 
     private val baseApiUrl = "https://myne.pooloftears.xyz/books"
     private val googleBooksUrl = "https://www.googleapis.com/books/v1/volumes"
 
-    @Suppress("USELESS_ELVIS")
     private val googleApiKey =
         BuildConfig.GOOGLE_API_KEY ?: "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE" // Backup API key
 
@@ -77,9 +62,15 @@ class BookRepository(context: Context) {
         .addNetworkInterceptor(CacheInterceptor())
         .build()
 
-    private val gsonClient = Gson()
+    private val gsonClient = Gson() // Gson client for parsing JSON responses.
 
 
+    /**
+     * This function fetches all the books from the API.
+     * @param page The page number of the books to fetch.
+     * @param bookLanguage The language of the books to fetch.
+     * @return A Result object containing the BookSet if the request was successful, or an exception if it failed.
+     */
     suspend fun getAllBooks(
         page: Long,
         bookLanguage: BookLanguage = BookLanguage.AllBooks
@@ -92,6 +83,11 @@ class BookRepository(context: Context) {
         return makeApiRequest(request)
     }
 
+    /**
+     * This function searches for books based on the query provided.
+     * @param query The query to search for.
+     * @return A Result object containing the BookSet if the request was successful, or an exception if it failed.
+     */
     suspend fun searchBooks(query: String): Result<BookSet> {
         val encodedString = withContext(Dispatchers.IO) {
             URLEncoder.encode(query, "UTF-8")
@@ -100,11 +96,23 @@ class BookRepository(context: Context) {
         return makeApiRequest(request)
     }
 
+    /**
+     * This function fetches a book by its ID.
+     * @param bookId The ID of the book to fetch.
+     * @return A Result object containing the BookSet if the request was successful, or an exception if it failed.
+     */
     suspend fun getBookById(bookId: String): Result<BookSet> {
         val request = Request.Builder().get().url("${baseApiUrl}?ids=$bookId").build()
         return makeApiRequest(request)
     }
 
+    /**
+     * This function fetches books by category.
+     * @param category The category of the books to fetch.
+     * @param page The page number of the books to fetch.
+     * @param bookLanguage The language of the books to fetch.
+     * @return A Result object containing the BookSet if the request was successful, or an exception if it failed.
+     */
     suspend fun getBooksByCategory(
         category: String,
         page: Long,
@@ -118,6 +126,7 @@ class BookRepository(context: Context) {
         return makeApiRequest(request)
     }
 
+    // Helper function to make API requests.
     private suspend fun makeApiRequest(request: Request): Result<BookSet> =
         suspendCoroutine { continuation ->
             okHttpClient.newCall(request).enqueue(object : Callback {
@@ -137,6 +146,8 @@ class BookRepository(context: Context) {
             })
         }
 
+    // Function to fetch extra info such as cover image, page count, and description of a book.
+    // From Google Books API.
     suspend fun getExtraInfo(bookName: String): ExtraInfo? = suspendCoroutine { continuation ->
         val encodedName = URLEncoder.encode(bookName, "UTF-8")
         val url = "${googleBooksUrl}?q=$encodedName&startIndex=0&maxResults=1&key=$googleApiKey"
@@ -155,7 +166,8 @@ class BookRepository(context: Context) {
         })
     }
 
-    fun parseExtraInfoJson(jsonString: String): ExtraInfo? {
+    // Helper function to parse extra info JSON.
+    private fun parseExtraInfoJson(jsonString: String): ExtraInfo? {
         return try {
             val jsonObj = JSONObject(jsonString)
             val totalItems = jsonObj.getInt("totalItems")

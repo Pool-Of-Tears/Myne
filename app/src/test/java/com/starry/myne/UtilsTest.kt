@@ -1,6 +1,6 @@
 package com.starry.myne
 
-import com.starry.myne.utils.Utils.prettyCount
+import com.starry.myne.helpers.Utils.prettyCount
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest

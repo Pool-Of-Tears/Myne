@@ -50,12 +50,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.navigation.NavGraph
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.utils.NetworkObserver
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

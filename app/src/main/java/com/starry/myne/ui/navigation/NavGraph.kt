@@ -31,6 +31,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.ui.screens.categories.composables.CategoriesScreen
 import com.starry.myne.ui.screens.categories.composables.CategoryDetailScreen
 import com.starry.myne.ui.screens.detail.composables.BookDetailScreen
@@ -41,7 +42,6 @@ import com.starry.myne.ui.screens.settings.composables.AboutScreen
 import com.starry.myne.ui.screens.settings.composables.OSLScreen
 import com.starry.myne.ui.screens.settings.composables.SettingsScreen
 import com.starry.myne.ui.screens.welcome.composables.WelcomeScreen
-import com.starry.myne.utils.NetworkObserver
 
 
 private const val NAVIGATION_ANIM_DURATION = 300

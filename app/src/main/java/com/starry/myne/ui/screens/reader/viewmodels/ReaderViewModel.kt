@@ -34,8 +34,8 @@ import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderData
 import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubBook
+import com.starry.myne.helpers.PreferenceUtil
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.utils.PreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

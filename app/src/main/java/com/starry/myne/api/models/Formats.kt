@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.starry.myne.repo.models
+package com.starry.myne.api.models
 
 
 import androidx.annotation.Keep

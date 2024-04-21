@@ -23,14 +23,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.starry.myne.repo.BookRepository
-import com.starry.myne.repo.models.Book
-import com.starry.myne.repo.models.BookSet
-import com.starry.myne.utils.Constants
-import com.starry.myne.utils.NetworkObserver
-import com.starry.myne.utils.Paginator
-import com.starry.myne.utils.PreferenceUtil
-import com.starry.myne.utils.book.BookLanguage
+import com.starry.myne.api.BookAPI
+import com.starry.myne.api.models.Book
+import com.starry.myne.api.models.BookSet
+import com.starry.myne.helpers.Constants
+import com.starry.myne.helpers.NetworkObserver
+import com.starry.myne.helpers.Paginator
+import com.starry.myne.helpers.PreferenceUtil
+import com.starry.myne.helpers.book.BookLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -66,7 +66,7 @@ sealed class UserAction {
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val bookRepository: BookRepository,
+    private val bookAPI: BookAPI,
     private val preferenceUtil: PreferenceUtil
 ) : ViewModel() {
     var allBooksState by mutableStateOf(AllBooksState())
@@ -81,7 +81,7 @@ class HomeViewModel @Inject constructor(
         allBooksState = allBooksState.copy(isLoading = it)
     }, onRequest = { nextPage ->
         try {
-            bookRepository.getAllBooks(nextPage, language.value)
+            bookAPI.getAllBooks(nextPage, language.value)
         } catch (exc: Exception) {
             Result.failure(exc)
         }
@@ -157,7 +157,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private suspend fun searchBooks(query: String) {
-        val bookSet = bookRepository.searchBooks(query)
+        val bookSet = bookAPI.searchBooks(query)
         val books = bookSet.getOrNull()!!.books.filter { it.formats.applicationepubzip != null }
         topBarState = topBarState.copy(searchResults = books, isSearching = false)
     }

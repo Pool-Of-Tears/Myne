@@ -23,13 +23,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.starry.myne.api.BookAPI
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderData
 import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubBook
-import com.starry.myne.repo.BookRepository
-import com.starry.myne.utils.NetworkObserver
+import com.starry.myne.helpers.NetworkObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -53,7 +53,7 @@ data class ReaderDetailScreenState(
 
 @HiltViewModel
 class ReaderDetailViewModel @Inject constructor(
-    private val bookRepository: BookRepository,
+    private val bookAPI: BookAPI,
     private val libraryDao: LibraryDao,
     private val readerDao: ReaderDao,
     private val epubParser: EpubParser
@@ -74,7 +74,7 @@ class ReaderDetailViewModel @Inject constructor(
             val coverImage: String? = try {
                 if (!libraryItem.isExternalBook
                     && networkStatus == NetworkObserver.Status.Available
-                ) bookRepository.getExtraInfo(libraryItem.title)?.coverImage else null
+                ) bookAPI.getExtraInfo(libraryItem.title)?.coverImage else null
             } catch (exc: Exception) {
                 null
             }

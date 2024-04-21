@@ -18,12 +18,12 @@
 package com.starry.myne.di
 
 import android.content.Context
+import com.starry.myne.api.BookAPI
 import com.starry.myne.database.MyneDatabase
 import com.starry.myne.epub.EpubParser
-import com.starry.myne.repo.BookRepository
+import com.starry.myne.helpers.PreferenceUtil
+import com.starry.myne.helpers.book.BookDownloader
 import com.starry.myne.ui.screens.welcome.viewmodels.WelcomeDataStore
-import com.starry.myne.utils.PreferenceUtil
-import com.starry.myne.utils.book.BookDownloader
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -52,7 +52,7 @@ class MainModule {
 
     @Singleton
     @Provides
-    fun provideBooksApi(@ApplicationContext context: Context) = BookRepository(context)
+    fun provideBooksApi(@ApplicationContext context: Context) = BookAPI(context)
 
     @Singleton
     @Provides
