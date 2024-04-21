@@ -27,6 +27,7 @@ import androidx.lifecycle.viewModelScope
 import com.starry.myne.repo.BookRepository
 import com.starry.myne.repo.models.Book
 import com.starry.myne.repo.models.BookSet
+import com.starry.myne.utils.Constants
 import com.starry.myne.utils.Paginator
 import com.starry.myne.utils.PreferenceUtil
 import com.starry.myne.utils.book.BookLanguage
@@ -97,7 +98,7 @@ class CategoryViewModel @Inject constructor(
                     state.page + 1L
                 },
                 onError = {
-                    state = state.copy(error = it?.localizedMessage ?: "unknown-error")
+                    state = state.copy(error = it?.localizedMessage ?: Constants.UNKNOWN_ERR)
                 },
                 onSuccess = { bookSet, newPage ->
 

@@ -26,6 +26,7 @@ import androidx.lifecycle.viewModelScope
 import com.starry.myne.repo.BookRepository
 import com.starry.myne.repo.models.Book
 import com.starry.myne.repo.models.BookSet
+import com.starry.myne.utils.Constants
 import com.starry.myne.utils.NetworkObserver
 import com.starry.myne.utils.Paginator
 import com.starry.myne.utils.PreferenceUtil
@@ -87,7 +88,7 @@ class HomeViewModel @Inject constructor(
     }, getNextPage = {
         allBooksState.page + 1L
     }, onError = {
-        allBooksState = allBooksState.copy(error = it?.localizedMessage ?: "unknown-error")
+        allBooksState = allBooksState.copy(error = it?.localizedMessage ?: Constants.UNKNOWN_ERR)
     }, onSuccess = { bookSet, newPage ->
         /**
          * usually bookSet.books is not nullable and API simply returns empty list

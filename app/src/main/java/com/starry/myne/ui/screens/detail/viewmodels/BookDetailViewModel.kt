@@ -16,15 +16,11 @@
 
 package com.starry.myne.ui.screens.detail.viewmodels
 
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.repo.BookRepository
@@ -48,10 +44,7 @@ data class BookDetailScreenState(
     val error: String? = null
 )
 
-@ExperimentalMaterialApi
-@ExperimentalCoilApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterial3Api
+
 @HiltViewModel
 class BookDetailViewModel @Inject constructor(
     private val bookRepository: BookRepository,
@@ -67,11 +60,12 @@ class BookDetailViewModel @Inject constructor(
 
     fun getBookDetails(bookId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            // Reset Screen state.
-            state = BookDetailScreenState()
             try {
                 val bookSet = bookRepository.getBookById(bookId).getOrNull()!!
                 val extraInfo = bookRepository.getExtraInfo(bookSet.books.first().title)
+                // This function is called again when user clicks on retry
+                // button. So, we need to reset the state to default values
+                state = BookDetailScreenState()
                 state = if (extraInfo != null) {
                     state.copy(bookSet = bookSet, extraInfo = extraInfo)
                 } else {
@@ -81,11 +75,10 @@ class BookDetailViewModel @Inject constructor(
                     bookLibraryItem = libraryDao.getItemByBookId(bookId.toInt()), isLoading = false
                 )
             } catch (exc: Exception) {
-                state =
-                    state.copy(
-                        error = exc.localizedMessage ?: Constants.UNKNOWN_ERR,
-                        isLoading = false
-                    )
+                state = state.copy(
+                    error = exc.localizedMessage ?: Constants.UNKNOWN_ERR,
+                    isLoading = false
+                )
             }
         }
     }

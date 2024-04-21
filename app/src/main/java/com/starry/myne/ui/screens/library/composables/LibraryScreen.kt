@@ -123,6 +123,7 @@ import java.io.FileInputStream
 @Composable
 fun LibraryScreen(navController: NavController) {
     val viewModel: LibraryViewModel = hiltViewModel()
+    val state = viewModel.state
 
     val context = LocalContext.current
     val snackBarHostState = remember { SnackbarHostState() }
@@ -136,11 +137,6 @@ fun LibraryScreen(navController: NavController) {
                 }
             }
         }
-
-    val shouldShowImporting = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = viewModel.importStatus.value) {
-        shouldShowImporting.value = viewModel.importStatus.value != ImportStatus.IDLE
-    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
@@ -157,7 +153,7 @@ fun LibraryScreen(navController: NavController) {
         floatingActionButton = {
             val density = LocalDensity.current
             AnimatedVisibility(
-                visible = !shouldShowImporting.value && lazyListState.isScrollingUp(),
+                visible = !state.showImportUI && lazyListState.isScrollingUp(),
                 enter = slideInVertically {
                     with(density) { 40.dp.roundToPx() }
                 } + fadeIn(),
@@ -187,13 +183,12 @@ fun LibraryScreen(navController: NavController) {
             }
         }
     ) { paddingValues ->
-
         Crossfade(
-            targetState = shouldShowImporting.value,
+            targetState = state.showImportUI,
             label = "ImportCrossFade"
         ) { isImporting ->
             if (isImporting) {
-                ImportingEpubAnimation(viewModel.importStatus.value)
+                ImportingEpubAnimation(state.importStatus)
             } else {
                 LibraryContents(
                     viewModel = viewModel,
@@ -204,7 +199,6 @@ fun LibraryScreen(navController: NavController) {
                 )
             }
         }
-
 
     }
 }
@@ -220,6 +214,25 @@ private fun LibraryContents(
 ) {
     val context = LocalContext.current
     val libraryItems = viewModel.allItems.observeAsState(listOf()).value
+
+    // Show tooltip for library screen.
+    LaunchedEffect(key1 = true) {
+        if (viewModel.shouldShowLibraryTooltip()) {
+            val result = snackBarHostState.showSnackbar(
+                message = context.getString(R.string.library_tooltip),
+                actionLabel = context.getString(R.string.got_it),
+                duration = SnackbarDuration.Indefinite
+            )
+
+            when (result) {
+                SnackbarResult.ActionPerformed -> {
+                    viewModel.libraryTooltipDismissed()
+                }
+
+                SnackbarResult.Dismissed -> {}
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -255,24 +268,6 @@ private fun LibraryContents(
                 }
             }
 
-            // Show tooltip for library screen.
-            LaunchedEffect(key1 = true) {
-                if (viewModel.shouldShowLibraryTooltip()) {
-                    val result = snackBarHostState.showSnackbar(
-                        message = context.getString(R.string.library_tooltip),
-                        actionLabel = context.getString(R.string.got_it),
-                        duration = SnackbarDuration.Indefinite
-                    )
-
-                    when (result) {
-                        SnackbarResult.ActionPerformed -> {
-                            viewModel.libraryTooltipDismissed()
-                        }
-
-                        SnackbarResult.Dismissed -> {}
-                    }
-                }
-            }
         }
     }
 }
@@ -581,62 +576,49 @@ private fun NoLibraryItemAnimation() {
 
 @Composable
 private fun ImportingEpubAnimation(importStatus: ImportStatus) {
+    val composition = rememberLottieComposition(
+        spec = when (importStatus) {
+            ImportStatus.IMPORTING -> LottieCompositionSpec.RawRes(R.raw.epub_importing_lottie)
+            ImportStatus.SUCCESS -> LottieCompositionSpec.RawRes(R.raw.epub_import_success_lottie)
+            ImportStatus.ERROR -> LottieCompositionSpec.RawRes(R.raw.epub_import_error_lottie)
+            ImportStatus.IDLE -> LottieCompositionSpec.RawRes(R.raw.epub_importing_lottie)
+        }
+    )
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val (spec, text) = when (importStatus) {
-            ImportStatus.IMPORTING -> {
-                (LottieCompositionSpec.RawRes(R.raw.epub_importing_lottie)
-                        to stringResource(id = R.string.epub_importing))
-            }
+        Spacer(modifier = Modifier.weight(1f))
+        LottieAnimation(
+            composition = composition.value,
+            modifier = Modifier.size(280.dp),
+            enableMergePaths = true,
+            isPlaying = true,
+            iterations = if (importStatus == ImportStatus.IMPORTING)
+                LottieConstants.IterateForever else 1,
+        )
 
-            ImportStatus.SUCCESS -> {
-                (LottieCompositionSpec.RawRes(R.raw.epub_import_success_lottie)
-                        to stringResource(id = R.string.epub_imported))
-            }
-
-            ImportStatus.ERROR -> {
-                (LottieCompositionSpec.RawRes(R.raw.epub_import_error_lottie)
-                        to stringResource(id = R.string.epub_import_error))
-
-            }
-
-            ImportStatus.IDLE -> null to ""
+        val text = when (importStatus) {
+            ImportStatus.IMPORTING -> stringResource(id = R.string.epub_importing)
+            ImportStatus.SUCCESS -> stringResource(id = R.string.epub_imported)
+            ImportStatus.ERROR -> stringResource(id = R.string.epub_import_error)
+            ImportStatus.IDLE -> ""
         }
 
-        spec?.let { result ->
-            val compositionSpec = rememberLottieComposition(spec = result)
-            val progressAnimation by animateLottieCompositionAsState(
-                compositionSpec.value,
-                isPlaying = true,
-                iterations = LottieConstants.IterateForever,
-                speed = 1f,
-                restartOnPlay = true
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            LottieAnimation(
-                composition = compositionSpec.value,
-                progress = { progressAnimation },
-                modifier = Modifier.size(280.dp),
-                enableMergePaths = true
-            )
-
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp)
-                    .offset(y = (-34).dp),
-                fontFamily = figeronaFont
-            )
-            Spacer(modifier = Modifier.weight(1f))
-        }
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+                .offset(y = (-34).dp),
+            fontFamily = figeronaFont
+        )
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
-
 
 @ExperimentalMaterial3Api
 @Composable
