@@ -38,6 +38,12 @@
     <!-- Library screen. -->
     <string name="library_header">Knihovna</string>
     <string name="empty_library">Nic tu není!</string>
+    <string name="import_button_text">Importovat</string>
+    <string name="import_button_desc">Importovat knihu EPUB</string>
+    <string name="external_book_info_unavailable">Dostupné pouze pro interní knihy.</string>
+    <string name="epub_importing">Probíhá importování… Prosím čekejte.</string>
+    <string name="epub_imported">Úspěšně importováno!</string>
+    <string name="epub_import_error">Selhalo importování!</string>
     <string name="open_app_chooser">Otevřít pomocí…</string>
     <string name="share_app_chooser">Sdílet s…</string>
     <string name="library_read_button">Číst</string>
@@ -53,7 +59,7 @@
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Je nám líto, ale výš už to nejde!</string>
     <string name="reader_min_font_size_reached">Je nám líto, ale níž už to nejde!</string>
-    <string name="reader_font_style_chooer">Change FontStyle</string>
+    <string name="reader_font_style_chooser">Change FontStyle</string>
     <string name="reader_chapter_list_title">Kapitoly</string>
 
     <!-- Settings screen. -->

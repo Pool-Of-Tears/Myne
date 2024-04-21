@@ -180,7 +180,7 @@ fun NavGraph(
         composable(
             route = Screens.ReaderDetailScreen.route,
             arguments = listOf(navArgument(
-                BOOK_ID_ARG_KEY
+                LIBRARY_ITEM_ID_ARG_KEY
             ) {
                 type = NavType.StringType
             }),
@@ -189,9 +189,9 @@ fun NavGraph(
             popEnterTransition = { popEnterTransition() },
             popExitTransition = { popExitTransition() },
         ) { backStackEntry ->
-            val bookId = backStackEntry.arguments!!.getString(BOOK_ID_ARG_KEY)!!
+            val bookId = backStackEntry.arguments!!.getString(LIBRARY_ITEM_ID_ARG_KEY)!!
             ReaderDetailScreen(
-                bookId = bookId, navController = navController, networkStatus = networkStatus
+                libraryItemId = bookId, navController = navController, networkStatus = networkStatus
             )
         }
 

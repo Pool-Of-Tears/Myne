@@ -109,7 +109,7 @@ fun WelcomeScreen(navController: NavController) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             LottieAnimation(
                 composition = compositionResult.value,
-                progress = progressAnimation,
+                progress = { progressAnimation },
                 modifier = Modifier.size(300.dp),
                 enableMergePaths = true
             )

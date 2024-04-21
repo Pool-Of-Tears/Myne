@@ -51,7 +51,7 @@ import com.starry.myne.ui.theme.figeronaFont
 
 
 @Composable
-fun NetworkError(onRetryClicked: () -> Unit) {
+fun NetworkError(errorMessage: String? = null, onRetryClicked: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -75,7 +75,7 @@ fun NetworkError(onRetryClicked: () -> Unit) {
 
         LottieAnimation(
             composition = compositionResult.value,
-            progress = progressAnimation,
+            progress = { progressAnimation },
             modifier = Modifier.size(280.dp),
             enableMergePaths = true
         )
@@ -83,7 +83,7 @@ fun NetworkError(onRetryClicked: () -> Unit) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = stringResource(id = R.string.network_error),
+            text = errorMessage ?: stringResource(id = R.string.network_error),
             modifier = Modifier
                 .padding(top = 10.dp, bottom = 18.dp)
                 .fillMaxWidth(),

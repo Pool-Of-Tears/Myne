@@ -18,6 +18,7 @@
 package com.starry.myne.ui.screens.reader.composables
 
 import android.content.Intent
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -60,12 +61,14 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.MainActivity
 import com.starry.myne.R
+import com.starry.myne.database.reader.ReaderData
 import com.starry.myne.ui.common.BookDetailTopUI
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.common.simpleVerticalScrollbar
 import com.starry.myne.ui.screens.reader.activities.ReaderActivity
 import com.starry.myne.ui.screens.reader.activities.ReaderConstants
+import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailScreenState
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailViewModel
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.NetworkObserver
@@ -73,109 +76,128 @@ import com.starry.myne.utils.getActivity
 import com.starry.myne.utils.toToast
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ReaderDetailScreen(
-    bookId: String,
-    navController: NavController,
-    networkStatus: NetworkObserver.Status
+    libraryItemId: String, navController: NavController, networkStatus: NetworkObserver.Status
 ) {
+    val context = LocalContext.current
     val viewModel: ReaderDetailViewModel = hiltViewModel()
     val state = viewModel.state
 
-    LaunchedEffect(key1 = true) { viewModel.loadEbookData(bookId, networkStatus) }
+    LaunchedEffect(key1 = true) { viewModel.loadEbookData(libraryItemId, networkStatus) }
 
+    Crossfade(targetState = state.isLoading, label = "ReaderDetailLoadingCrossFade") { isLoading ->
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 65.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                ProgressDots()
+            }
+        } else {
+            if (state.error != null) {
+                stringResource(id = R.string.error).toToast(context)
+                navController.navigateUp()
+            } else {
+                // Collect saved reader progress for the current book.
+                val readerData = viewModel.readerData?.collectAsState(initial = null)?.value
+                ReaderDetailScaffold(
+                    libraryItemId = libraryItemId,
+                    readerData = readerData,
+                    state = state,
+                    navController = navController
+                )
+            }
+
+        }
+    }
+}
+
+@Composable
+private fun ReaderDetailScaffold(
+    libraryItemId: String,
+    readerData: ReaderData?,
+    state: ReaderDetailScreenState,
+    navController: NavController
+) {
     val context = LocalContext.current
     val settingsVM = (context.getActivity() as MainActivity).settingsViewModel
 
-    if (state.isLoading) {
-        Box(
+    Scaffold(topBar = {
+        CustomTopAppBar(headerText = stringResource(id = R.string.reader_detail_header)) {
+            navController.navigateUp()
+        }
+    }, floatingActionButton = {
+        ExtendedFloatingActionButton(
+            text = { Text(text = stringResource(id = if (readerData != null) R.string.continue_reading_button else R.string.start_reading_button)) },
+            onClick = {
+                val intent = Intent(context, ReaderActivity::class.java)
+                intent.putExtra(
+                    ReaderConstants.EXTRA_LIBRARY_ITEM_ID, libraryItemId.toInt()
+                )
+                context.startActivity(intent)
+            },
+            icon = {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_fab_button),
+                    contentDescription = null
+                )
+            },
+            modifier = Modifier.padding(end = 10.dp, bottom = 8.dp),
+        )
+    }) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 65.dp),
-            contentAlignment = Alignment.Center
+                .background(MaterialTheme.colorScheme.background)
+                .padding(it)
         ) {
-            ProgressDots()
-        }
-    } else if (state.error != null) {
-        stringResource(id = R.string.error).toToast(context)
-    } else {
-        // Collect saved reader progress for the current book.
-        val readerItem = viewModel.readerData?.collectAsState(initial = null)?.value
+            // Get the cover image data.
+            val imageData =
+                state.ebookData!!.coverImage ?: state.ebookData.epubBook.coverImage
 
-        Scaffold(
-            topBar = {
-                CustomTopAppBar(headerText = stringResource(id = R.string.reader_detail_header)) {
-                    navController.navigateUp()
-                }
-            },
-            floatingActionButton = {
-                ExtendedFloatingActionButton(
-                    text = { Text(text = stringResource(id = if (readerItem != null) R.string.continue_reading_button else R.string.start_reading_button)) },
-                    onClick = {
-                        val intent = Intent(context, ReaderActivity::class.java)
-                        intent.putExtra(ReaderConstants.EXTRA_BOOK_ID, bookId.toInt())
-                        context.startActivity(intent)
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_fab_button),
-                            contentDescription = null
-                        )
-                    },
-                    modifier = Modifier.padding(end = 10.dp, bottom = 8.dp),
+            BookDetailTopUI(
+                title = state.ebookData.title,
+                authors = state.ebookData.authors,
+                imageData = imageData,
+                currentThemeMode = settingsVM.getCurrentTheme(),
+                progressPercent = readerData?.getProgressPercent(state.ebookData.epubBook.chapters.size),
+            )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(
+                    start = 20.dp, end = 20.dp, top = 2.dp, bottom = 2.dp
+                ),
+                thickness = 2.dp,
+                color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
+            )
+
+            val lazyListState = rememberLazyListState()
+            LazyColumn(
+                state = lazyListState, modifier = Modifier.simpleVerticalScrollbar(
+                    lazyListState, color = MaterialTheme.colorScheme.primary
                 )
-            }
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(it)
             ) {
-                // Get the cover image data.
-                val imageData = state.ebookData!!.coverImage ?: state.ebookData.epubBook.coverImage
-
-                BookDetailTopUI(
-                    title = state.ebookData.title,
-                    authors = state.ebookData.authors,
-                    imageData = imageData,
-                    currentThemeMode = settingsVM.getCurrentTheme(),
-                    progressPercent = readerItem?.getProgressPercent(state.ebookData.epubBook.chapters.size),
-                )
-
-                HorizontalDivider(
-                    modifier = Modifier.padding(
-                        start = 20.dp, end = 20.dp, top = 2.dp, bottom = 2.dp
-                    ),
-                    thickness = 2.dp,
-                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
-                )
-
-                val lazyListState = rememberLazyListState()
-                LazyColumn(
-                    state = lazyListState, modifier = Modifier.simpleVerticalScrollbar(
-                        lazyListState, color = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    items(state.ebookData.epubBook.chapters.size) { idx ->
-                        val chapter = state.ebookData.epubBook.chapters[idx]
-                        ChapterItem(chapterTitle = chapter.title, onClick = {
-                            val intent = Intent(context, ReaderActivity::class.java)
-                            intent.putExtra(ReaderConstants.EXTRA_BOOK_ID, bookId.toInt())
-                            intent.putExtra(ReaderConstants.EXTRA_CHAPTER_IDX, idx)
-                            context.startActivity(intent)
-                        })
-                    }
+                items(state.ebookData.epubBook.chapters.size) { idx ->
+                    val chapter = state.ebookData.epubBook.chapters[idx]
+                    ChapterItem(chapterTitle = chapter.title, onClick = {
+                        val intent = Intent(context, ReaderActivity::class.java)
+                        intent.putExtra(
+                            ReaderConstants.EXTRA_LIBRARY_ITEM_ID, libraryItemId.toInt()
+                        )
+                        intent.putExtra(ReaderConstants.EXTRA_CHAPTER_IDX, idx)
+                        context.startActivity(intent)
+                    })
                 }
             }
         }
     }
 }
 
-@ExperimentalMaterial3Api
 @Composable
-fun ChapterItem(chapterTitle: String, onClick: () -> Unit) {
+private fun ChapterItem(chapterTitle: String, onClick: () -> Unit) {
     Card(
         onClick = { onClick() },
         colors = CardDefaults.cardColors(

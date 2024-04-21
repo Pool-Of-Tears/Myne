@@ -20,9 +20,9 @@ package com.starry.myne.epub
 import android.graphics.BitmapFactory
 import android.util.Log
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
 import java.io.File
-import org.jsoup.nodes.Node
 import kotlin.io.path.invariantSeparatorsPathString
 
 /**

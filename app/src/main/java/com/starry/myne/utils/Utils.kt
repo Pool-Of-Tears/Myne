@@ -55,7 +55,7 @@ object Utils {
     ) {
 
         if (internalReader) {
-            navController.navigate(Screens.ReaderDetailScreen.withBookId(libraryItem.bookId.toString()))
+            navController.navigate(Screens.ReaderDetailScreen.withLibraryItemId(libraryItem.id.toString()))
         } else {
             val uri = FileProvider.getUriForFile(
                 context, BuildConfig.APPLICATION_ID + ".provider", File(libraryItem.filePath)

@@ -38,7 +38,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -62,7 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.starry.myne.ui.theme.figeronaFont
 
-@ExperimentalMaterial3Api
+
 @Composable
 fun SettingItem(icon: ImageVector, mainText: String, subText: String, onClick: () -> Unit) {
     Card(
@@ -134,7 +133,6 @@ fun SettingItem(icon: ImageVector, mainText: String, subText: String, onClick: (
     }
 }
 
-@ExperimentalMaterial3Api
 @Composable
 fun SettingItemWIthSwitch(
     icon: ImageVector,
@@ -223,7 +221,7 @@ fun SettingItemWIthSwitch(
     }
 }
 
-@ExperimentalMaterial3Api
+
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {

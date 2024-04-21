@@ -39,6 +39,12 @@
     <!-- Library screen. -->
     <string name="library_header">المكتبة</string>
     <string name="empty_library">لا يوجد شئ هنا</string>
+    <string name="import_button_text">استيراد</string>
+    <string name="import_button_desc">استيراد كتاب EPUB</string>
+    <string name="external_book_info_unavailable">متاح فقط للكتب الداخلية.</string>
+    <string name="epub_importing">جاري الاستيراد… يرجى الانتظار.</string>
+    <string name="epub_imported">تم الاستيراد بنجاح!</string>
+    <string name="epub_import_error">فشل الاستيراد!</string>
     <string name="open_app_chooser">افتح بواسطة</string>
     <string name="share_app_chooser">مشاركة من خلال</string>
     <string name="library_read_button">اقرأ</string>
@@ -54,7 +60,7 @@
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">آسف، لا يمكن أن تذهب إلى أعلى من ذلك!</string>
     <string name="reader_min_font_size_reached">آسف، لا يمكن أن تذهب إلى أقل من ذلك!</string>
-    <string name="reader_font_style_chooer">تغيير نمط الخط</string>
+    <string name="reader_font_style_chooser">تغيير نمط الخط</string>
     <string name="reader_chapter_list_title">الفصول</string>
 
     <!-- Settings screen. -->

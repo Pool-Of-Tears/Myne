@@ -45,7 +45,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
@@ -105,8 +104,7 @@ import kotlinx.coroutines.launch
 
 enum class TextScaleButtonType { INCREASE, DECREASE }
 
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReaderScreen(
     viewModel: ReaderViewModel,
@@ -307,7 +305,7 @@ private fun FontChooserDialog(
             showFontDialog.value = false
         }, title = {
             Text(
-                text = stringResource(id = R.string.reader_font_style_chooer),
+                text = stringResource(id = R.string.reader_font_style_chooser),
                 color = MaterialTheme.colorScheme.onSurface,
             )
         }, text = {
@@ -364,8 +362,6 @@ private fun FontChooserDialog(
 }
 
 
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
 @Composable
 private fun BottomSheetContents(
     viewModel: ReaderViewModel,
@@ -393,8 +389,7 @@ private fun BottomSheetContents(
     }
 }
 
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
+
 @Composable
 private fun TextScaleControls(
     viewModel: ReaderViewModel,
@@ -467,8 +462,7 @@ private fun FontSelectionButton(
     }
 }
 
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
+
 @Composable
 private fun ReaderTextScaleButton(
     buttonType: TextScaleButtonType,

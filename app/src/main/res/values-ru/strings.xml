@@ -39,6 +39,12 @@
     <!-- Library screen. -->
     <string name="library_header">Библиотека</string>
     <string name="empty_library">Здесь пусто!</string>
+    <string name="import_button_text">Импорт</string>
+    <string name="import_button_desc">Импорт книги EPUB</string>
+    <string name="external_book_info_unavailable">Доступно только для внутренних книг.</string>
+    <string name="epub_importing">Импорт… Пожалуйста, подождите.</string>
+    <string name="epub_imported">Успешно импортировано!</string>
+    <string name="epub_import_error">Ошибка импорта!</string>
     <string name="open_app_chooser">Читать в…</string>
     <string name="share_app_chooser">Поделиться через…</string>
     <string name="library_read_button">Читать</string>
@@ -54,7 +60,7 @@
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Извините, достигнут максимальный размер шрифта!</string>
     <string name="reader_min_font_size_reached">Извините, достигнут минимальный размер шрифта!</string>
-    <string name="reader_font_style_chooer">Стиль шрифта</string>
+    <string name="reader_font_style_chooser">Стиль шрифта</string>
     <string name="reader_chapter_list_title">Главы</string>
 
     <!-- Settings screen. -->
@@ -62,7 +68,7 @@
     <string name="app_desc">Установщик электронных книг</string>
     <string name="made_by">"Сделано Shivam, с любовью ❤"</string>
     <string name="general_settings_header">Общие</string>
-    <string name="default_reader_setting">Читать в...</string>
+    <string name="default_reader_setting">Читать в…</string>
     <string name="default_reader_dialog_title">Открыть с помощью…</string>
     <string name="reader_option_inbuilt">Встроенная читалка</string>
     <string name="reader_option_external">Внешняя читалка</string>

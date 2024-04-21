@@ -30,20 +30,20 @@ interface ReaderDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(readerData: ReaderData)
 
-    @Query("DELETE FROM reader_table WHERE book_id = :bookId")
-    fun delete(bookId: Int)
+    @Query("DELETE FROM reader_table WHERE library_item_id = :libraryItemId")
+    fun delete(libraryItemId: Int)
 
     @Query(
         "UPDATE reader_table SET "
                 + "last_chapter_index = :lastChapterIndex,"
                 + "last_chapter_offset = :lastChapterOffset"
-                + " WHERE  book_id = :bookId"
+                + " WHERE  library_item_id = :libraryItemId"
     )
-    fun update(bookId: Int, lastChapterIndex: Int, lastChapterOffset: Int)
+    fun update(libraryItemId: Int, lastChapterIndex: Int, lastChapterOffset: Int)
 
-    @Query("SELECT * FROM reader_table WHERE book_id = :bookId")
-    fun getReaderData(bookId: Int): ReaderData?
+    @Query("SELECT * FROM reader_table WHERE library_item_id = :libraryItemId")
+    fun getReaderData(libraryItemId: Int): ReaderData?
 
-    @Query("SELECT * FROM reader_table WHERE book_id = :bookId")
-    fun getReaderDataAsFlow(bookId: Int): Flow<ReaderData?>
+    @Query("SELECT * FROM reader_table WHERE library_item_id = :libraryItemId")
+    fun getReaderDataAsFlow(libraryItemId: Int): Flow<ReaderData?>
 }

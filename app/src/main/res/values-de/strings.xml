@@ -39,6 +39,12 @@
     <!-- Library screen. -->
     <string name="library_header">Bibliothek</string>
     <string name="empty_library">Nichts vorhanden!</string>
+    <string name="import_button_text">Importieren</string>
+    <string name="import_button_desc">EPUB-Buch importieren</string>
+    <string name="external_book_info_unavailable">Nur für interne Bücher verfügbar.</string>
+    <string name="epub_importing">Importiere… Bitte warten.</string>
+    <string name="epub_imported">Erfolgreich importiert!</string>
+    <string name="epub_import_error">Import fehlgeschlagen!</string>
     <string name="open_app_chooser">Öffnen mit …</string>
     <string name="share_app_chooser">Teilen mit …</string>
     <string name="library_read_button">Lesen</string>
@@ -54,7 +60,7 @@
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Entschuldige bitte, größer kann es nicht dargestellt werden!</string>
     <string name="reader_min_font_size_reached">Entschuldige bitte, kleiner kann es nicht dargestellt werden!</string>
-    <string name="reader_font_style_chooer">Schriftart ändern</string>
+    <string name="reader_font_style_chooser">Schriftart ändern</string>
     <string name="reader_chapter_list_title">Kapitel</string>
 
     <!-- Settings screen. -->
@@ -88,7 +94,7 @@
 
     <!-- Book Detail Screen -->
     <string name="book_detail_header">Buchdetails</string>
-    <string name="back_button_desc">Zurück gehen.</string>
+    <string name="back_button_desc">Zurückgehen.</string>
     <string name="share_button_desc">Dieses Buch teilen.</string>
     <string name="share_intent_header">Teilen mit …</string>
     <string name="read_book_button">Lesen beginnen</string>

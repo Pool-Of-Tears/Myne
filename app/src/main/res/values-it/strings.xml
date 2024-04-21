@@ -39,6 +39,12 @@
     <!-- Library screen. -->
     <string name="library_header">Libreria</string>
     <string name="empty_library">Non c\'è nulla qui!</string>
+    <string name="import_button_text">Importa</string>
+    <string name="import_button_desc">Importa libro EPUB</string>
+    <string name="external_book_info_unavailable">Disponibile solo per libri interni.</string>
+    <string name="epub_importing">Importazione in corso… Attendere prego.</string>
+    <string name="epub_imported">Importato con successo!</string>
+    <string name="epub_import_error">Importazione fallita!</string>
     <string name="open_app_chooser">Apri con…</string>
     <string name="share_app_chooser">Condividi con…</string>
     <string name="library_read_button">Leggi</string>
@@ -54,7 +60,7 @@
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Spiacenti, non si può andare più in alto!</string>
     <string name="reader_min_font_size_reached">Spiacenti, non si può andare più in basso!</string>
-    <string name="reader_font_style_chooer">Cambia Font</string>
+    <string name="reader_font_style_chooser">Cambia Font</string>
     <string name="reader_chapter_list_title">Capitoli</string>
 
     <!-- Settings screen. -->

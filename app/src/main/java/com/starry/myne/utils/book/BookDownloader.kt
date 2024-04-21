@@ -40,9 +40,29 @@ class BookDownloader(private val context: Context) {
 
     companion object {
         private const val TAG = "BookDownloader"
-        private const val BOOKS_FOLDER = "ebooks"
-        private const val TEMP_FOLDER = "temp_books"
+        const val BOOKS_FOLDER = "ebooks"
+        const val TEMP_FOLDER = "temp_books"
         private const val MAX_FILENAME_LENGTH = 200
+
+        /**
+         * Sanitizes book title by replacing forbidden chars which are not allowed
+         * as the file name and builds file name for the epub file by joining all
+         * of the words in the  book title at the end.
+         * @param title title of the book for which file name is required.
+         * @return [String] file name for the given book.
+         */
+        fun createFileName(title: String): String {
+            val sanitizedTitle = title
+                .replace(":", ";")
+                .replace("\"", "")
+                .replace("/", "-")
+                .replace("\\", "-")
+                .split(" ")
+                .joinToString(separator = "+") { word ->
+                    word.replace(Regex("[^\\p{ASCII}]"), "")
+                }.take(MAX_FILENAME_LENGTH).trim()
+            return "$sanitizedTitle.epub"
+        }
     }
 
     private val downloadJob = Job()
@@ -81,7 +101,7 @@ class BookDownloader(private val context: Context) {
         if (runningDownloads.containsKey(book.id)) return
 
         // Create file for the downloaded book.
-        val filename = getFilenameForBook(book)
+        val filename = createFileName(book.title)
         val tempFolder = File(context.getExternalFilesDir(null), TEMP_FOLDER)
         if (!tempFolder.exists()) tempFolder.mkdirs()
         val tempFile = File(tempFolder, filename)
@@ -192,25 +212,5 @@ class BookDownloader(private val context: Context) {
      * @param downloadId id of the download which needs to be cancelled.
      */
     fun cancelDownload(downloadId: Long?) = downloadId?.let { downloadManager.remove(it) }
-
-    /**
-     * Sanitizes book title by replacing forbidden chars which are not allowed
-     * as the file name & builds file name for the epub file by joining all of
-     * the words in the  book title at the end.
-     * @param book [Book] for which file name is required.
-     * @return [String] file name for the given book.
-     */
-    private fun getFilenameForBook(book: Book): String {
-        val sanitizedTitle = book.title
-            .replace(":", ";")
-            .replace("\"", "")
-            .replace("/", "-")
-            .replace("\\", "-")
-            .split(" ")
-            .joinToString(separator = "+") { word ->
-                word.replace(Regex("[^\\p{ASCII}]"), "")
-            }.take(MAX_FILENAME_LENGTH).trim()
-        return "$sanitizedTitle.epub"
-    }
 
 }

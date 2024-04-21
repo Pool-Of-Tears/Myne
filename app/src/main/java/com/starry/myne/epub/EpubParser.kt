@@ -89,6 +89,9 @@ class EpubParser {
 
     /**
      * Creates an [EpubBook] object from an EPUB file.
+     *
+     * Note: The caller is responsible for closing the input stream.
+     *
      * @param inputStream The input stream of the EPUB file.
      * @param shouldUseToc Whether to use the table of contents to parse chapters.
      * @return The [EpubBook] object.
@@ -99,15 +102,14 @@ class EpubParser {
 
     /**
      * Creates an [EpubBook] object from an EPUB file.
+     *
      * @param filePath The file path of the EPUB file.
      * @param shouldUseToc Whether to use the table of contents to parse chapters.
      * @return The [EpubBook] object.
      */
     suspend fun createEpubBook(filePath: String, shouldUseToc: Boolean = true): EpubBook {
-        val inputStream = withContext(Dispatchers.IO) {
-            FileInputStream(filePath)
-        }
-        return parseAndCreateEbook(inputStream, shouldUseToc)
+        val inputStream = withContext(Dispatchers.IO) { FileInputStream(filePath) }
+        inputStream.use { return parseAndCreateEbook(it, shouldUseToc) }
     }
 
     private suspend fun parseAndCreateEbook(
@@ -138,6 +140,10 @@ class EpubParser {
 
             val metadataTitle = metadata.selectFirstChildTag("dc:title")?.textContent
                 ?: "Unknown Title"
+            val metadataAuthor = metadata.selectFirstChildTag("dc:creator")?.textContent
+                ?: "Unknown Author"
+            val metadataLanguage = metadata.selectFirstChildTag("dc:language")?.textContent
+                ?: "en"
 
             val metadataCoverId = metadata
                 .selectChildTag("meta")
@@ -155,17 +161,10 @@ class EpubParser {
                 )
             }.associateBy { it.id }
 
-            /**
-             * Find the table of contents (toc.ncx) file.
-             * or the first file with the "navMap" property.
-             */
-            val tocFileItem =
-                manifestItems.values.firstOrNull {
-                    it.absPath.endsWith(
-                        "toc.ncx",
-                        ignoreCase = true
-                    )
-                } ?: manifestItems.values.firstOrNull { it.properties.contains("navMap") }
+            // Find the table of contents (toc.ncx) file.
+            val tocFileItem = manifestItems.values.firstOrNull {
+                it.absPath.endsWith(".ncx", ignoreCase = true)
+            }
 
             /**
              * Parse chapters based on the table of contents (toc.ncx) file.
@@ -188,6 +187,8 @@ class EpubParser {
             return@withContext EpubBook(
                 fileName = metadataTitle.asFileName(),
                 title = metadataTitle,
+                author = metadataAuthor,
+                language = metadataLanguage,
                 coverImage = coverImage,
                 chapters = chapters,
                 images = images
@@ -198,7 +199,7 @@ class EpubParser {
     private suspend fun getZipFiles(
         inputStream: InputStream
     ): Map<String, EpubFile> = withContext(Dispatchers.IO) {
-        ZipInputStream(inputStream).use { zipInputStream ->
+        ZipInputStream(inputStream).let { zipInputStream ->
             zipInputStream
                 .entries()
                 .filterNot { it.isDirectory }
@@ -241,12 +242,19 @@ class EpubParser {
                 ?.hrefAbsolutePath(hrefRootPath)
 
             if (chapterSrc != null) {
-                val (fragmentPath, fragmentId) = chapterSrc.split("#", limit = 2)
+                // Check if the chapter source contains a fragment ID
+                val (fragmentPath, fragmentId) = if ('#' in chapterSrc) {
+                    val (path, id) = chapterSrc.split("#", limit = 2)
+                    path to id
+                } else {
+                    chapterSrc to null
+                }
+
                 val nextNavPoint = navPoint.nextSibling
                 val nextFragmentId = nextNavPoint?.nextSibling?.selectFirstChildTag("content")
                     ?.getAttributeValue("src")
-                    ?.split("#")
-                    ?.lastOrNull()
+                    ?.let { src -> src.takeIf { '#' in it }?.substringAfterLast('#') }
+
 
                 val chapterFile = files[fragmentPath]
                 val parser = chapterFile?.let {

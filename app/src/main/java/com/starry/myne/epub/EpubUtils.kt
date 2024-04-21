@@ -20,7 +20,6 @@ package com.starry.myne.epub
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
-import org.jsoup.nodes.Node as JsoupNode
 import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import java.io.File
@@ -29,6 +28,7 @@ import java.net.URLDecoder
 import java.util.zip.ZipInputStream
 import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.io.path.invariantSeparatorsPathString
+import org.jsoup.nodes.Node as JsoupNode
 
 fun parseXMLText(text: String): Document? = text.reader().runCatching {
     DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(InputSource(this))

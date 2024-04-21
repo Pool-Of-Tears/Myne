@@ -17,6 +17,7 @@
 
 package com.starry.myne.ui.screens.reader.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -64,25 +65,33 @@ class ReaderDetailViewModel @Inject constructor(
         get() = _readerData
     private var _readerData: Flow<ReaderData?>? = null
 
-    fun loadEbookData(bookId: String, networkStatus: NetworkObserver.Status) {
+    fun loadEbookData(libraryItemId: String, networkStatus: NetworkObserver.Status) {
         viewModelScope.launch(Dispatchers.IO) {
             // Library item is not null as this screen is only accessible from the library.
-            val libraryItem = libraryDao.getItemById(bookId.toInt())!!
+            val libraryItem = libraryDao.getItemById(libraryItemId.toInt())!!
             // Get reader data if it exists.
-            _readerData = readerDao.getReaderDataAsFlow(bookId.toInt())
+            _readerData = readerDao.getReaderDataAsFlow(libraryItemId.toInt())
             val coverImage: String? = try {
-                if (networkStatus == NetworkObserver.Status.Available) bookRepository.getExtraInfo(
-                    libraryItem.title
-                )?.coverImage else null
+                if (!libraryItem.isExternalBook
+                    && networkStatus == NetworkObserver.Status.Available
+                ) bookRepository.getExtraInfo(libraryItem.title)?.coverImage else null
             } catch (exc: Exception) {
                 null
             }
-            // Create EbookData object.
+            // Gutenberg for some reason don't include proper navMap in chinese books
+            // in toc, so we need to parse the book based on spine, instead of toc.
+            // This is a workaround for internal chinese books.
+            var epubBook = epubParser.createEpubBook(libraryItem.filePath)
+            if (epubBook.language == "zh" && !libraryItem.isExternalBook) {
+                Log.d("ReaderDetailViewModel", "Parsing book without toc for chinese book.")
+                epubBook = epubParser.createEpubBook(libraryItem.filePath, shouldUseToc = false)
+            }
+            // Create ebook data.
             val ebookData = EbookData(
                 coverImage = coverImage,
                 title = libraryItem.title,
                 authors = libraryItem.authors,
-                epubBook = epubParser.createEpubBook(libraryItem.filePath)
+                epubBook = epubBook
             )
             delay(500) // Add delay to avoid flickering.
             state = state.copy(isLoading = false, ebookData = ebookData)

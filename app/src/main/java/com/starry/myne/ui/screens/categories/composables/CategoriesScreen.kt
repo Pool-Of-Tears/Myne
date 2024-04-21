@@ -53,7 +53,6 @@ import com.starry.myne.ui.theme.figeronaFont
 import java.util.Locale
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesScreen(navController: NavController) {
     Scaffold(
@@ -103,9 +102,8 @@ fun CategoriesScreen(navController: NavController) {
 }
 
 
-@ExperimentalMaterial3Api
 @Composable
-fun CategoriesItem(category: String, onClick: () -> Unit) {
+private fun CategoriesItem(category: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .height(90.dp)

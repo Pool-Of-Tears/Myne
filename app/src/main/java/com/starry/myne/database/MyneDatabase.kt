@@ -21,6 +21,7 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.database.reader.ReaderDao
@@ -29,9 +30,12 @@ import com.starry.myne.utils.Constants
 
 @Database(
     entities = [LibraryItem::class, ReaderData::class],
-    version = 2,
+    version = 4,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 1, to = 2)]
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2),
+        AutoMigration(from = 2, to = 3),
+    ]
 )
 abstract class MyneDatabase : RoomDatabase() {
 
@@ -39,6 +43,10 @@ abstract class MyneDatabase : RoomDatabase() {
     abstract fun getReaderDao(): ReaderDao
 
     companion object {
+
+        private val migration3to4 = Migration(3, 4) { database ->
+            database.execSQL("ALTER TABLE reader_table RENAME COLUMN book_id TO library_item_id")
+        }
 
         @Volatile
         private var INSTANCE: MyneDatabase? = null
@@ -54,7 +62,7 @@ abstract class MyneDatabase : RoomDatabase() {
                     context.applicationContext,
                     MyneDatabase::class.java,
                     Constants.DATABASE_NAME
-                ).build()
+                ).addMigrations(migration3to4).build()
                 INSTANCE = instance
                 // return instance
                 instance

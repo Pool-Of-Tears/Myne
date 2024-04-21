@@ -17,30 +17,44 @@
 package com.starry.myne.ui.screens.library.composables
 
 import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -65,6 +79,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -87,31 +102,41 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
+import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.navigation.Screens
+import com.starry.myne.ui.screens.library.viewmodels.ImportStatus
 import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.utils.Utils
 import com.starry.myne.utils.getActivity
+import com.starry.myne.utils.isScrollingUp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 import java.io.File
+import java.io.FileInputStream
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LibraryScreen(navController: NavController) {
     val viewModel: LibraryViewModel = hiltViewModel()
-    val state = viewModel.allItems.observeAsState(listOf()).value
+    val state = viewModel.state
 
     val context = LocalContext.current
-    val settingsViewModel = (context.getActivity() as MainActivity).settingsViewModel
-
     val snackBarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
+    val lazyListState = rememberLazyListState()
+
+    val importBookLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            uri?.let {
+                (context as MainActivity).contentResolver.openInputStream(uri)?.let { ips ->
+                    viewModel.importBook(context, ips as FileInputStream)
+                }
+            }
+        }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
@@ -125,162 +150,256 @@ fun LibraryScreen(navController: NavController) {
                 iconRes = R.drawable.ic_nav_library
             )
         },
+        floatingActionButton = {
+            val density = LocalDensity.current
+            AnimatedVisibility(
+                visible = !state.showImportUI && lazyListState.isScrollingUp(),
+                enter = slideInVertically {
+                    with(density) { 40.dp.roundToPx() }
+                } + fadeIn(),
+                exit = fadeOut(
+                    animationSpec = keyframes {
+                        this.durationMillis = 120
+                    }
+                )
+            ) {
+                ExtendedFloatingActionButton(onClick = {
+                    importBookLauncher.launch(arrayOf("application/epub+zip"))
+                }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Add,
+                        contentDescription = stringResource(id = R.string.import_button_desc)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(id = R.string.import_button_text),
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = figeronaFont,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                }
+            }
+        }
+    ) { paddingValues ->
+        Crossfade(
+            targetState = state.showImportUI,
+            label = "ImportCrossFade"
+        ) { isImporting ->
+            if (isImporting) {
+                ImportingEpubAnimation(state.importStatus)
+            } else {
+                LibraryContents(
+                    viewModel = viewModel,
+                    lazyListState = lazyListState,
+                    snackBarHostState = snackBarHostState,
+                    navController = navController,
+                    paddingValues = paddingValues
+                )
+            }
+        }
+
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun LibraryContents(
+    viewModel: LibraryViewModel,
+    lazyListState: LazyListState,
+    snackBarHostState: SnackbarHostState,
+    navController: NavController,
+    paddingValues: PaddingValues
+) {
+    val context = LocalContext.current
+    val libraryItems = viewModel.allItems.observeAsState(listOf()).value
+
+    // Show tooltip for library screen.
+    LaunchedEffect(key1 = true) {
+        if (viewModel.shouldShowLibraryTooltip()) {
+            val result = snackBarHostState.showSnackbar(
+                message = context.getString(R.string.library_tooltip),
+                actionLabel = context.getString(R.string.got_it),
+                duration = SnackbarDuration.Indefinite
+            )
+
+            when (result) {
+                SnackbarResult.ActionPerformed -> {
+                    viewModel.libraryTooltipDismissed()
+                }
+
+                SnackbarResult.Dismissed -> {}
+            }
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(paddingValues)
     ) {
-        Box(modifier = Modifier.padding(it)) {
-            Column(
+        if (libraryItems.isEmpty()) {
+            NoLibraryItemAnimation()
+        } else {
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(MaterialTheme.colorScheme.background),
+                state = lazyListState
             ) {
-                if (state.isEmpty()) {
-                    NoLibraryItemAnimation()
-                } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background)
-                    ) {
-                        items(
-                            count = state.size,
-                            key = { i -> state[i].bookId }
-                        ) { i ->
-                            val item = state[i]
-                            if (item.fileExist()) {
-                                val openDeleteDialog = remember { mutableStateOf(false) }
-
-                                val detailsAction = SwipeAction(icon = painterResource(
-                                    id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_info else R.drawable.ic_info_white
-                                ), background = MaterialTheme.colorScheme.primary, onSwipe = {
-                                    viewModel.viewModelScope.launch {
-                                        delay(250L)
-                                        navController.navigate(
-                                            Screens.BookDetailScreen.withBookId(
-                                                item.bookId.toString()
-                                            )
-                                        )
-                                    }
-                                })
-
-                                val shareAction = SwipeAction(icon = painterResource(
-                                    id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_share else R.drawable.ic_share_white
-                                ), background = MaterialTheme.colorScheme.primary, onSwipe = {
-                                    val uri = FileProvider.getUriForFile(
-                                        context,
-                                        BuildConfig.APPLICATION_ID + ".provider",
-                                        File(item.filePath)
-                                    )
-                                    val intent = Intent(Intent.ACTION_SEND)
-                                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                    intent.type = context.contentResolver.getType(uri)
-                                    intent.putExtra(Intent.EXTRA_STREAM, uri)
-                                    context.startActivity(
-                                        Intent.createChooser(
-                                            intent,
-                                            context.getString(R.string.share_app_chooser)
-                                        )
-                                    )
-                                })
-
-                                SwipeableActionsBox(
-                                    modifier = Modifier
-                                        .padding(top = 4.dp, bottom = 4.dp)
-                                        .animateItemPlacement(),
-                                    startActions = listOf(shareAction),
-                                    endActions = listOf(detailsAction),
-                                    swipeThreshold = 85.dp
-                                ) {
-                                    LibraryCard(title = item.title,
-                                        author = item.authors,
-                                        item.getFileSize(),
-                                        item.getDownloadDate(),
-                                        onReadClick = {
-                                            Utils.openBookFile(
-                                                context = context,
-                                                internalReader = viewModel.getInternalReaderSetting(),
-                                                libraryItem = item,
-                                                navController = navController
-                                            )
-                                        },
-                                        onDeleteClick = { openDeleteDialog.value = true })
-                                }
-
-                                if (openDeleteDialog.value) {
-                                    AlertDialog(onDismissRequest = {
-                                        openDeleteDialog.value = false
-                                    }, title = {
-                                        Text(
-                                            text = stringResource(id = R.string.library_delete_dialog_title),
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                        )
-                                    }, confirmButton = {
-                                        FilledTonalButton(
-                                            onClick = {
-                                                openDeleteDialog.value = false
-                                                val fileDeleted = item.deleteFile()
-                                                if (fileDeleted) {
-                                                    viewModel.deleteItemFromDB(item)
-                                                } else {
-                                                    coroutineScope.launch {
-                                                        snackBarHostState.showSnackbar(
-                                                            message = context.getString(R.string.error),
-                                                            actionLabel = context.getString(R.string.ok),
-                                                            duration = SnackbarDuration.Short
-                                                        )
-                                                    }
-                                                }
-                                            },
-                                            colors = ButtonDefaults.filledTonalButtonColors(
-                                                contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                                                containerColor = MaterialTheme.colorScheme.errorContainer
-                                            )
-                                        ) {
-                                            Text(stringResource(id = R.string.confirm))
-                                        }
-                                    }, dismissButton = {
-                                        TextButton(onClick = {
-                                            openDeleteDialog.value = false
-                                        }) {
-                                            Text(stringResource(id = R.string.cancel))
-                                        }
-                                    })
-                                }
-
-                            } else {
-                                viewModel.deleteItemFromDB(item)
-                            }
-                        }
-                    }
-
-                    // Show tooltip for library screen.
-                    LaunchedEffect(key1 = true) {
-                        if (viewModel.shouldShowLibraryTooltip()) {
-                            val result = snackBarHostState.showSnackbar(
-                                message = context.getString(R.string.library_tooltip),
-                                actionLabel = context.getString(R.string.got_it),
-                                duration = SnackbarDuration.Indefinite
-                            )
-
-                            when (result) {
-                                SnackbarResult.ActionPerformed -> {
-                                    viewModel.libraryTooltipDismissed()
-                                }
-
-                                SnackbarResult.Dismissed -> {}
-                            }
-                        }
+                items(
+                    count = libraryItems.size,
+                    key = { i -> libraryItems[i].id }
+                ) { i ->
+                    val item = libraryItems[i]
+                    if (item.fileExist()) {
+                        LibraryLazyItem(
+                            modifier = Modifier.animateItemPlacement(),
+                            item = item,
+                            snackBarHostState = snackBarHostState,
+                            navController = navController,
+                            viewModel = viewModel
+                        )
+                    } else {
+                        viewModel.deleteItemFromDB(item)
                     }
                 }
             }
+
         }
     }
 }
 
 @Composable
-fun LibraryCard(
+private fun LibraryLazyItem(
+    modifier: Modifier,
+    item: LibraryItem,
+    snackBarHostState: SnackbarHostState,
+    navController: NavController,
+    viewModel: LibraryViewModel,
+) {
+    val context = LocalContext.current
+    val settingsViewModel = (context.getActivity() as MainActivity).settingsViewModel
+
+    val coroutineScope = rememberCoroutineScope()
+    val openDeleteDialog = remember { mutableStateOf(false) }
+
+    // Swipe actions to show book details.
+    val detailsAction = SwipeAction(icon = painterResource(
+        id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_info else R.drawable.ic_info_white
+    ), background = MaterialTheme.colorScheme.primary, onSwipe = {
+        viewModel.viewModelScope.launch {
+            delay(250L)
+            if (item.isExternalBook) {
+                snackBarHostState.showSnackbar(
+                    message = context.getString(R.string.external_book_info_unavailable),
+                    actionLabel = context.getString(R.string.ok),
+                    duration = SnackbarDuration.Short
+                )
+            } else {
+                navController.navigate(
+                    Screens.BookDetailScreen.withBookId(
+                        item.bookId.toString()
+                    )
+                )
+            }
+        }
+    })
+
+    // Swipe actions to share book.
+    val shareAction = SwipeAction(icon = painterResource(
+        id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_share else R.drawable.ic_share_white
+    ), background = MaterialTheme.colorScheme.primary, onSwipe = {
+        val uri = FileProvider.getUriForFile(
+            context,
+            BuildConfig.APPLICATION_ID + ".provider",
+            File(item.filePath)
+        )
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.type = context.contentResolver.getType(uri)
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
+        context.startActivity(
+            Intent.createChooser(
+                intent,
+                context.getString(R.string.share_app_chooser)
+            )
+        )
+    })
+
+    SwipeableActionsBox(
+        modifier = modifier.padding(vertical = 4.dp),
+        startActions = listOf(shareAction),
+        endActions = listOf(detailsAction),
+        swipeThreshold = 85.dp
+    ) {
+        LibraryCard(title = item.title,
+            author = item.authors,
+            item.getFileSize(),
+            item.getDownloadDate(),
+            isExternalBook = item.isExternalBook,
+            onReadClick = {
+                Utils.openBookFile(
+                    context = context,
+                    internalReader = viewModel.getInternalReaderSetting(),
+                    libraryItem = item,
+                    navController = navController
+                )
+            },
+            onDeleteClick = { openDeleteDialog.value = true })
+    }
+
+    if (openDeleteDialog.value) {
+        AlertDialog(onDismissRequest = {
+            openDeleteDialog.value = false
+        }, title = {
+            Text(
+                text = stringResource(id = R.string.library_delete_dialog_title),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }, confirmButton = {
+            FilledTonalButton(
+                onClick = {
+                    openDeleteDialog.value = false
+                    val fileDeleted = item.deleteFile()
+                    if (fileDeleted) {
+                        viewModel.deleteItemFromDB(item)
+                    } else {
+                        coroutineScope.launch {
+                            snackBarHostState.showSnackbar(
+                                message = context.getString(R.string.error),
+                                actionLabel = context.getString(R.string.ok),
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    }
+                },
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    containerColor = MaterialTheme.colorScheme.errorContainer
+                )
+            ) {
+                Text(stringResource(id = R.string.confirm))
+            }
+        }, dismissButton = {
+            TextButton(onClick = {
+                openDeleteDialog.value = false
+            }) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        })
+    }
+}
+
+@Composable
+private fun LibraryCard(
     title: String,
     author: String,
     fileSize: String,
     date: String,
+    isExternalBook: Boolean,
     onReadClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
@@ -305,7 +424,10 @@ fun LibraryCard(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_library_item),
+                    imageVector = ImageVector.vectorResource(
+                        id = if (isExternalBook) R.drawable.ic_library_external_item
+                        else R.drawable.ic_library_item
+                    ),
                     contentDescription = stringResource(id = R.string.back_button_desc),
                     tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(32.dp)
@@ -382,7 +504,7 @@ fun LibraryCard(
 }
 
 @Composable
-fun LibraryCardButton(
+private fun LibraryCardButton(
     text: String,
     icon: ImageVector,
     onClick: () -> Unit,
@@ -417,7 +539,7 @@ fun LibraryCardButton(
 }
 
 @Composable
-fun NoLibraryItemAnimation() {
+private fun NoLibraryItemAnimation() {
     Column(
         modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -434,7 +556,7 @@ fun NoLibraryItemAnimation() {
         Spacer(modifier = Modifier.weight(1f))
         LottieAnimation(
             composition = compositionResult.value,
-            progress = progressAnimation,
+            progress = { progressAnimation },
             modifier = Modifier.size(300.dp),
             enableMergePaths = true
         )
@@ -452,6 +574,51 @@ fun NoLibraryItemAnimation() {
     }
 }
 
+@Composable
+private fun ImportingEpubAnimation(importStatus: ImportStatus) {
+    val composition = rememberLottieComposition(
+        spec = when (importStatus) {
+            ImportStatus.IMPORTING -> LottieCompositionSpec.RawRes(R.raw.epub_importing_lottie)
+            ImportStatus.SUCCESS -> LottieCompositionSpec.RawRes(R.raw.epub_import_success_lottie)
+            ImportStatus.ERROR -> LottieCompositionSpec.RawRes(R.raw.epub_import_error_lottie)
+            ImportStatus.IDLE -> LottieCompositionSpec.RawRes(R.raw.epub_importing_lottie)
+        }
+    )
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        LottieAnimation(
+            composition = composition.value,
+            modifier = Modifier.size(280.dp),
+            enableMergePaths = true,
+            isPlaying = true,
+            iterations = if (importStatus == ImportStatus.IMPORTING)
+                LottieConstants.IterateForever else 1,
+        )
+
+        val text = when (importStatus) {
+            ImportStatus.IMPORTING -> stringResource(id = R.string.epub_importing)
+            ImportStatus.SUCCESS -> stringResource(id = R.string.epub_imported)
+            ImportStatus.ERROR -> stringResource(id = R.string.epub_import_error)
+            ImportStatus.IDLE -> ""
+        }
+
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+                .offset(y = (-34).dp),
+            fontFamily = figeronaFont
+        )
+        Spacer(modifier = Modifier.weight(1f))
+    }
+}
 
 @ExperimentalMaterial3Api
 @Composable
@@ -461,6 +628,7 @@ fun LibraryScreenPreview() {
         author = "Fyodor Dostoevsky",
         fileSize = "5.9MB",
         date = "01- Jan -2020",
+        isExternalBook = false,
         onReadClick = {},
         onDeleteClick = {})
 }

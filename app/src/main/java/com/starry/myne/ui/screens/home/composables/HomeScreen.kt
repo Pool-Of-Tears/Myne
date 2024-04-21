@@ -23,14 +23,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,8 +44,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -69,7 +66,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalFocusManager
@@ -81,7 +77,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -91,6 +86,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.R
 import com.starry.myne.ui.common.BookItemCard
+import com.starry.myne.ui.common.BookLanguageButton
 import com.starry.myne.ui.common.NetworkError
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.navigation.Screens
@@ -165,7 +161,7 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
                 ) {
                     items(languages.size) { idx ->
                         val language = languages[idx]
-                        LanguageItem(
+                        BookLanguageButton(
                             language = language,
                             isSelected = language == viewModel.language.value,
                             onClick = {
@@ -200,7 +196,7 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
 @Composable
-fun HomeScreenScaffold(
+private fun HomeScreenScaffold(
     viewModel: HomeViewModel,
     networkStatus: NetworkObserver.Status,
     navController: NavController,
@@ -210,14 +206,13 @@ fun HomeScreenScaffold(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-
-    val allBooksState = viewModel.allBooksState
     val topBarState = viewModel.topBarState
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(MaterialTheme.colorScheme.background)
+            .padding(bottom = 70.dp),
         topBar = {
             Column(
                 modifier = Modifier
@@ -263,138 +258,156 @@ fun HomeScreenScaffold(
                 )
             }
         },
+    ) { paddingValues ->
+        HomeScreenContents(
+            viewModel = viewModel,
+            networkStatus = networkStatus,
+            navController = navController,
+            paddingValues = paddingValues
+        )
+    }
+}
+
+@Composable
+fun HomeScreenContents(
+    viewModel: HomeViewModel,
+    networkStatus: NetworkObserver.Status,
+    navController: NavController,
+    paddingValues: PaddingValues
+) {
+    val topBarState = viewModel.topBarState
+    val allBooksState = viewModel.allBooksState
+
+
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(paddingValues)
     ) {
-        Box(modifier = Modifier.padding(it)) {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(bottom = 70.dp)
-            ) {
 
-                // If search text is empty show list of all books.
-                if (topBarState.searchText.isBlank()) {
-                    // show fullscreen progress indicator when loading the first page.
-                    if (allBooksState.page == 1L && allBooksState.isLoading) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+        // If search text is empty show list of all books.
+        if (topBarState.searchText.isBlank()) {
+            // show fullscreen progress indicator when loading the first page.
+            if (allBooksState.page == 1L && allBooksState.isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                }
+            } else if (!allBooksState.isLoading && allBooksState.error != null) {
+                NetworkError(onRetryClicked = { viewModel.reloadItems() })
+            } else {
+                LazyVerticalGrid(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(start = 8.dp, end = 8.dp),
+                    columns = GridCells.Adaptive(295.dp)
+                ) {
+                    items(allBooksState.items.size) { i ->
+                        val item = allBooksState.items[i]
+                        if (networkStatus == NetworkObserver.Status.Available
+                            && i >= allBooksState.items.size - 1
+                            && !allBooksState.endReached
+                            && !allBooksState.isLoading
                         ) {
-                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                            viewModel.loadNextItems()
                         }
-                    } else if (!allBooksState.isLoading && allBooksState.error != null) {
-                        NetworkError(onRetryClicked = { viewModel.reloadItems() })
-                    } else {
-                        LazyVerticalGrid(
+                        Box(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.background)
-                                .padding(start = 8.dp, end = 8.dp),
-                            columns = GridCells.Adaptive(295.dp)
+                                .padding(4.dp)
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
                         ) {
-                            items(allBooksState.items.size) { i ->
-                                val item = allBooksState.items[i]
-                                if (networkStatus == NetworkObserver.Status.Available
-                                    && i >= allBooksState.items.size - 1
-                                    && !allBooksState.endReached
-                                    && !allBooksState.isLoading
-                                ) {
-                                    viewModel.loadNextItems()
-                                }
-                                Box(
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .fillMaxWidth(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    BookItemCard(
-                                        title = item.title,
-                                        author = BookUtils.getAuthorsAsString(item.authors),
-                                        language = BookUtils.getLanguagesAsString(item.languages),
-                                        subjects = BookUtils.getSubjectsAsString(
-                                            item.subjects, 3
-                                        ),
-                                        coverImageUrl = item.formats.imagejpeg
-                                    ) {
-                                        navController.navigate(
-                                            Screens.BookDetailScreen.withBookId(
-                                                item.id.toString()
-                                            )
-                                        )
-                                    }
-                                }
-
+                            BookItemCard(
+                                title = item.title,
+                                author = BookUtils.getAuthorsAsString(item.authors),
+                                language = BookUtils.getLanguagesAsString(item.languages),
+                                subjects = BookUtils.getSubjectsAsString(
+                                    item.subjects, 3
+                                ),
+                                coverImageUrl = item.formats.imagejpeg
+                            ) {
+                                navController.navigate(
+                                    Screens.BookDetailScreen.withBookId(
+                                        item.id.toString()
+                                    )
+                                )
                             }
-                            item {
-                                if (allBooksState.isLoading) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(8.dp),
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-                                        ProgressDots()
-                                    }
-                                }
+                        }
+
+                    }
+                    item {
+                        if (allBooksState.isLoading) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                ProgressDots()
                             }
                         }
                     }
+                }
+            }
 
-                    // Else show the search results.
-                } else {
-                    LazyVerticalGrid(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background)
-                            .padding(start = 8.dp, end = 8.dp),
-                        columns = GridCells.Adaptive(295.dp)
-                    ) {
-                        if (topBarState.isSearching) {
-                            item {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp),
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    ProgressDots()
-                                }
-                            }
+            // Else show the search results.
+        } else {
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(start = 8.dp, end = 8.dp),
+                columns = GridCells.Adaptive(295.dp)
+            ) {
+                if (topBarState.isSearching) {
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            ProgressDots()
                         }
+                    }
+                }
 
-                        items(topBarState.searchResults.size) { i ->
-                            val item = topBarState.searchResults[i]
-                            Box(
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .fillMaxWidth(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                BookItemCard(
-                                    title = item.title,
-                                    author = BookUtils.getAuthorsAsString(item.authors),
-                                    language = BookUtils.getLanguagesAsString(item.languages),
-                                    subjects = BookUtils.getSubjectsAsString(
-                                        item.subjects, 3
-                                    ),
-                                    coverImageUrl = item.formats.imagejpeg
-                                ) {
-                                    navController.navigate(
-                                        Screens.BookDetailScreen.withBookId(
-                                            item.id.toString()
-                                        )
-                                    )
-                                }
-                            }
+                items(topBarState.searchResults.size) { i ->
+                    val item = topBarState.searchResults[i]
+                    Box(
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        BookItemCard(
+                            title = item.title,
+                            author = BookUtils.getAuthorsAsString(item.authors),
+                            language = BookUtils.getLanguagesAsString(item.languages),
+                            subjects = BookUtils.getSubjectsAsString(
+                                item.subjects, 3
+                            ),
+                            coverImageUrl = item.formats.imagejpeg
+                        ) {
+                            navController.navigate(
+                                Screens.BookDetailScreen.withBookId(
+                                    item.id.toString()
+                                )
+                            )
                         }
                     }
                 }
             }
         }
     }
+
 }
 
 @Composable
-fun HomeTopAppBar(
+private fun HomeTopAppBar(
     bookLanguage: BookLanguage,
     onSearchIconClicked: () -> Unit,
     onLanguageIconClicked: () -> Unit,
@@ -435,7 +448,7 @@ fun HomeTopAppBar(
 
 @ExperimentalMaterial3Api
 @Composable
-fun SearchAppBar(
+private fun SearchAppBar(
     onCloseIconClicked: () -> Unit,
     onInputValueChange: (String) -> Unit,
     text: String,
@@ -497,44 +510,6 @@ fun SearchAppBar(
     )
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
-    }
-}
-
-@ExperimentalMaterial3Api
-@Composable
-fun LanguageItem(language: BookLanguage, isSelected: Boolean, onClick: () -> Unit) {
-    val buttonColor: Color
-    val textColor: Color
-    if (isSelected) {
-        buttonColor = MaterialTheme.colorScheme.primary
-        textColor = MaterialTheme.colorScheme.onPrimary
-    } else {
-        buttonColor = MaterialTheme.colorScheme.secondaryContainer
-        textColor = MaterialTheme.colorScheme.onSecondaryContainer
-    }
-
-    Card(
-        modifier = Modifier
-            .height(60.dp)
-            .width(70.dp)
-            .padding(6.dp),
-        colors = CardDefaults.cardColors(containerColor = buttonColor),
-        shape = RoundedCornerShape(14.dp),
-        onClick = onClick
-    ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                modifier = Modifier.padding(2.dp),
-                text = language.name,
-                fontSize = 18.sp,
-                fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
-                fontFamily = figeronaFont,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                color = textColor,
-            )
-        }
     }
 }
 

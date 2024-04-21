@@ -91,7 +91,7 @@ fun MainScreen(
 }
 
 @Composable
-fun BottomBar(
+private fun BottomBar(
     navController: NavHostController,
     systemUiController: SystemUiController,
     settingsViewModel: SettingsViewModel
@@ -146,7 +146,7 @@ fun BottomBar(
 }
 
 @Composable
-fun CustomBottomNavigationItem(
+private fun CustomBottomNavigationItem(
     screen: BottomBarScreen,
     isSelected: Boolean,
     onClick: () -> Unit,

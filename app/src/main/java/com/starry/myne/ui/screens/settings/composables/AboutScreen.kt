@@ -176,7 +176,7 @@ fun AboutScreen(navController: NavController) {
 }
 
 @Composable
-fun LinkButton(
+private fun LinkButton(
     text: String,
     icon: ImageVector,
     onClick: () -> Unit,
@@ -205,7 +205,7 @@ fun LinkButton(
 }
 
 @Composable
-fun AppInfoCard() {
+private fun AppInfoCard() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -296,7 +296,7 @@ fun AppInfoCard() {
 }
 
 @Composable
-fun DeveloperCard(context: Context) {
+private fun DeveloperCard(context: Context) {
     Card(
         modifier = Modifier
             .height(135.dp)
@@ -339,7 +339,7 @@ fun DeveloperCard(context: Context) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = stringResource(id = R.string.dev_username),
+                    text = stringResource(id = R.string.dev_email),
                     fontSize = 16.sp,
                     fontFamily = figeronaFont,
                     fontWeight = FontWeight.Medium,
@@ -368,7 +368,7 @@ fun DeveloperCard(context: Context) {
     }
 }
 
-fun openWebLink(context: Context, url: String) {
+private fun openWebLink(context: Context, url: String) {
     val uri: Uri = Uri.parse(url)
     val intent = Intent(Intent.ACTION_VIEW, uri)
     try {

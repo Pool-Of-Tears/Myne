@@ -91,7 +91,7 @@ private fun ChapterLazyItemItem(
 ) {
     val epubBook = state.epubBook
     val paragraphs = remember { chunkText(chapter.body) }
-    val targetFontSize = (state.fontSize / 10) * 1.8f
+    val targetFontSize = (state.fontSize / 10) * 2.1f
     val fontSize by animateFloatAsState(
         targetValue = targetFontSize,
         animationSpec = tween(durationMillis = 300),

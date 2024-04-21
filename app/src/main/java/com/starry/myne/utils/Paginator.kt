@@ -16,6 +16,18 @@
 
 package com.starry.myne.utils
 
+/**
+ * A class that helps in paginating data from a remote source.
+ *
+ * @param Page The type of the page.
+ * @param BookSet The type of the data set.
+ * @property initialPage The initial page to start from.
+ * @property onLoadUpdated A lambda that is called when the loading state is updated.
+ * @property onRequest A suspend function that is called to request data from the remote source.
+ * @property getNextPage A suspend function that is called to get the next page.
+ * @property onError A suspend function that is called when an error occurs.
+ * @property onSuccess A suspend function that is called when the data is successfully loaded.
+ */
 class Paginator<Page, BookSet>(
     private val initialPage: Page,
     private inline val onLoadUpdated: (Boolean) -> Unit,
@@ -28,6 +40,9 @@ class Paginator<Page, BookSet>(
     private var currentPage = initialPage
     private var isMakingRequest = false
 
+    /**
+     * Loads the next items from the remote source.
+     */
     suspend fun loadNextItems() {
         if (isMakingRequest) {
             return
@@ -46,6 +61,9 @@ class Paginator<Page, BookSet>(
         onLoadUpdated(false)
     }
 
+    /**
+     * Resets the paginator to the initial state.
+     */
     fun reset() {
         currentPage = initialPage
     }
