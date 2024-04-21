@@ -32,7 +32,7 @@ interface LibraryDao {
     @Delete
     fun delete(libraryItem: LibraryItem)
 
-    @Query("SELECT * FROM book_library ORDER BY id ASC")
+    @Query("SELECT * FROM book_library ORDER BY created_at DESC")
     fun getAllItems(): LiveData<List<LibraryItem>>
 
     @Query("SELECT * FROM book_library WHERE id = :id")

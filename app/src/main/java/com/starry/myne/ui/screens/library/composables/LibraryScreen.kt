@@ -20,7 +20,6 @@ import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -50,6 +49,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -110,6 +110,7 @@ import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.library.viewmodels.ImportStatus
 import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
+import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import kotlinx.coroutines.delay
@@ -120,6 +121,7 @@ import java.io.File
 import java.io.FileInputStream
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(navController: NavController) {
     val viewModel: LibraryViewModel = hiltViewModel()
@@ -183,20 +185,17 @@ fun LibraryScreen(navController: NavController) {
             }
         }
     ) { paddingValues ->
-        Crossfade(
-            targetState = state.showImportUI,
-            label = "ImportCrossFade"
-        ) { isImporting ->
-            if (isImporting) {
-                ImportingEpubAnimation(state.importStatus)
-            } else {
-                LibraryContents(
-                    viewModel = viewModel,
-                    lazyListState = lazyListState,
-                    snackBarHostState = snackBarHostState,
-                    navController = navController,
-                    paddingValues = paddingValues
-                )
+        LibraryContents(
+            viewModel = viewModel,
+            lazyListState = lazyListState,
+            snackBarHostState = snackBarHostState,
+            navController = navController,
+            paddingValues = paddingValues
+        )
+
+        if (state.showImportUI) {
+            BasicAlertDialog(onDismissRequest = {}) {
+                ImportingDialog(importStatus = viewModel.state.importStatus)
             }
         }
 
@@ -213,6 +212,7 @@ private fun LibraryContents(
     paddingValues: PaddingValues
 ) {
     val context = LocalContext.current
+    val settingsVm = (context.getActivity() as MainActivity).settingsViewModel
     val libraryItems = viewModel.allItems.observeAsState(listOf()).value
 
     // Show tooltip for library screen.
@@ -260,7 +260,8 @@ private fun LibraryContents(
                             item = item,
                             snackBarHostState = snackBarHostState,
                             navController = navController,
-                            viewModel = viewModel
+                            viewModel = viewModel,
+                            settingsVm = settingsVm
                         )
                     } else {
                         viewModel.deleteItemFromDB(item)
@@ -279,16 +280,16 @@ private fun LibraryLazyItem(
     snackBarHostState: SnackbarHostState,
     navController: NavController,
     viewModel: LibraryViewModel,
+    settingsVm: SettingsViewModel
 ) {
     val context = LocalContext.current
-    val settingsViewModel = (context.getActivity() as MainActivity).settingsViewModel
 
     val coroutineScope = rememberCoroutineScope()
     val openDeleteDialog = remember { mutableStateOf(false) }
 
     // Swipe actions to show book details.
     val detailsAction = SwipeAction(icon = painterResource(
-        id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_info else R.drawable.ic_info_white
+        id = if (settingsVm.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_info else R.drawable.ic_info_white
     ), background = MaterialTheme.colorScheme.primary, onSwipe = {
         viewModel.viewModelScope.launch {
             delay(250L)
@@ -310,7 +311,7 @@ private fun LibraryLazyItem(
 
     // Swipe actions to share book.
     val shareAction = SwipeAction(icon = painterResource(
-        id = if (settingsViewModel.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_share else R.drawable.ic_share_white
+        id = if (settingsVm.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_share else R.drawable.ic_share_white
     ), background = MaterialTheme.colorScheme.primary, onSwipe = {
         val uri = FileProvider.getUriForFile(
             context,
@@ -575,7 +576,7 @@ private fun NoLibraryItemAnimation() {
 }
 
 @Composable
-private fun ImportingEpubAnimation(importStatus: ImportStatus) {
+private fun ImportingDialog(importStatus: ImportStatus) {
     val composition = rememberLottieComposition(
         spec = when (importStatus) {
             ImportStatus.IMPORTING -> LottieCompositionSpec.RawRes(R.raw.epub_importing_lottie)
@@ -585,38 +586,43 @@ private fun ImportingEpubAnimation(importStatus: ImportStatus) {
         }
     )
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
+        ),
+        shape = RoundedCornerShape(24.dp)
     ) {
-        Spacer(modifier = Modifier.weight(1f))
-        LottieAnimation(
-            composition = composition.value,
-            modifier = Modifier.size(280.dp),
-            enableMergePaths = true,
-            isPlaying = true,
-            iterations = if (importStatus == ImportStatus.IMPORTING)
-                LottieConstants.IterateForever else 1,
-        )
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LottieAnimation(
+                composition = composition.value,
+                modifier = Modifier.size(200.dp),
+                enableMergePaths = true,
+                isPlaying = true,
+                iterations = if (importStatus == ImportStatus.IMPORTING)
+                    LottieConstants.IterateForever else 1,
+            )
 
-        val text = when (importStatus) {
-            ImportStatus.IMPORTING -> stringResource(id = R.string.epub_importing)
-            ImportStatus.SUCCESS -> stringResource(id = R.string.epub_imported)
-            ImportStatus.ERROR -> stringResource(id = R.string.epub_import_error)
-            ImportStatus.IDLE -> ""
+            val text = when (importStatus) {
+                ImportStatus.IMPORTING -> stringResource(id = R.string.epub_importing)
+                ImportStatus.SUCCESS -> stringResource(id = R.string.epub_imported)
+                ImportStatus.ERROR -> stringResource(id = R.string.epub_import_error)
+                ImportStatus.IDLE -> ""
+            }
+
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp)
+                    .offset(y = (-28).dp),
+                fontFamily = figeronaFont
+            )
         }
-
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp)
-                .offset(y = (-34).dp),
-            fontFamily = figeronaFont
-        )
-        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
