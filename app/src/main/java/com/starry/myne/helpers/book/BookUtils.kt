@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.starry.myne.utils.book
+package com.starry.myne.helpers.book
 
-import com.starry.myne.repo.models.Author
+import com.starry.myne.api.models.Author
 import java.util.Locale
 
 object BookUtils {

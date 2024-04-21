@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.starry.myne.utils
+package com.starry.myne.helpers
 
 /**
  * A class that helps in paginating data from a remote source.

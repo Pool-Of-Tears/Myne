@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.starry.myne.utils
+package com.starry.myne.helpers
 
 import android.content.Context
 import android.content.SharedPreferences

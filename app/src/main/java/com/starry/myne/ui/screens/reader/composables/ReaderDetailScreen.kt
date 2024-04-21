@@ -62,6 +62,9 @@ import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.database.reader.ReaderData
+import com.starry.myne.helpers.NetworkObserver
+import com.starry.myne.helpers.getActivity
+import com.starry.myne.helpers.toToast
 import com.starry.myne.ui.common.BookDetailTopUI
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.ProgressDots
@@ -71,9 +74,6 @@ import com.starry.myne.ui.screens.reader.activities.ReaderConstants
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailScreenState
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailViewModel
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.utils.NetworkObserver
-import com.starry.myne.utils.getActivity
-import com.starry.myne.utils.toToast
 
 
 @Composable

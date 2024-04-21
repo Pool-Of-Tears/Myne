@@ -71,9 +71,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.starry.myne.BuildConfig
 import com.starry.myne.R
+import com.starry.myne.helpers.Constants
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.theme.figeronaFont
-import com.starry.myne.utils.Constants
 
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -44,10 +44,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.starry.myne.epub.BookTextMapper
 import com.starry.myne.epub.models.EpubChapter
+import com.starry.myne.helpers.noRippleClickable
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderScreenState
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.theme.pacificoFont
-import com.starry.myne.utils.noRippleClickable
 
 
 private fun chunkText(text: String): List<String> {

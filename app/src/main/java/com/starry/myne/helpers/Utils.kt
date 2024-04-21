@@ -15,7 +15,7 @@
  */
 
 
-package com.starry.myne.utils
+package com.starry.myne.helpers
 
 import android.content.ActivityNotFoundException
 import android.content.Context

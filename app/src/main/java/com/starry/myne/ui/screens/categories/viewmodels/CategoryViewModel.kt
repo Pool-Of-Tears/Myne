@@ -24,13 +24,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.starry.myne.repo.BookRepository
-import com.starry.myne.repo.models.Book
-import com.starry.myne.repo.models.BookSet
-import com.starry.myne.utils.Constants
-import com.starry.myne.utils.Paginator
-import com.starry.myne.utils.PreferenceUtil
-import com.starry.myne.utils.book.BookLanguage
+import com.starry.myne.api.BookAPI
+import com.starry.myne.api.models.Book
+import com.starry.myne.api.models.BookSet
+import com.starry.myne.helpers.Constants
+import com.starry.myne.helpers.Paginator
+import com.starry.myne.helpers.PreferenceUtil
+import com.starry.myne.helpers.book.BookLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,7 +45,7 @@ data class CategorisedBooksState(
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
-    private val booksApi: BookRepository,
+    private val booksApi: BookAPI,
     private val preferenceUtil: PreferenceUtil
 ) : ViewModel() {
 
