@@ -52,8 +52,15 @@ object ReaderConstants {
 
 }
 
+/**
+ * Data class to hold intent information for ReaderActivity.
+ *
+ * @param libraryItemId Library item id.
+ * @param chapterIndex Chapter index.
+ * @param isExternalFile Is book opened from external file.
+ */
 data class IntentData(
-    val libraryItemId: Int?, val chapterIndex: Int?, val isExternalBook: Boolean
+    val libraryItemId: Int?, val chapterIndex: Int?, val isExternalFile: Boolean
 )
 
 @AndroidEntryPoint
@@ -119,7 +126,7 @@ class ReaderActivity : AppCompatActivity() {
 
                                 // If book was not opened from external epub file, update the
                                 // reading progress into the database.
-                                if (!intentData.isExternalBook) {
+                                if (!intentData.isExternalFile) {
                                     viewModel.updateReaderProgress(
                                         // Book ID is not null here since we are not opening
                                         // an external book.
@@ -165,12 +172,11 @@ fun handleIntent(
     val chapterIndex = intent.extras?.getInt(
         ReaderConstants.EXTRA_CHAPTER_IDX, ReaderConstants.DEFAULT_NONE
     )
-    val isExternalBook = intent.type == "application/epub+zip"
+    val isExternalFile = intent.type == "application/epub+zip"
 
     // Internal book
     if (libraryItemId != null && libraryItemId != ReaderConstants.DEFAULT_NONE) {
-        // Load epub book from given id and set chapters as items in
-        // reader's recycler view adapter.
+        // Load epub book from library.
         viewModel.loadEpubBook(libraryItemId = libraryItemId, onLoaded = {
             // if there is saved progress for this book, then scroll to
             // last page at exact position were used had left.
@@ -184,18 +190,19 @@ fun handleIntent(
             scrollToPosition(chapterIndex, 0)
         }
 
-        // External book.
-    } else if (isExternalBook) {
+
+    } else if (isExternalFile) {
+        // External book from file.
         intent.data?.let {
             contentResolver.openInputStream(it)?.let { ips ->
                 viewModel.loadEpubBookExternal(ips as FileInputStream)
             }
         }
     } else {
-        onError() // If no book id is provided, then show error.
+        onError() // Invalid intent.
     }
 
-    return IntentData(libraryItemId, chapterIndex, isExternalBook)
+    return IntentData(libraryItemId, chapterIndex, isExternalFile)
 }
 
 /**
