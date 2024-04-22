@@ -58,6 +58,7 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -82,6 +83,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.R
@@ -92,8 +94,11 @@ import com.starry.myne.ui.common.BookItemCard
 import com.starry.myne.ui.common.BookLanguageButton
 import com.starry.myne.ui.common.NetworkError
 import com.starry.myne.ui.common.ProgressDots
+import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.navigation.Screens
+import com.starry.myne.ui.screens.home.viewmodels.AllBooksState
 import com.starry.myne.ui.screens.home.viewmodels.HomeViewModel
+import com.starry.myne.ui.screens.home.viewmodels.SearchBarState
 import com.starry.myne.ui.screens.home.viewmodels.UserAction
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
@@ -117,8 +122,8 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
      */
     val sysBackButtonState = remember { mutableStateOf(false) }
     BackHandler(enabled = sysBackButtonState.value) {
-        if (viewModel.topBarState.isSearchBarVisible) {
-            if (viewModel.topBarState.searchText.isNotEmpty()) {
+        if (viewModel.searchBarState.isSearchBarVisible) {
+            if (viewModel.searchBarState.searchText.isNotEmpty()) {
                 viewModel.onAction(UserAction.TextFieldInput("", networkStatus))
             } else {
                 viewModel.onAction(UserAction.CloseIconClicked)
@@ -131,6 +136,18 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
     val modalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
+
+    // Close search bar when navigating to other screens.
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    LaunchedEffect(currentDestination) {
+        if (currentDestination?.route != BottomBarScreen.Home.route) {
+            viewModel.onAction(UserAction.TextFieldInput("", networkStatus))
+            viewModel.onAction(UserAction.CloseIconClicked)
+        }
+    }
+
+
     ModalBottomSheetLayout(
         sheetState = modalBottomSheetState,
         sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
@@ -206,7 +223,7 @@ private fun HomeScreenScaffold(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    val topBarState = viewModel.topBarState
+    val topBarState = viewModel.searchBarState
 
     Scaffold(
         modifier = Modifier
@@ -275,7 +292,7 @@ fun HomeScreenContents(
     navController: NavController,
     paddingValues: PaddingValues
 ) {
-    val topBarState = viewModel.topBarState
+    val topBarState = viewModel.searchBarState
     val allBooksState = viewModel.allBooksState
 
 
@@ -288,119 +305,15 @@ fun HomeScreenContents(
 
         // If search text is empty show list of all books.
         if (topBarState.searchText.isBlank()) {
-            // show fullscreen progress indicator when loading the first page.
-            if (allBooksState.page == 1L && allBooksState.isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                }
-            } else if (!allBooksState.isLoading && allBooksState.error != null) {
-                NetworkError(onRetryClicked = { viewModel.reloadItems() })
-            } else {
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(start = 8.dp, end = 8.dp),
-                    columns = GridCells.Adaptive(295.dp)
-                ) {
-                    items(allBooksState.items.size) { i ->
-                        val item = allBooksState.items[i]
-                        if (networkStatus == NetworkObserver.Status.Available
-                            && i >= allBooksState.items.size - 1
-                            && !allBooksState.endReached
-                            && !allBooksState.isLoading
-                        ) {
-                            viewModel.loadNextItems()
-                        }
-                        Box(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            BookItemCard(
-                                title = item.title,
-                                author = BookUtils.getAuthorsAsString(item.authors),
-                                language = BookUtils.getLanguagesAsString(item.languages),
-                                subjects = BookUtils.getSubjectsAsString(
-                                    item.subjects, 3
-                                ),
-                                coverImageUrl = item.formats.imagejpeg
-                            ) {
-                                navController.navigate(
-                                    Screens.BookDetailScreen.withBookId(
-                                        item.id.toString()
-                                    )
-                                )
-                            }
-                        }
-
-                    }
-                    item {
-                        if (allBooksState.isLoading) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                ProgressDots()
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Else show the search results.
+            AllBooksList(
+                allBooksState = allBooksState,
+                networkStatus = networkStatus,
+                navController = navController,
+                onRetryClicked = { viewModel.reloadItems() },
+                onLoadNextItems = { viewModel.loadNextItems() }
+            )
         } else {
-            LazyVerticalGrid(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(start = 8.dp, end = 8.dp),
-                columns = GridCells.Adaptive(295.dp)
-            ) {
-                if (topBarState.isSearching) {
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            ProgressDots()
-                        }
-                    }
-                }
-
-                items(topBarState.searchResults.size) { i ->
-                    val item = topBarState.searchResults[i]
-                    Box(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        BookItemCard(
-                            title = item.title,
-                            author = BookUtils.getAuthorsAsString(item.authors),
-                            language = BookUtils.getLanguagesAsString(item.languages),
-                            subjects = BookUtils.getSubjectsAsString(
-                                item.subjects, 3
-                            ),
-                            coverImageUrl = item.formats.imagejpeg
-                        ) {
-                            navController.navigate(
-                                Screens.BookDetailScreen.withBookId(
-                                    item.id.toString()
-                                )
-                            )
-                        }
-                    }
-                }
-            }
+            SearchBookList(searchBarState = topBarState, navController = navController)
         }
     }
 
@@ -442,6 +355,130 @@ private fun HomeTopAppBar(
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(30.dp)
             )
+        }
+    }
+}
+
+@Composable
+private fun AllBooksList(
+    allBooksState: AllBooksState,
+    networkStatus: NetworkObserver.Status,
+    navController: NavController,
+    onRetryClicked: () -> Unit,
+    onLoadNextItems: () -> Unit
+) {
+    // show fullscreen progress indicator when loading the first page.
+    if (allBooksState.page == 1L && allBooksState.isLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+        }
+    } else if (!allBooksState.isLoading && allBooksState.error != null) {
+        NetworkError(onRetryClicked = { onRetryClicked() })
+    } else {
+        LazyVerticalGrid(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(start = 8.dp, end = 8.dp),
+            columns = GridCells.Adaptive(295.dp)
+        ) {
+            items(allBooksState.items.size) { i ->
+                val item = allBooksState.items[i]
+                if (networkStatus == NetworkObserver.Status.Available
+                    && i >= allBooksState.items.size - 1
+                    && !allBooksState.endReached
+                    && !allBooksState.isLoading
+                ) {
+                    onLoadNextItems()
+                }
+                Box(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    BookItemCard(
+                        title = item.title,
+                        author = BookUtils.getAuthorsAsString(item.authors),
+                        language = BookUtils.getLanguagesAsString(item.languages),
+                        subjects = BookUtils.getSubjectsAsString(
+                            item.subjects, 3
+                        ),
+                        coverImageUrl = item.formats.imagejpeg
+                    ) {
+                        navController.navigate(
+                            Screens.BookDetailScreen.withBookId(
+                                item.id.toString()
+                            )
+                        )
+                    }
+                }
+
+            }
+            item {
+                if (allBooksState.isLoading) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        ProgressDots()
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SearchBookList(searchBarState: SearchBarState, navController: NavController) {
+    LazyVerticalGrid(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(start = 8.dp, end = 8.dp),
+        columns = GridCells.Adaptive(295.dp)
+    ) {
+        if (searchBarState.isSearching) {
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    ProgressDots()
+                }
+            }
+        }
+
+        items(searchBarState.searchResults.size) { i ->
+            val item = searchBarState.searchResults[i]
+            Box(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                BookItemCard(
+                    title = item.title,
+                    author = BookUtils.getAuthorsAsString(item.authors),
+                    language = BookUtils.getLanguagesAsString(item.languages),
+                    subjects = BookUtils.getSubjectsAsString(
+                        item.subjects, 3
+                    ),
+                    coverImageUrl = item.formats.imagejpeg
+                ) {
+                    navController.navigate(
+                        Screens.BookDetailScreen.withBookId(
+                            item.id.toString()
+                        )
+                    )
+                }
+            }
         }
     }
 }

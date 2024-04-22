@@ -138,6 +138,7 @@ private fun BottomBar(
                     ) {
                         navController.navigate(screen.route) {
                             popUpTo(navController.graph.findStartDestination().id)
+                            launchSingleTop = true
                         }
                     }
                 }

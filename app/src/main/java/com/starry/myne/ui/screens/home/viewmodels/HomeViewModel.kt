@@ -45,7 +45,7 @@ data class AllBooksState(
     val page: Long = 1L
 )
 
-data class TopBarState(
+data class SearchBarState(
     val searchText: String = "",
     val isSearchBarVisible: Boolean = false,
     val isSortMenuVisible: Boolean = false,
@@ -70,7 +70,7 @@ class HomeViewModel @Inject constructor(
     private val preferenceUtil: PreferenceUtil
 ) : ViewModel() {
     var allBooksState by mutableStateOf(AllBooksState())
-    var topBarState by mutableStateOf(TopBarState())
+    var searchBarState by mutableStateOf(SearchBarState())
 
     private val _language: MutableState<BookLanguage> = mutableStateOf(getPreferredLanguage())
     val language: State<BookLanguage> = _language
@@ -129,20 +129,20 @@ class HomeViewModel @Inject constructor(
     fun onAction(userAction: UserAction) {
         when (userAction) {
             UserAction.CloseIconClicked -> {
-                topBarState = topBarState.copy(isSearchBarVisible = false)
+                searchBarState = searchBarState.copy(isSearchBarVisible = false)
             }
 
             UserAction.SearchIconClicked -> {
-                topBarState = topBarState.copy(isSearchBarVisible = true)
+                searchBarState = searchBarState.copy(isSearchBarVisible = true)
             }
 
             is UserAction.TextFieldInput -> {
-                topBarState = topBarState.copy(searchText = userAction.text)
+                searchBarState = searchBarState.copy(searchText = userAction.text)
                 if (userAction.networkStatus == NetworkObserver.Status.Available) {
                     searchJob?.cancel()
                     searchJob = viewModelScope.launch {
                         if (userAction.text.isNotBlank()) {
-                            topBarState = topBarState.copy(isSearching = true)
+                            searchBarState = searchBarState.copy(isSearching = true)
                         }
                         delay(500L)
                         searchBooks(userAction.text)
@@ -159,7 +159,7 @@ class HomeViewModel @Inject constructor(
     private suspend fun searchBooks(query: String) {
         val bookSet = bookAPI.searchBooks(query)
         val books = bookSet.getOrNull()!!.books.filter { it.formats.applicationepubzip != null }
-        topBarState = topBarState.copy(searchResults = books, isSearching = false)
+        searchBarState = searchBarState.copy(searchResults = books, isSearching = false)
     }
 
     private fun changeLanguage(language: BookLanguage) {

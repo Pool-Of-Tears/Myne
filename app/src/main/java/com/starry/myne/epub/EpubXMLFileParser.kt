@@ -83,7 +83,7 @@ class EpubXMLFileParser(
                     "EpubXMLFileParser",
                     "Fragment ID: $fragmentId doesn't represent a <div> tag. Using the fragment and next fragment logic."
                 )
-                // If the fragment ID doesn't represent a <body> tag, use the fragment and next fragment logic
+                // If the fragment ID doesn't represent a <div> tag, use the fragment and next fragment logic
                 val fragmentElement = document.selectFirst("#$fragmentId")
                 title = fragmentElement?.selectFirst("h1, h2, h3, h4, h5, h6")?.text() ?: ""
                 val bodyBuilder = StringBuilder()
