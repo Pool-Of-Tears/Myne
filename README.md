@@ -19,11 +19,14 @@
 
 ------
 
-**Myne** is a [FOSS](https://en.m.wikipedia.org/wiki/Free_and_open-source_software) Android application to download and read ebooks from [Project GutenBerg](https://gutenberg.org). It uses the [GutenDex](https://github.com/garethbjohnson/gutendex) API to fetch metadata of ebooks in the backend.
+**Myne** is a [FOSS](https://en.m.wikipedia.org/wiki/Free_and_open-source_software) Android application for downloading and reading ebooks from [Project Gutenberg](https://gutenberg.org). It uses the [GutenDex](https://github.com/garethbjohnson/gutendex) API to fetch metadata for ebooks in the backend. Additionally, it functions as an EPUB reader, allowing you to easily import and immerse yourself in your favorite EPUB books!
 
 *The name of the app is inspired from the main character of an anime called [Ascendance of a Bookworm](https://myanimelist.net/anime/39468/Honzuki_no_Gekokujou__Shisho_ni_Naru_Tame_ni_wa_Shudan_wo_Erandeiraremasen)*.
 
-The app also utilizes the Google Books API to retrieve additional data such as synopsis and page count. As the Gutenberg project does not include these values in their metadata. While the app attempts to map the data received from Google Books with Gutenberg's metadata, the mapping is not always 100% accurate. Additionally, not all books available on Gutenberg are accessible on Google Books, or they may be available under different titles. As a result, you may find some books without synopsis or page count, etc.
+
+>[!Note]
+>
+>The app also utilizes the Google Books API to retrieve additional data such as synopsis and page count. As the Gutenberg project does not include these values in their metadata. While the app attempts to map the data received from Google Books with Gutenberg's metadata, the mapping is not always 100% accurate. Additionally, not all books available on Gutenberg are accessible on Google Books, or they may be available under different titles. As a result, you may find some books without synopsis or page count, etc.
 
 ------
 
@@ -44,6 +47,7 @@ The app also utilizes the Google Books API to retrieve additional data such as s
 - Supports [Material You](https://www.androidpolice.com/everything-we-love-about-material-you/amp/) theming in devices running on Android 12+
 - Comes in both light and dark mode.
 - MAD: UI and logic written with pure Kotlin. Single activity, no fragments, only composable destinations.
+
 ------
 
 <h2 align="center">Downloads</h2>
