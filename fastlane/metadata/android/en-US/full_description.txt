@@ -1,4 +1,4 @@
-Myne is a FOSS Android application to download & read ebooks from the Project GutenBerg, it uses GutenDex API to fetch metadata of ebooks in the backend.
+Myne is a FOSS Android application for downloading and reading ebooks from Project Gutenberg. It uses the GutenDex API to fetch metadata for ebooks in the backend. Additionally, it functions as an EPUB reader, allowing you to easily import and immerse yourself in your favorite EPUB books!
 
 Highlights:
 
