@@ -157,9 +157,13 @@ class HomeViewModel @Inject constructor(
     }
 
     private suspend fun searchBooks(query: String) {
+        if (query.isBlank()) return // no need to search for empty query
         val bookSet = bookAPI.searchBooks(query)
-        val books = bookSet.getOrNull()!!.books.filter { it.formats.applicationepubzip != null }
-        searchBarState = searchBarState.copy(searchResults = books, isSearching = false)
+        val books = bookSet.getOrNull()?.books?.filter { it.formats.applicationepubzip != null }
+        searchBarState = searchBarState.copy(
+            searchResults = books ?: emptyList(),
+            isSearching = false
+        )
     }
 
     private fun changeLanguage(language: BookLanguage) {
