@@ -69,7 +69,6 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -94,10 +93,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionResult
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
@@ -107,6 +104,7 @@ import com.starry.myne.helpers.Utils
 import com.starry.myne.helpers.getActivity
 import com.starry.myne.helpers.isScrollingUp
 import com.starry.myne.ui.common.CustomTopAppBar
+import com.starry.myne.ui.common.NoBooksAvailable
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.library.viewmodels.ImportStatus
 import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
@@ -241,7 +239,7 @@ private fun LibraryContents(
             .padding(paddingValues)
     ) {
         if (libraryItems.isEmpty()) {
-            NoLibraryItemAnimation()
+            NoBooksAvailable(text = stringResource(id = R.string.empty_library))
         } else {
             LazyColumn(
                 modifier = Modifier
@@ -536,42 +534,6 @@ private fun LibraryCardButton(
                 modifier = Modifier.padding(start = 2.dp),
             )
         }
-    }
-}
-
-@Composable
-private fun NoLibraryItemAnimation() {
-    Column(
-        modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        val compositionResult: LottieCompositionResult = rememberLottieComposition(
-            spec = LottieCompositionSpec.RawRes(R.raw.no_library_items_lottie)
-        )
-        val progressAnimation by animateLottieCompositionAsState(
-            compositionResult.value,
-            isPlaying = true,
-            iterations = LottieConstants.IterateForever,
-            speed = 1f
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-        LottieAnimation(
-            composition = compositionResult.value,
-            progress = { progressAnimation },
-            modifier = Modifier.size(300.dp),
-            enableMergePaths = true
-        )
-
-        Text(
-            text = stringResource(id = R.string.empty_library),
-            fontWeight = FontWeight.Medium,
-            fontSize = 18.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 12.dp, end = 12.dp)
-        )
-        Spacer(modifier = Modifier.weight(1.4f))
     }
 }
 

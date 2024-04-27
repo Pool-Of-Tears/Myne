@@ -45,7 +45,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -63,7 +62,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -85,7 +83,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.R
 import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.helpers.book.BookLanguage
@@ -106,10 +103,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
-@OptIn(
-    ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class,
-    ExperimentalComposeUiApi::class, ExperimentalCoilApi::class
-)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Status) {
 
@@ -208,10 +202,7 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
 }
 
 
-@ExperimentalCoilApi
-@ExperimentalMaterialApi
-@ExperimentalMaterial3Api
-@ExperimentalComposeUiApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun HomeScreenScaffold(
     viewModel: HomeViewModel,
@@ -483,7 +474,6 @@ private fun SearchBookList(searchBarState: SearchBarState, navController: NavCon
     }
 }
 
-@ExperimentalMaterial3Api
 @Composable
 private fun SearchAppBar(
     onCloseIconClicked: () -> Unit,
@@ -550,10 +540,7 @@ private fun SearchAppBar(
     }
 }
 
-@ExperimentalMaterialApi
-@ExperimentalCoilApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterial3Api
+
 @Composable
 @Preview(showBackground = true)
 fun HomeScreenPreview() {

@@ -32,6 +32,7 @@ import com.starry.myne.helpers.Paginator
 import com.starry.myne.helpers.PreferenceUtil
 import com.starry.myne.helpers.book.BookLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -89,6 +90,11 @@ class CategoryViewModel @Inject constructor(
                 },
                 onRequest = { nextPage ->
                     try {
+                        // If response is cached it will show stuff immediately while
+                        // we are navigating and navigation animation is still showing up
+                        // which could cause flickering, so we add artificial delay of
+                        // 400ms as it doesn't do any harm and improves the overall UX
+                        delay(400)
                         booksApi.getBooksByCategory(category, nextPage, language.value)
                     } catch (exc: Exception) {
                         Result.failure(exc)

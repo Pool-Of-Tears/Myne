@@ -33,7 +33,6 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,7 +41,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -53,7 +51,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.R
 import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.helpers.book.BookLanguage
@@ -72,10 +69,7 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 
-@OptIn(
-    ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class,
-    ExperimentalComposeUiApi::class, ExperimentalCoilApi::class
-)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CategoryDetailScreen(
     category: String, navController: NavController, networkStatus: NetworkObserver.Status
@@ -144,10 +138,7 @@ fun CategoryDetailScreen(
 
 }
 
-@ExperimentalMaterialApi
-@ExperimentalCoilApi
-@ExperimentalMaterial3Api
-@ExperimentalComposeUiApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CategoryDetailScaffold(
     category: String,

@@ -16,12 +16,6 @@
 
 package com.starry.myne.ui.navigation
 
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -42,34 +36,6 @@ import com.starry.myne.ui.screens.settings.composables.AboutScreen
 import com.starry.myne.ui.screens.settings.composables.OSLScreen
 import com.starry.myne.ui.screens.settings.composables.SettingsScreen
 import com.starry.myne.ui.screens.welcome.composables.WelcomeScreen
-
-
-private const val NAVIGATION_ANIM_DURATION = 300
-private const val FADEIN_ANIM_DURATION = 400
-
-private fun enterTransition() = slideInHorizontally(
-    initialOffsetX = { NAVIGATION_ANIM_DURATION }, animationSpec = tween(
-        durationMillis = NAVIGATION_ANIM_DURATION, easing = FastOutSlowInEasing
-    )
-) + fadeIn(animationSpec = tween(NAVIGATION_ANIM_DURATION))
-
-private fun exitTransition() = slideOutHorizontally(
-    targetOffsetX = { -NAVIGATION_ANIM_DURATION }, animationSpec = tween(
-        durationMillis = NAVIGATION_ANIM_DURATION, easing = FastOutSlowInEasing
-    )
-) + fadeOut(animationSpec = tween(NAVIGATION_ANIM_DURATION))
-
-private fun popEnterTransition() = slideInHorizontally(
-    initialOffsetX = { -NAVIGATION_ANIM_DURATION }, animationSpec = tween(
-        durationMillis = NAVIGATION_ANIM_DURATION, easing = FastOutSlowInEasing
-    )
-) + fadeIn(animationSpec = tween(NAVIGATION_ANIM_DURATION))
-
-private fun popExitTransition() = slideOutHorizontally(
-    targetOffsetX = { NAVIGATION_ANIM_DURATION }, animationSpec = tween(
-        durationMillis = NAVIGATION_ANIM_DURATION, easing = FastOutSlowInEasing
-    )
-) + fadeOut(animationSpec = tween(NAVIGATION_ANIM_DURATION))
 
 
 @Composable
@@ -95,18 +61,18 @@ fun NavGraph(
 
         /** Home Screen */
         composable(route = BottomBarScreen.Home.route,
-            enterTransition = { fadeIn(animationSpec = tween(FADEIN_ANIM_DURATION)) },
+            enterTransition = { bottomNavEnter() },
             exitTransition = {
                 if (initialState.destination.route == Screens.BookDetailScreen.route) {
                     exitTransition()
-                } else fadeOut(animationSpec = tween(FADEIN_ANIM_DURATION))
+                } else bottomNavExit()
             },
             popEnterTransition = {
                 if (targetState.destination.route == Screens.BookDetailScreen.route) {
                     popEnterTransition()
-                } else fadeIn(animationSpec = tween(FADEIN_ANIM_DURATION))
+                } else bottomNavPopEnter()
             },
-            popExitTransition = { fadeOut(animationSpec = tween(FADEIN_ANIM_DURATION)) }) {
+            popExitTransition = { bottomNavPopExit() }) {
             HomeScreen(navController, networkStatus)
         }
 
@@ -129,18 +95,18 @@ fun NavGraph(
 
         /** Categories Screen */
         composable(route = BottomBarScreen.Categories.route,
-            enterTransition = { fadeIn(animationSpec = tween(FADEIN_ANIM_DURATION)) },
+            enterTransition = { bottomNavEnter() },
             exitTransition = {
                 if (initialState.destination.route == Screens.CategoryDetailScreen.route) {
                     exitTransition()
-                } else fadeOut(animationSpec = tween(FADEIN_ANIM_DURATION))
+                } else bottomNavExit()
             },
             popEnterTransition = {
                 if (targetState.destination.route == Screens.CategoryDetailScreen.route) {
                     popEnterTransition()
-                } else fadeIn(animationSpec = tween(FADEIN_ANIM_DURATION))
+                } else bottomNavPopEnter()
             },
-            popExitTransition = { fadeOut(animationSpec = tween(FADEIN_ANIM_DURATION)) }) {
+            popExitTransition = { bottomNavPopExit() }) {
             CategoriesScreen(navController)
         }
 
@@ -161,18 +127,18 @@ fun NavGraph(
 
         /** Library Screen */
         composable(route = BottomBarScreen.Library.route,
-            enterTransition = { fadeIn(animationSpec = tween(FADEIN_ANIM_DURATION)) },
+            enterTransition = { bottomNavEnter() },
             exitTransition = {
                 if (initialState.destination.route == Screens.BookDetailScreen.route) {
                     exitTransition()
-                } else fadeOut(animationSpec = tween(FADEIN_ANIM_DURATION))
+                } else bottomNavExit()
             },
             popEnterTransition = {
                 if (targetState.destination.route == BottomBarScreen.Library.route) {
                     popEnterTransition()
-                } else fadeIn(animationSpec = tween(FADEIN_ANIM_DURATION))
+                } else bottomNavPopEnter()
             },
-            popExitTransition = { fadeOut(animationSpec = tween(FADEIN_ANIM_DURATION)) }) {
+            popExitTransition = { bottomNavPopExit() }) {
             LibraryScreen(navController)
         }
 
@@ -197,18 +163,18 @@ fun NavGraph(
 
         /** Settings Screen */
         composable(route = BottomBarScreen.Settings.route,
-            enterTransition = { fadeIn(animationSpec = tween(FADEIN_ANIM_DURATION)) },
+            enterTransition = { bottomNavEnter() },
             exitTransition = {
                 if (initialState.destination.route == Screens.OSLScreen.route || initialState.destination.route == Screens.AboutScreen.route) {
                     exitTransition()
-                } else fadeOut(animationSpec = tween(FADEIN_ANIM_DURATION))
+                } else bottomNavExit()
             },
             popEnterTransition = {
                 if (initialState.destination.route == Screens.OSLScreen.route || initialState.destination.route == Screens.AboutScreen.route) {
                     popEnterTransition()
-                } else fadeIn(animationSpec = tween(FADEIN_ANIM_DURATION))
+                } else bottomNavPopEnter()
             },
-            popExitTransition = { fadeOut(animationSpec = tween(FADEIN_ANIM_DURATION)) }) {
+            popExitTransition = { bottomNavPopExit() }) {
             SettingsScreen(navController)
         }
 
