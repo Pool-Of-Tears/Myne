@@ -33,6 +33,7 @@ import com.starry.myne.helpers.book.BookDownloader
 import com.starry.myne.helpers.book.BookUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -66,6 +67,10 @@ class BookDetailViewModel @Inject constructor(
                 // This function is called again when user clicks on retry
                 // button. So, we need to reset the state to default values
                 state = BookDetailScreenState()
+                // If API response is cached, it will not show the loading
+                // indicator. So, we are adding a delay to show the loading
+                // indicator. This is just for better UX.
+                delay(400)
                 state = if (extraInfo != null) {
                     state.copy(bookSet = bookSet, extraInfo = extraInfo)
                 } else {
