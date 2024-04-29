@@ -48,6 +48,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -65,6 +66,7 @@ import com.starry.myne.database.reader.ReaderData
 import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.helpers.getActivity
 import com.starry.myne.helpers.toToast
+import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.common.BookDetailTopUI
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.ProgressDots
@@ -198,8 +200,12 @@ private fun ReaderDetailScaffold(
 
 @Composable
 private fun ChapterItem(chapterTitle: String, onClick: () -> Unit) {
+    val view = LocalView.current
     Card(
-        onClick = { onClick() },
+        onClick = {
+            view.weakHapticFeedback()
+            onClick()
+        },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
                 2.dp

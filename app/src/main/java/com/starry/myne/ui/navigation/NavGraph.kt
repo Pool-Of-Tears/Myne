@@ -68,7 +68,7 @@ fun NavGraph(
                 } else bottomNavExit()
             },
             popEnterTransition = {
-                if (targetState.destination.route == Screens.BookDetailScreen.route) {
+                if (initialState.destination.route == Screens.BookDetailScreen.route) {
                     popEnterTransition()
                 } else bottomNavPopEnter()
             },
@@ -102,7 +102,7 @@ fun NavGraph(
                 } else bottomNavExit()
             },
             popEnterTransition = {
-                if (targetState.destination.route == Screens.CategoryDetailScreen.route) {
+                if (initialState.destination.route == Screens.CategoryDetailScreen.route) {
                     popEnterTransition()
                 } else bottomNavPopEnter()
             },
@@ -134,7 +134,7 @@ fun NavGraph(
                 } else bottomNavExit()
             },
             popEnterTransition = {
-                if (targetState.destination.route == BottomBarScreen.Library.route) {
+                if (initialState.destination.route == Screens.ReaderDetailScreen.route) {
                     popEnterTransition()
                 } else bottomNavPopEnter()
             },

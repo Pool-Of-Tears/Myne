@@ -16,6 +16,9 @@
 
 package com.starry.myne.ui.screens.categories.composables
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -84,16 +87,35 @@ fun CategoryDetailScreen(
                     .background(MaterialTheme.colorScheme.background)
                     .padding(it)
             ) {
-                if (state.page == 1L && state.isLoading) {
+                AnimatedVisibility(
+                    visible = state.page == 1L && state.isLoading,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
                     BookItemShimmerLoader()
-                } else if (!state.isLoading && state.error != null) {
+                }
+                AnimatedVisibility(
+                    visible = !state.isLoading && state.error != null,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
                     NetworkError(onRetryClicked = { viewModel.reloadItems() })
-                } else if (!state.isLoading && state.items.isEmpty()) {
+                }
+                AnimatedVisibility(
+                    visible = !state.isLoading && state.items.isEmpty() && state.error == null,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
                     NoBooksAvailable(
                         text = stringResource(id = R.string.no_books_found_for_lang_and_cat)
                             .format(viewModel.language.value.name.lowercase(Locale.getDefault()))
                     )
-                } else {
+                }
+                AnimatedVisibility(
+                    visible = !state.isLoading || (state.items.isNotEmpty() && state.error == null),
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
                     LazyVerticalGrid(
                         modifier = Modifier
                             .fillMaxSize()
@@ -122,7 +144,6 @@ fun CategoryDetailScreen(
                                     navController.navigate(Screens.BookDetailScreen.withBookId(item.id.toString()))
                                 }
                             }
-
                         }
                         item {
                             if (state.isLoading) {
@@ -138,7 +159,7 @@ fun CategoryDetailScreen(
                         }
                     }
                 }
-
             }
+
         })
 }

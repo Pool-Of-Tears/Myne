@@ -37,6 +37,7 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.starry.myne.R
+import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.categories.viewmodels.CategoryViewModel
@@ -104,6 +106,7 @@ fun CategoriesScreen(navController: NavController) {
 
 @Composable
 private fun CategoriesItem(category: String, onClick: () -> Unit) {
+    val view = LocalView.current
     Card(
         modifier = Modifier
             .height(90.dp)
@@ -115,7 +118,10 @@ private fun CategoriesItem(category: String, onClick: () -> Unit) {
             )
         ),
         shape = RoundedCornerShape(6.dp),
-        onClick = onClick
+        onClick = {
+            view.weakHapticFeedback()
+            onClick()
+        }
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(

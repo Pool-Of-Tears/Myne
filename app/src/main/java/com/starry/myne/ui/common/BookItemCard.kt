@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,6 +54,7 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.starry.myne.R
+import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.common.placeholder.placeholder
 import com.starry.myne.ui.theme.figeronaFont
 
@@ -68,11 +69,15 @@ fun BookItemCard(
     loadingEffect: Boolean = false,
     onClick: () -> Unit
 ) {
+    val view = LocalView.current
     Card(
         modifier = Modifier
             .height(160.dp)
             .fillMaxWidth(),
-        onClick = onClick,
+        onClick = {
+            view.weakHapticFeedback()
+            onClick()
+        },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
                 2.dp

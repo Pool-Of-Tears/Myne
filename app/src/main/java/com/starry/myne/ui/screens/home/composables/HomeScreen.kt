@@ -17,8 +17,11 @@
 package com.starry.myne.ui.screens.home.composables
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -254,12 +257,27 @@ private fun AllBooksList(
     onRetryClicked: () -> Unit,
     onLoadNextItems: () -> Unit
 ) {
-    // show fullscreen progress indicator when loading the first page.
-    if (allBooksState.page == 1L && allBooksState.isLoading) {
+    AnimatedVisibility(
+        visible = allBooksState.page == 1L && allBooksState.isLoading,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         BookItemShimmerLoader()
-    } else if (!allBooksState.isLoading && allBooksState.error != null) {
+    }
+
+    AnimatedVisibility(
+        visible = !allBooksState.isLoading && allBooksState.error != null,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         NetworkError(onRetryClicked = { onRetryClicked() })
-    } else {
+    }
+
+    AnimatedVisibility(
+        visible = !allBooksState.isLoading || allBooksState.error == null,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxSize()
@@ -298,10 +316,14 @@ private fun AllBooksList(
                         )
                     }
                 }
-
             }
+
             item {
-                if (allBooksState.isLoading) {
+                AnimatedVisibility(
+                    visible = allBooksState.isLoading,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
