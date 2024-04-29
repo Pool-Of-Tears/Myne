@@ -53,10 +53,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -68,6 +70,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.starry.myne.R
+import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.common.SlideInAnimatedContainer
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.screens.welcome.viewmodels.WelcomeViewModel
@@ -82,12 +85,7 @@ fun WelcomeScreen(navController: NavController) {
         true -> stringResource(id = R.string.reader_option_inbuilt)
         false -> stringResource(id = R.string.reader_option_external)
     }
-    val internalReaderDialog = remember { mutableStateOf(false) }
-    val radioOptions = listOf(
-        stringResource(id = R.string.reader_option_inbuilt),
-        stringResource(id = R.string.reader_option_external)
-    )
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(internalReaderValue) }
+    val showReaderPickerDialog = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -118,7 +116,7 @@ fun WelcomeScreen(navController: NavController) {
             ReaderSelectionCard(
                 internalReaderValue = internalReaderValue,
                 onReaderClicked = {
-                    internalReaderDialog.value = true
+                    showReaderPickerDialog.value = true
                 },
                 onContinueClicked = {
                     viewModel.saveOnBoardingState(completed = true)
@@ -130,96 +128,43 @@ fun WelcomeScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(60.dp))
 
-        if (internalReaderDialog.value) {
-            AlertDialog(onDismissRequest = {
-                internalReaderDialog.value = false
-            }, title = {
-                Text(
-                    text = stringResource(id = R.string.default_reader_dialog_title),
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }, text = {
-                Column(
-                    modifier = Modifier.selectableGroup(),
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    radioOptions.forEach { text ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(46.dp)
-                                .selectable(
-                                    selected = (text == selectedOption),
-                                    onClick = { onOptionSelected(text) },
-                                    role = Role.RadioButton,
-                                ),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            RadioButton(
-                                selected = (text == selectedOption),
-                                onClick = null,
-                                colors = RadioButtonDefaults.colors(
-                                    selectedColor = MaterialTheme.colorScheme.primary,
-                                    unselectedColor = MaterialTheme.colorScheme.inversePrimary,
-                                    disabledSelectedColor = Color.Black,
-                                    disabledUnselectedColor = Color.Black
-                                ),
-                            )
-                            Text(
-                                text = text,
-                                modifier = Modifier.padding(start = 16.dp),
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontFamily = figeronaFont
-                            )
+        if (showReaderPickerDialog.value) {
+            ReaderDialog(
+                internalReaderValue = internalReaderValue,
+                onDismissRequest = { showReaderPickerDialog.value = false },
+                onConfirmClicked = { selectedOption ->
+                    showReaderPickerDialog.value = false
+                    when (selectedOption) {
+                        context.getString(R.string.reader_option_inbuilt) -> {
+                            viewModel.setInternalReaderSetting(true)
+                        }
+
+                        context.getString(R.string.reader_option_external) -> {
+                            viewModel.setInternalReaderSetting(false)
                         }
                     }
-                }
-            }, confirmButton = {
-                FilledTonalButton(
-                    onClick = {
-                        internalReaderDialog.value = false
-
-                        when (selectedOption) {
-                            context.getString(R.string.reader_option_inbuilt) -> {
-                                viewModel.setInternalReaderSetting(true)
-                            }
-
-                            context.getString(R.string.reader_option_external) -> {
-                                viewModel.setInternalReaderSetting(false)
-                            }
-                        }
-                    }, colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                ) {
-                    Text(stringResource(id = R.string.confirm))
-                }
-            }, dismissButton = {
-                TextButton(onClick = {
-                    internalReaderDialog.value = false
-                }) {
-                    Text(stringResource(id = R.string.cancel))
-                }
-            })
+                },
+                onCancelClicked = { showReaderPickerDialog.value = false }
+            )
         }
     }
 }
 
 @Composable
-fun ReaderSelectionCard(
+private fun ReaderSelectionCard(
     internalReaderValue: String,
     onReaderClicked: () -> Unit,
     onContinueClicked: () -> Unit
 ) {
+    val view = LocalView.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 18.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                4.dp
-            )
+            containerColor = MaterialTheme.colorScheme
+                .surfaceColorAtElevation(4.dp)
         ),
     ) {
         Column(
@@ -248,7 +193,10 @@ fun ReaderSelectionCard(
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 OutlinedButton(
-                    onClick = onReaderClicked,
+                    onClick = {
+                        view.weakHapticFeedback()
+                        onReaderClicked()
+                    },
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.weight(1f)
                 ) {
@@ -262,7 +210,10 @@ fun ReaderSelectionCard(
                 Spacer(modifier = Modifier.width(10.dp))
 
                 Button(
-                    onClick = onContinueClicked,
+                    onClick = {
+                        view.weakHapticFeedback()
+                        onContinueClicked()
+                    },
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.weight(1f)
                 ) {
@@ -274,6 +225,91 @@ fun ReaderSelectionCard(
             }
 
         }
-
     }
 }
+
+@Composable
+private fun ReaderDialog(
+    internalReaderValue: String,
+    onDismissRequest: () -> Unit,
+    onConfirmClicked: (String) -> Unit,
+    onCancelClicked: () -> Unit
+) {
+    val radioOptions = listOf(
+        stringResource(id = R.string.reader_option_inbuilt),
+        stringResource(id = R.string.reader_option_external)
+    )
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(internalReaderValue) }
+
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = {
+            Text(
+                text = stringResource(id = R.string.default_reader_dialog_title),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }, text = {
+            Column(
+                modifier = Modifier.selectableGroup(),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                radioOptions.forEach { text ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(46.dp)
+                            .selectable(
+                                selected = (text == selectedOption),
+                                onClick = { onOptionSelected(text) },
+                                role = Role.RadioButton,
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(
+                            selected = (text == selectedOption),
+                            onClick = null,
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = MaterialTheme.colorScheme.primary,
+                                unselectedColor = MaterialTheme.colorScheme.inversePrimary,
+                                disabledSelectedColor = Color.Black,
+                                disabledUnselectedColor = Color.Black
+                            ),
+                        )
+                        Text(
+                            text = text,
+                            modifier = Modifier.padding(start = 16.dp),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontFamily = figeronaFont
+                        )
+                    }
+                }
+            }
+        }, confirmButton = {
+            FilledTonalButton(
+                onClick = { onConfirmClicked(selectedOption) },
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
+                Text(stringResource(id = R.string.confirm))
+            }
+        }, dismissButton = {
+            TextButton(
+                onClick = onCancelClicked,
+            ) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        })
+}
+
+@Preview
+@Composable
+private fun WelcomePV() {
+    ReaderSelectionCard(
+        internalReaderValue = "Internal Reader",
+        onReaderClicked = { },
+        onContinueClicked = { }
+    )
+}
+

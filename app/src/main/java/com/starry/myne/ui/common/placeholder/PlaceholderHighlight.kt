@@ -1,6 +1,5 @@
 package com.starry.myne.ui.common.placeholder
 
-
 import androidx.annotation.FloatRange
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.InfiniteRepeatableSpec

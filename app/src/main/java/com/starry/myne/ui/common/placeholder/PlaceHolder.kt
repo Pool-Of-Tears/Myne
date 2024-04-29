@@ -1,6 +1,5 @@
 package com.starry.myne.ui.common.placeholder
 
-
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.InfiniteRepeatableSpec
