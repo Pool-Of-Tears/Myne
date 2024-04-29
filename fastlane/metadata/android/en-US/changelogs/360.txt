@@ -1,0 +1,5 @@
+- Fixed a crash caused by NPE when there is no network connection on the first launch.
+- Enhanced navigation animations for smoother transitions between screens.
+- Improved the loading animation for the book list.
+- The chapter title font size is now 1.5x the size of the body text font size, rather than a fixed size.
+- Some other UI/UX improvements and fixes.
