@@ -18,6 +18,8 @@ package com.starry.myne.helpers
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.view.HapticFeedbackConstants
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
@@ -66,4 +68,12 @@ fun LazyListState.isScrollingUp(): Boolean {
             }
         }
     }.value
+}
+
+fun View.weakHapticFeedback() {
+    this.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+}
+
+fun View.strongHapticFeedback() {
+    this.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
 }

@@ -65,6 +65,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -86,6 +87,7 @@ import com.starry.myne.R
 import com.starry.myne.helpers.Utils
 import com.starry.myne.helpers.book.BookUtils
 import com.starry.myne.helpers.getActivity
+import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.common.BookDetailTopUI
 import com.starry.myne.ui.common.NetworkError
 import com.starry.myne.ui.common.ProgressDots
@@ -171,6 +173,7 @@ private fun BookDetailContents(
     navController: NavController,
     snackBarHostState: SnackbarHostState
 ) {
+    val view = LocalView.current
     val context = LocalContext.current
     val settingsVM = (context.getActivity() as MainActivity).settingsViewModel
 
@@ -287,6 +290,7 @@ private fun BookDetailContents(
                 }
 
                 context.getString(R.string.download_book_button) -> {
+                    view.weakHapticFeedback()
                     viewModel.downloadBook(
                         book = book,
                         downloadProgressListener = { downloadProgress, downloadStatus ->
@@ -495,12 +499,18 @@ private fun MiddleBar(
 private fun BookDetailTopBar(
     onBackClicked: () -> Unit, onShareClicked: () -> Unit
 ) {
+    val view = LocalView.current
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Box(modifier = Modifier
-            .padding(22.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
-            .clickable { onBackClicked() }) {
+        Box(
+            modifier = Modifier
+                .padding(22.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
+                .clickable {
+                    view.weakHapticFeedback()
+                    onBackClicked()
+                }
+        ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                 contentDescription = stringResource(id = R.string.back_button_desc),
@@ -526,7 +536,10 @@ private fun BookDetailTopBar(
             .padding(22.dp)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
-            .clickable { onShareClicked() }) {
+            .clickable {
+                view.weakHapticFeedback()
+                onShareClicked()
+            }) {
             Icon(
                 imageVector = Icons.Outlined.Share,
                 contentDescription = stringResource(id = R.string.back_button_desc),

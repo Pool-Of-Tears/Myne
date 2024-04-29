@@ -53,19 +53,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.theme.figeronaFont
 
 
 @Composable
 fun SettingItem(icon: ImageVector, mainText: String, subText: String, onClick: () -> Unit) {
+    val view = LocalView.current
     Card(
-        onClick = { onClick() },
+        onClick = {
+            view.weakHapticFeedback()
+            onClick()
+        },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
                 2.dp
@@ -141,7 +145,7 @@ fun SettingItemWIthSwitch(
     switchState: MutableState<Boolean>,
     onCheckChange: (Boolean) -> Unit
 ) {
-    val haptic = LocalHapticFeedback.current
+    val view = LocalView.current
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
@@ -202,7 +206,7 @@ fun SettingItemWIthSwitch(
             Switch(
                 checked = switchState.value,
                 onCheckedChange = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    view.weakHapticFeedback()
                     onCheckChange(it)
                 },
                 thumbContent = if (switchState.value) {

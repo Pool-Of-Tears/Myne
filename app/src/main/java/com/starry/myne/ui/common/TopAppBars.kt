@@ -40,12 +40,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.starry.myne.R
+import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.theme.pacificoFont
 
 @Composable
@@ -76,8 +78,7 @@ fun CustomTopAppBar(headerText: String, iconRes: Int) {
             )
         }
         HorizontalDivider(
-            thickness = 2.dp,
-            color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
+            thickness = 2.dp, color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
         )
     }
 }
@@ -93,8 +94,7 @@ fun CustomTopAppBar(headerText: String, onBackButtonClicked: () -> Unit) {
             modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
         ) {
             TopBarActionItem(
-                icon = Icons.AutoMirrored.Outlined.ArrowBack,
-                onclick = onBackButtonClicked
+                icon = Icons.AutoMirrored.Outlined.ArrowBack, onclick = onBackButtonClicked
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
@@ -108,8 +108,7 @@ fun CustomTopAppBar(headerText: String, onBackButtonClicked: () -> Unit) {
             Spacer(modifier = Modifier.weight(2.35f))
         }
         HorizontalDivider(
-            thickness = 2.dp,
-            color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
+            thickness = 2.dp, color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
         )
     }
 }
@@ -131,8 +130,7 @@ fun CustomTopAppBar(
             modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
         ) {
             TopBarActionItem(
-                icon = Icons.AutoMirrored.Outlined.ArrowBack,
-                onclick = onBackButtonClicked
+                icon = Icons.AutoMirrored.Outlined.ArrowBack, onclick = onBackButtonClicked
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
@@ -145,13 +143,11 @@ fun CustomTopAppBar(
             )
             Spacer(modifier = Modifier.weight(1f))
             TopBarActionItem(
-                icon = ImageVector.vectorResource(id = actionIconRes),
-                onclick = onActionClicked
+                icon = ImageVector.vectorResource(id = actionIconRes), onclick = onActionClicked
             )
         }
         HorizontalDivider(
-            thickness = 2.dp,
-            color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
+            thickness = 2.dp, color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
         )
     }
 
@@ -159,11 +155,17 @@ fun CustomTopAppBar(
 
 @Composable
 private fun TopBarActionItem(icon: ImageVector, onclick: () -> Unit) {
-    Box(modifier = Modifier
-        .padding(start = 16.dp, top = 2.dp, bottom = 18.dp, end = 16.dp)
-        .clip(CircleShape)
-        .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
-        .clickable { onclick() }) {
+    val view = LocalView.current
+    Box(
+        modifier = Modifier
+            .padding(start = 16.dp, top = 2.dp, bottom = 18.dp, end = 16.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
+            .clickable {
+                view.weakHapticFeedback()
+                onclick()
+            }
+    ) {
         Icon(
             imageVector = icon,
             contentDescription = stringResource(id = R.string.back_button_desc),
@@ -179,9 +181,9 @@ fun TopAppBarsPV() {
     Column(Modifier.fillMaxSize()) {
         CustomTopAppBar(headerText = "Something", iconRes = R.drawable.ic_nav_categories)
         CustomTopAppBar(headerText = "Something", onBackButtonClicked = {})
-        CustomTopAppBar(
-            headerText = "Something",
+        CustomTopAppBar(headerText = "Something",
             actionIconRes = R.drawable.ic_sort_language,
-            onBackButtonClicked = { /*TODO*/ }, onActionClicked = {})
+            onBackButtonClicked = { /*TODO*/ },
+            onActionClicked = {})
     }
 }

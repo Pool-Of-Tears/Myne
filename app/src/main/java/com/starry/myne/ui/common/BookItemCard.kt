@@ -27,6 +27,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -35,10 +37,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +54,8 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.starry.myne.R
+import com.starry.myne.helpers.weakHapticFeedback
+import com.starry.myne.ui.common.placeholder.placeholder
 import com.starry.myne.ui.theme.figeronaFont
 
 
@@ -60,13 +66,18 @@ fun BookItemCard(
     language: String,
     subjects: String,
     coverImageUrl: String?,
+    loadingEffect: Boolean = false,
     onClick: () -> Unit
 ) {
+    val view = LocalView.current
     Card(
         modifier = Modifier
             .height(160.dp)
             .fillMaxWidth(),
-        onClick = onClick,
+        onClick = {
+            view.weakHapticFeedback()
+            onClick()
+        },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
                 2.dp
@@ -86,6 +97,7 @@ fun BookItemCard(
                     .padding(10.dp)
                     .clip(RoundedCornerShape(6.dp))
                     .background(imageBackground)
+                    .placeholder(isLoading = loadingEffect)
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current).data(coverImageUrl)
@@ -107,10 +119,9 @@ fun BookItemCard(
                 Text(
                     text = title,
                     modifier = Modifier
-                        .padding(
-                            start = 12.dp, end = 8.dp
-                        )
-                        .fillMaxWidth(),
+                        .padding(start = 12.dp, end = 8.dp)
+                        .fillMaxWidth()
+                        .placeholder(isLoading = loadingEffect),
                     fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
                     fontSize = 18.sp,
                     fontFamily = figeronaFont,
@@ -122,7 +133,9 @@ fun BookItemCard(
 
                 Text(
                     text = author,
-                    modifier = Modifier.padding(start = 12.dp, end = 8.dp),
+                    modifier = Modifier
+                        .padding(start = 12.dp, end = 8.dp)
+                        .placeholder(isLoading = loadingEffect),
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
                     fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
@@ -134,7 +147,9 @@ fun BookItemCard(
 
                 Text(
                     text = language,
-                    modifier = Modifier.padding(start = 12.dp, end = 8.dp),
+                    modifier = Modifier
+                        .padding(start = 12.dp, end = 8.dp)
+                        .placeholder(isLoading = loadingEffect),
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -144,7 +159,9 @@ fun BookItemCard(
 
                 Text(
                     text = subjects,
-                    modifier = Modifier.padding(start = 12.dp, end = 8.dp, bottom = 2.dp),
+                    modifier = Modifier
+                        .padding(start = 12.dp, end = 8.dp, bottom = 2.dp)
+                        .placeholder(isLoading = loadingEffect),
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -154,6 +171,38 @@ fun BookItemCard(
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
+            }
+        }
+    }
+}
+
+@Composable
+fun BookItemShimmerLoader() {
+    Column(modifier = Modifier.fillMaxSize()) {
+        LazyVerticalGrid(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(start = 8.dp, end = 8.dp),
+            columns = GridCells.Adaptive(295.dp)
+        ) {
+            items(16) {
+                Box(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    BookItemCard(
+                        title = "Crime and Punishment",
+                        author = "Fyodor Dostoyevsky",
+                        language = "English",
+                        subjects = "Crime, Psychological aspects, Fiction",
+                        coverImageUrl = "No",
+                        loadingEffect = true,
+                        onClick = {}
+                    )
+                }
             }
         }
     }
@@ -169,8 +218,7 @@ fun BookCardPreview() {
         author = "Fyodor Dostoyevsky",
         language = "English",
         subjects = "Crime, Psychological aspects, Fiction",
-        coverImageUrl = "https://www.gutenberg.org/cache/epub/2554/pg2554.cover.medium.jpg"
-    ) {
-        TODO()
-    }
+        coverImageUrl = "https://www.gutenberg.org/cache/epub/2554/pg2554.cover.medium.jpg",
+        onClick = {}
+    )
 }

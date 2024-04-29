@@ -17,8 +17,11 @@
 package com.starry.myne.ui.screens.home.composables
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,16 +38,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,6 +48,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -60,22 +57,16 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -88,7 +79,8 @@ import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.helpers.book.BookLanguage
 import com.starry.myne.helpers.book.BookUtils
 import com.starry.myne.ui.common.BookItemCard
-import com.starry.myne.ui.common.BookLanguageButton
+import com.starry.myne.ui.common.BookItemShimmerLoader
+import com.starry.myne.ui.common.BookLanguageSheet
 import com.starry.myne.ui.common.NetworkError
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.navigation.BottomBarScreen
@@ -99,15 +91,19 @@ import com.starry.myne.ui.screens.home.viewmodels.SearchBarState
 import com.starry.myne.ui.screens.home.viewmodels.UserAction
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Status) {
 
     val viewModel: HomeViewModel = hiltViewModel()
+
+    // Load the first set of items.
+    LaunchedEffect(key1 = true) {
+        delay(200)
+        viewModel.loadNextItems()
+    }
 
     /*
      Block back button press if search bar is visible to avoid
@@ -125,12 +121,6 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
         }
     }
 
-    val haptic = LocalHapticFeedback.current
-    val coroutineScope = rememberCoroutineScope()
-    val modalBottomSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden
-    )
-
     // Close search bar when navigating to other screens.
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -141,76 +131,32 @@ fun HomeScreen(navController: NavController, networkStatus: NetworkObserver.Stat
         }
     }
 
+    val showLanguageSheet = remember { mutableStateOf(false) }
+    BookLanguageSheet(
+        showBookLanguage = showLanguageSheet,
+        selectedLanguage = viewModel.language.value,
+        onLanguageChange = { viewModel.onAction(UserAction.LanguageItemClicked(it)) }
+    )
 
-    ModalBottomSheetLayout(
-        sheetState = modalBottomSheetState,
-        sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        sheetElevation = 24.dp,
-        sheetBackgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp),
-        sheetContent = {
-            val languages = BookLanguage.getAllLanguages()
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 72.dp)
-            ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp),
-                    text = stringResource(id = R.string.language_menu_title),
-                    textAlign = TextAlign.Center,
-                    fontFamily = pacificoFont,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 20.sp
-                )
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 12.dp, end = 12.dp, top = 8.dp),
-                    columns = GridCells.Adaptive(168.dp)
-                ) {
-                    items(languages.size) { idx ->
-                        val language = languages[idx]
-                        BookLanguageButton(
-                            language = language,
-                            isSelected = language == viewModel.language.value,
-                            onClick = {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                viewModel.onAction(
-                                    UserAction.LanguageItemClicked(language)
-                                )
-                                coroutineScope.launch {
-                                    modalBottomSheetState.hide()
-                                }
-                            })
-                    }
-                }
-            }
+    HomeScreenScaffold(
+        viewModel = viewModel,
+        networkStatus = networkStatus,
+        navController = navController,
+        sysBackButtonState = sysBackButtonState,
+        showLanguageSheet = showLanguageSheet
+    )
 
-        }) {
-        HomeScreenScaffold(
-            viewModel = viewModel,
-            networkStatus = networkStatus,
-            navController = navController,
-            coroutineScope = coroutineScope,
-            sysBackButtonState = sysBackButtonState,
-            bottomSheetState = modalBottomSheetState
-        )
-    }
 
 }
 
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun HomeScreenScaffold(
     viewModel: HomeViewModel,
     networkStatus: NetworkObserver.Status,
     navController: NavController,
-    coroutineScope: CoroutineScope,
     sysBackButtonState: MutableState<Boolean>,
-    bottomSheetState: ModalBottomSheetState
+    showLanguageSheet: MutableState<Boolean>
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -249,13 +195,7 @@ private fun HomeScreenScaffold(
                             onSearchIconClicked = {
                                 viewModel.onAction(UserAction.SearchIconClicked)
                             }, onLanguageIconClicked = {
-                                coroutineScope.launch {
-                                    if (!bottomSheetState.isVisible) {
-                                        bottomSheetState.show()
-                                    } else {
-                                        bottomSheetState.hide()
-                                    }
-                                }
+                                showLanguageSheet.value = true
                             })
                         sysBackButtonState.value = false
                     }
@@ -307,47 +247,6 @@ fun HomeScreenContents(
             SearchBookList(searchBarState = topBarState, navController = navController)
         }
     }
-
-}
-
-@Composable
-private fun HomeTopAppBar(
-    bookLanguage: BookLanguage,
-    onSearchIconClicked: () -> Unit,
-    onLanguageIconClicked: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 7.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = if (bookLanguage == BookLanguage.AllBooks)
-                stringResource(id = R.string.home_header) else bookLanguage.name,
-            fontSize = 28.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontFamily = pacificoFont
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = onLanguageIconClicked) {
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_sort_language),
-                contentDescription = stringResource(id = R.string.home_language_icon_desc),
-                tint = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.size(30.dp)
-            )
-        }
-        IconButton(onClick = onSearchIconClicked) {
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_search),
-                contentDescription = stringResource(id = R.string.home_search_icon_desc),
-                tint = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.size(30.dp)
-            )
-        }
-    }
 }
 
 @Composable
@@ -358,16 +257,27 @@ private fun AllBooksList(
     onRetryClicked: () -> Unit,
     onLoadNextItems: () -> Unit
 ) {
-    // show fullscreen progress indicator when loading the first page.
-    if (allBooksState.page == 1L && allBooksState.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-        }
-    } else if (!allBooksState.isLoading && allBooksState.error != null) {
+    AnimatedVisibility(
+        visible = allBooksState.page == 1L && allBooksState.isLoading,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        BookItemShimmerLoader()
+    }
+
+    AnimatedVisibility(
+        visible = !allBooksState.isLoading && allBooksState.error != null,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         NetworkError(onRetryClicked = { onRetryClicked() })
-    } else {
+    }
+
+    AnimatedVisibility(
+        visible = !allBooksState.isLoading || allBooksState.error == null,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxSize()
@@ -406,10 +316,14 @@ private fun AllBooksList(
                         )
                     }
                 }
-
             }
+
             item {
-                if (allBooksState.isLoading) {
+                AnimatedVisibility(
+                    visible = allBooksState.isLoading,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -475,69 +389,112 @@ private fun SearchBookList(searchBarState: SearchBarState, navController: NavCon
 }
 
 @Composable
+private fun HomeTopAppBar(
+    bookLanguage: BookLanguage,
+    onSearchIconClicked: () -> Unit,
+    onLanguageIconClicked: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 7.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = if (bookLanguage == BookLanguage.AllBooks)
+                stringResource(id = R.string.home_header) else bookLanguage.name,
+            fontSize = 28.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontFamily = pacificoFont
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        IconButton(onClick = onLanguageIconClicked) {
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.ic_sort_language),
+                contentDescription = stringResource(id = R.string.home_language_icon_desc),
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(30.dp)
+            )
+        }
+        IconButton(onClick = onSearchIconClicked) {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_search),
+                contentDescription = stringResource(id = R.string.home_search_icon_desc),
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(30.dp)
+            )
+        }
+    }
+}
+
+
+@Composable
 private fun SearchAppBar(
     onCloseIconClicked: () -> Unit,
     onInputValueChange: (String) -> Unit,
     text: String,
     onSearchClicked: () -> Unit
 ) {
-    val focusRequester = remember { FocusRequester() }
-    OutlinedTextField(
+    Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .focusRequester(focusRequester),
-        value = text,
-        onValueChange = {
-            onInputValueChange(it)
-        },
-        textStyle = TextStyle(
-            color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp
-        ),
-        placeholder = {
-            Text(
-                text = "Search...",
-                fontFamily = figeronaFont,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium)
-            )
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Filled.Search,
-                contentDescription = "Search Icon",
-                tint = MaterialTheme.colorScheme.onBackground.copy(
-                    alpha = ContentAlpha.medium
+            .padding(top = 5.6f.dp),
+        color = MaterialTheme.colorScheme.surface
+    ) {
+        val focusRequester = remember { FocusRequester() }
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
+            value = text,
+            onValueChange = { onInputValueChange(it) },
+            placeholder = {
+                Text(
+                    text = "Search...",
+                    fontFamily = figeronaFont,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                 )
-            )
-        },
-        trailingIcon = {
-            IconButton(onClick = {
-                if (text.isNotEmpty()) {
-                    onInputValueChange("")
-                } else {
-                    onCloseIconClicked()
-                }
-            }) {
+            },
+            leadingIcon = {
                 Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = "Close Icon",
-                    tint = MaterialTheme.colorScheme.onBackground
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "Search Icon",
+                    tint = MaterialTheme.colorScheme.onBackground.copy(
+                        alpha = 0.5f
+                    )
                 )
-            }
-        },
-        colors = OutlinedTextFieldDefaults.colors(
-            cursorColor = MaterialTheme.colorScheme.onBackground,
-            focusedBorderColor = MaterialTheme.colorScheme.onBackground,
-            unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(
-                alpha = ContentAlpha.medium
+            },
+            trailingIcon = {
+                IconButton(onClick = {
+                    if (text.isNotEmpty()) {
+                        onInputValueChange("")
+                    } else {
+                        onCloseIconClicked()
+                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = "Close Icon",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                    )
+                }
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer.copy(0.3f),
+                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer.copy(0.3f),
+                cursorColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
             ),
-        ),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(onSearch = { onSearchClicked() }),
-        shape = RoundedCornerShape(16.dp)
-    )
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { onSearchClicked() }),
+            shape = RoundedCornerShape(24.dp)
+        )
+
+        LaunchedEffect(Unit) { focusRequester.requestFocus() }
     }
+
 }
 
 
