@@ -89,7 +89,6 @@ fun WelcomeScreen(navController: NavController) {
     )
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(internalReaderValue) }
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()

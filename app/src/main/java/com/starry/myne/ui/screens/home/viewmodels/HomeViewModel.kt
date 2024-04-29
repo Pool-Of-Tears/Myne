@@ -81,6 +81,8 @@ class HomeViewModel @Inject constructor(
         allBooksState = allBooksState.copy(isLoading = it)
     }, onRequest = { nextPage ->
         try {
+            // Slight delay for better UX
+            delay(400)
             bookAPI.getAllBooks(nextPage, language.value)
         } catch (exc: Exception) {
             Result.failure(exc)
@@ -109,10 +111,6 @@ class HomeViewModel @Inject constructor(
             endReached = books.isEmpty()
         )
     })
-
-    init {
-        loadNextItems()
-    }
 
     fun loadNextItems() {
         viewModelScope.launch {
