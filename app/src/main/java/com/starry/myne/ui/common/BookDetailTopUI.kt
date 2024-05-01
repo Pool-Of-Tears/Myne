@@ -59,6 +59,7 @@ fun BookDetailTopUI(
     authors: String,
     imageData: Any?,
     currentThemeMode: ThemeMode,
+    showReaderBackground: Boolean = false,
     progressPercent: String? = null
 ) {
     val context = LocalContext.current
@@ -68,7 +69,7 @@ fun BookDetailTopUI(
             .height(235.dp)
     ) {
         AsyncImage(
-            model = R.drawable.book_details_bg,
+            model = if (showReaderBackground) R.drawable.book_reader_bg else R.drawable.book_details_bg,
             contentDescription = null,
             alpha = 0.35f,
             modifier = Modifier.fillMaxSize(),

@@ -165,6 +165,7 @@ private fun ReaderDetailScaffold(
                 authors = state.ebookData.authors,
                 imageData = imageData,
                 currentThemeMode = settingsVM.getCurrentTheme(),
+                showReaderBackground = true,
                 progressPercent = readerData?.getProgressPercent(state.ebookData.epubBook.chapters.size),
             )
 
