@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -116,7 +117,7 @@ fun CustomTopAppBar(headerText: String, onBackButtonClicked: () -> Unit) {
 @Composable
 fun CustomTopAppBar(
     headerText: String,
-    actionIconRes: Int,
+    actionIcon: ImageVector,
     onBackButtonClicked: () -> Unit,
     onActionClicked: () -> Unit
 ) {
@@ -143,7 +144,7 @@ fun CustomTopAppBar(
             )
             Spacer(modifier = Modifier.weight(1f))
             TopBarActionItem(
-                icon = ImageVector.vectorResource(id = actionIconRes), onclick = onActionClicked
+                icon = actionIcon, onclick = onActionClicked
             )
         }
         HorizontalDivider(
@@ -182,7 +183,7 @@ fun TopAppBarsPV() {
         CustomTopAppBar(headerText = "Something", iconRes = R.drawable.ic_nav_categories)
         CustomTopAppBar(headerText = "Something", onBackButtonClicked = {})
         CustomTopAppBar(headerText = "Something",
-            actionIconRes = R.drawable.ic_sort_language,
+            actionIcon = Icons.Default.Translate,
             onBackButtonClicked = { /*TODO*/ },
             onActionClicked = {})
     }

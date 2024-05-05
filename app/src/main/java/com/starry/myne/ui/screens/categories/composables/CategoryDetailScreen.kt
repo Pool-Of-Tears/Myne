@@ -29,6 +29,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -74,7 +76,7 @@ fun CategoryDetailScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CustomTopAppBar(headerText = stringResource(id = BookCategories.getNameRes(category)),
-                actionIconRes = R.drawable.ic_sort_language,
+                actionIcon = Icons.Filled.Translate,
                 onBackButtonClicked = { navController.navigateUp() },
                 onActionClicked = { showLanguageSheet.value = true }
             )

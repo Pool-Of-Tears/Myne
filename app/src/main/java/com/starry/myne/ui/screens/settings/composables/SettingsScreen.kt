@@ -218,12 +218,12 @@ private fun GeneralOptionsUI(
     Column(
         modifier = Modifier
             .padding(horizontal = 14.dp)
-            .padding(top = 10.dp)
+            .padding(top = 8.dp)
     ) {
         Text(
             text = stringResource(id = R.string.general_settings_header),
             fontFamily = figeronaFont,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(vertical = 8.dp)
@@ -376,12 +376,12 @@ private fun DisplayOptionsUI(
     Column(
         modifier = Modifier
             .padding(horizontal = 14.dp)
-            .padding(top = 10.dp)
+            .padding(top = 2.dp)
     ) {
         Text(
             text = stringResource(id = R.string.display_setting_header),
             fontFamily = figeronaFont,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(vertical = 8.dp)
@@ -504,12 +504,12 @@ private fun InformationUI(navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(horizontal = 14.dp)
-                .padding(top = 10.dp)
+                .padding(top = 2.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.miscellaneous_setting_header),
                 fontFamily = figeronaFont,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 8.dp)

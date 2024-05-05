@@ -30,6 +30,7 @@ import com.starry.myne.helpers.PreferenceUtil
 import com.starry.myne.helpers.book.BookDownloader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -101,6 +102,7 @@ class LibraryViewModel @Inject constructor(
                         isExternalBook = true
                     )
                     libraryDao.insert(libraryItem)
+                    delay(800) // delay to prevent from flickering.
                     withContext(Dispatchers.Main) { onComplete() }
                 }
             } catch (exc: Exception) {

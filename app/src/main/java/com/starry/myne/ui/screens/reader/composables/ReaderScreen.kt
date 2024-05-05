@@ -345,10 +345,15 @@ private fun FontChooserDialog(
                 }
             }
         }, confirmButton = {
-            TextButton(onClick = {
-                showFontDialog.value = false
-                viewModel.setFontFamily(selectedOption)
-            }) {
+            FilledTonalButton(
+                onClick = {
+                    showFontDialog.value = false
+                    viewModel.setFontFamily(selectedOption)
+                }, colors = ButtonDefaults.filledTonalButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
                 Text(stringResource(id = R.string.theme_dialog_apply_button))
             }
         }, dismissButton = {

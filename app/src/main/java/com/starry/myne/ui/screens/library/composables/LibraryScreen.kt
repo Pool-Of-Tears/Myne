@@ -79,6 +79,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -102,6 +103,7 @@ import com.starry.myne.helpers.Constants
 import com.starry.myne.helpers.Utils
 import com.starry.myne.helpers.getActivity
 import com.starry.myne.helpers.isScrollingUp
+import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.NoBooksAvailable
 import com.starry.myne.ui.navigation.Screens
@@ -121,9 +123,10 @@ import java.io.FileInputStream
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(navController: NavController) {
+    val view = LocalView.current
+    val context = LocalContext.current
     val viewModel: LibraryViewModel = hiltViewModel()
 
-    val context = LocalContext.current
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
@@ -163,7 +166,7 @@ fun LibraryScreen(navController: NavController) {
 
     val showTapTargets = remember { mutableStateOf(false) }
     LaunchedEffect(key1 = viewModel.showOnboardingTapTargets.value) {
-        delay(500) // Delay to prevent flickering
+        delay(800) // Delay to prevent flickering
         showTapTargets.value = viewModel.showOnboardingTapTargets.value
     }
 
@@ -197,7 +200,10 @@ fun LibraryScreen(navController: NavController) {
                     )
                 ) {
                     ExtendedFloatingActionButton(
-                        onClick = { importBookLauncher.launch(arrayOf(Constants.EPUB_MIME_TYPE)) },
+                        onClick = {
+                            view.weakHapticFeedback()
+                            importBookLauncher.launch(arrayOf(Constants.EPUB_MIME_TYPE))
+                        },
                         modifier = Modifier.tapTarget(
                             precedence = 0,
                             title = TextDefinition(
