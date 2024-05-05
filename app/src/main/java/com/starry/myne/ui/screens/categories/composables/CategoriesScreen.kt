@@ -20,7 +20,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -50,9 +49,8 @@ import com.starry.myne.R
 import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.navigation.Screens
-import com.starry.myne.ui.screens.categories.viewmodels.CategoryViewModel
+import com.starry.myne.ui.screens.main.bottomNavPadding
 import com.starry.myne.ui.theme.figeronaFont
-import java.util.Locale
 
 
 @Composable
@@ -73,31 +71,25 @@ fun CategoriesScreen(navController: NavController) {
                     .background(MaterialTheme.colorScheme.background)
                     .padding(paddingValues)
             ) {
-
-                Column(
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(168.dp),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp, bottom = 70.dp)
-                ) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(168.dp),
-                        content = {
-                            items(CategoryViewModel.CATEGORIES_ARRAY.size) { i ->
-                                val category =
-                                    CategoryViewModel.CATEGORIES_ARRAY[i].replaceFirstChar {
-                                        if (it.isLowerCase()) it.titlecase(
-                                            Locale.getDefault()
-                                        ) else it.toString()
-                                    }
-                                CategoriesItem(category) {
+                        .fillMaxSize()
+                        .padding(start = 8.dp, end = 8.dp, bottom = bottomNavPadding),
+                    content = {
+                        items(BookCategories.ALL.size) { idx ->
+                            val category = BookCategories.ALL[idx]
+                            CategoriesItem(
+                                category = stringResource(id = category.nameRes),
+                                onClick = {
                                     navController.navigate(
-                                        Screens.CategoryDetailScreen.withCategory(category)
+                                        Screens.CategoryDetailScreen.withCategory(category.category)
                                     )
                                 }
-                            }
-                        },
-                    )
-                }
+                            )
+                        }
+                    },
+                )
             }
         })
 
@@ -113,9 +105,7 @@ private fun CategoriesItem(category: String, onClick: () -> Unit) {
             .width(160.dp)
             .padding(6.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                2.dp
-            )
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
         ),
         shape = RoundedCornerShape(6.dp),
         onClick = {

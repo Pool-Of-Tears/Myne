@@ -35,6 +35,25 @@
     <!-- Categories screen. -->
     <string name="categories_header">Categorías</string>
     <string name="no_books_found_for_lang_and_cat">No books available in %s language for this category.</string>
+    <!-- Categories -->
+    <string name="category_animal">Animales</string>
+    <string name="category_children">Niños</string>
+    <string name="category_classics">Clásicos</string>
+    <string name="category_countries">Países</string>
+    <string name="category_crime">Crimen</string>
+    <string name="category_education">Educación</string>
+    <string name="category_fiction">Ficción</string>
+    <string name="category_geography">Geografía</string>
+    <string name="category_history">Historia</string>
+    <string name="category_literature">Literatura</string>
+    <string name="category_law">Ley</string>
+    <string name="category_music">Música</string>
+    <string name="category_periodicals">Publicaciones periódicas</string>
+    <string name="category_psychology">Psicología</string>
+    <string name="category_philosophy">Filosofía</string>
+    <string name="category_religion">Religión</string>
+    <string name="category_romance">Romance</string>
+    <string name="category_science">Ciencia</string>
 
     <!-- Library screen. -->
     <string name="library_header">Biblioteca</string>
@@ -72,6 +91,9 @@
     <string name="default_reader_dialog_title">Abrir ebooks con…</string>
     <string name="reader_option_inbuilt">Lector incorporado</string>
     <string name="reader_option_external">Lector externo</string>
+    <string name="default_locale_setting">Configuración de idioma predeterminado</string>
+    <string name="default_locale_setting_desc">Selecciona tu idioma preferido.</string>
+    <string name="locale_setting_not_found">¡Lo siento! Esta función aún no está soportada por tu sistema operativo.</string>
     <string name="display_setting_header">Mostrar</string>
     <string name="theme_setting">Tema por defecto</string>
     <string name="theme_dialog_title">Cambiar tema</string>
@@ -79,8 +101,11 @@
     <string name="theme_option_dark">Oscuro</string>
     <string name="theme_option_system">Predeterminado del sistema</string>
     <string name="theme_dialog_apply_button">Aplicar</string>
-    <string name="material_you_settings_disabled_desc">Habilitar Material You</string>
-    <string name="material_you_settings_enabled_desc">Deshabilitar Material You</string>
+    <string name="amoled_theme_setting">Tema oscuro</string>
+    <string name="amoled_theme_setting_disabled_desc">Activar tema oscuro AMOLED</string>
+    <string name="amoled_theme_setting_enabled_desc">Desactivar tema oscuro AMOLED</string>
+    <string name="material_you_setting_disabled_desc">Habilitar Material You</string>
+    <string name="material_you_setting_enabled_desc">Deshabilitar Material You</string>
     <string name="material_you_error">Esta función es sólo para dispositivos con Android 12 o superior.</string>
     <string name="miscellaneous_setting_header">Varios</string>
     <string name="license_setting">Licencia y agradecimientos</string>

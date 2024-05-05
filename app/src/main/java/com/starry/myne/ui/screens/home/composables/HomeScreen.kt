@@ -89,6 +89,7 @@ import com.starry.myne.ui.screens.home.viewmodels.AllBooksState
 import com.starry.myne.ui.screens.home.viewmodels.HomeViewModel
 import com.starry.myne.ui.screens.home.viewmodels.SearchBarState
 import com.starry.myne.ui.screens.home.viewmodels.UserAction
+import com.starry.myne.ui.screens.main.bottomNavPadding
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
 import kotlinx.coroutines.delay
@@ -166,7 +167,7 @@ private fun HomeScreenScaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(bottom = 70.dp),
+            .padding(bottom = bottomNavPadding),
         topBar = {
             Column(
                 modifier = Modifier

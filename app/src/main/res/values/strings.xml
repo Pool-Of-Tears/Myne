@@ -35,6 +35,25 @@
     <!-- Categories screen. -->
     <string name="categories_header">Categories</string>
     <string name="no_books_found_for_lang_and_cat">No books available in %s language for this category.</string>
+    <!-- Categories -->
+    <string name="category_animal">Animals</string>
+    <string name="category_children">Children</string>
+    <string name="category_classics">Classics</string>
+    <string name="category_countries">Countries</string>
+    <string name="category_crime">Crime</string>
+    <string name="category_education">Education</string>
+    <string name="category_fiction">Fiction</string>
+    <string name="category_geography">Geography</string>
+    <string name="category_history">History</string>
+    <string name="category_literature">Literature</string>
+    <string name="category_law">Law</string>
+    <string name="category_music">Music</string>
+    <string name="category_periodicals">Periodicals</string>
+    <string name="category_psychology">Psychology</string>
+    <string name="category_philosophy">Philosophy</string>
+    <string name="category_religion">Religion</string>
+    <string name="category_romance">Romance</string>
+    <string name="category_science">Science</string>
 
     <!-- Library screen. -->
     <string name="library_header">Library</string>
@@ -72,6 +91,9 @@
     <string name="default_reader_dialog_title">Open ebooks with…</string>
     <string name="reader_option_inbuilt">Inbuilt Reader</string>
     <string name="reader_option_external">External Reader</string>
+    <string name="default_locale_setting">Default Locale</string>
+    <string name="default_locale_setting_desc">Select your preferred locale.</string>
+    <string name="locale_setting_not_found">Sorry! this feature is not yet supported by your OS.</string>
     <string name="display_setting_header">Display</string>
     <string name="theme_setting">Default Theme</string>
     <string name="theme_dialog_title">Change Theme</string>
@@ -79,9 +101,12 @@
     <string name="theme_option_dark">Dark</string>
     <string name="theme_option_system">System Default</string>
     <string name="theme_dialog_apply_button">Apply</string>
+    <string name="amoled_theme_setting">Black Theme</string>
+    <string name="amoled_theme_setting_disabled_desc">Enable Amoled Black Theme</string>
+    <string name="amoled_theme_setting_enabled_desc">Disable Amoled Black Theme</string>
     <string name="material_you_setting" translatable="false">Material You</string>
-    <string name="material_you_settings_disabled_desc">Enable Material You</string>
-    <string name="material_you_settings_enabled_desc">Disable Material You</string>
+    <string name="material_you_setting_disabled_desc">Enable Material You</string>
+    <string name="material_you_setting_enabled_desc">Disable Material You</string>
     <string name="material_you_error">This feature is only for devices running Android 12 or above.</string>
     <string name="miscellaneous_setting_header">Miscellaneous</string>
     <string name="license_setting">License &amp; Acknowledgements</string>

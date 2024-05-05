@@ -34,6 +34,25 @@
     <!-- Categories screen. -->
     <string name="categories_header">Kategorie</string>
     <string name="no_books_found_for_lang_and_cat">No books available in %s language for this category.</string>
+    <!-- Categories -->
+    <string name="category_animal">Zvířata</string>
+    <string name="category_children">Děti</string>
+    <string name="category_classics">Klasika</string>
+    <string name="category_countries">Země</string>
+    <string name="category_crime">Zločin</string>
+    <string name="category_education">Vzdělání</string>
+    <string name="category_fiction">Fikce</string>
+    <string name="category_geography">Geografie</string>
+    <string name="category_history">Historie</string>
+    <string name="category_literature">Literatura</string>
+    <string name="category_law">Právo</string>
+    <string name="category_music">Hudba</string>
+    <string name="category_periodicals">Periodika</string>
+    <string name="category_psychology">Psychologie</string>
+    <string name="category_philosophy">Filozofie</string>
+    <string name="category_religion">Náboženství</string>
+    <string name="category_romance">Romantika</string>
+    <string name="category_science">Věda</string>
 
     <!-- Library screen. -->
     <string name="library_header">Knihovna</string>
@@ -71,6 +90,9 @@
     <string name="default_reader_dialog_title">Otevírat e-knihy pomocí…</string>
     <string name="reader_option_inbuilt">Vestavěný čtečka</string>
     <string name="reader_option_external">Externí čtečka</string>
+    <string name="default_locale_setting">Výchozí lokalizace</string>
+    <string name="default_locale_setting_desc">Vyberte svůj preferovaný jazyk.</string>
+    <string name="locale_setting_not_found">Omlouváme se! Tato funkce zatím není podporována vaším operačním systémem.</string>
     <string name="display_setting_header">Zobrazení</string>
     <string name="theme_setting">Výchozí motiv</string>
     <string name="theme_dialog_title">Změnit motiv</string>
@@ -78,8 +100,11 @@
     <string name="theme_option_dark">Temné</string>
     <string name="theme_option_system">Systémová výchozí</string>
     <string name="theme_dialog_apply_button">Použít</string>
-    <string name="material_you_settings_disabled_desc">Povolit Material You</string>
-    <string name="material_you_settings_enabled_desc">Zakázat Material You</string>
+    <string name="amoled_theme_setting">Černé téma</string>
+    <string name="amoled_theme_setting_disabled_desc">Povolit černé téma AMOLED</string>
+    <string name="amoled_theme_setting_enabled_desc">Zakázat černé téma AMOLED</string>
+    <string name="material_you_setting_disabled_desc">Povolit Material You</string>
+    <string name="material_you_setting_enabled_desc">Zakázat Material You</string>
     <string name="material_you_error">Tato funkce je určena pouze pro zařízení se systémem Android 12 nebo novějším.</string>
     <string name="miscellaneous_setting_header">Různé</string>
     <string name="license_setting">Licence a poděkování</string>

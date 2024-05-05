@@ -73,7 +73,7 @@ fun CategoryDetailScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            CustomTopAppBar(headerText = category,
+            CustomTopAppBar(headerText = stringResource(id = BookCategories.getNameRes(category)),
                 actionIconRes = R.drawable.ic_sort_language,
                 onBackButtonClicked = { navController.navigateUp() },
                 onActionClicked = { showLanguageSheet.value = true }

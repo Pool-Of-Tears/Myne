@@ -108,6 +108,7 @@ import com.starry.myne.ui.common.NoBooksAvailable
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.library.viewmodels.ImportStatus
 import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
+import com.starry.myne.ui.screens.main.bottomNavPadding
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
@@ -143,7 +144,7 @@ fun LibraryScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(bottom = 70.dp),
+            .padding(bottom = bottomNavPadding),
         topBar = {
             CustomTopAppBar(
                 headerText = stringResource(id = R.string.library_header),
@@ -404,9 +405,7 @@ private fun LibraryCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                3.dp
-            )
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
         ), shape = RoundedCornerShape(0.dp)
     ) {
         Row(

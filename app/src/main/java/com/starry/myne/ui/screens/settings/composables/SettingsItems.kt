@@ -71,9 +71,7 @@ fun SettingItem(icon: ImageVector, mainText: String, subText: String, onClick: (
             onClick()
         },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                2.dp
-            )
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
         ),
         modifier = Modifier
             .padding(bottom = 8.dp)
@@ -148,9 +146,7 @@ fun SettingItemWIthSwitch(
     val view = LocalView.current
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                2.dp
-            )
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
         ),
         modifier = Modifier
             .padding(bottom = 8.dp)
