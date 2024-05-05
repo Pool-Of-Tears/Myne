@@ -34,6 +34,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModelProvider
 import com.starry.myne.R
+import com.starry.myne.helpers.Constants
 import com.starry.myne.helpers.toToast
 import com.starry.myne.ui.screens.reader.composables.ReaderContent
 import com.starry.myne.ui.screens.reader.composables.ReaderScreen
@@ -172,7 +173,7 @@ fun handleIntent(
     val chapterIndex = intent.extras?.getInt(
         ReaderConstants.EXTRA_CHAPTER_IDX, ReaderConstants.DEFAULT_NONE
     )
-    val isExternalFile = intent.type == "application/epub+zip"
+    val isExternalFile = intent.type == Constants.EPUB_MIME_TYPE
 
     // Internal book
     if (libraryItemId != null && libraryItemId != ReaderConstants.DEFAULT_NONE) {

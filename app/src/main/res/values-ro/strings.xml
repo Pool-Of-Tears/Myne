@@ -59,6 +59,8 @@
     <string name="library_header">Librărie</string>
     <string name="empty_library">Nimic aici!</string>
     <string name="import_button_text">Importă</string>
+    <string name="import_button_onboarding">Importați propriile cărți!</string>
+    <string name="import_button_onboarding_desc">Acum puteți importa propriile cărți în format EPUB și să le citiți în Myne.</string>
     <string name="import_button_desc">Importează carte EPUB</string>
     <string name="external_book_info_unavailable">Disponibil doar pentru cărți interne.</string>
     <string name="epub_importing">Se importă… Vă rugăm să așteptați.</string>

@@ -59,6 +59,8 @@
     <string name="library_header">Bibliothek</string>
     <string name="empty_library">Nichts vorhanden!</string>
     <string name="import_button_text">Importieren</string>
+    <string name="import_button_onboarding">Importiere deine eigenen Bücher!</string>
+    <string name="import_button_onboarding_desc">Jetzt kannst du deine eigenen EPUB-Bücher importieren und sie in Myne lesen.</string>
     <string name="import_button_desc">EPUB-Buch importieren</string>
     <string name="external_book_info_unavailable">Nur für interne Bücher verfügbar.</string>
     <string name="epub_importing">Importiere… Bitte warten.</string>

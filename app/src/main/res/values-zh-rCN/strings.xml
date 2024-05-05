@@ -60,6 +60,8 @@
     <string name="library_header">书库</string>
     <string name="empty_library">这里是空的</string>
     <string name="import_button_text">导入</string>
+    <string name="import_button_onboarding">导入您自己的书籍！</string>
+    <string name="import_button_onboarding_desc">现在您可以导入您自己的 EPUB 书籍并在 Myne 中阅读它们。</string>
     <string name="import_button_desc">导入 EPUB 书籍</string>
     <string name="external_book_info_unavailable">仅适用于内部书籍。</string>
     <string name="epub_importing">正在导入… 请稍候。</string>

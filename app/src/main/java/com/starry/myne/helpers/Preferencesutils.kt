@@ -34,7 +34,8 @@ class PreferenceUtil(context: Context) {
         const val PREFERRED_BOOK_LANG_STR = "preferred_book_language"
 
         // Temporary preference keys
-        const val SHOW_LIBRARY_TOOLTIP_BOOL = "show_library_tooltip"
+        const val LIBRARY_ONBOARDING_BOOL = "show_library_onboarding"
+        const val LIBRARY_SWIPE_TOOLTIP_BOOL = "show_library_tooltip"
     }
 
     private var prefs: SharedPreferences

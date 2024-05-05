@@ -36,7 +36,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -53,6 +52,7 @@ import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledTonalButton
@@ -83,7 +83,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -92,21 +91,20 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
+import com.psoffritti.taptargetcompose.TapTargetCoordinator
+import com.psoffritti.taptargetcompose.TapTargetStyle
+import com.psoffritti.taptargetcompose.TextDefinition
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.database.library.LibraryItem
+import com.starry.myne.helpers.Constants
 import com.starry.myne.helpers.Utils
 import com.starry.myne.helpers.getActivity
 import com.starry.myne.helpers.isScrollingUp
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.NoBooksAvailable
 import com.starry.myne.ui.navigation.Screens
-import com.starry.myne.ui.screens.library.viewmodels.ImportStatus
 import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
 import com.starry.myne.ui.screens.main.bottomNavPadding
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
@@ -124,80 +122,159 @@ import java.io.FileInputStream
 @Composable
 fun LibraryScreen(navController: NavController) {
     val viewModel: LibraryViewModel = hiltViewModel()
-    val state = viewModel.state
 
     val context = LocalContext.current
     val snackBarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
 
+    val showImportDialog = remember { mutableStateOf(false) }
     val importBookLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             uri?.let {
                 (context as MainActivity).contentResolver.openInputStream(uri)?.let { ips ->
-                    viewModel.importBook(context, ips as FileInputStream)
+                    showImportDialog.value = true // Show import dialog
+                    viewModel.importBook(
+                        context = context,
+                        fileStream = ips as FileInputStream,
+                        onComplete = {
+                            showImportDialog.value = false
+                            coroutineScope.launch {
+                                snackBarHostState.showSnackbar(
+                                    message = context.getString(R.string.epub_imported),
+                                    actionLabel = context.getString(R.string.ok),
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+                        },
+                        onError = {
+                            showImportDialog.value = false
+                            coroutineScope.launch {
+                                snackBarHostState.showSnackbar(
+                                    message = context.getString(R.string.error),
+                                    actionLabel = context.getString(R.string.ok),
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+                        })
                 }
             }
         }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackBarHostState) },
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(bottom = bottomNavPadding),
-        topBar = {
-            CustomTopAppBar(
-                headerText = stringResource(id = R.string.library_header),
-                iconRes = R.drawable.ic_nav_library
-            )
-        },
-        floatingActionButton = {
-            val density = LocalDensity.current
-            AnimatedVisibility(
-                visible = !state.showImportUI && lazyListState.isScrollingUp(),
-                enter = slideInVertically {
-                    with(density) { 40.dp.roundToPx() }
-                } + fadeIn(),
-                exit = fadeOut(
-                    animationSpec = keyframes {
-                        this.durationMillis = 120
-                    }
+    val showTapTargets = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = viewModel.showOnboardingTapTargets.value) {
+        delay(500) // Delay to prevent flickering
+        showTapTargets.value = viewModel.showOnboardingTapTargets.value
+    }
+
+    TapTargetCoordinator(
+        showTapTargets = showTapTargets.value,
+        onComplete = { viewModel.onboardingComplete() }
+    ) {
+        Scaffold(
+            snackbarHost = { SnackbarHost(snackBarHostState) },
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(bottom = bottomNavPadding),
+            topBar = {
+                CustomTopAppBar(
+                    headerText = stringResource(id = R.string.library_header),
+                    iconRes = R.drawable.ic_nav_library
                 )
-            ) {
-                ExtendedFloatingActionButton(onClick = {
-                    importBookLauncher.launch(arrayOf("application/epub+zip"))
-                }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Add,
-                        contentDescription = stringResource(id = R.string.import_button_desc)
+            },
+            floatingActionButton = {
+                val density = LocalDensity.current
+                AnimatedVisibility(
+                    visible = !showImportDialog.value && lazyListState.isScrollingUp(),
+                    enter = slideInVertically {
+                        with(density) { 40.dp.roundToPx() }
+                    } + fadeIn(),
+                    exit = fadeOut(
+                        animationSpec = keyframes {
+                            this.durationMillis = 120
+                        }
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(id = R.string.import_button_text),
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = figeronaFont,
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                ) {
+                    ExtendedFloatingActionButton(
+                        onClick = { importBookLauncher.launch(arrayOf(Constants.EPUB_MIME_TYPE)) },
+                        modifier = Modifier.tapTarget(
+                            precedence = 0,
+                            title = TextDefinition(
+                                text = stringResource(id = R.string.import_button_onboarding),
+                                textStyle = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            ),
+                            description = TextDefinition(
+                                text = stringResource(id = R.string.import_button_onboarding_desc),
+                                textStyle = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            ),
+                            tapTargetStyle = TapTargetStyle(
+                                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                                tapTargetHighlightColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                backgroundAlpha = 1f,
+                            ),
+                        ),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            contentDescription = stringResource(id = R.string.import_button_desc)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(id = R.string.import_button_text),
+                            fontWeight = FontWeight.Medium,
+                            fontFamily = figeronaFont,
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
 
+                    }
                 }
             }
-        }
-    ) { paddingValues ->
-        LibraryContents(
-            viewModel = viewModel,
-            lazyListState = lazyListState,
-            snackBarHostState = snackBarHostState,
-            navController = navController,
-            paddingValues = paddingValues
-        )
+        ) { paddingValues ->
+            LibraryContents(
+                viewModel = viewModel,
+                lazyListState = lazyListState,
+                snackBarHostState = snackBarHostState,
+                navController = navController,
+                paddingValues = paddingValues
+            )
 
-        if (state.showImportUI) {
-            BasicAlertDialog(onDismissRequest = {}) {
-                ImportingDialog(importStatus = viewModel.state.importStatus)
+            if (showImportDialog.value) {
+                BasicAlertDialog(onDismissRequest = {}) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        //  .padding(12.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp)
+                        ),
+                        shape = RoundedCornerShape(18.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(44.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            CircularProgressIndicator()
+                            Spacer(modifier = Modifier.width(24.dp))
+                            Text(
+                                text = stringResource(id = R.string.epub_importing),
+                                fontFamily = figeronaFont,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 17.sp,
+                            )
+                        }
+                    }
+                }
             }
-        }
 
+        }
     }
 }
 
@@ -536,56 +613,6 @@ private fun LibraryCardButton(
     }
 }
 
-@Composable
-private fun ImportingDialog(importStatus: ImportStatus) {
-    val composition = rememberLottieComposition(
-        spec = when (importStatus) {
-            ImportStatus.IMPORTING -> LottieCompositionSpec.RawRes(R.raw.epub_importing_lottie)
-            ImportStatus.SUCCESS -> LottieCompositionSpec.RawRes(R.raw.epub_import_success_lottie)
-            ImportStatus.ERROR -> LottieCompositionSpec.RawRes(R.raw.epub_import_error_lottie)
-            ImportStatus.IDLE -> LottieCompositionSpec.RawRes(R.raw.epub_importing_lottie)
-        }
-    )
-
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
-        ),
-        shape = RoundedCornerShape(24.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            LottieAnimation(
-                composition = composition.value,
-                modifier = Modifier.size(200.dp),
-                enableMergePaths = true,
-                isPlaying = true,
-                iterations = if (importStatus == ImportStatus.IMPORTING)
-                    LottieConstants.IterateForever else 1,
-            )
-
-            val text = when (importStatus) {
-                ImportStatus.IMPORTING -> stringResource(id = R.string.epub_importing)
-                ImportStatus.SUCCESS -> stringResource(id = R.string.epub_imported)
-                ImportStatus.ERROR -> stringResource(id = R.string.epub_import_error)
-                ImportStatus.IDLE -> ""
-            }
-
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp)
-                    .offset(y = (-28).dp),
-                fontFamily = figeronaFont
-            )
-        }
-    }
-}
 
 @ExperimentalMaterial3Api
 @Composable

@@ -58,6 +58,8 @@
     <string name="library_header">Knihovna</string>
     <string name="empty_library">Nic tu není!</string>
     <string name="import_button_text">Importovat</string>
+    <string name="import_button_onboarding">Importujte své vlastní knihy!</string>
+    <string name="import_button_onboarding_desc">Nyní můžete importovat své vlastní knihy ve formátu EPUB a číst je v aplikaci Myne.</string>
     <string name="import_button_desc">Importovat knihu EPUB</string>
     <string name="external_book_info_unavailable">Dostupné pouze pro interní knihy.</string>
     <string name="epub_importing">Probíhá importování… Prosím čekejte.</string>
