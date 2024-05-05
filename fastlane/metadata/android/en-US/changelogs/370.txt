@@ -1,0 +1,5 @@
+- Fixed incorrect background image in ebook reader.
+- Added black AMOLED theme and improved default color scheme.
+- Added ability to change app language irrespective of system language. (A13+ only)
+- Added localization coverage for category names in all supported languages.
+- Some other minor fixes and improvements.
