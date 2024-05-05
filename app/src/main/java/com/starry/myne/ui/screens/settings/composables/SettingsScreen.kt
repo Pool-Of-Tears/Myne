@@ -244,7 +244,6 @@ private fun GeneralOptionsUI(
                         data = Uri.parse("package:${context.packageName}")
                     }
                     context.startActivity(intent)
-                    println("Locale setting opened successfully.")
                 } else {
                     coroutineScope.launch {
                         snackBarHostState.showSnackbar(
