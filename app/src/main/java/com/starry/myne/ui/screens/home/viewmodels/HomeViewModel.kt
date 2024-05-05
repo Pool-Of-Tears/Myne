@@ -100,7 +100,14 @@ class HomeViewModel @Inject constructor(
          * null in this case and can cause crashes.
          */
         @Suppress("SENSELESS_COMPARISON") val books = if (bookSet.books != null) {
-            bookSet.books.filter { it.formats.applicationepubzip != null } as ArrayList<Book>
+            val books =
+                bookSet.books.filter { it.formats.applicationepubzip != null } as ArrayList<Book>
+            // Remove the book with id 1513
+            val index = books.indexOfFirst { it.id == 1513 }
+            if (index != -1) {
+                books.removeAt(index)
+            }
+            books // return the list of books
         } else {
             ArrayList()
         }

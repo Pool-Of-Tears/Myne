@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -41,6 +42,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,7 +50,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -61,6 +62,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -89,6 +91,7 @@ import com.starry.myne.ui.screens.home.viewmodels.AllBooksState
 import com.starry.myne.ui.screens.home.viewmodels.HomeViewModel
 import com.starry.myne.ui.screens.home.viewmodels.SearchBarState
 import com.starry.myne.ui.screens.home.viewmodels.UserAction
+import com.starry.myne.ui.screens.main.bottomNavPadding
 import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
 import kotlinx.coroutines.delay
@@ -166,7 +169,7 @@ private fun HomeScreenScaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(bottom = 70.dp),
+            .padding(bottom = bottomNavPadding),
         topBar = {
             Column(
                 modifier = Modifier
@@ -411,7 +414,7 @@ private fun HomeTopAppBar(
         Spacer(modifier = Modifier.weight(1f))
         IconButton(onClick = onLanguageIconClicked) {
             Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_sort_language),
+                imageVector = Icons.Filled.Translate,
                 contentDescription = stringResource(id = R.string.home_language_icon_desc),
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(30.dp)
@@ -436,11 +439,8 @@ private fun SearchAppBar(
     text: String,
     onSearchClicked: () -> Unit
 ) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 5.6f.dp),
-        color = MaterialTheme.colorScheme.surface
+    Column(
+        modifier = Modifier.fillMaxWidth(),
     ) {
         val focusRequester = remember { FocusRequester() }
         OutlinedTextField(
@@ -476,21 +476,24 @@ private fun SearchAppBar(
                     Icon(
                         imageVector = Icons.Filled.Close,
                         contentDescription = "Close Icon",
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                     )
                 }
             },
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer.copy(0.3f),
-                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer.copy(0.3f),
-                cursorColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
-                focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                cursorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = { onSearchClicked() }),
             shape = RoundedCornerShape(24.dp)
         )
+
+        Spacer(modifier = Modifier.height(5.6.dp))
 
         LaunchedEffect(Unit) { focusRequester.requestFocus() }
     }

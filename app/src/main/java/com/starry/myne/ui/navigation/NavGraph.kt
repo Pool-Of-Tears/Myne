@@ -129,12 +129,16 @@ fun NavGraph(
         composable(route = BottomBarScreen.Library.route,
             enterTransition = { bottomNavEnter() },
             exitTransition = {
-                if (initialState.destination.route == Screens.BookDetailScreen.route) {
+                if (initialState.destination.route == Screens.BookDetailScreen.route
+                    || initialState.destination.route == Screens.ReaderDetailScreen.route
+                ) {
                     exitTransition()
                 } else bottomNavExit()
             },
             popEnterTransition = {
-                if (initialState.destination.route == Screens.ReaderDetailScreen.route) {
+                if (initialState.destination.route == Screens.BookDetailScreen.route
+                    || initialState.destination.route == Screens.ReaderDetailScreen.route
+                ) {
                     popEnterTransition()
                 } else bottomNavPopEnter()
             },

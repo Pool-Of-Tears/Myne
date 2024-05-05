@@ -16,8 +16,10 @@
 
 package com.starry.myne.ui.screens.settings.composables
 
-import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +41,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrightnessMedium
+import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LocalPolice
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.AlertDialog
@@ -82,6 +86,7 @@ import com.starry.myne.R
 import com.starry.myne.helpers.getActivity
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.navigation.Screens
+import com.starry.myne.ui.screens.main.bottomNavPadding
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
@@ -96,7 +101,7 @@ fun SettingsScreen(navController: NavController) {
     val snackBarHostState = remember { SnackbarHostState() }
 
     Scaffold(
-        modifier = Modifier.padding(bottom = 70.dp),
+        modifier = Modifier.padding(bottom = bottomNavPadding),
         snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { paddingValues ->
         Column(
@@ -111,8 +116,8 @@ fun SettingsScreen(navController: NavController) {
             )
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 SettingsCard()
-                GeneralOptionsUI(viewModel = viewModel, context = context)
-                DisplayOptionsUI(viewModel = viewModel, context = context, snackBarHostState)
+                GeneralOptionsUI(viewModel = viewModel, snackBarHostState = snackBarHostState)
+                DisplayOptionsUI(viewModel = viewModel, snackBarHostState = snackBarHostState)
                 InformationUI(navController = navController)
             }
         }
@@ -192,7 +197,13 @@ private fun SettingsCard() {
 
 
 @Composable
-private fun GeneralOptionsUI(viewModel: SettingsViewModel, context: Context) {
+private fun GeneralOptionsUI(
+    viewModel: SettingsViewModel,
+    snackBarHostState: SnackbarHostState
+) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
     val internalReaderValue = when (viewModel.getInternalReaderValue()) {
         true -> stringResource(id = R.string.reader_option_inbuilt)
         false -> stringResource(id = R.string.reader_option_external)
@@ -207,12 +218,12 @@ private fun GeneralOptionsUI(viewModel: SettingsViewModel, context: Context) {
     Column(
         modifier = Modifier
             .padding(horizontal = 14.dp)
-            .padding(top = 10.dp)
+            .padding(top = 8.dp)
     ) {
         Text(
             text = stringResource(id = R.string.general_settings_header),
             fontFamily = figeronaFont,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(vertical = 8.dp)
@@ -223,6 +234,28 @@ private fun GeneralOptionsUI(viewModel: SettingsViewModel, context: Context) {
             subText = internalReaderValue,
             onClick = { showReaderDialog.value = true }
         )
+        SettingItem(
+            icon = Icons.Filled.Language,
+            mainText = stringResource(id = R.string.default_locale_setting),
+            subText = stringResource(id = R.string.default_locale_setting_desc),
+            onClick = {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    val intent = Intent(Settings.ACTION_APP_LOCALE_SETTINGS).apply {
+                        data = Uri.parse("package:${context.packageName}")
+                    }
+                    context.startActivity(intent)
+                    println("Locale setting opened successfully.")
+                } else {
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackbar(
+                            context.getString(R.string.locale_setting_not_found)
+                        )
+                    }
+                }
+            }
+        )
+
+
     }
 
     if (showReaderDialog.value) {
@@ -304,11 +337,12 @@ private fun GeneralOptionsUI(viewModel: SettingsViewModel, context: Context) {
 @Composable
 private fun DisplayOptionsUI(
     viewModel: SettingsViewModel,
-    context: Context,
     snackBarHostState: SnackbarHostState,
 ) {
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
+    // Display settings for the theme
     val displayValue =
         when (viewModel.getThemeValue()) {
             ThemeMode.Light.ordinal -> stringResource(id = R.string.theme_option_light)
@@ -323,22 +357,31 @@ private fun DisplayOptionsUI(
     )
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(displayValue) }
 
+    // Display settings for the amoled theme
+    val amoledSwitch = remember { mutableStateOf(viewModel.getAmoledThemeValue()) }
+    val amoledDesc = if (amoledSwitch.value) {
+        stringResource(id = R.string.amoled_theme_setting_enabled_desc)
+    } else {
+        stringResource(id = R.string.amoled_theme_setting_disabled_desc)
+    }
+
+    // Display settings for the Material You theme
     val materialYouSwitch = remember { mutableStateOf(viewModel.getMaterialYouValue()) }
     val materialYouDesc = if (materialYouSwitch.value) {
-        stringResource(id = R.string.material_you_settings_enabled_desc)
+        stringResource(id = R.string.material_you_setting_enabled_desc)
     } else {
-        stringResource(id = R.string.material_you_settings_disabled_desc)
+        stringResource(id = R.string.material_you_setting_disabled_desc)
     }
 
     Column(
         modifier = Modifier
             .padding(horizontal = 14.dp)
-            .padding(top = 10.dp)
+            .padding(top = 2.dp)
     ) {
         Text(
             text = stringResource(id = R.string.display_setting_header),
             fontFamily = figeronaFont,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(vertical = 8.dp)
@@ -349,6 +392,15 @@ private fun DisplayOptionsUI(
             subText = displayValue,
             onClick = { displayDialog.value = true }
         )
+        SettingItemWIthSwitch(
+            icon = Icons.Filled.Contrast,
+            mainText = stringResource(id = R.string.amoled_theme_setting),
+            subText = amoledDesc,
+            switchState = amoledSwitch,
+            onCheckChange = {
+                viewModel.setAmoledTheme(it)
+                amoledSwitch.value = it
+            })
         SettingItemWIthSwitch(
             icon = Icons.Filled.Palette,
             mainText = stringResource(id = R.string.material_you_setting),
@@ -452,12 +504,12 @@ private fun InformationUI(navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(horizontal = 14.dp)
-                .padding(top = 10.dp)
+                .padding(top = 2.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.miscellaneous_setting_header),
                 fontFamily = figeronaFont,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 8.dp)

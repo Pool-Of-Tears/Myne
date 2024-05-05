@@ -16,8 +16,10 @@
 
 package com.starry.myne.ui.theme
 
+import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -25,78 +27,123 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 
-private val LightColors = lightColorScheme(
-    onErrorContainer = md_theme_light_onErrorContainer,
-    onError = md_theme_light_onError,
-    errorContainer = md_theme_light_errorContainer,
-    onTertiaryContainer = md_theme_light_onTertiaryContainer,
-    onTertiary = md_theme_light_onTertiary,
-    tertiaryContainer = md_theme_light_tertiaryContainer,
-    tertiary = md_theme_light_tertiary,
-    error = md_theme_light_error,
-    outline = md_theme_light_outline,
-    onBackground = md_theme_light_onBackground,
-    background = md_theme_light_background,
-    inverseOnSurface = md_theme_light_inverseOnSurface,
-    inverseSurface = md_theme_light_inverseSurface,
-    onSurfaceVariant = md_theme_light_onSurfaceVariant,
-    onSurface = md_theme_light_onSurface,
-    surfaceVariant = md_theme_light_surfaceVariant,
-    surface = md_theme_light_surface,
-    onSecondaryContainer = md_theme_light_onSecondaryContainer,
-    onSecondary = md_theme_light_onSecondary,
-    secondaryContainer = md_theme_light_secondaryContainer,
-    secondary = md_theme_light_secondary,
-    inversePrimary = md_theme_light_inversePrimary,
-    onPrimaryContainer = md_theme_light_onPrimaryContainer,
-    onPrimary = md_theme_light_onPrimary,
-    primaryContainer = md_theme_light_primaryContainer,
-    primary = md_theme_light_primary,
+private val lightColors = lightColorScheme(
+    primary = primaryLight,
+    onPrimary = onPrimaryLight,
+    primaryContainer = primaryContainerLight,
+    onPrimaryContainer = onPrimaryContainerLight,
+    secondary = secondaryLight,
+    onSecondary = onSecondaryLight,
+    secondaryContainer = secondaryContainerLight,
+    onSecondaryContainer = onSecondaryContainerLight,
+    tertiary = tertiaryLight,
+    onTertiary = onTertiaryLight,
+    tertiaryContainer = tertiaryContainerLight,
+    onTertiaryContainer = onTertiaryContainerLight,
+    error = errorLight,
+    onError = onErrorLight,
+    errorContainer = errorContainerLight,
+    onErrorContainer = onErrorContainerLight,
+    background = backgroundLight,
+    onBackground = onBackgroundLight,
+    surface = surfaceLight,
+    onSurface = onSurfaceLight,
+    surfaceVariant = surfaceVariantLight,
+    onSurfaceVariant = onSurfaceVariantLight,
+    outline = outlineLight,
+    outlineVariant = outlineVariantLight,
+    scrim = scrimLight,
+    inverseSurface = inverseSurfaceLight,
+    inverseOnSurface = inverseOnSurfaceLight,
+    inversePrimary = inversePrimaryLight,
+    surfaceDim = surfaceDimLight,
+    surfaceBright = surfaceBrightLight,
+    surfaceContainerLowest = surfaceContainerLowestLight,
+    surfaceContainerLow = surfaceContainerLowLight,
+    surfaceContainer = surfaceContainerLight,
+    surfaceContainerHigh = surfaceContainerHighLight,
+    surfaceContainerHighest = surfaceContainerHighestLight,
+)
+
+private val darkColors = darkColorScheme(
+    primary = primaryDark,
+    onPrimary = onPrimaryDark,
+    primaryContainer = primaryContainerDark,
+    onPrimaryContainer = onPrimaryContainerDark,
+    secondary = secondaryDark,
+    onSecondary = onSecondaryDark,
+    secondaryContainer = secondaryContainerDark,
+    onSecondaryContainer = onSecondaryContainerDark,
+    tertiary = tertiaryDark,
+    onTertiary = onTertiaryDark,
+    tertiaryContainer = tertiaryContainerDark,
+    onTertiaryContainer = onTertiaryContainerDark,
+    error = errorDark,
+    onError = onErrorDark,
+    errorContainer = errorContainerDark,
+    onErrorContainer = onErrorContainerDark,
+    background = backgroundDark,
+    onBackground = onBackgroundDark,
+    surface = surfaceDark,
+    onSurface = onSurfaceDark,
+    surfaceVariant = surfaceVariantDark,
+    onSurfaceVariant = onSurfaceVariantDark,
+    outline = outlineDark,
+    outlineVariant = outlineVariantDark,
+    scrim = scrimDark,
+    inverseSurface = inverseSurfaceDark,
+    inverseOnSurface = inverseOnSurfaceDark,
+    inversePrimary = inversePrimaryDark,
+    surfaceDim = surfaceDimDark,
+    surfaceBright = surfaceBrightDark,
+    surfaceContainerLowest = surfaceContainerLowestDark,
+    surfaceContainerLow = surfaceContainerLowDark,
+    surfaceContainer = surfaceContainerDark,
+    surfaceContainerHigh = surfaceContainerHighDark,
+    surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
 
-private val DarkColors = darkColorScheme(
-    onErrorContainer = md_theme_dark_onErrorContainer,
-    onError = md_theme_dark_onError,
-    errorContainer = md_theme_dark_errorContainer,
-    onTertiaryContainer = md_theme_dark_onTertiaryContainer,
-    onTertiary = md_theme_dark_onTertiary,
-    tertiaryContainer = md_theme_dark_tertiaryContainer,
-    tertiary = md_theme_dark_tertiary,
-    error = md_theme_dark_error,
-    outline = md_theme_dark_outline,
-    onBackground = md_theme_dark_onBackground,
-    background = md_theme_dark_background,
-    inverseOnSurface = md_theme_dark_inverseOnSurface,
-    inverseSurface = md_theme_dark_inverseSurface,
-    onSurfaceVariant = md_theme_dark_onSurfaceVariant,
-    onSurface = md_theme_dark_onSurface,
-    surfaceVariant = md_theme_dark_surfaceVariant,
-    surface = md_theme_dark_surface,
-    onSecondaryContainer = md_theme_dark_onSecondaryContainer,
-    onSecondary = md_theme_dark_onSecondary,
-    secondaryContainer = md_theme_dark_secondaryContainer,
-    secondary = md_theme_dark_secondary,
-    inversePrimary = md_theme_dark_inversePrimary,
-    onPrimaryContainer = md_theme_dark_onPrimaryContainer,
-    onPrimary = md_theme_dark_onPrimary,
-    primaryContainer = md_theme_dark_primaryContainer,
-    primary = md_theme_dark_primary,
-)
+private fun getColorScheme(
+    themeState: ThemeMode,
+    materialYouState: Boolean,
+    amoledTheme: Boolean,
+    darkTheme: Boolean,
+    context: Context
+): ColorScheme {
+    val initialColorScheme = when (themeState) {
+        ThemeMode.Light -> if (materialYouState && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            dynamicLightColorScheme(context)
+        } else {
+            lightColors
+        }
 
-/* Other default colors to override
-background = Color(0xFFFFFBFE),
-surface = Color(0xFFFFFBFE),
-onPrimary = Color.White,
-onSecondary = Color.White,
-onTertiary = Color.White,
-onBackground = Color(0xFF1C1B1F),
-onSurface = Color(0xFF1C1B1F),
-*/
+        ThemeMode.Dark -> if (materialYouState && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            dynamicDarkColorScheme(context)
+        } else {
+            darkColors
+        }
+
+        ThemeMode.Auto -> if (materialYouState && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        } else {
+            if (darkTheme) darkColors else lightColors
+        }
+    }
+
+    return if (amoledTheme && // Check if AMOLED theme is enabled
+        (themeState == ThemeMode.Dark || themeState == ThemeMode.Auto && darkTheme)
+    ) {
+        initialColorScheme.copy(surface = Color.Black, background = Color.Black)
+    } else {
+        initialColorScheme
+    }
+}
 
 @Composable
 fun MyneTheme(
@@ -106,36 +153,19 @@ fun MyneTheme(
 ) {
     val context = LocalContext.current
     val themeState = settingsViewModel.theme.observeAsState(initial = ThemeMode.Auto)
+    val amoledThemeState = settingsViewModel.amoledTheme.observeAsState(initial = false)
     val materialYouState = settingsViewModel.materialYou.observeAsState(
         initial = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     )
 
 
-    val colorScheme = when (themeState.value) {
-        ThemeMode.Light -> if (materialYouState.value && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) dynamicLightColorScheme(
-            context
-        ) else LightColors
-
-        ThemeMode.Dark -> if (materialYouState.value && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) dynamicDarkColorScheme(
-            context
-        ) else DarkColors
-
-        ThemeMode.Auto -> if (materialYouState.value && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        } else {
-            if (darkTheme) DarkColors else LightColors
-        }
-    }
-
-    /*
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            (view.context as Activity).window.statusBarColor = colorScheme.primary.toArgb()
-            ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = darkTheme
-        }
-    }
-    */
+    val colorScheme = getColorScheme(
+        themeState = themeState.value,
+        materialYouState = materialYouState.value,
+        amoledTheme = amoledThemeState.value,
+        darkTheme = darkTheme,
+        context = context
+    )
 
     MaterialTheme(
         colorScheme = colorScheme,

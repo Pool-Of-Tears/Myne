@@ -17,10 +17,13 @@
 package com.starry.myne.helpers
 
 object Constants {
-    // Database
+    /** Name of database file. */
     const val DATABASE_NAME = "myne.db"
 
-    // Error placeholder
+    /** Epub Mime Type. */
+    const val EPUB_MIME_TYPE = "application/epub+zip"
+
+    /** Placeholder for unknown error. */
     const val UNKNOWN_ERR = "unknown-error"
 
     // URLs

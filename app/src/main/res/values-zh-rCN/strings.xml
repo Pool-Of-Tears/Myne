@@ -36,11 +36,32 @@
     <!-- Categories screen. 分类页面-->
     <string name="categories_header">分类</string>
     <string name="no_books_found_for_lang_and_cat">在这个分类里没有以%s为语言的书籍</string>
+    <!-- Categories 分类-->
+    <string name="category_animal">动物</string>
+    <string name="category_children">儿童</string>
+    <string name="category_classics">经典</string>
+    <string name="category_countries">国家</string>
+    <string name="category_crime">犯罪</string>
+    <string name="category_education">教育</string>
+    <string name="category_fiction">虚构</string>
+    <string name="category_geography">地理</string>
+    <string name="category_history">历史</string>
+    <string name="category_literature">文学</string>
+    <string name="category_law">法律</string>
+    <string name="category_music">音乐</string>
+    <string name="category_periodicals">期刊</string>
+    <string name="category_psychology">心理学</string>
+    <string name="category_philosophy">哲学</string>
+    <string name="category_religion">宗教</string>
+    <string name="category_romance">浪漫</string>
+    <string name="category_science">科学</string>
 
     <!-- Library screen. 书架/书库页面-->
     <string name="library_header">书库</string>
     <string name="empty_library">这里是空的</string>
     <string name="import_button_text">导入</string>
+    <string name="import_button_onboarding">导入您自己的书籍！</string>
+    <string name="import_button_onboarding_desc">现在您可以导入您自己的 EPUB 书籍并在 Myne 中阅读它们。</string>
     <string name="import_button_desc">导入 EPUB 书籍</string>
     <string name="external_book_info_unavailable">仅适用于内部书籍。</string>
     <string name="epub_importing">正在导入… 请稍候。</string>
@@ -73,6 +94,9 @@
     <string name="default_reader_dialog_title">打开方式</string>
     <string name="reader_option_inbuilt">自带阅读器</string>
     <string name="reader_option_external">外部阅读器</string>
+    <string name="default_locale_setting">默认语言设置</string>
+    <string name="default_locale_setting_desc">请选择您喜欢的语言。</string>
+    <string name="locale_setting_not_found">抱歉！此功能目前尚不受您的操作系统支持。</string>
     <string name="display_setting_header">外观</string>
     <string name="theme_setting">默认主题</string>
     <string name="theme_dialog_title">更改主题</string>
@@ -80,8 +104,11 @@
     <string name="theme_option_dark">暗色主题</string>
     <string name="theme_option_system">跟随系统</string>
     <string name="theme_dialog_apply_button">应用</string>
-    <string name="material_you_settings_disabled_desc">启用Material You主题</string>
-    <string name="material_you_settings_enabled_desc">关闭Material You主题</string>
+    <string name="amoled_theme_setting">黑色主题</string>
+    <string name="amoled_theme_setting_disabled_desc">启用AMOLED黑色主题</string>
+    <string name="amoled_theme_setting_enabled_desc">禁用AMOLED黑色主题</string>
+    <string name="material_you_setting_disabled_desc">启用Material You主题</string>
+    <string name="material_you_setting_enabled_desc">关闭Material You主题</string>
     <string name="material_you_error">这个功能仅限安卓12及以上系统使用</string>
     <string name="miscellaneous_setting_header">杂项</string>
     <string name="license_setting">许可证和致谢</string>

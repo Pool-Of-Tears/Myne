@@ -35,11 +35,32 @@
     <!-- Categories screen. -->
     <string name="categories_header">Категории</string>
     <string name="no_books_found_for_lang_and_cat">Нет доступных книг на %s языке для заданной категории.</string>
+    <!-- Categories -->
+    <string name="category_animal">Животные</string>
+    <string name="category_children">Дети</string>
+    <string name="category_classics">Классика</string>
+    <string name="category_countries">Страны</string>
+    <string name="category_crime">Преступление</string>
+    <string name="category_education">Образование</string>
+    <string name="category_fiction">Художественная литература</string>
+    <string name="category_geography">География</string>
+    <string name="category_history">История</string>
+    <string name="category_literature">Литература</string>
+    <string name="category_law">Право</string>
+    <string name="category_music">Музыка</string>
+    <string name="category_periodicals">Периодика</string>
+    <string name="category_psychology">Психология</string>
+    <string name="category_philosophy">Философия</string>
+    <string name="category_religion">Религия</string>
+    <string name="category_romance">Романтика</string>
+    <string name="category_science">Наука</string>
 
     <!-- Library screen. -->
     <string name="library_header">Библиотека</string>
     <string name="empty_library">Здесь пусто!</string>
     <string name="import_button_text">Импорт</string>
+    <string name="import_button_onboarding">Импортируйте свои собственные книги!</string>
+    <string name="import_button_onboarding_desc">Теперь вы можете импортировать свои собственные книги в формате EPUB и читать их в Myne.</string>
     <string name="import_button_desc">Импорт книги EPUB</string>
     <string name="external_book_info_unavailable">Доступно только для внутренних книг.</string>
     <string name="epub_importing">Импорт… Пожалуйста, подождите.</string>
@@ -72,6 +93,9 @@
     <string name="default_reader_dialog_title">Открыть с помощью…</string>
     <string name="reader_option_inbuilt">Встроенная читалка</string>
     <string name="reader_option_external">Внешняя читалка</string>
+    <string name="default_locale_setting">Язык по умолчанию</string>
+    <string name="default_locale_setting_desc">Выберите предпочитаемый язык.</string>
+    <string name="locale_setting_not_found">Извините! Эта функция пока не поддерживается вашей операционной системой.</string>
     <string name="display_setting_header">Дисплей</string>
     <string name="theme_setting">Тема по умолчанию</string>
     <string name="theme_dialog_title">Изменить тему</string>
@@ -79,8 +103,11 @@
     <string name="theme_option_dark">Тёмная</string>
     <string name="theme_option_system">Системная</string>
     <string name="theme_dialog_apply_button">Применить</string>
-    <string name="material_you_settings_disabled_desc">Включить Material You</string>
-    <string name="material_you_settings_enabled_desc">Отключить Material You</string>
+    <string name="amoled_theme_setting">Тёмная тема</string>
+    <string name="amoled_theme_setting_disabled_desc">Включить тёмную тему AMOLED</string>
+    <string name="amoled_theme_setting_enabled_desc">Отключить тёмную тему AMOLED</string>
+    <string name="material_you_setting_disabled_desc">Включить Material You</string>
+    <string name="material_you_setting_enabled_desc">Отключить Material You</string>
     <string name="material_you_error">Эта функция доступна только для устройств под управлением Android 12 или выше.</string>
     <string name="miscellaneous_setting_header">Разное</string>
     <string name="license_setting">Лицензия и благодарности</string>

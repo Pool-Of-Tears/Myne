@@ -35,11 +35,32 @@
     <!-- Categories screen. -->
     <string name="categories_header">Categorii</string>
     <string name="no_books_found_for_lang_and_cat">Nu există cărți disponibile în limba %s pentru această categorie.</string>
+    <!-- Categories -->
+    <string name="category_animal">Animais</string>
+    <string name="category_children">Crianças</string>
+    <string name="category_classics">Clássicos</string>
+    <string name="category_countries">Países</string>
+    <string name="category_crime">Crime</string>
+    <string name="category_education">Educação</string>
+    <string name="category_fiction">Ficção</string>
+    <string name="category_geography">Geografia</string>
+    <string name="category_history">História</string>
+    <string name="category_literature">Literatura</string>
+    <string name="category_law">Lei</string>
+    <string name="category_music">Música</string>
+    <string name="category_periodicals">Periódicos</string>
+    <string name="category_psychology">Psicologia</string>
+    <string name="category_philosophy">Filosofia</string>
+    <string name="category_religion">Religião</string>
+    <string name="category_romance">Romance</string>
+    <string name="category_science">Ciência</string>
 
     <!-- Library screen. -->
     <string name="library_header">Librărie</string>
     <string name="empty_library">Nimic aici!</string>
     <string name="import_button_text">Importă</string>
+    <string name="import_button_onboarding">Importați propriile cărți!</string>
+    <string name="import_button_onboarding_desc">Acum puteți importa propriile cărți în format EPUB și să le citiți în Myne.</string>
     <string name="import_button_desc">Importează carte EPUB</string>
     <string name="external_book_info_unavailable">Disponibil doar pentru cărți interne.</string>
     <string name="epub_importing">Se importă… Vă rugăm să așteptați.</string>
@@ -72,6 +93,9 @@
     <string name="default_reader_dialog_title">Deschideți ebook-uri cu…</string>
     <string name="reader_option_inbuilt">Cititor încorporat</string>
     <string name="reader_option_external">Cititor extern</string>
+    <string name="default_locale_setting">Limbă implicită</string>
+    <string name="default_locale_setting_desc">Selectați limba preferată.</string>
+    <string name="locale_setting_not_found">Ne pare rău! Această funcție nu este încă suportată de sistemul dvs. de operare.</string>
     <string name="display_setting_header">Afișare</string>
     <string name="theme_setting">Tema implicită</string>
     <string name="theme_dialog_title">Tema implicită</string>
@@ -79,9 +103,12 @@
     <string name="theme_option_dark">Întuneric</string>
     <string name="theme_option_system">Implicit în sistem</string>
     <string name="theme_dialog_apply_button">Aplicați</string>
+    <string name="amoled_theme_setting">Tema întunecată</string>
+    <string name="amoled_theme_setting_disabled_desc">Activare temă neagră AMOLED</string>
+    <string name="amoled_theme_setting_enabled_desc">Dezactivare temă neagră AMOLED</string>
     <string name="material_you_setting" translatable="false">Material You</string>
-    <string name="material_you_settings_disabled_desc">Activați Material You</string>
-    <string name="material_you_settings_enabled_desc">Dezactivați Material You</string>
+    <string name="material_you_setting_disabled_desc">Activați Material You</string>
+    <string name="material_you_setting_enabled_desc">Dezactivați Material You</string>
     <string name="material_you_error">Această funcție este disponibilă numai pentru dispozitivele care rulează Android 12 sau o versiune ulterioară.</string>
     <string name="miscellaneous_setting_header">Diverse</string>
     <string name="license_setting">Licență &amp; Recunoștințe</string>

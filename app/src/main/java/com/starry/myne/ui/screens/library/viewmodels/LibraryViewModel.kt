@@ -17,9 +17,9 @@
 package com.starry.myne.ui.screens.library.viewmodels
 
 import android.content.Context
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,14 +37,6 @@ import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
 
-enum class ImportStatus {
-    IMPORTING, SUCCESS, ERROR, IDLE
-}
-
-data class LibraryScreenState(
-    val showImportUI: Boolean = false,
-    val importStatus: ImportStatus = ImportStatus.IDLE
-)
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
@@ -54,7 +46,11 @@ class LibraryViewModel @Inject constructor(
 ) : ViewModel() {
 
     val allItems: LiveData<List<LibraryItem>> = libraryDao.getAllItems()
-    var state by mutableStateOf(LibraryScreenState())
+
+    private val _showOnboardingTapTargets: MutableState<Boolean> = mutableStateOf(
+        value = preferenceUtil.getBoolean(PreferenceUtil.LIBRARY_ONBOARDING_BOOL, true)
+    )
+    val showOnboardingTapTargets: State<Boolean> = _showOnboardingTapTargets
 
     fun deleteItemFromDB(item: LibraryItem) {
         viewModelScope.launch(Dispatchers.IO) { libraryDao.delete(item) }
@@ -65,19 +61,28 @@ class LibraryViewModel @Inject constructor(
     )
 
     fun shouldShowLibraryTooltip(): Boolean {
-        return preferenceUtil.getBoolean(PreferenceUtil.SHOW_LIBRARY_TOOLTIP_BOOL, true)
+        return preferenceUtil.getBoolean(PreferenceUtil.LIBRARY_SWIPE_TOOLTIP_BOOL, true)
                 && allItems.value?.isNotEmpty() == true
                 && allItems.value?.any { !it.isExternalBook } == true
     }
 
     fun libraryTooltipDismissed() = preferenceUtil.putBoolean(
-        PreferenceUtil.SHOW_LIBRARY_TOOLTIP_BOOL, false
+        PreferenceUtil.LIBRARY_SWIPE_TOOLTIP_BOOL, false
     )
 
-    fun importBook(context: Context, fileStream: FileInputStream) {
+    fun onboardingComplete() {
+        preferenceUtil.putBoolean(PreferenceUtil.LIBRARY_ONBOARDING_BOOL, false)
+        _showOnboardingTapTargets.value = false
+    }
+
+    fun importBook(
+        context: Context,
+        fileStream: FileInputStream,
+        onComplete: () -> Unit,
+        onError: (Exception) -> Unit
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                state = state.copy(showImportUI = true, importStatus = ImportStatus.IMPORTING)
                 fileStream.use { fis ->
                     val epubBook = epubParser.createEpubBook(fis)
                     // reset the stream position to 0 so that it can be read again
@@ -97,18 +102,12 @@ class LibraryViewModel @Inject constructor(
                         isExternalBook = true
                     )
                     libraryDao.insert(libraryItem)
-                    delay(500)
-                    state = state.copy(importStatus = ImportStatus.SUCCESS)
+                    delay(800) // delay to prevent from flickering.
+                    withContext(Dispatchers.Main) { onComplete() }
                 }
             } catch (exc: Exception) {
-                delay(500)
-                state = state.copy(importStatus = ImportStatus.ERROR)
                 exc.printStackTrace()
-            } finally {
-                delay(1500) // delay to show either success or error message
-                state = state.copy(showImportUI = false)
-                delay(150) // Hide import Ui before setting the state to idle
-                state = state.copy(importStatus = ImportStatus.IDLE)
+                withContext(Dispatchers.Main) { onError(exc) }
             }
         }
     }

@@ -79,9 +79,7 @@ fun BookItemCard(
             onClick()
         },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                2.dp
-            )
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
         ),
         shape = RoundedCornerShape(6.dp)
     ) {

@@ -35,11 +35,32 @@
     <!-- Categories screen. -->
     <string name="categories_header">Categorie</string>
     <string name="no_books_found_for_lang_and_cat">Nessun libro disponibile in %s per questa categoria.</string>
+    <!-- Categories -->
+    <string name="category_animal">Animali</string>
+    <string name="category_children">Bambini</string>
+    <string name="category_classics">Classici</string>
+    <string name="category_countries">Paesi</string>
+    <string name="category_crime">Crimine</string>
+    <string name="category_education">Educazione</string>
+    <string name="category_fiction">Fiction</string>
+    <string name="category_geography">Geografia</string>
+    <string name="category_history">Storia</string>
+    <string name="category_literature">Letteratura</string>
+    <string name="category_law">Legge</string>
+    <string name="category_music">Musica</string>
+    <string name="category_periodicals">Periodici</string>
+    <string name="category_psychology">Psicologia</string>
+    <string name="category_philosophy">Filosofia</string>
+    <string name="category_religion">Religione</string>
+    <string name="category_romance">Romantico</string>
+    <string name="category_science">Scienza</string>
 
     <!-- Library screen. -->
     <string name="library_header">Libreria</string>
     <string name="empty_library">Non c\'è nulla qui!</string>
     <string name="import_button_text">Importa</string>
+    <string name="import_button_onboarding">Importa i tuoi libri!</string>
+    <string name="import_button_onboarding_desc">Ora puoi importare i tuoi libri in formato EPUB e leggerli in Myne.</string>
     <string name="import_button_desc">Importa libro EPUB</string>
     <string name="external_book_info_unavailable">Disponibile solo per libri interni.</string>
     <string name="epub_importing">Importazione in corso… Attendere prego.</string>
@@ -72,6 +93,9 @@
     <string name="default_reader_dialog_title">Apri ebooks con…</string>
     <string name="reader_option_inbuilt">Lettore Integrato</string>
     <string name="reader_option_external">Lettore Esterno</string>
+    <string name="default_locale_setting">Impostazione lingua predefinita</string>
+    <string name="default_locale_setting_desc">Seleziona la tua lingua preferita.</string>
+    <string name="locale_setting_not_found">Spiacenti! Questa funzione non è ancora supportata dal tuo sistema operativo.</string>
     <string name="display_setting_header">Mostra</string>
     <string name="theme_setting">Tema predefinito</string>
     <string name="theme_dialog_title">Cambia Tema</string>
@@ -79,8 +103,11 @@
     <string name="theme_option_dark">Scuro</string>
     <string name="theme_option_system">Predefinito di sistema</string>
     <string name="theme_dialog_apply_button">Applica</string>
-    <string name="material_you_settings_disabled_desc">Abilita Material You</string>
-    <string name="material_you_settings_enabled_desc">Disabilita Material You</string>
+    <string name="amoled_theme_setting">Tema scuro</string>
+    <string name="amoled_theme_setting_disabled_desc">Abilita tema nero AMOLED</string>
+    <string name="amoled_theme_setting_enabled_desc">Disabilita tema nero AMOLED</string>
+    <string name="material_you_setting_disabled_desc">Abilita Material You</string>
+    <string name="material_you_setting_enabled_desc">Disabilita Material You</string>
     <string name="material_you_error">Questa funzionalità è disponibile solo per dispositivi Android 12 o superiore.</string>
     <string name="miscellaneous_setting_header">Varie</string>
     <string name="license_setting">Licenza &amp; Riconoscimenti</string>

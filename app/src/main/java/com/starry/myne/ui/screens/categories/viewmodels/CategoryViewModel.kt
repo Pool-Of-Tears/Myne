@@ -50,30 +50,6 @@ class CategoryViewModel @Inject constructor(
     private val preferenceUtil: PreferenceUtil
 ) : ViewModel() {
 
-    companion object {
-        val CATEGORIES_ARRAY =
-            listOf(
-                "animal",
-                "children",
-                "classics",
-                "countries",
-                "crime",
-                "education",
-                "fiction",
-                "geography",
-                "history",
-                "literature",
-                "law",
-                "music",
-                "periodicals",
-                "psychology",
-                "philosophy",
-                "religion",
-                "romance",
-                "science",
-            )
-    }
-
     private lateinit var pagination: Paginator<Long, BookSet>
 
     var state by mutableStateOf(CategorisedBooksState())

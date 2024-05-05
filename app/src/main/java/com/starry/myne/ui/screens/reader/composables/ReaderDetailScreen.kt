@@ -208,9 +208,7 @@ private fun ChapterItem(chapterTitle: String, onClick: () -> Unit) {
             onClick()
         },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                2.dp
-            )
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
         ),
         modifier = Modifier
             .padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)

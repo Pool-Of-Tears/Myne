@@ -35,11 +35,32 @@
     <!-- Categories screen. -->
     <string name="categories_header">Kategorien</string>
     <string name="no_books_found_for_lang_and_cat">Keine Bücher auf %s in dieser Kategorie verfügbar.</string>
+    <!-- Categories -->
+    <string name="category_animal">Tiere</string>
+    <string name="category_children">Kinder</string>
+    <string name="category_classics">Klassiker</string>
+    <string name="category_countries">Länder</string>
+    <string name="category_crime">Kriminalität</string>
+    <string name="category_education">Bildung</string>
+    <string name="category_fiction">Fiktion</string>
+    <string name="category_geography">Geografie</string>
+    <string name="category_history">Geschichte</string>
+    <string name="category_literature">Literatur</string>
+    <string name="category_law">Recht</string>
+    <string name="category_music">Musik</string>
+    <string name="category_periodicals">Zeitschriften</string>
+    <string name="category_psychology">Psychologie</string>
+    <string name="category_philosophy">Philosophie</string>
+    <string name="category_religion">Religion</string>
+    <string name="category_romance">Romantik</string>
+    <string name="category_science">Wissenschaft</string>
 
     <!-- Library screen. -->
     <string name="library_header">Bibliothek</string>
     <string name="empty_library">Nichts vorhanden!</string>
     <string name="import_button_text">Importieren</string>
+    <string name="import_button_onboarding">Importiere deine eigenen Bücher!</string>
+    <string name="import_button_onboarding_desc">Jetzt kannst du deine eigenen EPUB-Bücher importieren und sie in Myne lesen.</string>
     <string name="import_button_desc">EPUB-Buch importieren</string>
     <string name="external_book_info_unavailable">Nur für interne Bücher verfügbar.</string>
     <string name="epub_importing">Importiere… Bitte warten.</string>
@@ -72,6 +93,9 @@
     <string name="default_reader_dialog_title">E-Books öffnen mit …</string>
     <string name="reader_option_inbuilt">Integrierter Reader</string>
     <string name="reader_option_external">Externer Reader</string>
+    <string name="default_locale_setting">Standard-Sprache</string>
+    <string name="default_locale_setting_desc">Wählen Sie Ihre bevorzugte Sprachumgebung.</string>
+    <string name="locale_setting_not_found">Entschuldigung! Diese Funktion wird von Ihrem Betriebssystem noch nicht unterstützt.</string>
     <string name="display_setting_header">Darstellung</string>
     <string name="theme_setting">Standard-Theme</string>
     <string name="theme_dialog_title">Theme ändern</string>
@@ -79,9 +103,12 @@
     <string name="theme_option_dark">Dunkel</string>
     <string name="theme_option_system">Systemstandard</string>
     <string name="theme_dialog_apply_button">Anwenden</string>
+    <string name="amoled_theme_setting">Dunkles Thema</string>
+    <string name="amoled_theme_setting_disabled_desc">AMOLED-Dunkel-Thema aktivieren</string>
+    <string name="amoled_theme_setting_enabled_desc">AMOLED-Dunkel-Thema deaktivieren</string>
     <string name="material_you_setting" translatable="false">Material You</string>
-    <string name="material_you_settings_disabled_desc">Material You aktivieren</string>
-    <string name="material_you_settings_enabled_desc">Material You deaktivieren</string>
+    <string name="material_you_setting_disabled_desc">Material You aktivieren</string>
+    <string name="material_you_setting_enabled_desc">Material You deaktivieren</string>
     <string name="material_you_error">Diese Funktion gibt es nur für Geräte, auf denen mindestent Android 12 läuft.</string>
     <string name="miscellaneous_setting_header">Sonstiges</string>
     <string name="license_setting">Lizenz &amp; Danksagungen</string>
