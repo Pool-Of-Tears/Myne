@@ -81,6 +81,7 @@ class EpubParserTest {
         assertThat(epubBook.chapters.map { it.title }).containsExactly("Chapter 1", "Chapter 2")
     }
 
+    @Test
     fun testParseUsingSpineWithToc(): Unit = runBlocking {
         val inputStream = ByteArrayInputStream(testEpubWithTocFile)
         // Should not use TOC since it's disabled.
