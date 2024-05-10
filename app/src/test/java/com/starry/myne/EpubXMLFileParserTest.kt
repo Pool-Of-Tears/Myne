@@ -47,9 +47,7 @@ class EpubXMLFileParserTest {
     @Test
     fun testParseAsImage() {
         val imagePath = File("image1.jpg").absolutePath
-        val expectedOutput =
-            "\n\n<img src=\"/home/starry/StudioProjects/Myne/app/image1.jpg\" yrel=\"1.45\">\n\n"
-
+        val expectedOutput = "\n\n<img src=\"$imagePath\" yrel=\"1.45\">\n\n"
         val output = parser.parseAsImage(imagePath)
         assertThat(output).isEqualTo(expectedOutput)
     }
