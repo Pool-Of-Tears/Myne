@@ -3,7 +3,6 @@ package com.starry.myne
 
 import com.google.common.truth.Truth.assertThat
 import com.starry.myne.helpers.Paginator
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -15,7 +14,6 @@ data class PaginatorTestResult(
     var nextPage: Int = 1
 )
 
-@ExperimentalCoroutinesApi
 class PaginatorTest {
 
     private lateinit var paginator: Paginator<Int, List<String>>
