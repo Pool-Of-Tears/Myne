@@ -2,11 +2,9 @@ package com.starry.myne
 
 import com.starry.myne.helpers.Utils.prettyCount
 import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
 class UtilsTest {
     @Test
     fun `prettyCount with a small number`() = runTest {

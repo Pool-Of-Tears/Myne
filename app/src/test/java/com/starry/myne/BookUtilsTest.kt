@@ -3,11 +3,10 @@ package com.starry.myne
 import com.google.common.truth.Truth.assertThat
 import com.starry.myne.api.models.Author
 import com.starry.myne.helpers.book.BookUtils
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
+
 class BookUtilsTest {
     @Test
     fun `getAuthorsAsString returns expected string with one author`() = runTest {
