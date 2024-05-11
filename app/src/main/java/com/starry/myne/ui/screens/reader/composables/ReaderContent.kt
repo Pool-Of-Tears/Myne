@@ -18,6 +18,9 @@ package com.starry.myne.ui.screens.reader.composables
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,6 +37,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -44,39 +49,30 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.starry.myne.epub.BookTextMapper
 import com.starry.myne.epub.models.EpubChapter
-import com.starry.myne.helpers.noRippleClickable
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderScreenState
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.theme.pacificoFont
 
-
-private fun chunkText(text: String): List<String> {
-    return text.splitToSequence("\n\n")
-        .filter { it.isNotBlank() }
-        .toList()
-}
 
 @Composable
 fun ReaderContent(
     viewModel: ReaderViewModel,
     lazyListState: LazyListState,
 ) {
-    SelectionContainer {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            state = lazyListState
-        ) {
-            items(
-                count = viewModel.state.epubBook!!.chapters.size,
-                key = { index -> viewModel.state.epubBook!!.chapters[index].hashCode() }
-            ) { index ->
-                val chapter = viewModel.state.epubBook!!.chapters[index]
-                ChapterLazyItemItem(
-                    chapter = chapter,
-                    state = viewModel.state,
-                    onClick = { viewModel.toggleReaderMenu() }
-                )
-            }
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = lazyListState
+    ) {
+        items(
+            count = viewModel.state.epubBook!!.chapters.size,
+            key = { index -> viewModel.state.epubBook!!.chapters[index].hashCode() }
+        ) { index ->
+            val chapter = viewModel.state.epubBook!!.chapters[index]
+            ChapterLazyItemItem(
+                chapter = chapter,
+                state = viewModel.state,
+                onClick = { viewModel.toggleReaderMenu() }
+            )
         }
     }
 
@@ -103,49 +99,69 @@ private fun ChapterLazyItemItem(
         label = "titleFontSize"
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .noRippleClickable { onClick() }
-    ) {
-        Text(
-            modifier = Modifier.padding(start = 12.dp, end = 4.dp, top = 10.dp),
-            text = chapter.title,
-            fontSize = titleFontSize.sp,
-            lineHeight = 32.sp,
-            fontFamily = pacificoFont,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.88f)
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+    SelectionContainer {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .pointerInput(Unit) {
+                    // We're using awaitEachGesture instead of Modifier.clickable or
+                    // Modifier.detectTapGestures so that we can propagate the click
+                    // event to the parent, which in this case is SelectionContainer.
+                    // Without this, the click event would be consumed before reaching
+                    // SelectionContainer, preventing the copy/paste popup from being
+                    // dismissed until the user copies the selected text.
+                    awaitEachGesture {
+                        val down: PointerInputChange = awaitFirstDown()
+                        val up: PointerInputChange? = waitForUpOrCancellation()
+                        // only trigger the click if the pointer hasn't moved up or down
+                        // i.e only on tap gesture
+                        if (up != null && down.id == up.id) {
+                            onClick()
+                        }
+                    }
 
-        paragraphs.forEach { para ->
-            val imgEntry = BookTextMapper.ImgEntry.fromXMLString(para)
-            when {
-                imgEntry == null -> {
-                    Text(
-                        text = para,
-                        fontSize = fontSize.sp,
-                        lineHeight = 1.3.em,
-                        fontFamily = state.fontFamily.fontFamily,
-                        modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 8.dp),
-                    )
                 }
+            //  .noRippleClickable { onClick() }
+        ) {
+            Text(
+                modifier = Modifier.padding(start = 12.dp, end = 4.dp, top = 10.dp),
+                text = chapter.title,
+                fontSize = titleFontSize.sp,
+                lineHeight = 32.sp,
+                fontFamily = pacificoFont,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.88f)
+            )
+            Spacer(modifier = Modifier.height(12.dp))
 
-                else -> {
-                    val image = epubBook?.images?.find { it.absPath == imgEntry.path }
-                    image?.let {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(image.image)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(vertical = 6.dp)
+            paragraphs.forEach { para ->
+                val imgEntry = BookTextMapper.ImgEntry.fromXMLString(para)
+                when {
+                    imgEntry == null -> {
+                        Text(
+                            text = para,
+                            fontSize = fontSize.sp,
+                            lineHeight = 1.3.em,
+                            fontFamily = state.fontFamily.fontFamily,
+                            modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 8.dp),
                         )
+                    }
+
+                    else -> {
+                        val image = epubBook?.images?.find { it.absPath == imgEntry.path }
+                        image?.let {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(image.image)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(vertical = 6.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -157,4 +173,11 @@ private fun ChapterLazyItemItem(
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
         )
     }
+}
+
+// Helper function to chunk text into paragraphs
+private fun chunkText(text: String): List<String> {
+    return text.splitToSequence("\n\n")
+        .filter { it.isNotBlank() }
+        .toList()
 }

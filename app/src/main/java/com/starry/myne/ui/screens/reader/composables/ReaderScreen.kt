@@ -94,7 +94,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.R
-import com.starry.myne.ui.screens.reader.viewmodels.ReaderFont
+import com.starry.myne.ui.screens.reader.others.ReaderFont
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
