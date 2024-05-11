@@ -17,25 +17,21 @@
 
 package com.starry.myne.ui.screens.reader.viewmodels
 
-import androidx.annotation.Keep
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.starry.myne.R
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderData
 import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubBook
 import com.starry.myne.helpers.PreferenceUtil
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.screens.reader.others.ReaderFont
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -43,39 +39,6 @@ import kotlinx.coroutines.launch
 import java.io.FileInputStream
 import javax.inject.Inject
 
-
-@Keep
-sealed class ReaderFont(val id: String, val name: String, val fontFamily: FontFamily) {
-
-    companion object {
-        fun getAllFonts() =
-            ReaderFont::class.sealedSubclasses.mapNotNull { it.objectInstance }.sortedBy { it.name }
-
-        fun getFontByName(name: String) = getAllFonts().find { it.name == name }!!
-    }
-
-    @Keep
-    data object System : ReaderFont("system", "System Default", FontFamily.Default)
-
-    @Keep
-    data object Serif : ReaderFont("serif", "Serif", FontFamily.Serif)
-
-    @Keep
-    data object Cursive : ReaderFont("cursive", "Cursive", FontFamily.Cursive)
-
-    @Keep
-    data object SansSerif : ReaderFont("sans-serif", "SansSerif", FontFamily.SansSerif)
-
-    @Keep
-    data object Inter : ReaderFont("inter", "Inter", FontFamily(Font(R.font.reader_inter_font)))
-
-    @Keep
-    data object Dyslexic :
-        ReaderFont("dyslexic", "OpenDyslexic", FontFamily(Font(R.font.reader_inter_font)))
-
-    @Keep
-    data object Lora : ReaderFont("figerona", "Figerona", figeronaFont)
-}
 
 data class ReaderScreenState(
     val isLoading: Boolean = true,
