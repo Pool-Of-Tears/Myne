@@ -22,7 +22,15 @@ If you'd like to request a feature you deem necessary and useful, open a new Git
 
 If you wish to contribute to the project by submitting code directly, please first leave a comment under the relevant issue or file a new issue, describe the changes you are about to make.
 
-To avoid multiple pull requests resolving the same issue, let others know you are working on it by saying so in a comment, or ask the issue to be assigned to yourself.
+As per our project's guidelines, we adhere to [conventional commits][conv-commits]. Therefore, it's expected that all PRs align with this convention. Should a PR not meet these standards, we'll kindly request a review and revision.
+
+Please use the provided Pull Request templates according to your needs. Currently, there are two to choose from:
+- [General PR](.github/PULL_REQUEST_TEMPLATE/general_template.md): for all other PRs, including bug fixes, adding features etc.
+- [Translation PR](.github/PULL_REQUEST_TEMPLATE/translations_template.md): specifically to be used for translation PRs
+
+> [!TIP]
+>
+> To avoid multiple pull requests resolving the same issue, let others know you are working on it by saying so in a comment, or ask the issue to be assigned to yourself.
 
 ## Building From Source
 
@@ -30,3 +38,4 @@ Fork this project, import and compile it with the latest version of [Android Stu
 
 [issues]: https://github.com/Pool-Of-Tears/GreenStash/issues/new/choose
 [feature-req]: https://github.com/Pool-Of-Tears/GreenStash/issues/new?assignees=&labels=enhancement&projects=&template=--feature-request.yml&title=%5BFeature+Request%5D
+[conv-commits]:https://kapeli.com/cheat_sheets/Conventional_Commits.docset/Contents/Resources/Documents/index
