@@ -18,6 +18,7 @@ package com.starry.myne
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +31,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.ui.screens.main.MainScreen
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
+import com.starry.myne.ui.theme.AdjustEdgeToEdge
 import com.starry.myne.ui.theme.MyneTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -53,10 +55,13 @@ class MainActivity : AppCompatActivity() {
             mainViewModel.isLoading.value
         }
 
+        enableEdgeToEdge() // enable edge to edge for the activity.
+
         setContent {
             MyneTheme(settingsViewModel = settingsViewModel) {
-                val status by networkObserver.observe().collectAsState(
-                    initial = NetworkObserver.Status.Unavailable
+                AdjustEdgeToEdge(
+                    activity = this,
+                    themeState = settingsViewModel.getCurrentTheme()
                 )
 
                 Surface(
@@ -64,11 +69,11 @@ class MainActivity : AppCompatActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val startDestination by mainViewModel.startDestination
-                    MainScreen(
-                        startDestination = startDestination,
-                        networkStatus = status,
-                        settingsViewModel = settingsViewModel
+                    val status by networkObserver.observe().collectAsState(
+                        initial = NetworkObserver.Status.Unavailable
                     )
+
+                    MainScreen(startDestination = startDestination, networkStatus = status)
                 }
             }
         }

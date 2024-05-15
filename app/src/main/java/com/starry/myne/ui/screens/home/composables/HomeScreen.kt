@@ -19,6 +19,7 @@ package com.starry.myne.ui.screens.home.composables
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -29,11 +30,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -178,6 +182,7 @@ private fun HomeScreenScaffold(
                     .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 8.dp)
             ) {
                 Crossfade(
+                    modifier = Modifier.animateContentSize(),
                     targetState = topBarState.isSearchBarVisible,
                     animationSpec = tween(durationMillis = 200), label = "search cross fade"
                 ) {
@@ -400,7 +405,7 @@ private fun HomeTopAppBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 7.dp),
+            .windowInsetsPadding(WindowInsets.statusBars),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -440,7 +445,9 @@ private fun SearchAppBar(
     onSearchClicked: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         val focusRequester = remember { FocusRequester() }
         OutlinedTextField(

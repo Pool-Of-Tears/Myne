@@ -23,10 +23,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -56,12 +59,11 @@ fun CustomTopAppBar(headerText: String, iconRes: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 8.dp)
+            .padding(horizontal = 20.dp, vertical = 8.dp)
+            .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 7.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -90,14 +92,9 @@ fun CustomTopAppBar(headerText: String, onBackButtonClicked: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 8.dp)
+            .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
-        ) {
-            TopBarActionItem(
-                icon = Icons.AutoMirrored.Outlined.ArrowBack, onclick = onBackButtonClicked
-            )
-            Spacer(modifier = Modifier.weight(1f))
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Text(
                 text = headerText,
                 modifier = Modifier.padding(bottom = 16.dp),
@@ -106,7 +103,14 @@ fun CustomTopAppBar(headerText: String, onBackButtonClicked: () -> Unit) {
                 fontFamily = pacificoFont,
                 fontSize = 24.sp
             )
-            Spacer(modifier = Modifier.weight(2.35f))
+            Row(
+                modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+            ) {
+                TopBarActionItem(
+                    icon = Icons.AutoMirrored.Outlined.ArrowBack, onclick = onBackButtonClicked
+                )
+                Spacer(modifier = Modifier.weight(1f))
+            }
         }
         HorizontalDivider(
             thickness = 2.dp, color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
@@ -121,19 +125,13 @@ fun CustomTopAppBar(
     onBackButtonClicked: () -> Unit,
     onActionClicked: () -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 8.dp)
+            .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
-        ) {
-            TopBarActionItem(
-                icon = Icons.AutoMirrored.Outlined.ArrowBack, onclick = onBackButtonClicked
-            )
-            Spacer(modifier = Modifier.weight(1f))
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Text(
                 text = headerText,
                 modifier = Modifier.padding(bottom = 16.dp),
@@ -142,10 +140,17 @@ fun CustomTopAppBar(
                 fontFamily = pacificoFont,
                 fontSize = 24.sp
             )
-            Spacer(modifier = Modifier.weight(1f))
-            TopBarActionItem(
-                icon = actionIcon, onclick = onActionClicked
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+            ) {
+                TopBarActionItem(
+                    icon = Icons.AutoMirrored.Outlined.ArrowBack, onclick = onBackButtonClicked
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                TopBarActionItem(
+                    icon = actionIcon, onclick = onActionClicked
+                )
+            }
         }
         HorizontalDivider(
             thickness = 2.dp, color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
@@ -178,7 +183,7 @@ private fun TopBarActionItem(icon: ImageVector, onclick: () -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-fun TopAppBarsPV() {
+private fun TopAppBarsPV() {
     Column(Modifier.fillMaxSize()) {
         CustomTopAppBar(headerText = "Something", iconRes = R.drawable.ic_nav_categories)
         CustomTopAppBar(headerText = "Something", onBackButtonClicked = {})

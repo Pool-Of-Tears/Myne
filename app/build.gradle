@@ -108,8 +108,6 @@ dependencies {
     implementation "androidx.compose.animation:animation"
     implementation "androidx.compose.runtime:runtime-livedata"
     implementation "androidx.compose.material3:material3"
-    // Accompanist compose.
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
     // Material icons.
     implementation 'androidx.compose.material:material-icons-extended:1.6.7'
     // Material theme for main activity.
@@ -120,6 +118,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     // OkHttp library.
     implementation "com.squareup.okhttp3:okhttp:4.12.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.12.0"
     // Coil Image loading library.
     implementation "io.coil-kt:coil-compose:2.4.0"
     // Room database components.

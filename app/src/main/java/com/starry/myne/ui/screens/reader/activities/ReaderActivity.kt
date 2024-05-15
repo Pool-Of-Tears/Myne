@@ -38,7 +38,6 @@ import com.starry.myne.helpers.Constants
 import com.starry.myne.helpers.toToast
 import com.starry.myne.ui.screens.reader.composables.ReaderContent
 import com.starry.myne.ui.screens.reader.composables.ReaderScreen
-import com.starry.myne.ui.screens.reader.composables.TransparentSystemBars
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.theme.MyneTheme
@@ -106,8 +105,6 @@ class ReaderActivity : AppCompatActivity() {
                         getString(R.string.error).toToast(this)
                         finish()
                     })
-
-                TransparentSystemBars(settingsViewModel = settingsViewModel)
 
                 ReaderScreen(
                     viewModel = viewModel,

@@ -17,16 +17,23 @@
 package com.starry.myne.ui.screens.main
 
 import android.annotation.SuppressLint
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +41,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,12 +56,9 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.systemuicontroller.SystemUiController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.navigation.NavGraph
-import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 
@@ -67,23 +72,11 @@ val bottomNavPadding = 70.dp
 fun MainScreen(
     startDestination: String,
     networkStatus: NetworkObserver.Status,
-    settingsViewModel: SettingsViewModel,
 ) {
     val navController = rememberNavController()
-    val systemUiController = rememberSystemUiController()
-
-    systemUiController.setStatusBarColor(
-        color = MaterialTheme.colorScheme.background,
-        darkIcons = settingsViewModel.getCurrentTheme() == ThemeMode.Light
-    )
-
     Scaffold(
         bottomBar = {
-            BottomBar(
-                navController = navController,
-                systemUiController = systemUiController,
-                settingsViewModel = settingsViewModel
-            )
+            BottomBar(navController = navController)
         }, containerColor = MaterialTheme.colorScheme.background
     ) {
         NavGraph(
@@ -95,11 +88,7 @@ fun MainScreen(
 }
 
 @Composable
-private fun BottomBar(
-    navController: NavHostController,
-    systemUiController: SystemUiController,
-    settingsViewModel: SettingsViewModel
-) {
+private fun BottomBar(navController: NavHostController) {
     val screens = listOf(
         BottomBarScreen.Home,
         BottomBarScreen.Categories,
@@ -111,18 +100,6 @@ private fun BottomBar(
     val currentDestination = navBackStackEntry?.destination
     val bottomBarDestination = screens.any { it.route == currentDestination?.route }
 
-    if (bottomBarDestination) {
-        systemUiController.setNavigationBarColor(
-            color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp),
-            darkIcons = settingsViewModel.getCurrentTheme() == ThemeMode.Light
-        )
-    } else {
-        systemUiController.setNavigationBarColor(
-            color = MaterialTheme.colorScheme.background,
-            darkIcons = settingsViewModel.getCurrentTheme() == ThemeMode.Light
-        )
-    }
-
     AnimatedVisibility(visible = bottomBarDestination,
         modifier = Modifier.fillMaxWidth(),
         enter = slideInVertically(initialOffsetY = { it }),
@@ -132,7 +109,8 @@ private fun BottomBar(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
                     .padding(12.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.navigationBars),
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
