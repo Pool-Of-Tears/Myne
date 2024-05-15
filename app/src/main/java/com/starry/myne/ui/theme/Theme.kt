@@ -164,7 +164,12 @@ fun AdjustEdgeToEdge(activity: AppCompatActivity, themeState: ThemeMode) {
                 navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
             )
         } else {
-            activity.enableEdgeToEdge()
+            activity.enableEdgeToEdge(
+                navigationBarStyle = SystemBarStyle.light(
+                    android.graphics.Color.TRANSPARENT,
+                    android.graphics.Color.TRANSPARENT
+                )
+            )
         }
     }
 }
