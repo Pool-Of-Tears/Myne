@@ -103,6 +103,12 @@ fun SettingsScreen(navController: NavController) {
     Scaffold(
         modifier = Modifier.padding(bottom = bottomNavPadding),
         snackbarHost = { SnackbarHost(snackBarHostState) },
+        topBar = {
+            CustomTopAppBar(
+                headerText = stringResource(id = R.string.settings_header),
+                iconRes = R.drawable.ic_nav_settings
+            )
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -110,10 +116,6 @@ fun SettingsScreen(navController: NavController) {
                 .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
         ) {
-            CustomTopAppBar(
-                headerText = stringResource(id = R.string.settings_header),
-                iconRes = R.drawable.ic_nav_settings
-            )
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 SettingsCard()
                 GeneralOptionsUI(viewModel = viewModel, snackBarHostState = snackBarHostState)

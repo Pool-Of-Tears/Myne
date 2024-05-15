@@ -30,6 +30,7 @@ import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
@@ -37,7 +38,6 @@ import java.io.IOException
 import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
@@ -54,13 +54,25 @@ class BookAPI(context: Context) {
     private val googleApiKey =
         BuildConfig.GOOGLE_API_KEY ?: "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE" // Backup API key
 
-    private val okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(60, TimeUnit.SECONDS)
-        .readTimeout(100, TimeUnit.SECONDS)
-        .cache(Cache(File(context.cacheDir, "http-cache"), CacheInterceptor.CACHE_SIZE))
-        .addNetworkInterceptor(CacheInterceptor())
-        .build()
+    private val okHttpClient by lazy {
+        // Create an OkHttpClient with a cache and a network interceptor.
+        val okHttpBuilder = OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(100, TimeUnit.SECONDS)
+            .cache(Cache(File(context.cacheDir, "http-cache"), CacheInterceptor.CACHE_SIZE))
+            .addNetworkInterceptor(CacheInterceptor())
+
+        // Add logging interceptor if in debug mode.
+        if (BuildConfig.DEBUG) {
+            val logging = HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+            okHttpBuilder.addInterceptor(logging).build()
+        }
+        // Finally build the OkHttpClient.
+        okHttpBuilder.build()
+    }
 
     private val gsonClient = Gson() // Gson client for parsing JSON responses.
 
@@ -154,7 +166,7 @@ class BookAPI(context: Context) {
         val request = Request.Builder().get().url(url).build()
         okHttpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                continuation.resumeWithException(e)
+                continuation.resume(null)
                 e.printStackTrace()
             }
 

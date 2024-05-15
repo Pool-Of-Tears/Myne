@@ -75,7 +75,6 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -92,12 +91,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.starry.myne.R
 import com.starry.myne.ui.screens.reader.others.ReaderFont
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
-import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
-import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
 import com.starry.myne.ui.theme.figeronaFont
 import kotlinx.coroutines.launch
 
@@ -524,21 +520,6 @@ private fun ReaderTextScaleButton(
             imageVector = ImageVector.vectorResource(id = iconRes),
             contentDescription = null,
             modifier = Modifier.size(ButtonDefaults.IconSize)
-        )
-    }
-}
-
-
-@Composable
-fun TransparentSystemBars(alpha: Float = 0f, settingsViewModel: SettingsViewModel) {
-    val systemUiController = rememberSystemUiController()
-    val useDarkIcons = settingsViewModel.getCurrentTheme() == ThemeMode.Light
-    val baseColor = MaterialTheme.colorScheme.primary
-    val color = remember(alpha, baseColor) { baseColor.copy(alpha = alpha) }
-    SideEffect {
-        systemUiController.setSystemBarsColor(
-            color = color,
-            darkIcons = useDarkIcons
         )
     }
 }

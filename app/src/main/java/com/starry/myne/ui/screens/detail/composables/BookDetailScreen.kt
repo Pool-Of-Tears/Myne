@@ -503,7 +503,7 @@ private fun BookDetailTopBar(
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier
-                .padding(22.dp)
+                .padding(horizontal = 22.dp, vertical = 16.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
                 .clickable {

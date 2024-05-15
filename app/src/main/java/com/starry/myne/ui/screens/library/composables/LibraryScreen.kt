@@ -166,7 +166,7 @@ fun LibraryScreen(navController: NavController) {
 
     val showTapTargets = remember { mutableStateOf(false) }
     LaunchedEffect(key1 = viewModel.showOnboardingTapTargets.value) {
-        delay(800) // Delay to prevent flickering
+        delay(500) // Delay to prevent flickering
         showTapTargets.value = viewModel.showOnboardingTapTargets.value
     }
 

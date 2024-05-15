@@ -38,7 +38,6 @@ import com.starry.myne.helpers.Constants
 import com.starry.myne.helpers.toToast
 import com.starry.myne.ui.screens.reader.composables.ReaderContent
 import com.starry.myne.ui.screens.reader.composables.ReaderScreen
-import com.starry.myne.ui.screens.reader.composables.TransparentSystemBars
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.theme.MyneTheme
@@ -76,8 +75,11 @@ class ReaderActivity : AppCompatActivity() {
         // Fullscreen mode that ignores any cutout, notch etc.
         WindowCompat.setDecorFitsSystemWindows(window, false)
         val controller = WindowInsetsControllerCompat(window, window.decorView)
-        controller.hide(WindowInsetsCompat.Type.displayCutout())
+        controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         controller.hide(WindowInsetsCompat.Type.systemBars())
+        controller.hide(WindowInsetsCompat.Type.displayCutout())
+
+        // Set layout in display cutout mode for Android P and above.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             window.attributes.layoutInDisplayCutoutMode =
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
@@ -106,8 +108,6 @@ class ReaderActivity : AppCompatActivity() {
                         getString(R.string.error).toToast(this)
                         finish()
                     })
-
-                TransparentSystemBars(settingsViewModel = settingsViewModel)
 
                 ReaderScreen(
                     viewModel = viewModel,
