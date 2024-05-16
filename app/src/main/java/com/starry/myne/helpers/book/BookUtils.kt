@@ -16,7 +16,18 @@
 
 package com.starry.myne.helpers.book
 
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import androidx.core.content.FileProvider
+import androidx.navigation.NavController
+import com.starry.myne.BuildConfig
+import com.starry.myne.R
 import com.starry.myne.api.models.Author
+import com.starry.myne.database.library.LibraryItem
+import com.starry.myne.helpers.toToast
+import com.starry.myne.ui.navigation.Screens
+import java.io.File
 import java.util.Locale
 
 object BookUtils {
@@ -69,5 +80,39 @@ object BookUtils {
         val allSubjects = subjects.flatMap { it.split("--") }.map { it.trim() }.toSet()
         val truncatedSubs = if (allSubjects.size > limit) allSubjects.take(limit) else allSubjects
         return truncatedSubs.joinToString(", ")
+    }
+
+    /**
+     * Opens the book file using the appropriate app or the internal reader.
+     *
+     * @param context Context of the app.
+     * @param internalReader Whether to use the internal reader or not.
+     * @param libraryItem Library item to open.
+     * @param navController Navigation controller to navigate to the reader screen.
+     */
+    fun openBookFile(
+        context: Context,
+        internalReader: Boolean,
+        libraryItem: LibraryItem,
+        navController: NavController
+    ) {
+        if (internalReader) {
+            navController.navigate(Screens.ReaderDetailScreen.withLibraryItemId(libraryItem.id.toString()))
+        } else {
+            val uri = FileProvider.getUriForFile(
+                context, BuildConfig.APPLICATION_ID + ".provider", File(libraryItem.filePath)
+            )
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.setDataAndType(uri, context.contentResolver.getType(uri))
+            val chooser = Intent.createChooser(
+                intent, context.getString(R.string.open_app_chooser)
+            )
+            try {
+                context.startActivity(chooser)
+            } catch (exc: ActivityNotFoundException) {
+                context.getString(R.string.no_app_to_handle_epub).toToast(context)
+            }
+        }
     }
 }

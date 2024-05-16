@@ -83,6 +83,7 @@ import androidx.navigation.compose.rememberNavController
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
+import com.starry.myne.helpers.Utils
 import com.starry.myne.helpers.getActivity
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.navigation.Screens
@@ -241,7 +242,11 @@ private fun GeneralOptionsUI(
             mainText = stringResource(id = R.string.default_locale_setting),
             subText = stringResource(id = R.string.default_locale_setting_desc),
             onClick = {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // App locale setting is only available on Android 13 and above.
+                // Also, it's not functional on devices running MIUI even on Android 13,
+                // Thanks to Xiaomi's broken implementation of standard Android APIs.
+                // See: https://github.com/Pool-Of-Tears/GreenStash/issues/130 for more.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !Utils.isMiui()) {
                     val intent = Intent(Settings.ACTION_APP_LOCALE_SETTINGS).apply {
                         data = Uri.parse("package:${context.packageName}")
                     }
