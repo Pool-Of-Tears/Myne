@@ -17,22 +17,22 @@
 
 package com.starry.myne.helpers
 
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import androidx.core.content.FileProvider
-import androidx.navigation.NavController
-import com.starry.myne.BuildConfig
-import com.starry.myne.R
-import com.starry.myne.database.library.LibraryItem
-import com.starry.myne.ui.navigation.Screens
-import java.io.File
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
 import java.text.DecimalFormat
 import kotlin.math.floor
 import kotlin.math.log10
 import kotlin.math.pow
 
 object Utils {
+    /**
+     * Formats a number into a more readable format with a suffix representing its magnitude.
+     * For example, 1000 becomes "1k", 1000000 becomes "1M", etc.
+     *
+     * @param number The number to format.
+     * @return A string representation of the number with a magnitude suffix.
+     */
     fun prettyCount(number: Number): String {
         val suffix = charArrayOf(' ', 'k', 'M', 'B', 'T', 'P', 'E')
         val numValue = number.toLong()
@@ -47,30 +47,30 @@ object Utils {
         }
     }
 
-    fun openBookFile(
-        context: Context,
-        internalReader: Boolean,
-        libraryItem: LibraryItem,
-        navController: NavController
-    ) {
+    /**
+     * Check if the device is running on MIUI.
+     *
+     * By default, HyperOS is excluded from the check.
+     * If you want to include HyperOS in the check, set excludeHyperOS to false.
+     *
+     * @param excludeHyperOS Whether to exclude HyperOS
+     * @return True if the device is running on MIUI, false otherwise
+     */
+    fun isMiui(excludeHyperOS: Boolean = true): Boolean {
+        val isMiui = !getProperty("ro.miui.ui.version.name").isNullOrBlank()
+        val isHyperOS = !getProperty("ro.mi.os.version.name").isNullOrBlank()
+        return isMiui && (!excludeHyperOS || !isHyperOS)
+    }
 
-        if (internalReader) {
-            navController.navigate(Screens.ReaderDetailScreen.withLibraryItemId(libraryItem.id.toString()))
-        } else {
-            val uri = FileProvider.getUriForFile(
-                context, BuildConfig.APPLICATION_ID + ".provider", File(libraryItem.filePath)
-            )
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            intent.setDataAndType(uri, context.contentResolver.getType(uri))
-            val chooser = Intent.createChooser(
-                intent, context.getString(R.string.open_app_chooser)
-            )
-            try {
-                context.startActivity(chooser)
-            } catch (exc: ActivityNotFoundException) {
-                context.getString(R.string.no_app_to_handle_epub).toToast(context)
+    // Private function to get the property value from build.prop.
+    private fun getProperty(property: String): String? {
+        return try {
+            Runtime.getRuntime().exec("getprop $property").inputStream.use { input ->
+                BufferedReader(InputStreamReader(input), 1024).readLine()
             }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
         }
     }
 }

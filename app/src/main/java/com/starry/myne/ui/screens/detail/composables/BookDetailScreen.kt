@@ -271,7 +271,7 @@ private fun BookDetailContents(
                             val libraryItem =
                                 viewModel.libraryDao.getItemByBookId(book.id)!!
                             withContext(Dispatchers.Main) {
-                                Utils.openBookFile(
+                                BookUtils.openBookFile(
                                     context = context,
                                     internalReader = viewModel.getInternalReaderSetting(),
                                     libraryItem = libraryItem,
@@ -280,7 +280,7 @@ private fun BookDetailContents(
                             }
                         }
                     } else {
-                        Utils.openBookFile(
+                        BookUtils.openBookFile(
                             context = context,
                             internalReader = viewModel.getInternalReaderSetting(),
                             libraryItem = bookLibraryItem,

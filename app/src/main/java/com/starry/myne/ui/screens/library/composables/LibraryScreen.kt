@@ -100,7 +100,7 @@ import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.helpers.Constants
-import com.starry.myne.helpers.Utils
+import com.starry.myne.helpers.book.BookUtils
 import com.starry.myne.helpers.getActivity
 import com.starry.myne.helpers.isScrollingUp
 import com.starry.myne.helpers.weakHapticFeedback
@@ -424,7 +424,7 @@ private fun LibraryLazyItem(
             item.getDownloadDate(),
             isExternalBook = item.isExternalBook,
             onReadClick = {
-                Utils.openBookFile(
+                BookUtils.openBookFile(
                     context = context,
                     internalReader = viewModel.getInternalReaderSetting(),
                     libraryItem = item,
