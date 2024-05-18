@@ -1,0 +1,4 @@
+- Fixed copy button not dismissing in the internal reader after clicking elsewhere.
+- Fixed status bar not dismissing after swiping down in the internal reader.
+- Fixed crash when changing locale in MIUI due to Xiaomi's broken implementation of per-app locale settings on Android 13.
+- Some other minor fixes and improvements.
