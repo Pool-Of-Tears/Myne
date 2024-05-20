@@ -81,8 +81,10 @@ class HomeViewModel @Inject constructor(
         allBooksState = allBooksState.copy(isLoading = it)
     }, onRequest = { nextPage ->
         try {
-            // Slight delay for better UX
-            delay(400)
+            // Only add delay when loading first page to show shimmer effect
+            // and avoid flickering when navigating to home from welcome screen
+            // and immediately loading the first page.
+            if (nextPage == 1L) delay(400L)
             bookAPI.getAllBooks(nextPage, language.value)
         } catch (exc: Exception) {
             Result.failure(exc)
