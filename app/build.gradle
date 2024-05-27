@@ -62,11 +62,14 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
     lintOptions {
-        abortOnError false
+        abortOnError true
     }
     kotlinOptions {
         jvmTarget = '17'
         freeCompilerArgs = ['-Xjvm-default=all-compatibility']
+    }
+    composeCompiler {
+        enableStrongSkippingMode = true
     }
     buildFeatures {
         compose true
