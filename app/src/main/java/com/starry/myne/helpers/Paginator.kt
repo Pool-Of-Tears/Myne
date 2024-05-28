@@ -30,11 +30,11 @@ package com.starry.myne.helpers
  */
 class Paginator<Page, BookSet>(
     private val initialPage: Page,
-    private inline val onLoadUpdated: (Boolean) -> Unit,
-    private inline val onRequest: suspend (nextPage: Page) -> Result<BookSet>,
-    private inline val getNextPage: suspend (BookSet) -> Page,
-    private inline val onError: suspend (Throwable?) -> Unit,
-    private inline val onSuccess: suspend (item: BookSet, newPage: Page) -> Unit
+    private val onLoadUpdated: (Boolean) -> Unit,
+    private val onRequest: suspend (nextPage: Page) -> Result<BookSet>,
+    private val getNextPage: suspend (BookSet) -> Page,
+    private val onError: suspend (Throwable?) -> Unit,
+    private val onSuccess: suspend (item: BookSet, newPage: Page) -> Unit
 ) {
 
     private var currentPage = initialPage
