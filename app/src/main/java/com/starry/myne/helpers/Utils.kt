@@ -17,6 +17,7 @@
 
 package com.starry.myne.helpers
 
+import android.os.Build
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -57,6 +58,10 @@ object Utils {
      * @return True if the device is running on MIUI, false otherwise
      */
     fun isMiui(excludeHyperOS: Boolean = true): Boolean {
+        // Return false if the device is not from Xiaomi, Redmi, or POCO.
+        val brand = Build.BRAND.lowercase()
+        if (!setOf("xiaomi", "redmi", "poco").contains(brand)) return false
+        // Check if the device is running on MIUI and not HyperOS.
         val isMiui = !getProperty("ro.miui.ui.version.name").isNullOrBlank()
         val isHyperOS = !getProperty("ro.mi.os.version.name").isNullOrBlank()
         return isMiui && (!excludeHyperOS || !isHyperOS)
