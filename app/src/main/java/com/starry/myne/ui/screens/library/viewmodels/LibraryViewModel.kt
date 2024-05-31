@@ -17,6 +17,8 @@
 package com.starry.myne.ui.screens.library.viewmodels
 
 import android.content.Context
+import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -75,42 +77,57 @@ class LibraryViewModel @Inject constructor(
         _showOnboardingTapTargets.value = false
     }
 
-    fun importBook(
+    fun importBooks(
         context: Context,
-        fileStream: FileInputStream,
+        fileUris: List<Uri>,
         onComplete: () -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Throwable) -> Unit
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                fileStream.use { fis ->
-                    val epubBook = epubParser.createEpubBook(fis)
-                    // reset the stream position to 0 so that it can be read again
-                    fis.channel.position(0)
-                    // copy the book to internal storage
-                    val filePath = copyBookToInternalStorage(
-                        context, fis,
-                        BookDownloader.createFileName(epubBook.title)
-                    )
-                    // insert the book into the database
-                    val libraryItem = LibraryItem(
-                        bookId = 0,
-                        title = epubBook.title,
-                        authors = epubBook.author,
-                        filePath = filePath,
-                        createdAt = System.currentTimeMillis(),
-                        isExternalBook = true
-                    )
-                    libraryDao.insert(libraryItem)
-                    delay(800) // delay to prevent from flickering.
-                    withContext(Dispatchers.Main) { onComplete() }
+            val result = runCatching {
+                fileUris.forEach { uri ->
+                    context.contentResolver.openInputStream(uri)?.use { fis ->
+                        if (fis !is FileInputStream) {
+                            throw IllegalArgumentException("File input stream is not valid.")
+                        }
+
+                        val epubBook = epubParser.createEpubBook(fis)
+                        fis.channel.position(0)
+
+                        val filePath = copyBookToInternalStorage(
+                            context, fis,
+                            BookDownloader.createFileName(epubBook.title)
+                        )
+
+                        val libraryItem = LibraryItem(
+                            bookId = 0,
+                            title = epubBook.title,
+                            authors = epubBook.author,
+                            filePath = filePath,
+                            createdAt = System.currentTimeMillis(),
+                            isExternalBook = true
+                        )
+
+                        libraryDao.insert(libraryItem)
+                    }
                 }
-            } catch (exc: Exception) {
-                exc.printStackTrace()
-                withContext(Dispatchers.Main) { onError(exc) }
+
+                // Add delay here so user can see the import progress bar even if
+                // the import is very fast instead of just a flicker, improving UX
+                delay(800)
+            }
+
+            withContext(Dispatchers.Main) {
+                result.onSuccess {
+                    onComplete()
+                }.onFailure { exception ->
+                    Log.e("LibraryViewModel", "Error importing book", exception)
+                    onError(exception)
+                }
             }
         }
     }
+
 
     private suspend fun copyBookToInternalStorage(
         context: Context,

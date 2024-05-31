@@ -117,7 +117,6 @@ import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 import java.io.File
-import java.io.FileInputStream
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -133,35 +132,38 @@ fun LibraryScreen(navController: NavController) {
 
     val showImportDialog = remember { mutableStateOf(false) }
     val importBookLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            uri?.let {
-                (context as MainActivity).contentResolver.openInputStream(uri)?.let { ips ->
-                    showImportDialog.value = true // Show import dialog
-                    viewModel.importBook(
-                        context = context,
-                        fileStream = ips as FileInputStream,
-                        onComplete = {
-                            showImportDialog.value = false
-                            coroutineScope.launch {
-                                snackBarHostState.showSnackbar(
-                                    message = context.getString(R.string.epub_imported),
-                                    actionLabel = context.getString(R.string.ok),
-                                    duration = SnackbarDuration.Short
-                                )
-                            }
-                        },
-                        onError = {
-                            showImportDialog.value = false
-                            coroutineScope.launch {
-                                snackBarHostState.showSnackbar(
-                                    message = context.getString(R.string.error),
-                                    actionLabel = context.getString(R.string.ok),
-                                    duration = SnackbarDuration.Short
-                                )
-                            }
-                        })
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
+            // If no files are selected, return.
+            if (uris.isEmpty()) return@rememberLauncherForActivityResult
+            // Show dialog to indicate import process.
+            showImportDialog.value = true
+            // Start books import.
+            viewModel.importBooks(
+                context = context,
+                fileUris = uris,
+                onComplete = {
+                    // Hide dialog and show success message.
+                    showImportDialog.value = false
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackbar(
+                            message = context.getString(R.string.epub_imported),
+                            actionLabel = context.getString(R.string.ok),
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                },
+                onError = {
+                    // Hide dialog and show error message.
+                    showImportDialog.value = false
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackbar(
+                            message = context.getString(R.string.error),
+                            actionLabel = context.getString(R.string.ok),
+                            duration = SnackbarDuration.Short
+                        )
+                    }
                 }
-            }
+            )
         }
 
     val showTapTargets = remember { mutableStateOf(false) }
