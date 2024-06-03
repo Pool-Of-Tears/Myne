@@ -33,7 +33,7 @@ import java.util.zip.ZipOutputStream
 import kotlin.random.Random
 
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest=Config.NONE, sdk=[33]) // Run on Android 13
+@Config(manifest = Config.NONE, sdk = [33]) // Run on Android 13
 class EpubParserTest {
 
     private lateinit var epubParser: EpubParser

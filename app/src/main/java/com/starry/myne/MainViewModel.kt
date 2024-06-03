@@ -50,7 +50,7 @@ class MainViewModel @Inject constructor(private val welcomeDataStore: WelcomeDat
                     _startDestination.value = Screens.WelcomeScreen.route
                 }
 
-                delay(180)
+                delay(150)
                 _isLoading.value = false
             }
         }

@@ -147,7 +147,7 @@ dependencies {
     // Crash Handler.
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
     // Kotlin reflect API.
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.9.22"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.9.24"
     // Testing components.
     testImplementation 'junit:junit:4.13.2'
     testImplementation "com.google.truth:truth:1.1.3"
