@@ -60,8 +60,8 @@ fun Node.getAttributeValue(attribute: String): String? =
 val NodeList.elements get() = (0..length).asSequence().mapNotNull { item(it) as? Element }
 val Node.childElements get() = childNodes.elements
 
-fun JsoupNode.nextSiblingNodes(): List<org.jsoup.nodes.Node> {
-    val siblings = mutableListOf<org.jsoup.nodes.Node>()
+fun JsoupNode.nextSiblingNodes(): List<JsoupNode> {
+    val siblings = mutableListOf<JsoupNode>()
     var nextSibling = nextSibling()
     while (nextSibling != null) {
         siblings.add(nextSibling)

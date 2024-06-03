@@ -128,6 +128,7 @@ class EpubParser {
         inputStream.use { return parseAndCreateEbook(it, shouldUseToc) }
     }
 
+    // Parses the EPUB file and creates an EpubBook object.
     private suspend fun parseAndCreateEbook(
         inputStream: InputStream, shouldUseToc: Boolean
     ): EpubBook = withContext(Dispatchers.IO) {
@@ -196,6 +197,7 @@ class EpubParser {
 
     }
 
+    // Get all of the files located in the EPUB archive.
     private suspend fun getZipFiles(
         inputStream: InputStream
     ): Map<String, EpubFile> = withContext(Dispatchers.IO) {
@@ -206,6 +208,7 @@ class EpubParser {
         }
     }
 
+    // Create an EpubDocument object from the EPUB files.
     @Throws(EpubParserException::class)
     private fun createEpubDocument(files: Map<String, EpubFile>): EpubDocument {
         val container = files["META-INF/container.xml"]
@@ -229,6 +232,7 @@ class EpubParser {
         return EpubDocument(metadata, manifest, spine, opfFilePath)
     }
 
+    // Find all nested navPoints in the table of contents (ToC) file.
     private fun findNestedNavPoints(element: Element?): List<Element> {
         val navPoints = mutableListOf<Element>()
         if (element == null) {
@@ -244,6 +248,7 @@ class EpubParser {
         return navPoints
     }
 
+    // Parse chapters based on the table of contents (ToC) file.
     private fun parseUsingTocFile(
         tocNavPoints: List<Element>, files: Map<String, EpubFile>, hrefRootPath: File
     ): List<EpubChapter> {
@@ -296,6 +301,8 @@ class EpubParser {
         }.filter { it.body.isNotBlank() }.toList()
     }
 
+    // Parse chapters based on the spine of the epub document.
+    // This is the fallback method if the ToC file is not available or shouldUseToc is false.
     private fun parseUsingSpine(
         spine: Node,
         manifestItems: Map<String, EpubManifestItem>,
