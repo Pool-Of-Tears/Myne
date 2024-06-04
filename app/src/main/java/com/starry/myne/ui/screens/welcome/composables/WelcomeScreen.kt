@@ -31,12 +31,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -44,14 +41,15 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -63,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionResult
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -75,6 +74,7 @@ import com.starry.myne.ui.common.SlideInAnimatedContainer
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.screens.welcome.viewmodels.WelcomeViewModel
 import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.pacificoFont
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
@@ -87,143 +87,155 @@ fun WelcomeScreen(navController: NavController) {
     }
     val showReaderPickerDialog = remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        verticalArrangement = Arrangement.Center
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        val compositionResult: LottieCompositionResult = rememberLottieComposition(
-            spec = LottieCompositionSpec.RawRes(R.raw.welcome_lottie)
+        AsyncImage(
+            model = R.drawable.book_details_bg,
+            contentDescription = null,
+            alpha = 0.3f,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
-        val progressAnimation by animateLottieCompositionAsState(
-            compositionResult.value,
-            isPlaying = true,
-            iterations = LottieConstants.IterateForever,
-            speed = 1f
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.background,
+                            Color.Transparent,
+                            MaterialTheme.colorScheme.background
+                        ), startY = 8f
+                    )
+                )
         )
 
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            LottieAnimation(
-                composition = compositionResult.value,
-                progress = { progressAnimation },
-                modifier = Modifier.size(300.dp),
-                enableMergePaths = true
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            val compositionResult: LottieCompositionResult = rememberLottieComposition(
+                spec = LottieCompositionSpec.RawRes(R.raw.welcome_lottie)
             )
-        }
-
-        SlideInAnimatedContainer(initialDelay = 2500L) {
-            ReaderSelectionCard(
-                internalReaderValue = internalReaderValue,
-                onReaderClicked = {
-                    showReaderPickerDialog.value = true
-                },
-                onContinueClicked = {
-                    viewModel.saveOnBoardingState(completed = true)
-                    navController.popBackStack()
-                    navController.navigate(BottomBarScreen.Home.route)
-                }
+            val progressAnimation by animateLottieCompositionAsState(
+                compositionResult.value,
+                isPlaying = true,
+                iterations = LottieConstants.IterateForever,
+                speed = 1f
             )
-        }
 
-        Spacer(modifier = Modifier.height(60.dp))
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                LottieAnimation(
+                    composition = compositionResult.value,
+                    progress = { progressAnimation },
+                    modifier = Modifier.size(300.dp),
+                    enableMergePaths = true
+                )
+            }
 
-        if (showReaderPickerDialog.value) {
-            ReaderDialog(
-                internalReaderValue = internalReaderValue,
-                onDismissRequest = { showReaderPickerDialog.value = false },
-                onConfirmClicked = { selectedOption ->
-                    showReaderPickerDialog.value = false
-                    when (selectedOption) {
-                        context.getString(R.string.reader_option_inbuilt) -> {
-                            viewModel.setInternalReaderSetting(true)
-                        }
-
-                        context.getString(R.string.reader_option_external) -> {
-                            viewModel.setInternalReaderSetting(false)
-                        }
+            SlideInAnimatedContainer(initialDelay = 2500L) {
+                ReaderSelectionUI(
+                    internalReaderValue = internalReaderValue,
+                    onReaderClicked = {
+                        showReaderPickerDialog.value = true
+                    },
+                    onContinueClicked = {
+                        viewModel.saveOnBoardingState(completed = true)
+                        navController.popBackStack()
+                        navController.navigate(BottomBarScreen.Home.route)
                     }
-                },
-                onCancelClicked = { showReaderPickerDialog.value = false }
-            )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(60.dp))
+
+            if (showReaderPickerDialog.value) {
+                ReaderDialog(
+                    internalReaderValue = internalReaderValue,
+                    onDismissRequest = { showReaderPickerDialog.value = false },
+                    onConfirmClicked = { selectedOption ->
+                        showReaderPickerDialog.value = false
+                        when (selectedOption) {
+                            context.getString(R.string.reader_option_inbuilt) -> {
+                                viewModel.setInternalReaderSetting(true)
+                            }
+
+                            context.getString(R.string.reader_option_external) -> {
+                                viewModel.setInternalReaderSetting(false)
+                            }
+                        }
+                    },
+                    onCancelClicked = { showReaderPickerDialog.value = false }
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun ReaderSelectionCard(
+private fun ReaderSelectionUI(
     internalReaderValue: String,
     onReaderClicked: () -> Unit,
     onContinueClicked: () -> Unit
 ) {
     val view = LocalView.current
-
-    Card(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 18.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme
-                .surfaceColorAtElevation(4.dp)
-        ),
+            .padding(14.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+
     ) {
-        Column(
+        Text(
+            text = stringResource(id = R.string.welcome_screen_title),
+            fontWeight = FontWeight.SemiBold,
+            fontFamily = pacificoFont,
+            fontSize = 20.sp,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        Text(
+            text = stringResource(id = R.string.welcome_screen_desc),
+            fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(14.dp)
+                .padding(horizontal = 20.dp),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        OutlinedButton(
+            onClick = {
+                view.weakHapticFeedback()
+                onReaderClicked()
+            },
+            modifier = Modifier
+                .width(230.dp)
+                .height(45.dp)
         ) {
             Text(
-                text = stringResource(id = R.string.welcome_screen_title),
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                modifier = Modifier.fillMaxWidth()
+                text = internalReaderValue,
+                fontWeight = FontWeight.Medium,
             )
+        }
 
+        Spacer(modifier = Modifier.height(14.dp))
+
+        Button(
+            onClick = {
+                view.weakHapticFeedback()
+                onContinueClicked()
+            },
+            modifier = Modifier
+                .width(230.dp)
+                .height(45.dp)
+        ) {
             Text(
-                text = stringResource(id = R.string.welcome_screen_desc),
-                textAlign = TextAlign.Center,
-                fontSize = 15.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp, vertical = 10.dp)
+                text = stringResource(id = R.string.welcome_screen_button),
+                fontWeight = FontWeight.Medium
             )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Row(modifier = Modifier.fillMaxWidth()) {
-                OutlinedButton(
-                    onClick = {
-                        view.weakHapticFeedback()
-                        onReaderClicked()
-                    },
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = internalReaderValue,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Button(
-                    onClick = {
-                        view.weakHapticFeedback()
-                        onContinueClicked()
-                    },
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.welcome_screen_button),
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-            }
-
         }
     }
 }
@@ -303,10 +315,10 @@ private fun ReaderDialog(
         })
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun WelcomePV() {
-    ReaderSelectionCard(
+    ReaderSelectionUI(
         internalReaderValue = "Internal Reader",
         onReaderClicked = { },
         onContinueClicked = { }
