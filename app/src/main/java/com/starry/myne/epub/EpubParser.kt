@@ -257,7 +257,7 @@ class EpubParser {
             val title =
                 navPoint.selectFirstChildTag("navLabel")?.selectFirstChildTag("text")?.textContent
             val chapterSrc = navPoint.selectFirstChildTag("content")?.getAttributeValue("src")
-                ?.hrefAbsolutePath(hrefRootPath)
+                ?.decodedURL?.hrefAbsolutePath(hrefRootPath)
 
             if (chapterSrc != null) {
                 // Check if the chapter source contains a fragment ID
