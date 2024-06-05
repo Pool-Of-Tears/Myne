@@ -20,16 +20,26 @@ package com.starry.myne.database.reader
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.Locale
 
 @Entity(tableName = "reader_table")
 data class ReaderData(
     @ColumnInfo(name = "library_item_id") val libraryItemId: Int,
     @ColumnInfo(name = "last_chapter_index") val lastChapterIndex: Int,
-    @ColumnInfo(name = "last_chapter_offset") val lastChapterOffset: Int
+    @ColumnInfo(name = "last_chapter_offset") val lastChapterOffset: Int,
+    // Added in database schema version 5
+    @ColumnInfo(
+        name = "last_read_time",
+        defaultValue = "0"
+    ) val lastReadTime: Long = System.currentTimeMillis()
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
 
     fun getProgressPercent(totalChapters: Int) =
-        String.format("%.2f", ((lastChapterIndex + 1).toFloat() / totalChapters.toFloat()) * 100f)
+        String.format(
+            locale = Locale.US,
+            format = "%.2f",
+            ((lastChapterIndex + 1).toFloat() / totalChapters.toFloat()) * 100f
+        )
 }

@@ -253,7 +253,7 @@ class EpubParser {
         tocNavPoints: List<Element>, files: Map<String, EpubFile>, hrefRootPath: File
     ): List<EpubChapter> {
         // Parse each chapter entry.
-        return tocNavPoints.flatMap { navPoint ->
+        return tocNavPoints.flatMapIndexed { index, navPoint ->
             val title =
                 navPoint.selectFirstChildTag("navLabel")?.selectFirstChildTag("text")?.textContent
             val chapterSrc = navPoint.selectFirstChildTag("content")?.getAttributeValue("src")
@@ -289,7 +289,9 @@ class EpubParser {
                 if (res != null) {
                     listOf(
                         EpubChapter(
-                            absPath = chapterSrc, title = title ?: "", body = res.body
+                            absPath = chapterSrc,
+                            title = title?.takeIf { it.isNotEmpty() } ?: "Chapter $index",
+                            body = res.body
                         )
                     )
                 } else {
@@ -311,11 +313,14 @@ class EpubParser {
         var chapterIndex = 0
         val chapterExtensions = listOf("xhtml", "xml", "html", "htm").map { ".$it" }
         return spine.selectChildTag("itemref")
-            .mapNotNull { manifestItems[it.getAttribute("idref")] }.filter { item ->
+            .mapNotNull { manifestItems[it.getAttribute("idref")] }
+            .filter { item ->
                 chapterExtensions.any {
                     item.absPath.endsWith(it, ignoreCase = true)
                 } || item.mediaType.startsWith("image/")
-            }.mapNotNull { files[it.absPath]?.let { file -> it to file } }.map { (item, file) ->
+            }.mapNotNull {
+                files[it.absPath]?.let { file -> it to file }
+            }.map { (item, file) ->
                 val parser = EpubXMLFileParser(file.absPath, file.data, files)
                 if (item.mediaType.startsWith("image/")) {
                     TempEpubChapter(
@@ -342,9 +347,11 @@ class EpubParser {
             }.groupBy {
                 it.chapterIndex
             }.map { (index, list) ->
-                EpubChapter(absPath = list.first().url,
-                    title = list.first().title ?: "Chapter $index",
-                    body = list.joinToString("\n\n") { it.body })
+                EpubChapter(
+                    absPath = list.first().url,
+                    title = list.first().title?.takeIf { it.isNotBlank() } ?: "Chapter $index",
+                    body = list.joinToString("\n\n") { it.body }
+                )
             }.filter {
                 it.body.isNotBlank()
             }
@@ -362,7 +369,8 @@ class EpubParser {
         }
 
         val listedImages =
-            manifestItems.asSequence().map { it.value }.filter { it.mediaType.startsWith("image") }
+            manifestItems.asSequence()
+                .map { it.value }.filter { it.mediaType.startsWith("image") }
                 .mapNotNull { files[it.absPath] }
                 .map { EpubImage(absPath = it.absPath, image = it.data) }
 

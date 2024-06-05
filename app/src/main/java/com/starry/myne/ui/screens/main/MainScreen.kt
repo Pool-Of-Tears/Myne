@@ -17,6 +17,7 @@
 package com.starry.myne.ui.screens.main
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -37,7 +38,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,13 +51,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.starry.myne.MainViewModel
 import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.navigation.NavGraph
+import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.theme.figeronaFont
 
 /**
@@ -64,6 +71,7 @@ val bottomNavPadding = 70.dp
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen(
+    intent: Intent,
     startDestination: String,
     networkStatus: NetworkObserver.Status,
 ) {
@@ -78,6 +86,14 @@ fun MainScreen(
             navController = navController,
             networkStatus = networkStatus
         )
+
+        val shouldHandleShortCut = remember { mutableStateOf(false) }
+        LaunchedEffect(key1 = true) {
+            shouldHandleShortCut.value = true
+        }
+        if (shouldHandleShortCut.value) {
+            HandleShortcutIntent(intent, navController)
+        }
     }
 }
 
@@ -159,6 +175,24 @@ private fun CustomBottomNavigationItem(
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 4.dp)
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HandleShortcutIntent(intent: Intent, navController: NavController) {
+    val data = intent.data
+    if (data != null && data.scheme == MainViewModel.LAUNCHER_SHORTCUT_SCHEME) {
+        val libraryItemId = intent.getIntExtra(MainViewModel.LC_SC_LIBRARY_ITEM_ID, -100)
+        if (libraryItemId != -100) {
+            navController.navigate(Screens.ReaderDetailScreen.withLibraryItemId(libraryItemId.toString()))
+            return
+        }
+        if (intent.getBooleanExtra(MainViewModel.LC_SC_BOOK_LIBRARY, false)) {
+            navController.navigate(BottomBarScreen.Library.route) {
+                popUpTo(navController.graph.findStartDestination().id)
+                launchSingleTop = true
             }
         }
     }

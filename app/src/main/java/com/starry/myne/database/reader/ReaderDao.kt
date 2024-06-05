@@ -21,6 +21,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 
@@ -33,17 +34,15 @@ interface ReaderDao {
     @Query("DELETE FROM reader_table WHERE library_item_id = :libraryItemId")
     fun delete(libraryItemId: Int)
 
-    @Query(
-        "UPDATE reader_table SET "
-                + "last_chapter_index = :lastChapterIndex,"
-                + "last_chapter_offset = :lastChapterOffset"
-                + " WHERE  library_item_id = :libraryItemId"
-    )
-    fun update(libraryItemId: Int, lastChapterIndex: Int, lastChapterOffset: Int)
+    @Update
+    fun update(readerData: ReaderData)
 
     @Query("SELECT * FROM reader_table WHERE library_item_id = :libraryItemId")
     fun getReaderData(libraryItemId: Int): ReaderData?
 
+    @Query("SELECT * FROM reader_table")
+    fun getAllReaderItems(): List<ReaderData>
+
     @Query("SELECT * FROM reader_table WHERE library_item_id = :libraryItemId")
-    fun getReaderDataAsFlow(libraryItemId: Int): Flow<ReaderData?>
+    fun getReaderDataAsFlow(libraryItemId: Int): Flow<ReaderData>?
 }

@@ -105,13 +105,22 @@ class ReaderViewModel @Inject constructor(
 
     fun updateReaderProgress(libraryItemId: Int, chapterIndex: Int, chapterOffset: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            if (readerDao.getReaderData(libraryItemId) != null && chapterIndex != state.epubBook?.chapters!!.size - 1) {
-                readerDao.update(libraryItemId, chapterIndex, chapterOffset)
+            val readerData = readerDao.getReaderData(libraryItemId)
+            // if the user is not on last chapter, save the progress.
+            if (readerData != null && chapterIndex != state.epubBook?.chapters!!.size - 1) {
+                val newReaderData = readerData.copy(
+                    lastChapterIndex = chapterIndex,
+                    lastChapterOffset = chapterOffset,
+                    lastReadTime = System.currentTimeMillis()
+                )
+                newReaderData.id = readerData.id
+                readerDao.update(newReaderData)
             } else if (chapterIndex == state.epubBook?.chapters!!.size - 1) {
                 // if the user has reached last chapter, delete this book
-                // from reader database instead of saving it's progress .
-                readerDao.getReaderData(libraryItemId)?.let { readerDao.delete(it.libraryItemId) }
+                // from reader database instead of saving it's progress.
+                readerData?.let { readerDao.delete(it.libraryItemId) }
             } else {
+                // if the user is reading this book for the first time, save the progress.
                 readerDao.insert(
                     readerData = ReaderData(
                         libraryItemId,

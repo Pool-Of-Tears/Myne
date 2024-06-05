@@ -61,16 +61,19 @@ class ReaderDetailViewModel @Inject constructor(
 
     var state by mutableStateOf(ReaderDetailScreenState())
 
-    val readerData: Flow<ReaderData?>?
-        get() = _readerData
-    private var _readerData: Flow<ReaderData?>? = null
+    var readerData: Flow<ReaderData>? = null
+        private set
 
     fun loadEbookData(libraryItemId: String, networkStatus: NetworkObserver.Status) {
         viewModelScope.launch(Dispatchers.IO) {
-            // Library item is not null as this screen is only accessible from the library.
-            val libraryItem = libraryDao.getItemById(libraryItemId.toInt())!!
+            val libraryItem = libraryDao.getItemById(libraryItemId.toInt())
+            // Check if library item exists.
+            if (libraryItem == null) {
+                state = state.copy(isLoading = false, error = "Library item not found.")
+                return@launch
+            }
             // Get reader data if it exists.
-            _readerData = readerDao.getReaderDataAsFlow(libraryItemId.toInt())
+            readerData = readerDao.getReaderDataAsFlow(libraryItemId.toInt())
             val coverImage: String? = try {
                 if (!libraryItem.isExternalBook
                     && networkStatus == NetworkObserver.Status.Available
