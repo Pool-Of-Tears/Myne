@@ -16,7 +16,9 @@
 
 package com.starry.myne
 
+import android.content.pm.ShortcutManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -56,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         enableEdgeToEdge() // enable edge to edge for the activity.
+        setAppShortcuts() // set launcher shortcuts for the app.
 
         setContent {
             MyneTheme(settingsViewModel = settingsViewModel) {
@@ -73,9 +76,28 @@ class MainActivity : AppCompatActivity() {
                         initial = NetworkObserver.Status.Unavailable
                     )
 
-                    MainScreen(startDestination = startDestination, networkStatus = status)
+                    MainScreen(
+                        intent = intent,
+                        startDestination = startDestination,
+                        networkStatus = status
+                    )
                 }
             }
         }
+    }
+
+    private fun setAppShortcuts() {
+        val shortcutManager = getSystemService(ShortcutManager::class.java)
+        mainViewModel.buildDynamicShortcuts(
+            context = this,
+            limit = shortcutManager.maxShortcutCountPerActivity,
+            onComplete = { shortcuts ->
+                try {
+                    shortcutManager.dynamicShortcuts = shortcuts
+                } catch (e: IllegalArgumentException) {
+                    Log.e("MainActivity", "Error setting dynamic shortcuts", e)
+                }
+            }
+        )
     }
 }
