@@ -44,5 +44,5 @@ interface ReaderDao {
     fun getAllReaderItems(): List<ReaderData>
 
     @Query("SELECT * FROM reader_table WHERE library_item_id = :libraryItemId")
-    fun getReaderDataAsFlow(libraryItemId: Int): Flow<ReaderData?>
+    fun getReaderDataAsFlow(libraryItemId: Int): Flow<ReaderData>?
 }

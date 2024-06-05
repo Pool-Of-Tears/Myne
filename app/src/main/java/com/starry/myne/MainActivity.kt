@@ -58,7 +58,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         enableEdgeToEdge() // enable edge to edge for the activity.
-        setAppShortcuts() // set launcher shortcuts for the app.
 
         setContent {
             MyneTheme(settingsViewModel = settingsViewModel) {
@@ -86,7 +85,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setAppShortcuts() {
+    override fun onPause() {
+        super.onPause()
+        updateShortcuts()
+    }
+
+    private fun updateShortcuts() {
         val shortcutManager = getSystemService(ShortcutManager::class.java)
         mainViewModel.buildDynamicShortcuts(
             context = this,
