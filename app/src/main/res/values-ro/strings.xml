@@ -139,6 +139,8 @@
     <string name="useful_links">Link-uri Utile</string>
     <string name="link_readme">README</string>
     <string name="link_readme_desc">Consultă README-ul aplicației pe Github.</string>
+    <string name="link_website">Site web</string>
+    <string name="link_website_desc">Vizitați site-ul nostru pentru mai multe informații.</string>
     <string name="link_privacy_policy">Politica de Confidențialitate</string>
     <string name="link_privacy_policy_desc">Citește ultima noastră politică de confidențialitate.</string>
     <string name="link_gh_issue">Probleme Github</string>

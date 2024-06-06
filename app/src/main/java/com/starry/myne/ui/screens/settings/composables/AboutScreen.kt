@@ -16,10 +16,7 @@
 
 package com.starry.myne.ui.screens.settings.composables
 
-import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,6 +37,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PrivacyTip
+import androidx.compose.material.icons.filled.Web
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -72,11 +70,11 @@ import coil.request.ImageRequest
 import com.starry.myne.BuildConfig
 import com.starry.myne.R
 import com.starry.myne.helpers.Constants
+import com.starry.myne.helpers.Utils
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.theme.figeronaFont
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(navController: NavController) {
     val context = LocalContext.current
@@ -121,7 +119,7 @@ fun AboutScreen(navController: NavController) {
                     SettingItem(ImageVector.vectorResource(id = R.drawable.ic_osi_logo),
                         mainText = stringResource(id = R.string.project_contributors),
                         subText = stringResource(id = R.string.project_contributors_desc),
-                        onClick = { openWebLink(context, Constants.PROJECT_CONTRIBUTORS) }
+                        onClick = { Utils.openWebLink(context, Constants.PROJECT_CONTRIBUTORS) }
                     )
                 }
 
@@ -144,27 +142,32 @@ fun AboutScreen(navController: NavController) {
                     SettingItem(icon = Icons.AutoMirrored.Filled.Notes,
                         mainText = stringResource(id = R.string.link_readme),
                         subText = stringResource(id = R.string.link_readme_desc),
-                        onClick = { openWebLink(context, Constants.GITHUB_REPO) }
+                        onClick = { Utils.openWebLink(context, Constants.GITHUB_REPO) }
+                    )
+                    SettingItem(icon = Icons.Filled.Web,
+                        mainText = stringResource(id = R.string.link_website),
+                        subText = stringResource(id = R.string.link_website_desc),
+                        onClick = { Utils.openWebLink(context, Constants.WEBSITE) }
                     )
                     SettingItem(icon = Icons.Filled.PrivacyTip,
                         mainText = stringResource(id = R.string.link_privacy_policy),
                         subText = stringResource(id = R.string.link_privacy_policy_desc),
-                        onClick = { openWebLink(context, Constants.PRIVACY_POLICY) }
+                        onClick = { Utils.openWebLink(context, Constants.PRIVACY_POLICY) }
                     )
                     SettingItem(icon = ImageVector.vectorResource(id = R.drawable.ic_github_logo),
                         mainText = stringResource(id = R.string.link_gh_issue),
                         subText = stringResource(id = R.string.link_gh_issue_desc),
-                        onClick = { openWebLink(context, Constants.GITHUB_ISSUE) }
+                        onClick = { Utils.openWebLink(context, Constants.GITHUB_ISSUE) }
                     )
                     SettingItem(ImageVector.vectorResource(id = R.drawable.ic_telegram_logo),
                         mainText = stringResource(id = R.string.link_telegram),
                         subText = stringResource(id = R.string.link_telegram_desc),
-                        onClick = { openWebLink(context, Constants.TELEGRAM_GROUP) }
+                        onClick = { Utils.openWebLink(context, Constants.TELEGRAM_GROUP) }
                     )
                     SettingItem(icon = Icons.Filled.Favorite,
                         mainText = stringResource(id = R.string.link_support),
                         subText = stringResource(id = R.string.link_support_desc),
-                        onClick = { openWebLink(context, Constants.SUPPORT) }
+                        onClick = { Utils.openWebLink(context, Constants.SUPPORT) }
                     )
                 }
 
@@ -353,28 +356,18 @@ private fun DeveloperCard(context: Context) {
                         text = "Github",
                         icon = ImageVector.vectorResource(id = R.drawable.ic_github_logo)
                     ) {
-                        openWebLink(context, Constants.DEV_GITHUB_URL)
+                        Utils.openWebLink(context, Constants.DEV_GITHUB_URL)
                     }
 
                     LinkButton(
                         text = "Telegram",
                         icon = ImageVector.vectorResource(id = R.drawable.ic_telegram_logo)
                     ) {
-                        openWebLink(context, Constants.DEV_TELEGRAM_URL)
+                        Utils.openWebLink(context, Constants.DEV_TELEGRAM_URL)
                     }
                 }
             }
         }
-    }
-}
-
-private fun openWebLink(context: Context, url: String) {
-    val uri: Uri = Uri.parse(url)
-    val intent = Intent(Intent.ACTION_VIEW, uri)
-    try {
-        context.startActivity(intent)
-    } catch (exc: ActivityNotFoundException) {
-        exc.printStackTrace()
     }
 }
 

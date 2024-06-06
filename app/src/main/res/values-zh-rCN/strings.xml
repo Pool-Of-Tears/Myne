@@ -139,6 +139,8 @@
     <string name="useful_links">有用链接</string>
     <string name="link_readme">自述文件</string>
     <string name="link_readme_desc">在Github上查看应用的自述文件。</string>
+    <string name="link_website">网站</string>
+    <string name="link_website_desc">访问我们的网站以获取更多信息。</string>
     <string name="link_privacy_policy">隐私政策</string>
     <string name="link_privacy_policy_desc">阅读我们的最新隐私政策。</string>
     <string name="link_gh_issue">Github问题</string>

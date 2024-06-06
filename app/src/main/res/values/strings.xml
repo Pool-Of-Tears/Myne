@@ -141,6 +141,8 @@
     <string name="useful_links">Useful Links</string>
     <string name="link_readme">README</string>
     <string name="link_readme_desc">Checkout app\'s README on Github.</string>
+    <string name="link_website">Website</string>
+    <string name="link_website_desc">Visit our website for more information.</string>
     <string name="link_privacy_policy">Privacy Policy</string>
     <string name="link_privacy_policy_desc">Read our latest privacy policy.</string>
     <string name="link_gh_issue">Github Issues</string>
