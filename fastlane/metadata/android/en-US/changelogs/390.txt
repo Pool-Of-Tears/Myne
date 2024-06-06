@@ -1,0 +1,6 @@
+- Added launcher shortcuts to quickly jump back to the last read book without needing to open the app.
+- Added the ability to select and import multiple EPUB books at once.
+- Fixed an error in the EPUB parser when parsing chapters if the chapter's path is URL encoded.
+- Fixed some edge cases in EPUB parser related to dynamic parsing method selection.
+- Improved UI design of the welcome/intro screen.
+- Some performance improvements and other minor fixes.
