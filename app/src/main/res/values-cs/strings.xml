@@ -137,6 +137,8 @@
     <string name="useful_links">Užitečné odkazy</string>
     <string name="link_readme">README</string>
     <string name="link_readme_desc">Zkontrolujte README aplikace na Githubu.</string>
+    <string name="link_website">Webová stránka</string>
+    <string name="link_website_desc">Navštivte naše webové stránky pro více informací.</string>
     <string name="link_privacy_policy">Zásady ochrany osobních údajů</string>
     <string name="link_privacy_policy_desc">Přečtěte si naše nejnovější zásady ochrany osobních údajů.</string>
     <string name="link_gh_issue">Problémy na Githubu</string>

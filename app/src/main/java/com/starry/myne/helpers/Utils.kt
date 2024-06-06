@@ -17,7 +17,12 @@
 
 package com.starry.myne.helpers
 
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import com.starry.myne.R
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -45,6 +50,23 @@ object Utils {
             ) + suffix[base]
         } else {
             DecimalFormat("#,##0").format(numValue)
+        }
+    }
+
+    /**
+     * Opens a web link in the default browser.
+     *
+     * @param context The context to use.
+     * @param url The URL to open.
+     */
+    fun openWebLink(context: Context, url: String) {
+        val uri: Uri = Uri.parse(url)
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        try {
+            context.startActivity(intent)
+        } catch (exc: ActivityNotFoundException) {
+            exc.printStackTrace()
+            context.getString(R.string.error).toToast(context)
         }
     }
 

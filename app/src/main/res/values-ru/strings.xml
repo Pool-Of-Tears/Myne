@@ -138,6 +138,8 @@
     <string name="useful_links">Полезные Ссылки</string>
     <string name="link_readme">README</string>
     <string name="link_readme_desc">Информация о проекте на Github.</string>
+    <string name="link_website">Веб-сайт</string>
+    <string name="link_website_desc">Посетите наш веб-сайт для получения дополнительной информации.</string>
     <string name="link_privacy_policy">Политика Конфиденциальности</string>
     <string name="link_privacy_policy_desc">Прочтите нашу последнюю политику конфиденциальности.</string>
     <string name="link_gh_issue">Темы на Github</string>
