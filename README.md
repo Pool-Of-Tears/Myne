@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://t.me/PotApps"><img src="https://img.shields.io/badge/Telegram-PotApps-green?style=flat&logo=telegram"/></a>
-  <a href="https://github.com/Pool-Of-Tears/Myne/releases"><img src="https://img.shields.io/github/downloads/Pool-Of-Tears/Myne/total?label=Downloads&logo=github"</img></a>
+  <a href="https://github.com/Pool-Of-Tears/Myne/releases"><img src="https://img.shields.io/github/downloads/Pool-Of-Tears/Myne/total?label=Downloads&logo=github"></a>
   <img alt="GitHub" src="https://img.shields.io/github/license/Pool-Of-Tears/Myne">
   <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/Pool-Of-Tears/Myne">
   <a href="https://www.repostatus.org/#active"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed." /></a>
@@ -53,10 +53,10 @@
 <h2 align="center">Downloads</h2>
 
 <div align="center">
-<a href="https://play.google.com/store/apps/details?id=com.starry.myne"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="65"</img></a>
+<a href="https://play.google.com/store/apps/details?id=com.starry.myne"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="65"></a>
 <a href='https://f-droid.org/packages/com.starry.myne/'><img alt='Get it on F-Droid' src='https://fdroid.gitlab.io/artwork/badge/get-it-on.png' height='65'/></a>
 <a href='https://apt.izzysoft.de/fdroid/index/apk/com.starry.myne'><img alt='Get it on IzzyOnDroid' src='https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png' height='65'/></a>
-<a href="https://github.com/Pool-Of-Tears/Myne/releases/latest"><img alt="Get it on GitHub" src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="65"</img></a>
+<a href="https://github.com/Pool-Of-Tears/Myne/releases/latest"><img alt="Get it on GitHub" src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="65"></a>
 </div>
 
 ------
