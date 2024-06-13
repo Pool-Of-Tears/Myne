@@ -229,7 +229,8 @@ fun LibraryScreen(navController: NavController) {
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Add,
-                            contentDescription = stringResource(id = R.string.import_button_desc)
+                            contentDescription = stringResource(id = R.string.import_button_desc),
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
@@ -237,7 +238,7 @@ fun LibraryScreen(navController: NavController) {
                             fontWeight = FontWeight.Medium,
                             fontFamily = figeronaFont,
                             fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
 
                     }
