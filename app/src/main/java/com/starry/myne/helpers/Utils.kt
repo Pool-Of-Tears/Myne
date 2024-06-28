@@ -31,7 +31,11 @@ import kotlin.math.floor
 import kotlin.math.log10
 import kotlin.math.pow
 
+/**
+ * A collection of utility functions.
+ */
 object Utils {
+
     /**
      * Formats a number into a more readable format with a suffix representing its magnitude.
      * For example, 1000 becomes "1k", 1000000 becomes "1M", etc.

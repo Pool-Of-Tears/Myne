@@ -50,6 +50,7 @@ class EpubXMLFileParser(
      */
     data class Output(val title: String?, val body: String)
 
+    // The parent folder of the XML file.
     private val fileParentFolder: File = File(fileAbsolutePath).parentFile ?: File("")
 
 
@@ -116,6 +117,27 @@ class EpubXMLFileParser(
         )
     }
 
+    /**
+     * Parses the input data as an image and returns the image path and aspect ratio.
+     *
+     * @param absolutePathImage The absolute path of the image file.
+     * @return [String] The image path and aspect ratio.
+     */
+    fun parseAsImage(absolutePathImage: String): String {
+        // Use run catching so it can be run locally without crash
+        val bitmap = zipFile[absolutePathImage]?.data?.runCatching {
+            BitmapFactory.decodeByteArray(this, 0, this.size)
+        }?.getOrNull()
+
+        val text = BookTextMapper.ImgEntry(
+            path = absolutePathImage,
+            yrel = bitmap?.let { it.height.toFloat() / it.width.toFloat() } ?: 1.45f
+        ).toXMLString()
+
+        return "\n\n$text\n\n"
+    }
+
+    // Traverses the XML document to find the next sibling node.
     private fun getNextSibling(currentNode: Node?): Node? {
         var nextSibling: Node? = currentNode?.nextSibling()
 
@@ -135,6 +157,7 @@ class EpubXMLFileParser(
         return nextSibling
     }
 
+    // Traverses the descendants of a node to find the next node.
     private fun traverseDescendants(node: Node): Node? {
         val children = node.childNodes()
         if (children.isNotEmpty()) {
@@ -147,20 +170,6 @@ class EpubXMLFileParser(
         }
 
         return null
-    }
-
-    fun parseAsImage(absolutePathImage: String): String {
-        // Use run catching so it can be run locally without crash
-        val bitmap = zipFile[absolutePathImage]?.data?.runCatching {
-            BitmapFactory.decodeByteArray(this, 0, this.size)
-        }?.getOrNull()
-
-        val text = BookTextMapper.ImgEntry(
-            path = absolutePathImage,
-            yrel = bitmap?.let { it.height.toFloat() / it.width.toFloat() } ?: 1.45f
-        ).toXMLString()
-
-        return "\n\n$text\n\n"
     }
 
     // Rewrites the image node to xml for the next stage.
@@ -177,6 +186,7 @@ class EpubXMLFileParser(
         return parseAsImage(absolutePathImage)
     }
 
+    // Traverses the <p> tag to extract the text content.
     private fun getPTraverse(node: Node): String {
         fun innerTraverse(node: Node): String =
             node.childNodes().joinToString("") { child ->
@@ -193,6 +203,7 @@ class EpubXMLFileParser(
         return if (paragraph.isNotEmpty()) "$paragraph\n\n" else ""
     }
 
+    // Traverses the node to extract the text content.
     private fun getNodeTextTraverse(node: Node): String {
         val children = node.childNodes()
         if (children.isEmpty())
@@ -215,6 +226,8 @@ class EpubXMLFileParser(
         }
     }
 
+    // Traverses the node to extract the structured text content
+    // based on the node type and its children.
     private fun getNodeStructuredText(node: Node, singleNode: Boolean = false): String {
         val nodeActions = mapOf(
             "p" to { n: Node -> getPTraverse(n) },
