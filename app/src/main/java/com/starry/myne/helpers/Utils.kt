@@ -71,6 +71,27 @@ object Utils {
     }
 
     /**
+     * Opens an email client with the specified email address and subject.
+     *
+     * @param context The context to use.
+     * @param email The email address to send the email to.
+     * @param subject The subject of the email.
+     */
+    fun openEmail(context: Context, email: String, subject: String) {
+        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:")
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+            putExtra(Intent.EXTRA_SUBJECT, subject)
+        }
+        try {
+            context.startActivity(emailIntent)
+        } catch (exc: ActivityNotFoundException) {
+            exc.printStackTrace()
+            context.getString(R.string.error).toToast(context)
+        }
+    }
+
+    /**
      * Check if the device is running on MIUI.
      *
      * By default, HyperOS is excluded from the check.

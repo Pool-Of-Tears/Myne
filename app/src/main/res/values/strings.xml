@@ -135,7 +135,6 @@
     <string name="about_desc">A Free &amp; Open Source Android application to download ebooks from the Project Gutenberg.</string>
     <string name="developed_by">Developed By</string>
     <string name="dev_name" translatable="false">Starry Shivam</string>
-    <string name="dev_email" translatable="false">starry@krsh.dev</string>
     <string name="project_contributors">Project Contributors</string>
     <string name="project_contributors_desc">Meet our wonderful contributors.</string>
     <string name="useful_links">Useful Links</string>

@@ -342,11 +342,18 @@ private fun DeveloperCard(context: Context) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = stringResource(id = R.string.dev_email),
+                    text = Constants.DEV_EMAIL,
                     fontSize = 16.sp,
                     fontFamily = figeronaFont,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.clickable {
+                        Utils.openEmail(
+                            context = context,
+                            email = Constants.DEV_EMAIL,
+                            subject = "Myne Feedback (v${BuildConfig.VERSION_NAME})"
+                        )
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(6.dp))
