@@ -4,7 +4,7 @@ on:
     tags:
       - 'v*'
   pull_request:
-    branches: [ "main" ]     
+    branches: [ "main" ]
 
 jobs:
   Build:
@@ -16,15 +16,12 @@ jobs:
       - name: Set GOOGLE_API_KEY in local properties
         run: echo 'GOOGLE_API_KEY="${{ secrets.GOOGLE_API_KEY }}"' >> ./local.properties
 
-      - name: set up JDK 17
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
-
-      - name: Set ANDROID_HOME
-        run: echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV    
 
       - name: Get Tag
         id: var
@@ -40,7 +37,8 @@ jobs:
           APK_FILE=app/build/outputs/apk/release/app-release-unsigned.apk
           SIGNED_APK_FILE=app/build/outputs/apk/release/app-release-signed.apk
           echo ${{ secrets.BASE64KEY }} | base64 --decode > /tmp/signingkey.jks
-          ${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner sign \
+          apksigner=${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner
+          $apksigner sign \
             --ks /tmp/signingkey.jks \
             --ks-key-alias ${{ secrets.ALIAS }} \
             --ks-pass pass:${{ secrets.KEY_STORE_PASSWORD }} \
@@ -48,7 +46,7 @@ jobs:
             --out $SIGNED_APK_FILE \
             --alignment-preserved true $APK_FILE
         env:
-           ANDROID_HOME: ${{ env.ANDROID_HOME }}
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
 
       - name: Make artifact
         uses: actions/upload-artifact@v2
@@ -65,7 +63,8 @@ jobs:
           AAB_FILE=app/build/outputs/bundle/release/app-release.aab
           SIGNED_AAB_FILE=app/build/outputs/bundle/release/app-release-signed.aab
           echo ${{ secrets.BASE64KEY }} | base64 --decode > /tmp/signingkey.jks
-          ${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner sign \
+          apksigner=${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner
+          $apksigner sign \
             --ks /tmp/signingkey.jks \
             --ks-key-alias ${{ secrets.ALIAS }} \
             --ks-pass pass:${{ secrets.KEY_STORE_PASSWORD }} \
@@ -73,7 +72,7 @@ jobs:
             --out $SIGNED_AAB_FILE \
             --alignment-preserved true $AAB_FILE
         env:
-           ANDROID_HOME: ${{ env.ANDROID_HOME }}
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
 
       - name: Make artifact
         uses: actions/upload-artifact@v2
