@@ -34,6 +34,25 @@ jobs:
         id: build
         run: bash ./gradlew assembleRelease
 
+      - name: Sign APK
+        id: sign_apk
+        run: |
+          APK_FILE=app/build/outputs/apk/release/app-release-unsigned.apk
+          SIGNED_APK_FILE=app/build/outputs/apk/release/app-release-signed.apk
+          echo ${{ secrets.BASE64KEY }} | base64 --decode > /tmp/signingkey.jks
+          apksigner=${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner
+          echo "APK Signer Path: $apksigner"
+          $apksigner sign \
+            --ks /tmp/signingkey.jks \
+            --ks-key-alias ${{ secrets.ALIAS }} \
+            --ks-pass pass:${{ secrets.KEY_STORE_PASSWORD }} \
+            --key-pass pass:${{ secrets.KEY_PASSWORD }} \
+            --out $SIGNED_APK_FILE \
+            --alignment-preserved true \
+            $APK_FILE
+        env:
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+
       
       - name: Make artifact
         uses: actions/upload-artifact@v2
