@@ -36,6 +36,7 @@ jobs:
 
       - name: Sign APK
         id: sign_apk
+        shell: bash
         run: |
           APK_FILE=app/build/outputs/apk/release/app-release-unsigned.apk
           SIGNED_APK_FILE=app/build/outputs/apk/release/app-release-signed.apk
@@ -52,7 +53,6 @@ jobs:
             $APK_FILE
         env:
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
-
       
       - name: Make artifact
         uses: actions/upload-artifact@v2
@@ -65,6 +65,7 @@ jobs:
 
       - name: Sign AAB
         id: sign_aab
+        shell: bash
         run: |
           AAB_FILE=app/build/outputs/bundle/release/app-release.aab
           SIGNED_AAB_FILE=app/build/outputs/bundle/release/app-release-signed.aab
