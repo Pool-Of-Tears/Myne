@@ -23,6 +23,9 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      - name: Set ANDROID_HOME
+        run: echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV    
+
       - name: Get Tag
         id: var
         run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
@@ -45,7 +48,7 @@ jobs:
             --out $SIGNED_APK_FILE \
             --alignment-preserved true $APK_FILE
         env:
-          BUILD_TOOLS_VERSION: ${{ env.BUILD_TOOL_VERSION }}
+           ANDROID_HOME: ${{ env.ANDROID_HOME }}
 
       - name: Make artifact
         uses: actions/upload-artifact@v2
@@ -70,7 +73,7 @@ jobs:
             --out $SIGNED_AAB_FILE \
             --alignment-preserved true $AAB_FILE
         env:
-          BUILD_TOOLS_VERSION: ${{ env.BUILD_TOOL_VERSION }}
+           ANDROID_HOME: ${{ env.ANDROID_HOME }}
 
       - name: Make artifact
         uses: actions/upload-artifact@v2
