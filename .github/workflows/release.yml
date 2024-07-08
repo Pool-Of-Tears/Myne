@@ -3,6 +3,8 @@ on:
   push:
     tags:
       - 'v*'
+  pull_request:
+    branches: [ "main" ]     
 
 jobs:
   Build:
@@ -38,13 +40,11 @@ jobs:
 
       - name: Sign APK
         id: sign_apk
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.BASE64KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          APK_FILE=app/build/outputs/apk/release/app-release-unsigned.apk
+          SIGNED_APK_FILE=app/build/outputs/apk/release/app-release-signed.apk
+          echo ${{ secrets.BASE64KEY }} | base64 --decode > /tmp/signingkey.jks
+          apksigner sign --ks /tmp/signingkey.jks --ks-key-alias ${{ secrets.ALIAS }} --ks-pass pass:${{ secrets.KEY_STORE_PASSWORD }} --key-pass pass:${{ secrets.KEY_PASSWORD }} --out $SIGNED_APK_FILE --alignment-preserved true $APK_FILE
         env:
           BUILD_TOOLS_VERSION: ${{ env.BUILD_TOOL_VERSION }}
 
@@ -52,20 +52,18 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Signed APP APK
-          path: ${{steps.sign_apk.outputs.signedReleaseFile}}
+          path: app/build/outputs/apk/release/app-release-signed.apk
 
       - name: Build AAB
         run: bash ./gradlew bundleRelease
 
       - name: Sign AAB
         id: sign_aab
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: app/build/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.BASE64KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          AAB_FILE=app/build/outputs/bundle/release/app-release.aab
+          SIGNED_AAB_FILE=app/build/outputs/bundle/release/app-release-signed.aab
+          echo ${{ secrets.BASE64KEY }} | base64 --decode > /tmp/signingkey.jks
+          apksigner sign --ks /tmp/signingkey.jks --ks-key-alias ${{ secrets.ALIAS }} --ks-pass pass:${{ secrets.KEY_STORE_PASSWORD }} --key-pass pass:${{ secrets.KEY_PASSWORD }} --out $SIGNED_AAB_FILE --alignment-preserved true $AAB_FILE
         env:
           BUILD_TOOLS_VERSION: ${{ env.BUILD_TOOL_VERSION }}
 
@@ -73,8 +71,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Signed APP Bundle
-          path: ${{steps.sign_aab.outputs.signedReleaseFile}}
-
+          path: app/build/outputs/bundle/release/app-release-signed.aab
 
       - name: Build Changelog
         id: changelog
@@ -102,7 +99,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{steps.sign_apk.outputs.signedReleaseFile}}
+          asset_path: app/build/outputs/apk/release/app-release-signed.apk
           asset_name: Myne-${{ steps.var.outputs.tag }}.apk
           asset_content_type: application/zip
 
@@ -112,6 +109,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{steps.sign_aab.outputs.signedReleaseFile}}
+          asset_path: app/build/outputs/bundle/release/app-release-signed.aab
           asset_name: Myne-${{ steps.var.outputs.tag }}.aab
           asset_content_type: application/zip
