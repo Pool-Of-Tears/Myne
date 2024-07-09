@@ -75,15 +75,16 @@ jobs:
         id: sign_aab
         shell: bash
         run: |
-          AAB_FILE=app/release/app-release.aab
+          # find aab file
+          AAB_FILE=$(find app/build/outputs/bundle -name "*.aab" | head -n 1)
           if [ -z "$AAB_FILE" ]; then
-             echo "AAB file not found"
-             echo "Contents of app/release:"
-             ls -l app/release/
-             exit 1
+            echo "No AAB file found"
+            echo "Contents of app/build/outputs/bundle"
+            ls -l app/build/outputs/bundle
+            exit 1
           fi
-         
-          echo "Found AAB file: $AAB_FILE"
+          
+          echo "Found AAB file: $AAB_FILE
           SIGNED_AAB_FILE=app/build/outputs/bundle/release/app-release-signed.aab
           echo "${{ secrets.BASE64KEY }}" | base64 --decode > /tmp/signingkey.jks
           apksigner=${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner
