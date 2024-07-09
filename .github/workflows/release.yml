@@ -32,7 +32,9 @@ jobs:
 
       - name: Build APK
         id: build
-        run: bash ./gradlew assembleRelease
+        shell: bash
+        run: |
+         ./gradlew assembleRelease
          echo "Listing contents of app/build/outputs/apk/release:"
          ls -l app/build/outputs/apk/release/
          echo "Listing contents of app/build/outputs/apk:"
