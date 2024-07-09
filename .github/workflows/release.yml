@@ -40,7 +40,7 @@ jobs:
         run: |
           APK_FILE=app/build/outputs/apk/release/app-release-unsigned.apk
           SIGNED_APK_FILE=app/build/outputs/apk/release/app-release-signed.apk
-          echo ${{ secrets.BASE64KEY }} | base64 --decode > /tmp/signingkey.jks
+          echo "${{ secrets.BASE64KEY }}" | base64 --decode > /tmp/signingkey.jks
           apksigner=${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner
           echo "APK Signer Path: $apksigner"
           $apksigner sign \
@@ -69,7 +69,7 @@ jobs:
         run: |
           AAB_FILE=app/build/outputs/bundle/release/app-release.aab
           SIGNED_AAB_FILE=app/build/outputs/bundle/release/app-release-signed.aab
-          echo ${{ secrets.BASE64KEY }} | base64 --decode > /tmp/signingkey.jks
+          echo "${{ secrets.BASE64KEY }}" | base64 --decode > /tmp/signingkey.jks
           apksigner=${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner
           $apksigner sign \
             --ks /tmp/signingkey.jks \
