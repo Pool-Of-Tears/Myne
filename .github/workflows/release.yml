@@ -75,12 +75,11 @@ jobs:
         id: sign_aab
         shell: bash
         run: |
-          # Find the APK file with vX.X.X pattern
-          AAB_FILE=$(find app/build/outputs/apk/release -name "Myne-v*.aab" | head -n 1)
+          AAB_FILE=app/release/app-release.aab
           if [ -z "$AAB_FILE" ]; then
-             echo "No AAB file found matching the pattern Myne-v*.aab"
-             echo "Contents of app/build/outputs/apk/release:"
-             ls -l app/build/outputs/apk/release/
+             echo "AAB file not found"
+             echo "Contents of app/release:"
+             ls -l app/release/
              exit 1
           fi
          
