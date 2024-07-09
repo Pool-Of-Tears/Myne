@@ -32,19 +32,25 @@ jobs:
 
       - name: Build APK
         id: build
-        shell: bash
-        run: |
-         ./gradlew assembleRelease
-         echo "Listing contents of app/build/outputs/apk/release:"
-         ls -l app/build/outputs/apk/release/
-         echo "Listing contents of app/build/outputs/apk:"
-         ls -l app/build/outputs/apk/
-
+        run: bash ./gradlew assembleRelease
+        
       - name: Sign APK
         id: sign_apk
         shell: bash
         run: |
-          APK_FILE=app/build/outputs/apk/release/app-release-unsigned.apk
+          # Get the tag version
+          TAG_VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
+          # Set the APK file path
+          APK_FILE="app/build/outputs/apk/release/Myne-v${TAG_VERSION}.apk"
+          # Check if file exists
+          if [ ! -f "$APK_FILE" ]; then
+            echo "APK file not found: $APK_FILE"
+            echo "Contents of app/build/outputs/apk/release:"
+            ls -l app/build/outputs/apk/release/
+            exit 1
+          fi
+          
+          echo "Found APK file: $APK_FILE"
           SIGNED_APK_FILE=app/build/outputs/apk/release/app-release-signed.apk
           echo "${{ secrets.BASE64KEY }}" | base64 --decode > /tmp/signingkey.jks
           apksigner=${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner
