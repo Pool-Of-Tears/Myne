@@ -51,7 +51,6 @@ jobs:
           SIGNED_APK_FILE=app/build/outputs/apk/release/app-release-signed.apk
           echo "${{ secrets.BASE64KEY }}" | base64 --decode > /tmp/signingkey.jks
           apksigner=${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner
-          echo "APK Signer Path: $apksigner"
           $apksigner sign \
             --ks /tmp/signingkey.jks \
             --ks-key-alias ${{ secrets.ALIAS }} \
