@@ -33,6 +33,10 @@ jobs:
       - name: Build APK
         id: build
         run: bash ./gradlew assembleRelease
+         echo "Listing contents of app/build/outputs/apk/release:"
+         ls -l app/build/outputs/apk/release/
+         echo "Listing contents of app/build/outputs/apk:"
+         ls -l app/build/outputs/apk/
 
       - name: Sign APK
         id: sign_apk
