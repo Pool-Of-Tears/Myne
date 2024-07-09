@@ -38,18 +38,15 @@ jobs:
         id: sign_apk
         shell: bash
         run: |
-          # Get the tag version
-          TAG_VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
-          # Set the APK file path
-          APK_FILE="app/build/outputs/apk/release/Myne-v${TAG_VERSION}.apk"
-          # Check if file exists
-          if [ ! -f "$APK_FILE" ]; then
-            echo "APK file not found: $APK_FILE"
-            echo "Contents of app/build/outputs/apk/release:"
-            ls -l app/build/outputs/apk/release/
-            exit 1
-          fi
-          
+         # Find the APK file with vX.X.X pattern
+         APK_FILE=$(find app/build/outputs/apk/release -name "Myne-v*.apk" | head -n 1)
+         if [ -z "$APK_FILE" ]; then
+             echo "No APK file found matching the pattern Myne-v*.apk"
+             echo "Contents of app/build/outputs/apk/release:"
+             ls -l app/build/outputs/apk/release/
+             exit 1
+         fi
+         
           echo "Found APK file: $APK_FILE"
           SIGNED_APK_FILE=app/build/outputs/apk/release/app-release-signed.apk
           echo "${{ secrets.BASE64KEY }}" | base64 --decode > /tmp/signingkey.jks
