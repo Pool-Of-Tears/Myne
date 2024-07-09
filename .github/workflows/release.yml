@@ -38,14 +38,14 @@ jobs:
         id: sign_apk
         shell: bash
         run: |
-         # Find the APK file with vX.X.X pattern
-         APK_FILE=$(find app/build/outputs/apk/release -name "Myne-v*.apk" | head -n 1)
-         if [ -z "$APK_FILE" ]; then
+          # Find the APK file with vX.X.X pattern
+          APK_FILE=$(find app/build/outputs/apk/release -name "Myne-v*.apk" | head -n 1)
+          if [ -z "$APK_FILE" ]; then
              echo "No APK file found matching the pattern Myne-v*.apk"
              echo "Contents of app/build/outputs/apk/release:"
              ls -l app/build/outputs/apk/release/
              exit 1
-         fi
+          fi
          
           echo "Found APK file: $APK_FILE"
           SIGNED_APK_FILE=app/build/outputs/apk/release/app-release-signed.apk
@@ -76,7 +76,16 @@ jobs:
         id: sign_aab
         shell: bash
         run: |
-          AAB_FILE=app/build/outputs/bundle/release/app-release.aab
+          # Find the APK file with vX.X.X pattern
+          AAB_FILE=$(find app/build/outputs/apk/release -name "Myne-v*.aab" | head -n 1)
+          if [ -z "$AAB_FILE" ]; then
+             echo "No AAB file found matching the pattern Myne-v*.aab"
+             echo "Contents of app/build/outputs/apk/release:"
+             ls -l app/build/outputs/apk/release/
+             exit 1
+          fi
+         
+          echo "Found AAB file: $AAB_FILE"
           SIGNED_AAB_FILE=app/build/outputs/bundle/release/app-release-signed.aab
           echo "${{ secrets.BASE64KEY }}" | base64 --decode > /tmp/signingkey.jks
           apksigner=${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner
