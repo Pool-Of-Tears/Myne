@@ -84,7 +84,7 @@ jobs:
             exit 1
           fi
           
-          echo "Found AAB file: $AAB_FILE
+          echo "Found AAB file: $AAB_FILE"
           SIGNED_AAB_FILE=app/build/outputs/bundle/release/app-release-signed.aab
           echo "${{ secrets.BASE64KEY }}" | base64 --decode > /tmp/signingkey.jks
           apksigner=${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner
