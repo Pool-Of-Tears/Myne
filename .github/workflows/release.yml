@@ -94,7 +94,8 @@ jobs:
             --ks-pass pass:${{ secrets.KEY_STORE_PASSWORD }} \
             --key-pass pass:${{ secrets.KEY_PASSWORD }} \
             --out $SIGNED_AAB_FILE \
-            --alignment-preserved true $AAB_FILE
+            --alignment-preserved true \
+            $AAB_FILE
         env:
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
 
