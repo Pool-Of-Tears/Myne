@@ -150,5 +150,5 @@
 
 
     <!-- Open source libraries screen -->
-    <string name="open_source_header">Knihovny open source</string>
+    <string name="open_source_licenses_header">Licence</string>
 </resources>

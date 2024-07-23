@@ -40,7 +40,7 @@ fun OSLScreen(navController: NavController) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         topBar = {
-            CustomTopAppBar(headerText = stringResource(id = R.string.open_source_header)) {
+            CustomTopAppBar(headerText = stringResource(id = R.string.open_source_licenses_header)) {
                 navController.navigateUp()
             }
         }

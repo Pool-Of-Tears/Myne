@@ -152,5 +152,5 @@
 
 
     <!-- Open source libraries screen 开放源代码库界面-->
-    <string name="open_source_header">开源库</string>
+    <string name="open_source_licenses_header">许可证</string>
 </resources>

@@ -152,5 +152,5 @@
     <string name="link_support_desc">Think I deserve cookies? Click here!</string>
 
     <!-- Open source libraries screen -->
-    <string name="open_source_header">Open Source Libraries</string>
+    <string name="open_source_licenses_header">Licenses</string>
 </resources>

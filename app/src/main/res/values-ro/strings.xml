@@ -152,5 +152,5 @@
 
 
     <!-- Open source libraries screen -->
-    <string name="open_source_header">Biblioteci de sursă deschisă</string>
+    <string name="open_source_licenses_header">Licențe</string>
 </resources>
