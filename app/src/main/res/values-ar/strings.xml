@@ -151,5 +151,5 @@
 
 
     <!-- Open source libraries screen -->
-    <string name="open_source_header">المكتبات مفتوحة المصدر</string>
+    <string name="open_source_licenses_header">التراخيص</string>
 </resources>

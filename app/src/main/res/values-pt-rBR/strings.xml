@@ -151,5 +151,5 @@
 
 
     <!-- Open source libraries screen -->
-    <string name="open_source_header">Bibliotecas de código aberto</string>
+    <string name="open_source_licenses_header">Licenças</string>
 </resources>
