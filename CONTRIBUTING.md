@@ -10,11 +10,11 @@ When submitting a bug report, please make sure your issue contains **enough** in
 
 ## Feature Request
 
-**GreenStash** is designed to provide users with a straightforward and effective tool for managing their finances on Android. Our focus is to offer essential budgeting functionalities in an intuitive interface, helping users track their savings effortlessly. As such, we prioritize feature requests that align with our core mission and the fundamental principles of budget management.
+**Myne** is an ebook library client designed to give users easy access to the Gutenberg Project’s extensive collection of free assets. Our goal is to make exploring and enjoying literature straightforward and enjoyable. We focus on feature requests that fit our core mission and the essential principles of ebook accessibility and management.
 
-Our app already includes a range of features designed to assist users in budgeting effectively, such as goal setting and customizable categories. While we are open to suggestions for improvements and enhancements, we may not be able to accommodate requests for features that deviate significantly from our app's primary purpose or that are beyond the scope of traditional budget management. Therefore, we kindly ask our users to consider the app's intended functionality and limitations when submitting feature requests.
+Our library already includes a variety of features to enhance your reading experience, such as robust search capabilities, customizable reading settings, and efficient download options. While we're open to suggestions for improvements, we may not be able to accommodate requests that stray too far from our primary purpose or go beyond the scope of ebook management and accessibility. We kindly ask users to consider the library's intended functionality and limitations when submitting feature requests.
 
-We appreciate the feedback and input from our users, and we are committed to continually improving **GreenStash** to meet the evolving needs of our user base. However, please understand that not all feature requests may be feasible or aligned with our app's mission and vision.
+We appreciate the feedback and input from our users, and we are committed to continually improving **Myne** to meet the evolving needs of our user base. However, please understand that not all feature requests may be feasible or aligned with our app's mission and vision.
 
 If you'd like to request a feature you deem necessary and useful, open a new Github issue with the Feature-Request template [here][feature-req].
 
@@ -36,6 +36,6 @@ Please use the provided Pull Request templates according to your needs. Currentl
 
 Fork this project, import and compile it with the latest version of [Android Studio](https://developer.android.com/studio/). 
 
-[issues]: https://github.com/Pool-Of-Tears/GreenStash/issues/new/choose
-[feature-req]: https://github.com/Pool-Of-Tears/GreenStash/issues/new?assignees=&labels=enhancement&projects=&template=--feature-request.yml&title=%5BFeature+Request%5D
+[issues]: https://github.com/Pool-Of-Tears/Myne/issues/new/choose
+[feature-req]: https://github.com/Pool-Of-Tears/Myne/issues/new?assignees=&labels=enhancement&projects=&template=--feature-request.yml&title=%5BFeature+Request%5D
 [conv-commits]:https://kapeli.com/cheat_sheets/Conventional_Commits.docset/Contents/Resources/Documents/index
