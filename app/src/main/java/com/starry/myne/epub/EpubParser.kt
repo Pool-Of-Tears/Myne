@@ -143,18 +143,21 @@ class EpubParser {
             document.metadata.selectFirstChildTag("dc:language")?.textContent ?: "en"
 
         val metadataCoverId = document.metadata.selectChildTag("meta")
+            .ifEmpty { document.metadata.selectChildTag("opf:meta") }
             .find { it.getAttributeValue("name") == "cover" }?.getAttributeValue("content")
 
         val hrefRootPath = File(document.opfFilePath).parentFile ?: File("")
 
-        val manifestItems = document.manifest.selectChildTag("item").map {
-            EpubManifestItem(
-                id = it.getAttribute("id"),
-                absPath = it.getAttribute("href").decodedURL.hrefAbsolutePath(hrefRootPath),
-                mediaType = it.getAttribute("media-type"),
-                properties = it.getAttribute("properties")
-            )
-        }.associateBy { it.id }
+        val manifestItems = document.manifest.selectChildTag("item")
+            .ifEmpty { document.manifest.selectChildTag("opf:item") }
+            .map {
+                EpubManifestItem(
+                    id = it.getAttribute("id"),
+                    absPath = it.getAttribute("href").decodedURL.hrefAbsolutePath(hrefRootPath),
+                    mediaType = it.getAttribute("media-type"),
+                    properties = it.getAttribute("properties")
+                )
+            }.associateBy { it.id }
 
         // Find the table of contents (toc.ncx) file.
         val tocFileItem = manifestItems.values.firstOrNull {
@@ -223,10 +226,13 @@ class EpubParser {
         val document = parseXMLFile(opfFile.data)
             ?: throw EpubParserException(".opf file failed to parse data")
         val metadata = document.selectFirstTag("metadata")
+            ?: document.selectFirstTag("opf:metadata")
             ?: throw EpubParserException(".opf file metadata section missing")
         val manifest = document.selectFirstTag("manifest")
+            ?: document.selectFirstTag("opf:manifest")
             ?: throw EpubParserException(".opf file manifest section missing")
         val spine = document.selectFirstTag("spine")
+            ?: document.selectFirstTag("opf:spine")
             ?: throw EpubParserException(".opf file spine section missing")
 
         return EpubDocument(metadata, manifest, spine, opfFilePath)
@@ -313,6 +319,7 @@ class EpubParser {
         var chapterIndex = 0
         val chapterExtensions = listOf("xhtml", "xml", "html", "htm").map { ".$it" }
         return spine.selectChildTag("itemref")
+            .ifEmpty { spine.selectChildTag("opf:itemref") }
             .mapNotNull { manifestItems[it.getAttribute("idref")] }
             .filter { item ->
                 chapterExtensions.any {
