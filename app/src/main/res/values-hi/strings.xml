@@ -1,0 +1,155 @@
+<resources>
+    <!-- Others Strings -->
+    <string name="not_applicable">N/A</string>
+    <string name="woops">"उफ़!!"</string>
+    <string name="confirm">पुष्टि करें</string>
+    <string name="cancel">रद्द करें</string>
+    <string name="ok">ठीक है</string>
+    <string name="got_it">समझ गया</string>
+    <string name="no_app_to_handle_epub">EPUB फ़ाइल खोलने के लिए कोई ऐप नहीं मिला।</string>
+    <string name="network_error">उफ़! सर्वर से कनेक्ट करने में विफल रहा।</string>
+    <string name="network_error_retry">फिर से कोशिश करें</string>
+    <string name="error">उफ़! कुछ गड़बड़ हो गई।</string>
+
+    <!-- Navigation titles -->
+    <string name="navigation_home">होम</string>
+    <string name="navigation_categories">श्रेणियाँ</string>
+    <string name="navigation_library">पुस्तकालय</string>
+    <string name="navigation_settings">सेटिंग्स</string>
+
+    <!-- ToolTips -->
+    <string name="library_tooltip">संकेत! पुस्तकालय आइटम्स को साझा करने या पुस्तक विवरण देखने के लिए बाएँ या दाएँ स्वाइप करें।</string>
+
+    <!-- Welcome Screen -->
+    <string name="welcome_screen_title">Myne स्थापित करने के लिए धन्यवाद!</string>
+    <string name="welcome_screen_desc">अपनी पसंदीदा ईबुक रीडर चुनें और अपनी पढ़ाई यात्रा शुरू करें।</string>
+    <string name="welcome_screen_button">शुरू करें</string>
+
+    <!-- Home screen. -->
+    <string name="home_header">सभी पुस्तकें</string>
+    <string name="home_language_icon_desc">भाषा के अनुसार क्रमबद्ध करें</string>
+    <string name="home_search_icon_desc">पुस्तकें खोजें</string>
+    <string name="language_menu_title">भाषा द्वारा ब्राउज़ करें</string>
+
+    <!-- Categories screen. -->
+    <string name="categories_header">श्रेणियाँ</string>
+    <string name="no_books_found_for_lang_and_cat">%s भाषा में इस श्रेणी के लिए कोई पुस्तक उपलब्ध नहीं है।</string>
+    <!-- Categories -->
+    <string name="category_animal">पशु</string>
+    <string name="category_children">बच्चे</string>
+    <string name="category_classics">क्लासिक्स</string>
+    <string name="category_countries">देश</string>
+    <string name="category_crime">अपराध</string>
+    <string name="category_education">शिक्षा</string>
+    <string name="category_fiction">कथा</string>
+    <string name="category_geography">भूगोल</string>
+    <string name="category_history">इतिहास</string>
+    <string name="category_literature">साहित्य</string>
+    <string name="category_law">कानून</string>
+    <string name="category_music">संगीत</string>
+    <string name="category_periodicals">पत्रिकाएँ</string>
+    <string name="category_psychology">मनोविज्ञान</string>
+    <string name="category_philosophy">दर्शनशास्त्र</string>
+    <string name="category_religion">धर्म</string>
+    <string name="category_romance">प्रेम</string>
+    <string name="category_science">विज्ञान</string>
+
+    <!-- Library screen. -->
+    <string name="library_header">पुस्तकालय</string>
+    <string name="empty_library">यहाँ कुछ भी नहीं है!</string>
+    <string name="import_button_text">आयात करें</string>
+    <string name="import_button_onboarding">अपनी खुद की पुस्तकें आयात करें!</string>
+    <string name="import_button_onboarding_desc">अब आप अपने EPUB पुस्तकों को आयात कर सकते हैं और उन्हें Myne में पढ़ सकते हैं।</string>
+    <string name="import_button_desc">EPUB पुस्तक आयात करें</string>
+    <string name="external_book_info_unavailable">केवल आंतरिक पुस्तकों के लिए उपलब्ध।</string>
+    <string name="epub_importing">आयात हो रहा है…\nकृपया प्रतीक्षा करें।</string>
+    <string name="epub_imported">सफलतापूर्वक आयात किया गया!</string>
+    <string name="epub_import_error">आयात करने में विफल!</string>
+    <string name="open_app_chooser">इसके साथ खोलें…</string>
+    <string name="share_app_chooser">इसके साथ साझा करें…</string>
+    <string name="library_read_button">पढ़ें</string>
+    <string name="library_delete_button">हटाएं</string>
+    <string name="library_delete_dialog_title">क्या आप इसके बारे में सुनिश्चित हैं?</string>
+
+    <!-- Reader Detail Screen -->
+    <string name="reader_detail_header">ईबुक रीडर</string>
+    <string name="start_reading_button">शुरू करें</string>
+    <string name="continue_reading_button">पुनः आरंभ करें</string>
+    <string name="reader_chapters_list">अध्याय</string>
+
+    <!--Reader Screen -->
+    <string name="reader_max_font_size_reached">क्षमा करें, इससे ज्यादा नहीं जा सकते!</string>
+    <string name="reader_min_font_size_reached">क्षमा करें, इससे कम नहीं जा सकते!</string>
+    <string name="reader_font_style_chooser">फ़ॉन्ट शैली बदलें</string>
+    <string name="reader_chapter_list_title">अध्याय</string>
+
+    <!-- Settings screen. -->
+    <string name="settings_header">सेटिंग्स</string>
+    <string name="app_desc">ई-बुक डाउनलोडर</string>
+    <string name="made_by">Shivam द्वारा बनाया गया ❤</string>
+    <string name="general_settings_header">सामान्य</string>
+    <string name="default_reader_setting">डिफ़ॉल्ट रीडर</string>
+    <string name="default_reader_dialog_title">ईबुक्स को इसके साथ खोलें…</string>
+    <string name="reader_option_inbuilt">अंतर्निहित रीडर</string>
+    <string name="reader_option_external">बाह्य रीडर</string>
+    <string name="default_locale_setting">डिफ़ॉल्ट स्थानीयकरण</string>
+    <string name="default_locale_setting_desc">अपनी पसंदीदा स्थानीयकरण का चयन करें।</string>
+    <string name="locale_setting_not_found">क्षमा करें! यह सुविधा अभी तक आपके ऑपरेटिंग सिस्टम द्वारा समर्थित नहीं है।</string>
+    <string name="display_setting_header">डिस्प्ले</string>
+    <string name="theme_setting">डिफ़ॉल्ट थीम</string>
+    <string name="theme_dialog_title">थीम बदलें</string>
+    <string name="theme_option_light">प्रकाश</string>
+    <string name="theme_option_dark">गहरा</string>
+    <string name="theme_option_system">सिस्टम डिफ़ॉल्ट</string>
+    <string name="theme_dialog_apply_button">लागू करें</string>
+    <string name="amoled_theme_setting">काले-सफेद थीम</string>
+    <string name="amoled_theme_setting_disabled_desc">AMOLED काले थीम सक्षम करें</string>
+    <string name="amoled_theme_setting_enabled_desc">AMOLED काले थीम अक्षम करें</string>
+    <string name="material_you_setting" translatable="false">Material You</string>
+    <string name="material_you_setting_disabled_desc">Material You सक्षम करें</string>
+    <string name="material_you_setting_enabled_desc">Material You अक्षम करें</string>
+    <string name="material_you_error">यह सुविधा केवल Android 12 या उच्चतर संस्करण वाले डिवाइसों के लिए उपलब्ध है।</string>
+    <string name="miscellaneous_setting_header">विविध</string>
+    <string name="license_setting">लाइसेंस और कृतज्ञता</string>
+    <string name="license_setting_desc">ओपन सोर्स लाइसेंस।</string>
+    <string name="about_setting">ऐप्लिकेशन जानकारी</string>
+    <string name="about_setting_desc">ऐप जानकारी और उपयोगी लिंक दिखाएं</string>
+
+    <!-- Books card -->
+    <string name="cover_image_desc">पुस्तक के कवर की तस्वीर</string>
+
+    <!-- Book Detail Screen -->
+    <string name="book_detail_header">पुस्तक विवरण</string>
+    <string name="back_button_desc">वापस जाएं।</string>
+    <string name="share_button_desc">इस पुस्तक को साझा करें।</string>
+    <string name="share_intent_header">इसका इस्तेमाल करके साझा करें…</string>
+    <string name="read_book_button">पढ़ना शुरू करें</string>
+    <string name="download_book_button">डाउनलोड करें</string>
+    <string name="download_started">डाउनलोड शुरू हुआ!</string>
+    <string name="book_synopsis">सारांश</string>
+    <string name="book_synopsis_not_found">उपलब्ध नहीं</string>
+
+    <!-- About Screen -->
+    <string name="about_header">के बारे में</string>
+    <string name="about_desc">Project Gutenberg से ई-बुक डाउनलोड करने के लिए एक मुक्त और ओपन सोर्स एंड्रॉइड एप्लिकेशन।</string>
+    <string name="developed_by">द्वारा विकसित</string>
+    <string name="dev_name" translatable="false">Starry Shivam</string>
+    <string name="project_contributors">प्रोजेक्ट सहयोगी</string>
+    <string name="project_contributors_desc">हमारे अद्भुत सहयोगियों से मिलें।</string>
+    <string name="useful_links">उपयोगी लिंक</string>
+    <string name="link_readme">README</string>
+    <string name="link_readme_desc">Github पर ऐप्लिकेशन के README को देखें।</string>
+    <string name="link_website">वेबसाइट</string>
+    <string name="link_website_desc">अधिक जानकारी के लिए हमारी वेबसाइट पर जाएं।</string>
+    <string name="link_privacy_policy">गोपनीयता नीति</string>
+    <string name="link_privacy_policy_desc">हमारी नवीनतम गोपनीयता नीति पढ़ें।</string>
+    <string name="link_gh_issue">Github मुद्दे</string>
+    <string name="link_gh_issue_desc">Github पर एक मुद्दा बनाएं।</string>
+    <string name="link_telegram">टेलीग्राम समूह</string>
+    <string name="link_telegram_desc">टेलीग्राम पर हमारे साथ आओ!</string>
+    <string name="link_support">विकास का समर्थन करें</string>
+    <string name="link_support_desc">मैं कुकीज़ के लायक हूं? यहां क्लिक करें!</string>
+
+    <!-- Open source libraries screen -->
+    <string name="open_source_licenses_header">लाइसेंस</string>
+</resources>
