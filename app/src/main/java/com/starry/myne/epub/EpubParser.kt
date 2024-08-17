@@ -176,7 +176,7 @@ class EpubParser {
         // is true, use the ToC file for parsing. Otherwise, parse using the spine.
         val chapters = if (!tocNavPoints.isNullOrEmpty() && shouldUseToc) {
             Log.d(TAG, "Parsing based on ToC file")
-            parseUsingTocFile(tocNavPoints, files, hrefRootPath)
+            parseUsingTocFile(tocNavPoints, files, hrefRootPath, document, manifestItems)
         } else {
             Log.d(TAG, "Parsing based on spine; shouldUseToc: $shouldUseToc")
             parseUsingSpine(document.spine, manifestItems, files)
@@ -256,10 +256,14 @@ class EpubParser {
 
     // Parse chapters based on the table of contents (ToC) file.
     private fun parseUsingTocFile(
-        tocNavPoints: List<Element>, files: Map<String, EpubFile>, hrefRootPath: File
+        tocNavPoints: List<Element>,
+        files: Map<String, EpubFile>,
+        hrefRootPath: File,
+        document: EpubDocument,
+        manifestItems: Map<String, EpubManifestItem>
     ): List<EpubChapter> {
         // Parse each chapter entry.
-        return tocNavPoints.flatMapIndexed { index, navPoint ->
+        val chapters = tocNavPoints.flatMapIndexed { index, navPoint ->
             val title =
                 navPoint.selectFirstChildTag("navLabel")?.selectFirstChildTag("text")?.textContent
             val chapterSrc = navPoint.selectFirstChildTag("content")?.getAttributeValue("src")
@@ -307,6 +311,19 @@ class EpubParser {
                 emptyList()
             }
         }.filter { it.body.isNotBlank() }.toList()
+
+        // If 25% or more chapters have empty bodies, that means the ToC file is not
+        // reliable and has incorrect references. In such cases, switch to spine-based parsing.
+        val emptyChapterThreshold = 0.25
+        val totalChapters = tocNavPoints.size
+        val emptyChapters = totalChapters - chapters.size
+
+        if (emptyChapters.toDouble() / totalChapters >= emptyChapterThreshold) {
+            Log.w(TAG, "More than 60% of chapters have empty bodies. Switching to spine-based parsing.")
+            return parseUsingSpine(document.spine, manifestItems, files)
+        }
+
+        return chapters // Return the parsed chapters from the ToC file.
     }
 
     // Parse chapters based on the spine of the epub document.
