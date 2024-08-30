@@ -11,6 +11,7 @@
     <string name="network_error">Oops! Failed to connect with the server.</string>
     <string name="network_error_retry">Try Again</string>
     <string name="error">Oops! Something went wrong.</string>
+    <string name="no_app_to_handle_content">Can\'t find any app to open this content.</string>
 
     <!-- Navigation titles -->
     <string name="navigation_home">Home</string>
@@ -20,6 +21,14 @@
 
     <!-- ToolTips -->
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
+
+    <!-- Text selection -->
+    <string name="copy">Copy</string>
+    <string name="copied">Copied!</string>
+    <string name="web_search">Web Search</string>
+    <string name="share">Share</string>
+    <string name="translate">Translate</string>
+    <string name="dictionary">Meaning</string>
 
     <!-- Welcome Screen -->
     <string name="welcome_screen_title">Thanks for installing Myne!</string>
