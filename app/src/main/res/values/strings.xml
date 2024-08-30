@@ -11,6 +11,7 @@
     <string name="network_error">Oops! Failed to connect with the server.</string>
     <string name="network_error_retry">Try Again</string>
     <string name="error">Oops! Something went wrong.</string>
+    <string name="no_app_to_handle_content">Can\'t find any app to open this content.</string>
 
     <!-- Navigation titles -->
     <string name="navigation_home">Home</string>
@@ -83,6 +84,14 @@
     <string name="reader_min_font_size_reached">Sorry, cannot go any lower than that!</string>
     <string name="reader_font_style_chooser">Change FontStyle</string>
     <string name="reader_chapter_list_title">Chapters</string>
+
+    <!-- Text selection -->
+    <string name="copy">Copy</string>
+    <string name="copied">Copied!</string>
+    <string name="web_search">Web Search</string>
+    <string name="share">Share</string>
+    <string name="translate">Translate</string>
+    <string name="dictionary">Meaning</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Settings</string>

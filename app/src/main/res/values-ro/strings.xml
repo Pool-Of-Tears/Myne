@@ -11,6 +11,7 @@
     <string name="network_error">Ups! Nu a reușit să se conecteze cu serverul.</string>
     <string name="network_error_retry">Încearcă din nou</string>
     <string name="error">Ups! Ceva a mers rău.</string>
+    <string name="no_app_to_handle_content">Nu s-a găsit nicio aplicație pentru a deschide acest conținut.</string>
 
     <!-- Navigation titles -->
     <string name="navigation_home">Acasă</string>
@@ -84,6 +85,14 @@
     <string name="reader_font_style_chooser">Schimbați FontStyle</string>
     <string name="reader_chapter_list_title">Capitole</string>
 
+    <!-- Text selection -->
+    <string name="copy">Copiază</string>
+    <string name="copied">Copiat!</string>
+    <string name="web_search">Căutare pe web</string>
+    <string name="share">Partajează</string>
+    <string name="translate">Tradu</string>
+    <string name="dictionary">Semnificație</string>
+
     <!-- Settings screen. -->
     <string name="settings_header">Setări</string>
     <string name="app_desc">Descărcător de Ebook</string>
@@ -149,7 +158,6 @@
     <string name="link_telegram_desc">Petrece timp cu noi pe Telegram!</string>
     <string name="link_support">Susține Dezvoltarea</string>
     <string name="link_support_desc">Crezi că merit biscuiți? Dă clic aici!</string>
-
 
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">Licențe</string>

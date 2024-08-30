@@ -10,6 +10,7 @@
     <string name="network_error">उफ़! सर्वर से कनेक्ट करने में विफल रहा।</string>
     <string name="network_error_retry">फिर से कोशिश करें</string>
     <string name="error">उफ़! कुछ गड़बड़ हो गई।</string>
+    <string name="no_app_to_handle_content">इस सामग्री को खोलने के लिए कोई ऐप नहीं मिला।</string>
 
     <!-- Navigation titles -->
     <string name="navigation_home">होम</string>
@@ -82,6 +83,14 @@
     <string name="reader_min_font_size_reached">क्षमा करें, इससे कम नहीं जा सकते!</string>
     <string name="reader_font_style_chooser">फ़ॉन्ट शैली बदलें</string>
     <string name="reader_chapter_list_title">अध्याय</string>
+
+    <!-- Text selection -->
+    <string name="copy">प्रतिलिपि करें</string>
+    <string name="copied">प्रतिलिपि बनाई गई!</string>
+    <string name="web_search">वेब खोज</string>
+    <string name="share">साझा करें</string>
+    <string name="translate">अनुवाद करें</string>
+    <string name="dictionary">अर्थ</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">सेटिंग्स</string>

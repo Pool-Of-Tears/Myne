@@ -11,6 +11,7 @@
     <string name="network_error">Упс! Не удалось подключиться к серверу.</string>
     <string name="network_error_retry">Попытайтесь снова</string>
     <string name="error">Ой! Что-то пошло не так.</string>
+    <string name="no_app_to_handle_content">Не удалось найти приложение для открытия этого содержимого.</string>
 
     <!-- Navigation titles -->
     <string name="navigation_home">Главная</string>
@@ -84,6 +85,14 @@
     <string name="reader_font_style_chooser">Стиль шрифта</string>
     <string name="reader_chapter_list_title">Главы</string>
 
+    <!-- Text selection -->
+    <string name="copy">Копировать</string>
+    <string name="copied">Скопировано!</string>
+    <string name="web_search">Веб-поиск</string>
+    <string name="share">Поделиться</string>
+    <string name="translate">Перевести</string>
+    <string name="dictionary">Значение</string>
+
     <!-- Settings screen. -->
     <string name="settings_header">Настройки</string>
     <string name="app_desc">Установщик электронных книг</string>
@@ -148,7 +157,6 @@
     <string name="link_telegram_desc">Общайтесь с нами в Telegram!</string>
     <string name="link_support">Поддержать Разработку</string>
     <string name="link_support_desc">На кофе с печеньками:)</string>
-
 
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">Лицензии</string>

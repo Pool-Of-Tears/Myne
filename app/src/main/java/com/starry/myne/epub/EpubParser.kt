@@ -319,7 +319,7 @@ class EpubParser {
         val emptyChapters = totalChapters - chapters.size
 
         if (emptyChapters.toDouble() / totalChapters >= emptyChapterThreshold) {
-            Log.w(TAG, "More than 60% of chapters have empty bodies. Switching to spine-based parsing.")
+            Log.w(TAG, "25% or more chapters have empty bodies; switching to spine-based parsing")
             return parseUsingSpine(document.spine, manifestItems, files)
         }
 

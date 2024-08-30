@@ -16,6 +16,11 @@
 
 package com.starry.myne.ui.screens.reader.composables
 
+import android.app.SearchManager
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -29,7 +34,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -47,8 +51,11 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.starry.myne.R
 import com.starry.myne.epub.BookTextMapper
 import com.starry.myne.epub.models.EpubChapter
+import com.starry.myne.helpers.toToast
+import com.starry.myne.ui.common.MyneSelectionContainer
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderScreenState
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.theme.pacificoFont
@@ -85,8 +92,10 @@ private fun ChapterLazyItemItem(
     state: ReaderScreenState,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     val epubBook = state.epubBook
     val paragraphs = remember { chunkText(chapter.body) }
+
     val targetFontSize = (state.fontSize / 10) * 1.8f
     val fontSize by animateFloatAsState(
         targetValue = targetFontSize,
@@ -94,12 +103,80 @@ private fun ChapterLazyItemItem(
         label = "fontSize"
     )
     val titleFontSize by animateFloatAsState(
-        targetValue = targetFontSize * 1.5f,
+        targetValue = targetFontSize * 1.4f,
         animationSpec = tween(durationMillis = 300),
         label = "titleFontSize"
     )
 
-    SelectionContainer {
+    MyneSelectionContainer(
+        onCopyRequested = {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+                context.getString(R.string.copied).toToast(context)
+            }
+        },
+        onShareRequested = {
+            val intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, it)
+                type = "text/plain"
+            }
+            try {
+                context.startActivity(Intent.createChooser(intent, null))
+            } catch (e: ActivityNotFoundException) {
+                context.getString(R.string.no_app_to_handle_content).toToast(context)
+            }
+        },
+        onWebSearchRequested = {
+            val intent = Intent().apply {
+                action = Intent.ACTION_WEB_SEARCH
+                putExtra(SearchManager.QUERY, it)
+            }
+            try {
+                context.startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                context.getString(R.string.no_app_to_handle_content).toToast(context)
+            }
+        },
+        onTranslateRequested = {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://translate.google.com/?sl=auto&tl=en&text=$it")
+            )
+            try {
+                context.startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                context.getString(R.string.no_app_to_handle_content).toToast(context)
+            }
+        },
+        onDictionaryRequested = {
+            val dictionaryIntent = Intent()
+            val browserIntent = Intent()
+
+            dictionaryIntent.type = "text/plain"
+            dictionaryIntent.action = Intent.ACTION_PROCESS_TEXT
+            dictionaryIntent.putExtra(Intent.EXTRA_PROCESS_TEXT, it.trim())
+            dictionaryIntent.putExtra(Intent.EXTRA_PROCESS_TEXT_READONLY, true)
+
+            browserIntent.action = Intent.ACTION_VIEW
+            val text = it.trim().replace(" ", "+")
+            browserIntent.data = Uri.parse("https://www.onelook.com/?w=$text")
+
+            var dictionaryFailure = false
+            try {
+                context.startActivity(Intent.createChooser(dictionaryIntent, null))
+            } catch (e: ActivityNotFoundException) {
+                dictionaryFailure = true
+            }
+
+            if (dictionaryFailure) {
+                try {
+                    context.startActivity(Intent.createChooser(browserIntent, null))
+                } catch (e: ActivityNotFoundException) {
+                    context.getString(R.string.no_app_to_handle_content).toToast(context)
+                }
+            }
+        }
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
