@@ -11,6 +11,7 @@
     <string name="network_error">Hata! Sunucuya bağlanılamadı.</string>
     <string name="network_error_retry">Tekrar Dene</string>
     <string name="error">Hata! Bir şeyler ters gitti.</string>
+    <string name="no_app_to_handle_content">Bu içeriği açmak için uygulama bulunamadı.</string>
 
     <!-- Navigation titles -->
     <string name="navigation_home">Anasayfa</string>
@@ -83,6 +84,14 @@
     <string name="reader_min_font_size_reached">Üzgünüz, daha küçük bir boyuta inilemez!</string>
     <string name="reader_font_style_chooser">Yazı Tipini Değiştir</string>
     <string name="reader_chapter_list_title">Bölümler</string>
+
+    <!-- Text selection -->
+    <string name="copy">Kopyala</string>
+    <string name="copied">Kopyalandı!</string>
+    <string name="web_search">Web Araması</string>
+    <string name="share">Paylaş</string>
+    <string name="translate">Çevir</string>
+    <string name="dictionary">Anlam</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Ayarlar</string>

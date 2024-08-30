@@ -11,6 +11,7 @@
     <string name="network_error">Ops! Falha ao conectar com o servidor.</string>
     <string name="network_error_retry">Tente Novamente</string>
     <string name="error">Ops! Algo deu errado.</string>
+    <string name="no_app_to_handle_content">Não foi possível encontrar nenhum aplicativo para abrir este conteúdo.</string>
 
     <!-- Navigation titles -->
     <string name="navigation_home">Home</string>
@@ -84,6 +85,14 @@
     <string name="reader_font_style_chooser">Mudar estilo da fonte</string>
     <string name="reader_chapter_list_title">Capítulos</string>
 
+    <!-- Text selection -->
+    <string name="copy">Copiar</string>
+    <string name="copied">Copiado!</string>
+    <string name="web_search">Pesquisa na web</string>
+    <string name="share">Compartilhar</string>
+    <string name="translate">Traduzir</string>
+    <string name="dictionary">Significado</string>
+
     <!-- Settings screen. -->
     <string name="settings_header">Configurações</string>
     <string name="app_desc">Downloader Ebook</string>
@@ -148,7 +157,6 @@
     <string name="link_telegram_desc">Chiacchiera con noi su Telegram!</string>
     <string name="link_support">Supporta lo Sviluppo</string>
     <string name="link_support_desc">Pensi che meriti dei biscotti? Clicca qui!</string>
-
 
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">Licenças</string>

@@ -11,6 +11,7 @@
     <string name="network_error">أُووبس! فشل الاتصال بالخادم.</string>
     <string name="network_error_retry">حاول ثانية</string>
     <string name="error">حدث خطأ ما</string>
+    <string name="no_app_to_handle_content">لا يمكن العثور على تطبيق لفتح هذا المحتوى.</string>
 
     <!-- Navigation titles -->
     <string name="navigation_home">الرئيسية</string>
@@ -84,6 +85,14 @@
     <string name="reader_font_style_chooser">تغيير نمط الخط</string>
     <string name="reader_chapter_list_title">الفصول</string>
 
+    <!-- Text selection -->
+    <string name="copy">نسخ</string>
+    <string name="copied">تم النسخ!</string>
+    <string name="web_search">بحث ويب</string>
+    <string name="share">مشاركة</string>
+    <string name="translate">ترجمة</string>
+    <string name="dictionary">معنى</string>
+
     <!-- Settings screen. -->
     <string name="settings_header">الاعدادات</string>
     <string name="app_desc">محمل الكتب الالكترونية</string>
@@ -148,7 +157,6 @@
     <string name="link_telegram_desc">استمتع بوقتك معنا على Telegram!</string>
     <string name="link_support">دعم التطوير</string>
     <string name="link_support_desc">تعتقد أنني أستحق الكوكيز؟ انقر هنا!</string>
-
 
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">التراخيص</string>

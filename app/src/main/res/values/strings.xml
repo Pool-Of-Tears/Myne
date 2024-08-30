@@ -22,14 +22,6 @@
     <!-- ToolTips -->
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
 
-    <!-- Text selection -->
-    <string name="copy">Copy</string>
-    <string name="copied">Copied!</string>
-    <string name="web_search">Web Search</string>
-    <string name="share">Share</string>
-    <string name="translate">Translate</string>
-    <string name="dictionary">Meaning</string>
-
     <!-- Welcome Screen -->
     <string name="welcome_screen_title">Thanks for installing Myne!</string>
     <string name="welcome_screen_desc">Choose your preferred ebook reader to embark on your reading journey.</string>
@@ -92,6 +84,14 @@
     <string name="reader_min_font_size_reached">Sorry, cannot go any lower than that!</string>
     <string name="reader_font_style_chooser">Change FontStyle</string>
     <string name="reader_chapter_list_title">Chapters</string>
+
+    <!-- Text selection -->
+    <string name="copy">Copy</string>
+    <string name="copied">Copied!</string>
+    <string name="web_search">Web Search</string>
+    <string name="share">Share</string>
+    <string name="translate">Translate</string>
+    <string name="dictionary">Meaning</string>
 
     <!-- Settings screen. -->
     <string name="settings_header">Settings</string>

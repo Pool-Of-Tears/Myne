@@ -12,6 +12,7 @@
     <string name="network_error">噢！服务器没连上</string>
     <string name="network_error_retry">重试</string>
     <string name="error">啊！出错了</string>
+    <string name="no_app_to_handle_content">找不到可以打开此内容的应用程序。</string>
 
     <!-- Navigation titles 导航栏-->
     <string name="navigation_home">主页</string>
@@ -85,6 +86,14 @@
     <string name="reader_font_style_chooser">改变字体风格</string>
     <string name="reader_chapter_list_title">章节</string>
 
+    <!-- Text selection 文本选择-->
+    <string name="copy">复制</string>
+    <string name="copied">已复制！</string>
+    <string name="web_search">网页搜索</string>
+    <string name="share">分享</string>
+    <string name="translate">翻译</string>
+    <string name="dictionary">意义</string>
+
     <!-- Settings screen. 设置页面-->
     <string name="settings_header">设置</string>
     <string name="app_desc">电子书下载器</string>
@@ -149,7 +158,6 @@
     <string name="link_telegram_desc">在Telegram上与我们一起交流！</string>
     <string name="link_support">支持开发</string>
     <string name="link_support_desc">认为我应该得到饼干吗？点击这里！</string>
-
 
     <!-- Open source libraries screen 开放源代码库界面-->
     <string name="open_source_licenses_header">许可证</string>

@@ -11,6 +11,7 @@
     <string name="network_error">Ops! Connessione al server fallita.</string>
     <string name="network_error_retry">Riprova</string>
     <string name="error">Ops! Qualcosa è andato storto.</string>
+    <string name="no_app_to_handle_content">Nessuna app trovata per aprire questo contenuto.</string>
 
     <!-- Navigation titles -->
     <string name="navigation_home">Home</string>
@@ -84,6 +85,14 @@
     <string name="reader_font_style_chooser">Cambia Font</string>
     <string name="reader_chapter_list_title">Capitoli</string>
 
+    <!-- Text selection -->
+    <string name="copy">Copia</string>
+    <string name="copied">Copiato!</string>
+    <string name="web_search">Ricerca web</string>
+    <string name="share">Condividi</string>
+    <string name="translate">Traduci</string>
+    <string name="dictionary">Significato</string>
+
     <!-- Settings screen. -->
     <string name="settings_header">Impostazioni</string>
     <string name="app_desc">Ebook Downloader</string>
@@ -148,7 +157,6 @@
     <string name="link_telegram_desc">Chiacchiera con noi su Telegram!</string>
     <string name="link_support">Supporta lo Sviluppo</string>
     <string name="link_support_desc">Pensi che meriti dei biscotti? Clicca qui!</string>
-
 
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">Licenze</string>
