@@ -17,6 +17,7 @@
 
 package com.starry.myne.epub
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
@@ -30,13 +31,14 @@ import org.w3c.dom.Node
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
+import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
 
 
 /**
  * Parses an EPUB file and creates an [EpubBook] object.
  */
-class EpubParser {
+class EpubParser(private val context: Context) {
 
 
     /**
@@ -132,8 +134,39 @@ class EpubParser {
     private suspend fun parseAndCreateEbook(
         inputStream: InputStream, shouldUseToc: Boolean
     ): EpubBook = withContext(Dispatchers.IO) {
-        val files = getZipFiles(inputStream)
-        val document = createEpubDocument(files)
+        var files = getZipFilesFromStream(inputStream)
+        // In some rare cases, the ZipInputStream does not contains all of the files
+        // required to parse the EPUB file, even though the zip file itself contains them.
+        // In such cases, retry parsing the EPUB file by directly using the ZipFile API.
+        // Since ZipFile requires a file path, we need to create a temporary file from the input stream.
+        //
+        // This is a workaround for the issue where ZipInputStream fails to read all of the files.
+        // Reasons for this issue are unknown and may be related to how the EPUB file is compressed
+        // i.e. weather it is missing some metadata or file/folder entry in it's header or how the
+        // ZipInputStream reads the file.
+        //
+        // If someone knows the exact reason for this issue, or have dealt with it before, please
+        // let me know or feel free to create a PR with a better solution.
+        val document = try {
+            createEpubDocument(files)
+        } catch (exc: EpubParserException) {
+            if (exc.message == "META-INF/container.xml file missing"
+                || exc.message == ".opf file missing"
+            ) {
+                Log.e(
+                    TAG, "Failed to parse EPUB file using ZipInputStream "
+                            + "due to missing container or opf file "
+                            + "Retrying using ZipFile by creating temporary file "
+                            + "From input stream.", exc
+                )
+                Log.w(TAG, "Resetting input stream position to beginning")
+                (inputStream as FileInputStream).channel.position(0)
+                files = getZipFilesFromFile(inputStream)
+                createEpubDocument(files)
+            } else {
+                throw exc // Re-throw the exception if it's not due to missing files.
+            }
+        }
 
         val metadataTitle =
             document.metadata.selectFirstChildTag("dc:title")?.textContent ?: "Unknown Title"
@@ -201,7 +234,7 @@ class EpubParser {
     }
 
     // Get all of the files located in the EPUB archive.
-    private suspend fun getZipFiles(
+    private suspend fun getZipFilesFromStream(
         inputStream: InputStream
     ): Map<String, EpubFile> = withContext(Dispatchers.IO) {
         ZipInputStream(inputStream).let { zipInputStream ->
@@ -209,6 +242,26 @@ class EpubParser {
                 .map { EpubFile(absPath = it.name, data = zipInputStream.readBytes()) }
                 .associateBy { it.absPath }
         }
+    }
+
+    private fun getZipFilesFromFile(inputStream: InputStream): Map<String, EpubFile> {
+        Log.w(TAG, "Copying input stream to a temporary file")
+        val tempFile = File(context.cacheDir, "_zip_temp.epub")
+        tempFile.outputStream().use { output -> inputStream.copyTo(output) }
+        Log.w(TAG, "Input stream copied to temporary file")
+        val epubFile = ZipFile(tempFile).use { zipFile ->
+            zipFile.entries().asSequence()
+                .filterNot { it.isDirectory }
+                .map { entry ->
+                    val content = zipFile.getInputStream(entry).readBytes()
+                    EpubFile(absPath = entry.name, data = content)
+                }
+                .associateBy { it.absPath }
+        }
+        Log.w(TAG, "EPUB file created from ZipFile")
+        tempFile.delete()
+        Log.w(TAG, "Temporary file deleted")
+        return epubFile
     }
 
     // Create an EpubDocument object from the EPUB files.
