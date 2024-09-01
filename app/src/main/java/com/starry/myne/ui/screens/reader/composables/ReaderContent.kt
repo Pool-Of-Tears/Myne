@@ -211,38 +211,54 @@ private fun ChapterLazyItemItem(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            paragraphs.forEach { para ->
+            val accumulatedText = remember { StringBuilder() }
+            paragraphs.forEachIndexed { index, para ->
                 val imgEntry = BookTextMapper.ImgEntry.fromXMLString(para)
-                when {
-                    imgEntry == null -> {
+
+                if (imgEntry == null) {
+                    // Accumulate text paragraphs with two newlines as separators
+                    accumulatedText.append(para).append("\n\n")
+                } else {
+                    // If an image is encountered, display accumulated text first
+                    if (accumulatedText.isNotEmpty()) {
                         Text(
-                            text = para,
+                            text = accumulatedText.toString().trimEnd(),
                             fontSize = fontSize.sp,
                             lineHeight = 1.3.em,
                             fontFamily = state.fontFamily.fontFamily,
                             modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 8.dp),
                         )
+                        accumulatedText.clear()
                     }
 
-                    else -> {
-                        val image = epubBook?.images?.find { it.absPath == imgEntry.path }
-                        image?.let {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(image.image)
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(vertical = 6.dp)
-                            )
-                        }
+                    // Handle the image
+                    val image = epubBook?.images?.find { it.absPath == imgEntry.path }
+                    image?.let {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(image.image)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(vertical = 6.dp)
+                        )
                     }
                 }
-            }
 
+                // Display any remaining accumulated text after the last paragraph
+                if (index == paragraphs.lastIndex && accumulatedText.isNotEmpty()) {
+                    Text(
+                        text = accumulatedText.toString().trimEnd(),
+                        fontSize = fontSize.sp,
+                        lineHeight = 1.3.em,
+                        fontFamily = state.fontFamily.fontFamily,
+                        modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 8.dp),
+                    )
+                }
+            }
         }
 
         HorizontalDivider(

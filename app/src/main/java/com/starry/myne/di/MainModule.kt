@@ -64,7 +64,7 @@ class MainModule {
 
     @Singleton
     @Provides
-    fun provideEpubParser() = EpubParser()
+    fun provideEpubParser(@ApplicationContext context: Context) = EpubParser(context)
 
     @Provides
     @Singleton
