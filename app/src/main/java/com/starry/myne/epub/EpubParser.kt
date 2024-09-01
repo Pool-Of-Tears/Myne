@@ -135,8 +135,8 @@ class EpubParser(private val context: Context) {
         inputStream: InputStream, shouldUseToc: Boolean
     ): EpubBook = withContext(Dispatchers.IO) {
         var files = getZipFilesFromStream(inputStream)
-        // In some rare cases, the ZipInputStream does not contains all of the files
-        // required to parse the EPUB file, even though the zip file itself contains them.
+        // In some rare cases, the ZipInputStream does not contains / fails to read all of the files
+        // required to parse the EPUB archive, even though the zip file itself contains them.
         // In such cases, retry parsing the EPUB file by directly using the ZipFile API.
         // Since ZipFile requires a file path, we need to create a temporary file from the input stream.
         //
@@ -155,7 +155,7 @@ class EpubParser(private val context: Context) {
             ) {
                 Log.e(
                     TAG, "Failed to parse EPUB file using ZipInputStream "
-                            + "due to missing container or opf file "
+                            + "due to missing files required for parsing! "
                             + "Retrying using ZipFile by creating temporary file "
                             + "From input stream.", exc
                 )
@@ -244,6 +244,9 @@ class EpubParser(private val context: Context) {
         }
     }
 
+    // Fallback method to handle the issue where ZipInputStream fails to read all of the files.
+    // This method creates a temporary file from the input stream and uses ZipFile API to read
+    // all of the files in the EPUB archive.
     private fun getZipFilesFromFile(inputStream: InputStream): Map<String, EpubFile> {
         Log.w(TAG, "Copying input stream to a temporary file")
         val tempFile = File(context.cacheDir, "_zip_temp.epub")
