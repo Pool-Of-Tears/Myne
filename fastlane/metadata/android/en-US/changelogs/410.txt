@@ -1,0 +1,5 @@
+- Bunch of optimizations and bug fixes in the eBook reader.
+- Added more options to the text selection menu, such as meaning, translation, and search.
+- Display system navigation and status bars in the eBook reader when toggling the reader menu.
+- Added Turkish translations.
+- Updated dependencies and some other minor improvements.
