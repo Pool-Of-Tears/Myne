@@ -141,11 +141,7 @@ class ReaderViewModel @Inject constructor(
     }
 
     fun toggleReaderMenu() {
-        state = if (state.showReaderMenu) {
-            state.copy(showReaderMenu = false)
-        } else {
-            state.copy(showReaderMenu = true)
-        }
+        state = state.copy(showReaderMenu = !state.showReaderMenu)
     }
 
     fun hideReaderInfo() {
