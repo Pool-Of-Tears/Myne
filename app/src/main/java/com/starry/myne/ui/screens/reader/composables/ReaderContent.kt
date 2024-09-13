@@ -57,33 +57,31 @@ import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.helpers.toToast
 import com.starry.myne.ui.common.MyneSelectionContainer
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderScreenState
-import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.theme.pacificoFont
 
 
 @Composable
 fun ReaderContent(
-    viewModel: ReaderViewModel,
+    state: ReaderScreenState,
     lazyListState: LazyListState,
+    onToggleReaderMenu: () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = lazyListState
     ) {
         items(
-            count = viewModel.state.epubBook!!.chapters.size,
-            key = { index -> viewModel.state.epubBook!!.chapters[index].hashCode() }
+            count = state.epubBook!!.chapters.size,
+            key = { index -> state.epubBook.chapters[index].hashCode() }
         ) { index ->
-            val chapter = viewModel.state.epubBook!!.chapters[index]
+            val chapter = state.epubBook.chapters[index]
             ChapterLazyItemItem(
                 chapter = chapter,
-                state = viewModel.state,
-                onClick = { viewModel.toggleReaderMenu() }
+                state = state,
+                onClick = onToggleReaderMenu
             )
         }
     }
-
-
 }
 
 @Composable

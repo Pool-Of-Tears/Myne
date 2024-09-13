@@ -129,7 +129,13 @@ class ReaderActivity : AppCompatActivity() {
                         }
 
                         // Reader content lazy column.
-                        ReaderContent(viewModel = viewModel, lazyListState = lazyListState)
+                        ReaderContent(
+                            state = viewModel.state,
+                            lazyListState = lazyListState,
+                            onToggleReaderMenu = {
+                                viewModel.toggleReaderMenu()
+                                toggleSystemBars(viewModel.state.showReaderMenu)
+                            })
                     })
             }
         }
@@ -153,6 +159,25 @@ class ReaderActivity : AppCompatActivity() {
 
         // Keep screen on.
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun toggleSystemBars(show: Boolean) {
+        when (show) {
+            true -> showSystemBars()
+            false -> hideSystemBars()
+        }
+    }
+
+    private fun showSystemBars() {
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.show(WindowInsetsCompat.Type.systemBars())
+        controller.show(WindowInsetsCompat.Type.displayCutout())
+    }
+
+    private fun hideSystemBars() {
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.hide(WindowInsetsCompat.Type.systemBars())
+        controller.hide(WindowInsetsCompat.Type.displayCutout())
     }
 }
 

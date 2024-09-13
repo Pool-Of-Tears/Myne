@@ -40,7 +40,6 @@ import java.util.zip.ZipInputStream
  */
 class EpubParser(private val context: Context) {
 
-
     /**
      * Represents an EPUB document.
      *
