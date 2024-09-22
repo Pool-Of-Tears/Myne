@@ -16,6 +16,7 @@
 
 package com.starry.myne.ui.screens.home.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -101,7 +102,7 @@ class HomeViewModel @Inject constructor(
          * this: {"detail": "Invalid page."}. Hence the [BookSet] attributes become
          * null in this case and can cause crashes.
          */
-        @Suppress("SENSELESS_COMPARISON") val books = if (bookSet.books != null) {
+        val books = if (bookSet.books != null) {
             val books =
                 bookSet.books.filter { it.formats.applicationepubzip != null } as ArrayList<Book>
             // Remove the book with id 1513
@@ -111,6 +112,7 @@ class HomeViewModel @Inject constructor(
             }
             books // return the list of books
         } else {
+            Log.e("HomeViewModel", "BookSet.books is null")
             ArrayList()
         }
 

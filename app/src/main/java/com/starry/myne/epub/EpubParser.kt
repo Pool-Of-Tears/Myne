@@ -38,7 +38,7 @@ import java.util.zip.ZipInputStream
 /**
  * Parses an EPUB file and creates an [EpubBook] object.
  */
-class EpubParser(private val context: Context) {
+class EpubParser(private val context: Context, private val epubCache: EpubCache) {
 
     /**
      * Represents an EPUB document.
@@ -113,10 +113,17 @@ class EpubParser(private val context: Context) {
      */
     suspend fun createEpubBook(filePath: String, shouldUseToc: Boolean = true): EpubBook {
         return withContext(Dispatchers.IO) {
+            val epubBook = epubCache.get(filePath)
+            if (epubBook != null) {
+                Log.d(TAG, "EpubBook found in cache")
+                return@withContext epubBook
+            }
             Log.d(TAG, "Parsing EPUB file: $filePath")
             val files = getZipFilesFromFile(filePath)
             val document = createEpubDocument(files)
-            parseAndCreateEbook(files, document, shouldUseToc)
+            val book = parseAndCreateEbook(files, document, shouldUseToc)
+            epubCache.put(book, filePath)
+            return@withContext book
         }
     }
 
@@ -137,6 +144,15 @@ class EpubParser(private val context: Context) {
         }
     }
 
+    /**
+     * Checks if an EPUB book is cached.
+     *
+     * @param filePath The file path of the EPUB file.
+     * @return True if the book is cached, false otherwise.
+     */
+    fun isBookCached(filePath: String): Boolean {
+        return epubCache.isCached(filePath)
+    }
 
     /**
      * Parses and creates an [EpubBook] object from the EPUB files and document.

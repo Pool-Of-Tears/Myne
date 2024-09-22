@@ -20,6 +20,7 @@ package com.starry.myne.di
 import android.content.Context
 import com.starry.myne.api.BookAPI
 import com.starry.myne.database.MyneDatabase
+import com.starry.myne.epub.EpubCache
 import com.starry.myne.epub.EpubParser
 import com.starry.myne.helpers.PreferenceUtil
 import com.starry.myne.helpers.book.BookDownloader
@@ -64,7 +65,12 @@ class MainModule {
 
     @Singleton
     @Provides
-    fun provideEpubParser(@ApplicationContext context: Context) = EpubParser(context)
+    fun provideEpubcahe(@ApplicationContext context: Context) = EpubCache(context)
+
+    @Singleton
+    @Provides
+    fun provideEpubParser(@ApplicationContext context: Context, epubCache: EpubCache) =
+        EpubParser(context, epubCache)
 
     @Provides
     @Singleton
