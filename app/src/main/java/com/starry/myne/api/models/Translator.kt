@@ -16,16 +16,17 @@
 
 package com.starry.myne.api.models
 
-
 import androidx.annotation.Keep
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Keep
+@Serializable
 data class Translator(
-    @SerializedName("name")
+    @SerialName("birth_year")
+    val birthYear: Int? = null,
+    @SerialName("death_year")
+    val deathYear: Int? = null,
+    @SerialName("name")
     val name: String = "N/A",
-    @SerializedName("birth_year")
-    val birthYear: Int,
-    @SerializedName("death_year")
-    val deathYear: Int
 )

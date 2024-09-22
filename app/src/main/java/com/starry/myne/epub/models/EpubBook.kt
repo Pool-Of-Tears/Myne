@@ -18,6 +18,8 @@
 package com.starry.myne.epub.models
 
 import android.graphics.Bitmap
+import com.starry.myne.epub.BitmapSerializer
+import kotlinx.serialization.Serializable
 
 /**
  * Represents an epub book.
@@ -30,11 +32,13 @@ import android.graphics.Bitmap
  * @param chapters The list of chapters in the book.
  * @param images The list of images in the book.
  */
+@Serializable
 data class EpubBook(
     val fileName: String,
     val title: String,
     val author: String,
     val language: String,
+    @Serializable(with = BitmapSerializer::class)
     val coverImage: Bitmap?,
     val chapters: List<EpubChapter>,
     val images: List<EpubImage>

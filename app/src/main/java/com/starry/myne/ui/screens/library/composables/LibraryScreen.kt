@@ -24,7 +24,6 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -287,7 +286,6 @@ fun LibraryScreen(navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LibraryContents(
     viewModel: LibraryViewModel,
@@ -341,7 +339,7 @@ private fun LibraryContents(
                     val item = libraryItems[i]
                     if (item.fileExist()) {
                         LibraryLazyItem(
-                            modifier = Modifier.animateItemPlacement(),
+                            modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
                             item = item,
                             snackBarHostState = snackBarHostState,
                             navController = navController,

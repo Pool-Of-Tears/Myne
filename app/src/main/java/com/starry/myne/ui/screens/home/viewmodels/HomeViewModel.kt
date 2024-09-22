@@ -25,7 +25,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.api.BookAPI
 import com.starry.myne.api.models.Book
-import com.starry.myne.api.models.BookSet
 import com.starry.myne.helpers.Constants
 import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.helpers.Paginator
@@ -94,24 +93,16 @@ class HomeViewModel @Inject constructor(
     }, onError = {
         allBooksState = allBooksState.copy(error = it?.localizedMessage ?: Constants.UNKNOWN_ERR)
     }, onSuccess = { bookSet, newPage ->
-        /**
-         * usually bookSet.books is not nullable and API simply returns empty list
-         * when browsing books all books (i.e. without passing language parameter)
-         * however, when browsing by language it returns a response which looks like
-         * this: {"detail": "Invalid page."}. Hence the [BookSet] attributes become
-         * null in this case and can cause crashes.
-         */
-        @Suppress("SENSELESS_COMPARISON") val books = if (bookSet.books != null) {
+
+        val books = run {
             val books =
                 bookSet.books.filter { it.formats.applicationepubzip != null } as ArrayList<Book>
-            // Remove the book with id 1513
+            // Ignore ...
             val index = books.indexOfFirst { it.id == 1513 }
             if (index != -1) {
                 books.removeAt(index)
             }
             books // return the list of books
-        } else {
-            ArrayList()
         }
 
         allBooksState = allBooksState.copy(

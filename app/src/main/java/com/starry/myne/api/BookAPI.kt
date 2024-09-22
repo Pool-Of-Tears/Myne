@@ -17,13 +17,13 @@
 package com.starry.myne.api
 
 import android.content.Context
-import com.google.gson.Gson
 import com.starry.myne.BuildConfig
 import com.starry.myne.api.models.BookSet
 import com.starry.myne.api.models.ExtraInfo
 import com.starry.myne.helpers.book.BookLanguage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import okhttp3.Cache
 import okhttp3.Call
 import okhttp3.Callback
@@ -74,8 +74,7 @@ class BookAPI(context: Context) {
         okHttpBuilder.build()
     }
 
-    private val gsonClient = Gson() // Gson client for parsing JSON responses.
-
+    private val json = Json { ignoreUnknownKeys = true }
 
     /**
      * This function fetches all the books from the API.
@@ -150,7 +149,10 @@ class BookAPI(context: Context) {
                     response.use {
                         continuation.resume(
                             Result.success(
-                                gsonClient.fromJson(response.body!!.string(), BookSet::class.java)
+                                json.decodeFromString(
+                                    BookSet.serializer(),
+                                    response.body!!.string()
+                                )
                             )
                         )
                     }

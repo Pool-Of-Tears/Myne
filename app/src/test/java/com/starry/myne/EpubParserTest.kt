@@ -18,6 +18,7 @@ package com.starry.myne
 
 import android.graphics.Bitmap
 import com.google.common.truth.Truth.assertThat
+import com.starry.myne.epub.EpubCache
 import com.starry.myne.epub.EpubParser
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -43,7 +44,10 @@ class EpubParserTest {
 
     @Before
     fun setup() {
-        epubParser = EpubParser(RuntimeEnvironment.getApplication())
+        epubParser = EpubParser(
+            RuntimeEnvironment.getApplication(),
+            EpubCache(RuntimeEnvironment.getApplication())
+        )
 
         // Create a sample EPUB file for testing
         testEpubFile = createSampleEpubFile(hasToc = false)

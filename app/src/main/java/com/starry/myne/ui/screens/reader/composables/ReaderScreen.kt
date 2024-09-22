@@ -277,7 +277,9 @@ fun ReaderScreen(
                                 .padding(bottom = 65.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                            if (viewModel.state.shouldShowLoader) {
+                                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                            }
                         }
                     } else {
                         readerContent(paddingValues)

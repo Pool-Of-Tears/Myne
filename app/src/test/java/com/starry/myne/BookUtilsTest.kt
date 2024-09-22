@@ -26,14 +26,14 @@ import org.junit.Test
 class BookUtilsTest {
     @Test
     fun `getAuthorsAsString returns expected string with one author`() = runTest {
-        val author = Author("Dostoyevsky, Fyodor", 0, 0)
+        val author = Author(name = "Dostoyevsky, Fyodor", birthYear = 0, deathYear = 0)
         assertThat(BookUtils.getAuthorsAsString(listOf(author))).isEqualTo("Fyodor Dostoyevsky")
     }
 
     @Test
     fun `getAuthorsAsString returns expected string with multiple authors`() = runTest {
-        val author1 = Author("Dostoyevsky, Fyodor", 0, 0)
-        val author2 = Author("Orwell, George", 0, 0)
+        val author1 = Author(name = "Dostoyevsky, Fyodor", birthYear = 0, deathYear = 0)
+        val author2 = Author(name = "Orwell, George", birthYear = 0, deathYear = 0)
         assertThat(
             BookUtils.getAuthorsAsString(
                 listOf(

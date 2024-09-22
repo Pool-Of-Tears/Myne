@@ -17,6 +17,8 @@
 
 package com.starry.myne.epub.models
 
+import kotlinx.serialization.Serializable
+
 /**
  * Represents a chapter in an epub book.
  *
@@ -24,6 +26,7 @@ package com.starry.myne.epub.models
  * @param title The title of the chapter.
  * @param body The body of the chapter.
  */
+@Serializable
 data class EpubChapter(
     val absPath: String,
     val title: String,

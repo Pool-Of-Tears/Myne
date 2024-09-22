@@ -42,6 +42,7 @@ import javax.inject.Inject
 
 data class ReaderScreenState(
     val isLoading: Boolean = true,
+    val shouldShowLoader: Boolean = false,
     val showReaderMenu: Boolean = false,
     val fontSize: Int = 18,
     val fontFamily: ReaderFont = ReaderFont.System,
@@ -73,6 +74,7 @@ class ReaderViewModel @Inject constructor(
     fun loadEpubBook(libraryItemId: Int, onLoaded: (ReaderScreenState) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val libraryItem = libraryDao.getItemById(libraryItemId)
+            state = state.copy(shouldShowLoader = !epubParser.isBookCached(libraryItem!!.filePath))
             val readerData = readerDao.getReaderData(libraryItemId)
             // parse and create epub book
             var epubBook = epubParser.createEpubBook(libraryItem!!.filePath)
@@ -85,7 +87,9 @@ class ReaderViewModel @Inject constructor(
             state = state.copy(epubBook = epubBook, readerData = readerData)
             onLoaded(state)
             // Added some delay to avoid choppy animation.
-            delay(350L)
+            if (state.shouldShowLoader) {
+                delay(200L)
+            }
             state = state.copy(isLoading = false)
         }
     }
