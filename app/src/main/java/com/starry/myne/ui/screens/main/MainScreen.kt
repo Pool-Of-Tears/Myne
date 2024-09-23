@@ -61,7 +61,7 @@ import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.navigation.NavGraph
 import com.starry.myne.ui.navigation.Screens
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 
 /**
  * Padding for the bottom navigation bar.
@@ -171,7 +171,7 @@ private fun CustomBottomNavigationItem(
                 Text(
                     text = stringResource(id = screen.title),
                     color = contentColor,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 4.dp)
                 )

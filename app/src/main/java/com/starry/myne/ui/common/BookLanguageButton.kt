@@ -35,7 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.starry.myne.helpers.book.BookLanguage
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 
 @Composable
 fun BookLanguageButton(language: BookLanguage, isSelected: Boolean, onClick: () -> Unit) {
@@ -64,7 +64,7 @@ fun BookLanguageButton(language: BookLanguage, isSelected: Boolean, onClick: () 
                 text = language.name,
                 fontSize = 18.sp,
                 fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
-                fontFamily = figeronaFont,
+                fontFamily = poppinsFont,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

@@ -92,7 +92,7 @@ import com.starry.myne.ui.common.BookDetailTopUI
 import com.starry.myne.ui.common.NetworkError
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.screens.detail.viewmodels.BookDetailViewModel
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 import com.starry.myne.ui.theme.pacificoFont
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -316,7 +316,7 @@ private fun BookDetailContents(
             text = stringResource(id = R.string.book_synopsis),
             modifier = Modifier.padding(start = 12.dp, end = 8.dp),
             fontSize = 20.sp,
-            fontFamily = figeronaFont,
+            fontFamily = poppinsFont,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground,
         )
@@ -326,7 +326,7 @@ private fun BookDetailContents(
             Text(
                 text = synopsis,
                 modifier = Modifier.padding(14.dp),
-                fontFamily = figeronaFont,
+                fontFamily = poppinsFont,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onBackground,
             )
@@ -405,7 +405,7 @@ private fun MiddleBar(
                             text = bookLang,
                             modifier = Modifier.padding(top = 14.dp, bottom = 14.dp, start = 4.dp),
                             fontSize = 18.sp,
-                            fontFamily = figeronaFont,
+                            fontFamily = poppinsFont,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -434,7 +434,7 @@ private fun MiddleBar(
                             text = pageCount,
                             modifier = Modifier.padding(top = 14.dp, bottom = 14.dp, start = 4.dp),
                             fontSize = 18.sp,
-                            fontFamily = figeronaFont,
+                            fontFamily = poppinsFont,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -462,7 +462,7 @@ private fun MiddleBar(
                             text = downloadCount,
                             modifier = Modifier.padding(top = 14.dp, bottom = 14.dp, start = 4.dp),
                             fontSize = 18.sp,
-                            fontFamily = figeronaFont,
+                            fontFamily = poppinsFont,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -486,7 +486,7 @@ private fun MiddleBar(
                 Text(
                     text = buttonText,
                     fontSize = 18.sp,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
@@ -580,7 +580,7 @@ private fun NoSynopsisUI() {
         Text(
             text = stringResource(id = R.string.book_synopsis_not_found),
             modifier = Modifier.padding(14.dp),
-            fontFamily = figeronaFont,
+            fontFamily = poppinsFont,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onBackground,
         )

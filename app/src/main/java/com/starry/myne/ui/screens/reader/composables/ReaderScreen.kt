@@ -95,7 +95,7 @@ import androidx.compose.ui.unit.sp
 import com.starry.myne.R
 import com.starry.myne.ui.screens.reader.others.ReaderFont
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 import kotlinx.coroutines.launch
 
 
@@ -144,7 +144,7 @@ fun ReaderScreen(
                     modifier = Modifier.padding(start = 16.dp, top = 12.dp),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.SemiBold,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
@@ -210,7 +210,7 @@ fun ReaderScreen(
                                             overflow = TextOverflow.Ellipsis,
                                             modifier = Modifier.animateContentSize(),
                                             color = MaterialTheme.colorScheme.onSurface,
-                                            fontFamily = figeronaFont
+                                            fontFamily = poppinsFont
                                         )
                                     }
                                 },
@@ -234,7 +234,7 @@ fun ReaderScreen(
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
                                         color = MaterialTheme.colorScheme.onSurface,
-                                        fontFamily = figeronaFont,
+                                        fontFamily = poppinsFont,
                                         fontWeight = FontWeight.Medium
                                     )
                                 }
@@ -339,7 +339,7 @@ private fun FontChooserDialog(
                             text = text,
                             modifier = Modifier.padding(start = 16.dp),
                             color = MaterialTheme.colorScheme.onSurface,
-                            fontFamily = figeronaFont
+                            fontFamily = poppinsFont
                         )
                     }
                 }
@@ -422,7 +422,7 @@ private fun TextScaleControls(
         ) {
             Text(
                 text = viewModel.state.fontSize.toString(),
-                fontFamily = figeronaFont,
+                fontFamily = poppinsFont,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(start = 2.dp, bottom = 1.dp)

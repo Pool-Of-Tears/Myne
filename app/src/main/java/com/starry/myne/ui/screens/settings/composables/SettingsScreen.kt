@@ -90,7 +90,7 @@ import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.main.bottomNavPadding
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -146,7 +146,7 @@ private fun SettingsCard() {
             Column {
                 Text(
                     text = "${stringResource(id = R.string.app_name)} ${stringResource(id = R.string.app_desc)}",
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
@@ -154,7 +154,7 @@ private fun SettingsCard() {
 
                 Text(
                     text = stringResource(id = R.string.made_by),
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -171,7 +171,7 @@ private fun SettingsCard() {
                 ) {
                     Text(
                         text = "version-${BuildConfig.VERSION_NAME}",
-                        fontFamily = figeronaFont,
+                        fontFamily = poppinsFont,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
@@ -225,7 +225,7 @@ private fun GeneralOptionsUI(
     ) {
         Text(
             text = stringResource(id = R.string.general_settings_header),
-            fontFamily = figeronaFont,
+            fontFamily = poppinsFont,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
@@ -303,7 +303,7 @@ private fun GeneralOptionsUI(
                             text = text,
                             modifier = Modifier.padding(start = 16.dp),
                             color = MaterialTheme.colorScheme.onSurface,
-                            fontFamily = figeronaFont
+                            fontFamily = poppinsFont
                         )
                     }
                 }
@@ -386,7 +386,7 @@ private fun DisplayOptionsUI(
     ) {
         Text(
             text = stringResource(id = R.string.display_setting_header),
-            fontFamily = figeronaFont,
+            fontFamily = poppinsFont,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
@@ -464,7 +464,7 @@ private fun DisplayOptionsUI(
                             text = text,
                             modifier = Modifier.padding(start = 16.dp),
                             color = MaterialTheme.colorScheme.onSurface,
-                            fontFamily = figeronaFont
+                            fontFamily = poppinsFont
                         )
                     }
                 }
@@ -514,7 +514,7 @@ private fun InformationUI(navController: NavController) {
         ) {
             Text(
                 text = stringResource(id = R.string.miscellaneous_setting_header),
-                fontFamily = figeronaFont,
+                fontFamily = poppinsFont,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,

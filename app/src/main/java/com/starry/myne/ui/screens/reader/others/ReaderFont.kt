@@ -20,7 +20,7 @@ import androidx.annotation.Keep
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import com.starry.myne.R
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 
 @Keep
 sealed class ReaderFont(val id: String, val name: String, val fontFamily: FontFamily) {
@@ -52,5 +52,5 @@ sealed class ReaderFont(val id: String, val name: String, val fontFamily: FontFa
         ReaderFont("dyslexic", "OpenDyslexic", FontFamily(Font(R.font.reader_inter_font)))
 
     @Keep
-    data object Lora : ReaderFont("figerona", "Figerona", figeronaFont)
+    data object Lora : ReaderFont("poppins", "Poppins", poppinsFont)
 }
