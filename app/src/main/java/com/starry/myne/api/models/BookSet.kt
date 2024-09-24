@@ -30,5 +30,8 @@ data class BookSet(
     @SerialName("previous")
     val previous: String? = null,
     @SerialName("results")
-    val books: List<Book> = listOf()
+    val books: List<Book> = listOf(),
+    // For checking if the book is cached or not
+    // Not part of the API response.
+    val isCached: Boolean = false
 )

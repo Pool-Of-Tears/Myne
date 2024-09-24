@@ -96,8 +96,8 @@ import com.starry.myne.ui.screens.home.viewmodels.HomeViewModel
 import com.starry.myne.ui.screens.home.viewmodels.SearchBarState
 import com.starry.myne.ui.screens.home.viewmodels.UserAction
 import com.starry.myne.ui.screens.main.bottomNavPadding
-import com.starry.myne.ui.theme.poppinsFont
 import com.starry.myne.ui.theme.pacificoFont
+import com.starry.myne.ui.theme.poppinsFont
 import kotlinx.coroutines.delay
 
 

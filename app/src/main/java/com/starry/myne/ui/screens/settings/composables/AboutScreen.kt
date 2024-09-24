@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -199,7 +200,7 @@ private fun LinkButton(
 
         Text(
             text = text.uppercase(),
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             fontFamily = poppinsFont,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(start = 4.dp),
@@ -339,7 +340,7 @@ private fun DeveloperCard(context: Context) {
                     color = MaterialTheme.colorScheme.onBackground,
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(2.dp))
 
                 Text(
                     text = Constants.DEV_EMAIL,
@@ -356,9 +357,9 @@ private fun DeveloperCard(context: Context) {
                     }
                 )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-                Row {
+                Row(modifier = Modifier.offset(x = (-4.dp))) {
                     LinkButton(
                         text = "Github",
                         icon = ImageVector.vectorResource(id = R.drawable.ic_github_logo)
