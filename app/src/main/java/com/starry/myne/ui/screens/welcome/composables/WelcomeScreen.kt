@@ -73,7 +73,7 @@ import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.common.SlideInAnimatedContainer
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.screens.welcome.viewmodels.WelcomeViewModel
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 import com.starry.myne.ui.theme.pacificoFont
 
 @Composable
@@ -291,7 +291,7 @@ private fun ReaderDialog(
                             text = text,
                             modifier = Modifier.padding(start = 16.dp),
                             color = MaterialTheme.colorScheme.onSurface,
-                            fontFamily = figeronaFont
+                            fontFamily = poppinsFont
                         )
                     }
                 }

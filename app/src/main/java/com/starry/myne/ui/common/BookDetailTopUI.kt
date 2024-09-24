@@ -51,7 +51,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.starry.myne.R
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 
 @Composable
 fun BookDetailTopUI(
@@ -135,7 +135,7 @@ fun BookDetailTopUI(
                         )
                         .fillMaxWidth(),
                     fontSize = 24.sp,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Bold,
@@ -148,7 +148,7 @@ fun BookDetailTopUI(
                         start = 12.dp, end = 8.dp, top = 4.dp
                     ),
                     fontSize = 18.sp,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -162,7 +162,7 @@ fun BookDetailTopUI(
                             start = 12.dp, end = 8.dp, top = 8.dp
                         ),
                         fontSize = 16.sp,
-                        fontFamily = figeronaFont,
+                        fontFamily = poppinsFont,
                         fontWeight = FontWeight.Medium,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,

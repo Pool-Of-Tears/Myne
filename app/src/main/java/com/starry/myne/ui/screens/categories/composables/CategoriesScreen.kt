@@ -50,7 +50,7 @@ import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.main.bottomNavPadding
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 
 
 @Composable
@@ -119,7 +119,7 @@ private fun CategoriesItem(category: String, onClick: () -> Unit) {
                 text = category,
                 fontSize = 18.sp,
                 fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
-                fontFamily = figeronaFont,
+                fontFamily = poppinsFont,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

@@ -59,7 +59,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.starry.myne.helpers.weakHapticFeedback
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 
 
 @Composable
@@ -106,7 +106,7 @@ fun SettingItem(icon: ImageVector, mainText: String, subText: String, onClick: (
                 ) {
                     Text(
                         text = mainText,
-                        fontFamily = figeronaFont,
+                        fontFamily = poppinsFont,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -116,7 +116,7 @@ fun SettingItem(icon: ImageVector, mainText: String, subText: String, onClick: (
 
                     Text(
                         text = subText,
-                        fontFamily = figeronaFont,
+                        fontFamily = poppinsFont,
                         color = Color.Gray,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -181,7 +181,7 @@ fun SettingItemWIthSwitch(
                 ) {
                     Text(
                         text = mainText,
-                        fontFamily = figeronaFont,
+                        fontFamily = poppinsFont,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -191,7 +191,7 @@ fun SettingItemWIthSwitch(
 
                     Text(
                         text = subText,
-                        fontFamily = figeronaFont,
+                        fontFamily = poppinsFont,
                         color = Color.Gray,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold,

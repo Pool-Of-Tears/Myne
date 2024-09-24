@@ -56,7 +56,7 @@ import coil.request.ImageRequest
 import com.starry.myne.R
 import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.common.placeholder.placeholder
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 
 
 @Composable
@@ -122,7 +122,7 @@ fun BookItemCard(
                         .placeholder(isLoading = loadingEffect),
                     fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
                     fontSize = 18.sp,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -137,7 +137,7 @@ fun BookItemCard(
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
                     fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontSize = 14.sp,
                 )
 
@@ -152,7 +152,7 @@ fun BookItemCard(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
-                    fontFamily = figeronaFont
+                    fontFamily = poppinsFont
                 )
 
                 Text(
@@ -164,7 +164,7 @@ fun BookItemCard(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontSize = 13.sp
                 )
 

@@ -110,7 +110,7 @@ import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
 import com.starry.myne.ui.screens.main.bottomNavPadding
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeAction
@@ -235,7 +235,7 @@ fun LibraryScreen(navController: NavController) {
                         Text(
                             text = stringResource(id = R.string.import_button_text),
                             fontWeight = FontWeight.Medium,
-                            fontFamily = figeronaFont,
+                            fontFamily = poppinsFont,
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -273,7 +273,7 @@ fun LibraryScreen(navController: NavController) {
                             Spacer(modifier = Modifier.width(24.dp))
                             Text(
                                 text = stringResource(id = R.string.epub_importing),
-                                fontFamily = figeronaFont,
+                                fontFamily = poppinsFont,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 17.sp,
                             )
@@ -521,7 +521,7 @@ private fun LibraryCard(
                     text = title,
                     fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
                     fontSize = 20.sp,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -533,7 +533,7 @@ private fun LibraryCard(
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
                 )
@@ -543,7 +543,7 @@ private fun LibraryCard(
                 Row {
                     Text(
                         text = fileSize,
-                        fontFamily = figeronaFont,
+                        fontFamily = poppinsFont,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Light,
                         fontSize = 14.sp,
@@ -558,7 +558,7 @@ private fun LibraryCard(
                     )
                     Text(
                         text = date,
-                        fontFamily = figeronaFont,
+                        fontFamily = poppinsFont,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Light,
                         fontSize = 14.sp,
@@ -611,7 +611,7 @@ private fun LibraryCardButton(
             Text(
                 text = text,
                 fontWeight = FontWeight.Medium,
-                fontFamily = figeronaFont,
+                fontFamily = poppinsFont,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(start = 2.dp),
