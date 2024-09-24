@@ -109,7 +109,7 @@ fun SettingItem(icon: ImageVector, mainText: String, subText: String, onClick: (
                         fontFamily = poppinsFont,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                     )
 
                     Spacer(modifier = Modifier.height(2.dp))
@@ -119,7 +119,7 @@ fun SettingItem(icon: ImageVector, mainText: String, subText: String, onClick: (
                         fontFamily = poppinsFont,
                         color = Color.Gray,
                         fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        fontWeight = FontWeight.Medium,
                         modifier = Modifier.offset(y = (-4).dp)
                     )
                 }
@@ -184,7 +184,7 @@ fun SettingItemWIthSwitch(
                         fontFamily = poppinsFont,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                     )
 
                     Spacer(modifier = Modifier.height(2.dp))
@@ -194,7 +194,7 @@ fun SettingItemWIthSwitch(
                         fontFamily = poppinsFont,
                         color = Color.Gray,
                         fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        fontWeight = FontWeight.Medium,
                         modifier = Modifier.offset(y = (-4).dp)
                     )
                 }

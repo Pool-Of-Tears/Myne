@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -117,11 +118,11 @@ fun BookItemCard(
                 Text(
                     text = title,
                     modifier = Modifier
-                        .padding(start = 12.dp, end = 8.dp)
+                        .padding(start = 12.dp, end = 8.dp, top = 2.dp)
                         .fillMaxWidth()
                         .placeholder(isLoading = loadingEffect),
                     fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     fontFamily = poppinsFont,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
@@ -133,15 +134,15 @@ fun BookItemCard(
                     text = author,
                     modifier = Modifier
                         .padding(start = 12.dp, end = 8.dp)
-                        .placeholder(isLoading = loadingEffect),
+                        .placeholder(isLoading = loadingEffect)
+                        .offset(y = (-4).dp),
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
+                    lineHeight = 20.sp,
                     fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
                     fontFamily = poppinsFont,
                     fontSize = 14.sp,
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = language,
@@ -149,7 +150,7 @@ fun BookItemCard(
                         .padding(start = 12.dp, end = 8.dp)
                         .placeholder(isLoading = loadingEffect),
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 16.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
                     fontFamily = poppinsFont
@@ -165,7 +166,8 @@ fun BookItemCard(
                     overflow = TextOverflow.Ellipsis,
                     fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
                     fontFamily = poppinsFont,
-                    fontSize = 13.sp
+                    fontSize = 13.sp,
+                    lineHeight = 18.sp
                 )
 
                 Spacer(modifier = Modifier.weight(1f))

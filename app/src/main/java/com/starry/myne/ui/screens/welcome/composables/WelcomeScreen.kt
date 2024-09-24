@@ -73,8 +73,8 @@ import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.common.SlideInAnimatedContainer
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.screens.welcome.viewmodels.WelcomeViewModel
-import com.starry.myne.ui.theme.poppinsFont
 import com.starry.myne.ui.theme.pacificoFont
+import com.starry.myne.ui.theme.poppinsFont
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
@@ -198,13 +198,14 @@ private fun ReaderSelectionUI(
         Text(
             text = stringResource(id = R.string.welcome_screen_desc),
             fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
+            fontSize = 15.sp,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         OutlinedButton(
             onClick = {

@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -520,7 +521,7 @@ private fun LibraryCard(
                 Text(
                     text = title,
                     fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     fontFamily = poppinsFont,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
@@ -530,17 +531,17 @@ private fun LibraryCard(
 
                 Text(
                     text = author,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.85f),
                     maxLines = 1,
                     fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
                     fontFamily = poppinsFont,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.offset(y = (-8).dp)
                 )
 
-                Spacer(modifier = Modifier.height(2.dp))
-
-                Row {
+                Row(modifier = Modifier.offset(y = (-8).dp)) {
                     Text(
                         text = fileSize,
                         fontFamily = poppinsFont,
@@ -566,9 +567,7 @@ private fun LibraryCard(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Row {
+                Row(modifier = Modifier.offset(y = (-4).dp)) {
                     LibraryCardButton(text = stringResource(id = R.string.library_read_button),
                         icon = ImageVector.vectorResource(id = R.drawable.ic_library_read),
                         onClick = { onReadClick() })
@@ -579,7 +578,7 @@ private fun LibraryCard(
                         icon = Icons.Outlined.Delete,
                         onClick = { onDeleteClick() })
                 }
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(2.dp))
             }
         }
     }
@@ -591,30 +590,31 @@ private fun LibraryCardButton(
     icon: ImageVector,
     onClick: () -> Unit,
 ) {
-    Box(modifier = Modifier
-        .border(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.onSurface,
-            shape = RoundedCornerShape(8.dp)
-        )
-        .clickable { onClick() }) {
+    Box(
+        modifier = Modifier
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .clickable { onClick() }
+    ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(6.dp)
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.size(size = 14.dp),
-                tint = MaterialTheme.colorScheme.onSurface
+                contentDescription = "Favorite Icon",
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.size(14.dp)
             )
-
+            Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = text,
-                fontWeight = FontWeight.Medium,
-                fontFamily = poppinsFont,
-                fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(start = 2.dp),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium
             )
         }
     }

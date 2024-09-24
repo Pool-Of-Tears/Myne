@@ -96,7 +96,7 @@ class ReaderDetailViewModel @Inject constructor(
                 authors = libraryItem.authors,
                 epubBook = epubBook
             )
-            delay(450) // Add delay to avoid flickering.
+            delay(350) // Add delay to avoid flickering.
             state = state.copy(isLoading = false, ebookData = ebookData)
         }
     }

@@ -117,10 +117,10 @@ private fun CategoriesItem(category: String, onClick: () -> Unit) {
             Text(
                 modifier = Modifier.padding(2.dp),
                 text = category,
-                fontSize = 18.sp,
+                fontSize = 17.sp,
                 fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
                 fontFamily = poppinsFont,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.onSurface,
