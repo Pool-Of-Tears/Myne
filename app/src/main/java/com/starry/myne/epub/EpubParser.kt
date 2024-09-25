@@ -31,6 +31,7 @@ import org.w3c.dom.Node
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
+import java.util.concurrent.ThreadLocalRandom
 import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
 
@@ -38,7 +39,7 @@ import java.util.zip.ZipInputStream
 /**
  * Parses an EPUB file and creates an [EpubBook] object.
  */
-class EpubParser(private val context: Context, private val epubCache: EpubCache) {
+class EpubParser(private val context: Context) {
 
     /**
      * Represents an EPUB document.
@@ -104,6 +105,8 @@ class EpubParser(private val context: Context, private val epubCache: EpubCache)
         const val TAG = "EpubParser"
     }
 
+    private val epubCache = EpubCache(context)
+
     /**
      * Creates an [EpubBook] object from an EPUB file.
      *
@@ -155,6 +158,15 @@ class EpubParser(private val context: Context, private val epubCache: EpubCache)
     }
 
     /**
+     * Removes an EPUB book from the cache.
+     *
+     * @param filePath The file path of the EPUB file.
+     */
+    fun removeBookFromCache(filePath: String): Boolean {
+        return epubCache.remove(filePath)
+    }
+
+    /**
      * Parses and creates an [EpubBook] object from the EPUB files and document.
      * This function is called from [createEpubBook] and [createEpubBook].
      *
@@ -191,9 +203,9 @@ class EpubParser(private val context: Context, private val epubCache: EpubCache)
         }
 
         // Determine the method of parsing chapters based on the presence of ToC and
-        // the shouldUseToc flag. If tocNavPoints is not null or empty and shouldUseToc
-        // is true, use the ToC file for parsing. Otherwise, parse using the spine.
-        val chapters = if (!tocNavPoints.isNullOrEmpty() && shouldUseToc) {
+        // the shouldUseToc flag. We also check if the ToC file has more than one navPoint
+        // to ensure that it is a valid ToC file.
+        val chapters = if (shouldUseToc && !tocNavPoints.isNullOrEmpty() && tocNavPoints.size > 1) {
             Log.d(TAG, "Parsing based on ToC file")
             parseUsingTocFile(tocNavPoints, files, hrefRootPath, document, manifestItems)
         } else {
@@ -231,17 +243,17 @@ class EpubParser(private val context: Context, private val epubCache: EpubCache)
         val epubDocument = try {
             createEpubDocument(files)
         } catch (exc: EpubParserException) {
-            // In some rare cases, the ZipInputStream does not contains / fails to read all of the files
+            // In some rare cases, the ZipInputStream does not contain or fails to read all of the files
             // required to parse the EPUB archive, even though the zip file itself contains them.
             // In such cases, retry parsing the EPUB file by directly using the ZipFile API.
             // Since ZipFile requires a file path, we need to create a temporary file from the input stream.
             //
-            // Reasons for this issue are unknown and may be related to how the EPUB file is compressed
-            // i.e. weather it is missing some metadata or file/folder entry in it's header or how the
+            // The reasons for this issue are unknown and may be related to how the EPUB file is compressed,
+            // i.e., whether it is missing some metadata or file/folder entry in its header, or how the
             // ZipInputStream reads the file.
             //
-            // If someone knows the exact reason for this issue, or have dealt with it before, please
-            // let me know or feel free to create a PR with a better solution.
+            // If anyone knows the exact reason for this issue or has dealt with it before, please
+            // let me know, or feel free to create a PR with a better solution.
             if (exc.message == "META-INF/container.xml file missing"
                 || exc.message == ".opf file missing"
             ) {
@@ -414,6 +426,17 @@ class EpubParser(private val context: Context, private val epubCache: EpubCache)
     }
 
     /**
+     * Generate a unique ID for a chapter.
+     *
+     * @return The generated ID.
+     */
+    private fun generateId(): String {
+        val timestamp = System.currentTimeMillis()
+        val randomSuffix = ThreadLocalRandom.current().nextInt(1000, 9999)
+        return "$timestamp-$randomSuffix"
+    }
+
+    /**
      * Parse the EPUB file using the table of contents (ToC) file.
      * This method is called from [parseAndCreateEbook].
      *
@@ -468,6 +491,7 @@ class EpubParser(private val context: Context, private val epubCache: EpubCache)
                 if (res != null) {
                     listOf(
                         EpubChapter(
+                            chapterId = generateId(),
                             absPath = chapterSrc,
                             title = title?.takeIf { it.isNotEmpty() } ?: "Chapter $index",
                             body = res.body
@@ -548,6 +572,7 @@ class EpubParser(private val context: Context, private val epubCache: EpubCache)
                 it.chapterIndex
             }.map { (index, list) ->
                 EpubChapter(
+                    chapterId = generateId(),
                     absPath = list.first().url,
                     title = list.first().title?.takeIf { it.isNotBlank() } ?: "Chapter $index",
                     body = list.joinToString("\n\n") { it.body }

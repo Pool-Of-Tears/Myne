@@ -28,6 +28,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class EpubChapter(
+    val chapterId: String,
     val absPath: String,
     val title: String,
     val body: String

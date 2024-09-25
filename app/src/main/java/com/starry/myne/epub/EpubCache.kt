@@ -127,6 +127,22 @@ class EpubCache(private val context: Context) {
     }
 
     /**
+     * Removes a book from the cache.
+     *
+     * @param filepath The path to the book file.
+     */
+    fun remove(filepath: String): Boolean {
+        Log.d(TAG, "Removing book from cache: $filepath")
+        val fileName = File(filepath).nameWithoutExtension
+        val bookFile = File(getPath(), "$fileName.json")
+        return if (bookFile.exists()) {
+            bookFile.delete()
+        } else {
+            false
+        }
+    }
+
+    /**
      * Checks if a book is cached.
      *
      * @param filepath The path to the book file.

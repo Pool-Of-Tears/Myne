@@ -42,7 +42,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -76,6 +75,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -101,12 +101,11 @@ import kotlinx.coroutines.launch
 
 enum class TextScaleButtonType { INCREASE, DECREASE }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReaderScreen(
     viewModel: ReaderViewModel,
-    lazyListState: LazyListState,
-    readerContent: @Composable (paddingValues: PaddingValues) -> Unit
+    onScrollToChapter: suspend (Int) -> Unit,
+    chaptersContent: @Composable (paddingValues: PaddingValues) -> Unit
 ) {
     // Hide reader menu on back press.
     BackHandler(viewModel.state.showReaderMenu) {
@@ -118,9 +117,6 @@ fun ReaderScreen(
     FontChooserDialog(showFontDialog, viewModel)
 
     val snackBarHostState = remember { SnackbarHostState() }
-    val currentChapter =
-        viewModel.state.epubBook?.chapters?.getOrNull(viewModel.visibleChapterIndex.value)
-
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val chapters = viewModel.state.epubBook?.chapters
     val coroutineScope = rememberCoroutineScope()
@@ -167,11 +163,11 @@ fun ReaderScreen(
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 },
-                                selected = idx == viewModel.visibleChapterIndex.value,
+                                selected = idx == viewModel.visibleChapterIndex.collectAsState().value,
                                 onClick = {
                                     coroutineScope.launch {
                                         drawerState.close()
-                                        lazyListState.scrollToItem(idx)
+                                        onScrollToChapter(idx)
                                     }
                                 }
                             )
@@ -180,77 +176,13 @@ fun ReaderScreen(
                 }
             }
         }) {
-
         Scaffold(
             snackbarHost = { SnackbarHost(snackBarHostState) },
             topBar = {
-                AnimatedVisibility(
-                    visible = viewModel.state.showReaderMenu,
-                    enter = expandVertically(initialHeight = { 0 }, expandFrom = Alignment.Top)
-                            + fadeIn(),
-                    exit = shrinkVertically(targetHeight = { 0 }, shrinkTowards = Alignment.Top)
-                            + fadeOut(),
-                ) {
-                    Surface(color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)) {
-                        Column(modifier = Modifier.displayCutoutPadding()) {
-                            TopAppBar(
-                                colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                        2.dp
-                                    ),
-                                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                        2.dp
-                                    ),
-                                ),
-                                title = {
-                                    viewModel.state.epubBook?.let {
-                                        Text(
-                                            text = it.title,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                            modifier = Modifier.animateContentSize(),
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            fontFamily = poppinsFont
-                                        )
-                                    }
-                                },
-                                actions = {
-                                    IconButton(onClick = { coroutineScope.launch { drawerState.open() } }) {
-                                        Icon(
-                                            Icons.Filled.Menu, null,
-                                            tint = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    }
-                                }
-                            )
-                            Column(
-                                modifier = Modifier
-                                    .padding(bottom = 8.dp)
-                                    .padding(horizontal = 16.dp),
-                            ) {
-                                currentChapter?.title?.let {
-                                    Text(
-                                        text = it,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontFamily = poppinsFont,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                }
-                            }
-                            val chapterProgressbarState = animateFloatAsState(
-                                targetValue = viewModel.chapterScrolledPercent.value,
-                                label = "chapter progress bar state animation"
-                            )
-                            LinearProgressIndicator(
-                                progress = { chapterProgressbarState.value },
-                                modifier = Modifier.fillMaxWidth(),
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                    }
-                }
+                ReaderTopAppBar(
+                    viewModel = viewModel,
+                    onChapterListClicked = { coroutineScope.launch { drawerState.open() } }
+                )
             },
             bottomBar = {
                 AnimatedVisibility(
@@ -282,7 +214,7 @@ fun ReaderScreen(
                             }
                         }
                     } else {
-                        readerContent(paddingValues)
+                        chaptersContent(paddingValues)
                     }
                 }
             }
@@ -366,6 +298,80 @@ private fun FontChooserDialog(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ReaderTopAppBar(
+    viewModel: ReaderViewModel,
+    onChapterListClicked: () -> Unit,
+) {
+    AnimatedVisibility(
+        visible = viewModel.state.showReaderMenu,
+        enter = expandVertically(initialHeight = { 0 }, expandFrom = Alignment.Top)
+                + fadeIn(),
+        exit = shrinkVertically(targetHeight = { 0 }, shrinkTowards = Alignment.Top)
+                + fadeOut(),
+    ) {
+        Surface(color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)) {
+            Column(modifier = Modifier.displayCutoutPadding()) {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                            2.dp
+                        ),
+                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                            2.dp
+                        ),
+                    ),
+                    title = {
+                        viewModel.state.epubBook?.let {
+                            Text(
+                                text = it.title,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.animateContentSize(),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontFamily = poppinsFont
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = onChapterListClicked) {
+                            Icon(
+                                Icons.Filled.Menu, null,
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+                )
+                Column(
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .padding(horizontal = 16.dp),
+                ) {
+                    viewModel.currentChapter.collectAsState().value?.let { chapter ->
+                        Text(
+                            text = chapter.title,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontFamily = poppinsFont,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+                val chapterProgressbarState = animateFloatAsState(
+                    targetValue = viewModel.chapterScrolledPercent.collectAsState().value,
+                    label = "chapter progress bar state animation"
+                )
+                LinearProgressIndicator(
+                    progress = { chapterProgressbarState.value },
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+    }
+}
 
 @Composable
 private fun BottomSheetContents(

@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.core.view.WindowCompat
@@ -36,7 +37,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.starry.myne.R
 import com.starry.myne.helpers.Constants
 import com.starry.myne.helpers.toToast
-import com.starry.myne.ui.screens.reader.composables.ReaderContent
+import com.starry.myne.ui.screens.reader.composables.ChaptersContent
 import com.starry.myne.ui.screens.reader.composables.ReaderScreen
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
@@ -80,40 +81,39 @@ class ReaderActivity : AppCompatActivity() {
         // Set UI contents.
         setContent {
             MyneTheme(settingsViewModel = settingsViewModel) {
-
                 val lazyListState = rememberLazyListState()
                 val coroutineScope = rememberCoroutineScope()
-
                 // Handle intent and load epub book.
-                val intentData = handleIntent(intent = intent,
-                    viewModel = viewModel,
-                    contentResolver = contentResolver,
-                    scrollToPosition = { index, offset ->
-                        coroutineScope.launch {
-                            lazyListState.scrollToItem(index, offset)
-                        }
-                    },
-                    onError = {
-                        getString(R.string.error).toToast(this)
-                        finish()
-                    })
+                val intentData = remember {
+                    handleIntent(intent = intent,
+                        viewModel = viewModel,
+                        contentResolver = contentResolver,
+                        scrollToPosition = { index, offset ->
+                            coroutineScope.launch {
+                                lazyListState.scrollToItem(index, offset)
+                            }
+                        },
+                        onError = {
+                            getString(R.string.error).toToast(this)
+                            finish()
+                        })
+                }
 
                 ReaderScreen(
                     viewModel = viewModel,
-                    lazyListState = lazyListState,
-                    readerContent = {
+                    onScrollToChapter = { lazyListState.scrollToItem(it) },
+                    chaptersContent = {
                         LaunchedEffect(lazyListState) {
                             snapshotFlow {
                                 lazyListState.firstVisibleItemScrollOffset
                             }.collect { visibleChapterOffset ->
-                                // fetch last visible chapter position and offset.
+                                // Get the currently visible chapter index.
                                 val visibleChapterIdx = lazyListState.firstVisibleItemIndex
                                 // Set currently visible chapter & index.
                                 viewModel.setVisibleChapterIndex(visibleChapterIdx)
                                 viewModel.setChapterScrollPercent(
                                     calculateChapterPercentage(lazyListState)
                                 )
-
                                 // If book was not opened from external epub file, update the
                                 // reading progress into the database.
                                 if (!intentData.isExternalFile) {
@@ -129,13 +129,14 @@ class ReaderActivity : AppCompatActivity() {
                         }
 
                         // Reader content lazy column.
-                        ReaderContent(
+                        ChaptersContent(
                             state = viewModel.state,
                             lazyListState = lazyListState,
                             onToggleReaderMenu = {
                                 viewModel.toggleReaderMenu()
                                 toggleSystemBars(viewModel.state.showReaderMenu)
-                            })
+                            }
+                        )
                     })
             }
         }
