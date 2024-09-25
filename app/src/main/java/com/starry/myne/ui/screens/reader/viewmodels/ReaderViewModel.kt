@@ -17,10 +17,7 @@
 
 package com.starry.myne.ui.screens.reader.viewmodels
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -30,11 +27,14 @@ import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.database.reader.ReaderData
 import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubBook
+import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.helpers.PreferenceUtil
 import com.starry.myne.ui.screens.reader.others.ReaderFont
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
 import javax.inject.Inject
@@ -65,11 +65,24 @@ class ReaderViewModel @Inject constructor(
         )
     )
 
-    private val _chapterScrolledPercent = mutableFloatStateOf(0f)
-    val chapterScrolledPercent: State<Float> = _chapterScrolledPercent
+    private val _chapterScrolledPercent = MutableStateFlow(0f)
+    val chapterScrolledPercent: StateFlow<Float> = _chapterScrolledPercent
 
-    private val _visibleChapterIndex = mutableIntStateOf(0)
-    val visibleChapterIndex: State<Int> = _visibleChapterIndex
+    private val _visibleChapterIndex = MutableStateFlow(0)
+    val visibleChapterIndex: StateFlow<Int> = _visibleChapterIndex
+
+    private val _currentChapter = MutableStateFlow(
+        state.epubBook?.chapters?.getOrNull(_visibleChapterIndex.value)
+    )
+    val currentChapter: StateFlow<EpubChapter?> = _currentChapter
+
+    init {
+        viewModelScope.launch {
+            _visibleChapterIndex.collect { index ->
+                _currentChapter.value = state.epubBook?.chapters?.getOrNull(index)
+            }
+        }
+    }
 
     fun loadEpubBook(libraryItemId: Int, onLoaded: (ReaderScreenState) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -77,7 +90,7 @@ class ReaderViewModel @Inject constructor(
             state = state.copy(shouldShowLoader = !epubParser.isBookCached(libraryItem!!.filePath))
             val readerData = readerDao.getReaderData(libraryItemId)
             // parse and create epub book
-            var epubBook = epubParser.createEpubBook(libraryItem!!.filePath)
+            var epubBook = epubParser.createEpubBook(libraryItem.filePath)
             // Gutenberg for some reason don't include proper navMap in chinese books
             // in toc, so we need to parse the book based on spine, instead of toc.
             // This is a workaround for internal chinese books.
@@ -137,11 +150,11 @@ class ReaderViewModel @Inject constructor(
     }
 
     fun setChapterScrollPercent(percent: Float) {
-        _chapterScrolledPercent.floatValue = percent
+        _chapterScrolledPercent.value = percent
     }
 
     fun setVisibleChapterIndex(index: Int) {
-        _visibleChapterIndex.intValue = index
+        _visibleChapterIndex.value = index
     }
 
     fun toggleReaderMenu() {
