@@ -18,8 +18,10 @@
 package com.starry.myne.epub.models
 
 import android.graphics.Bitmap
-import com.starry.myne.epub.BitmapSerializer
+import com.starry.myne.epub.cache.BitmapSerializer
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.protobuf.ProtoNumber
 
 /**
  * Represents an epub book.
@@ -33,13 +35,12 @@ import kotlinx.serialization.Serializable
  * @param images The list of images in the book.
  */
 @Serializable
-data class EpubBook(
-    val fileName: String,
-    val title: String,
-    val author: String,
-    val language: String,
-    @Serializable(with = BitmapSerializer::class)
-    val coverImage: Bitmap?,
-    val chapters: List<EpubChapter>,
-    val images: List<EpubImage>
+data class EpubBook @OptIn(ExperimentalSerializationApi::class) constructor(
+    @ProtoNumber(1) val fileName: String,
+    @ProtoNumber(2) val title: String,
+    @ProtoNumber(3) val author: String,
+    @ProtoNumber(4) val language: String,
+    @ProtoNumber(5) @Serializable(with = BitmapSerializer::class) val coverImage: Bitmap?,
+    @ProtoNumber(6) val chapters: List<EpubChapter> = emptyList(),
+    @ProtoNumber(7) val images: List<EpubImage> = emptyList()
 )
