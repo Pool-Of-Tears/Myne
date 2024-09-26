@@ -47,7 +47,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.starry.myne.R
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 
 
 @Composable
@@ -88,7 +88,7 @@ fun NetworkError(errorMessage: String? = null, onRetryClicked: () -> Unit) {
                 .padding(top = 10.dp, bottom = 18.dp)
                 .fillMaxWidth(),
             color = MaterialTheme.colorScheme.onBackground,
-            fontFamily = figeronaFont,
+            fontFamily = poppinsFont,
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center
         )
@@ -97,7 +97,7 @@ fun NetworkError(errorMessage: String? = null, onRetryClicked: () -> Unit) {
             Text(
                 text = stringResource(id = R.string.network_error_retry),
                 fontWeight = FontWeight.Medium,
-                fontFamily = figeronaFont
+                fontFamily = poppinsFont
             )
         }
     }

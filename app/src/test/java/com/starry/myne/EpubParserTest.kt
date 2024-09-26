@@ -44,7 +44,6 @@ class EpubParserTest {
     @Before
     fun setup() {
         epubParser = EpubParser(RuntimeEnvironment.getApplication())
-
         // Create a sample EPUB file for testing
         testEpubFile = createSampleEpubFile(hasToc = false)
         testEpubWithTocFile = createSampleEpubFile(hasToc = true)

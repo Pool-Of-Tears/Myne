@@ -51,7 +51,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.starry.myne.R
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 
 @Composable
 fun BookDetailTopUI(
@@ -127,29 +127,29 @@ fun BookDetailTopUI(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
             ) {
+                Spacer(Modifier.height(32.dp))
                 Text(
                     text = title,
                     modifier = Modifier
-                        .padding(
-                            start = 12.dp, end = 12.dp, top = 20.dp
-                        )
+                        .padding(horizontal = 12.dp)
                         .fillMaxWidth(),
-                    fontSize = 24.sp,
-                    fontFamily = figeronaFont,
+                    fontSize = 22.sp,
+                    fontFamily = poppinsFont,
                     maxLines = 3,
+                    lineHeight = 28.sp,
                     overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
 
                 Text(
                     text = authors,
                     modifier = Modifier.padding(
-                        start = 12.dp, end = 8.dp, top = 4.dp
+                        start = 12.dp, end = 8.dp, top = 2.dp
                     ),
-                    fontSize = 18.sp,
-                    fontFamily = figeronaFont,
-                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    fontFamily = poppinsFont,
+                    fontWeight = FontWeight.Medium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.onBackground,
@@ -158,11 +158,9 @@ fun BookDetailTopUI(
                 progressPercent?.let {
                     Text(
                         text = "$progressPercent% Completed",
-                        modifier = Modifier.padding(
-                            start = 12.dp, end = 8.dp, top = 8.dp
-                        ),
-                        fontSize = 16.sp,
-                        fontFamily = figeronaFont,
+                        modifier = Modifier.padding(start = 12.dp, end = 8.dp),
+                        fontSize = 15.sp,
+                        fontFamily = poppinsFont,
                         fontWeight = FontWeight.Medium,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
@@ -180,7 +178,7 @@ fun BookDetailTopUI(
 @Composable
 private fun Preview() {
     BookDetailTopUI(
-        title = "The Great Gatsby",
+        title = "The Complete works of william shakespeare",
         authors = "F. Scott Fitzgerald",
         imageData = null,
         currentThemeMode = ThemeMode.Light

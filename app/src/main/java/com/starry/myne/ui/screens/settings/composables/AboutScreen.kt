@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -72,7 +73,7 @@ import com.starry.myne.R
 import com.starry.myne.helpers.Constants
 import com.starry.myne.helpers.Utils
 import com.starry.myne.ui.common.CustomTopAppBar
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 
 
 @Composable
@@ -107,7 +108,7 @@ fun AboutScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(start = 20.dp, bottom = 12.dp),
                     fontSize = 16.sp,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -129,7 +130,7 @@ fun AboutScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(start = 20.dp, bottom = 12.dp, top = 12.dp),
                     fontSize = 16.sp,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -199,8 +200,8 @@ private fun LinkButton(
 
         Text(
             text = text.uppercase(),
-            fontWeight = FontWeight.Bold,
-            fontFamily = figeronaFont,
+            fontWeight = FontWeight.SemiBold,
+            fontFamily = poppinsFont,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(start = 4.dp),
         )
@@ -265,7 +266,7 @@ private fun AppInfoCard() {
                 Text(
                     text = stringResource(id = R.string.app_name),
                     fontSize = 26.sp,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center
@@ -276,7 +277,7 @@ private fun AppInfoCard() {
                 Text(
                     text = "Version ${BuildConfig.VERSION_NAME}",
                     fontSize = 14.sp,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.Normal,
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center
@@ -288,7 +289,7 @@ private fun AppInfoCard() {
                     text = stringResource(id = R.string.about_desc),
                     modifier = Modifier.padding(horizontal = 22.dp),
                     fontSize = 14.sp,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center
@@ -334,17 +335,17 @@ private fun DeveloperCard(context: Context) {
                 Text(
                     text = stringResource(id = R.string.dev_name),
                     fontSize = 18.sp,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(2.dp))
 
                 Text(
                     text = Constants.DEV_EMAIL,
                     fontSize = 16.sp,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.clickable {
@@ -356,9 +357,9 @@ private fun DeveloperCard(context: Context) {
                     }
                 )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-                Row {
+                Row(modifier = Modifier.offset(x = (-4.dp))) {
                     LinkButton(
                         text = "Github",
                         icon = ImageVector.vectorResource(id = R.drawable.ic_github_logo)

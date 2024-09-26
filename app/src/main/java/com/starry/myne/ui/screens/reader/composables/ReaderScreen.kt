@@ -42,7 +42,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -76,6 +75,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -95,18 +95,17 @@ import androidx.compose.ui.unit.sp
 import com.starry.myne.R
 import com.starry.myne.ui.screens.reader.others.ReaderFont
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 import kotlinx.coroutines.launch
 
 
 enum class TextScaleButtonType { INCREASE, DECREASE }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReaderScreen(
     viewModel: ReaderViewModel,
-    lazyListState: LazyListState,
-    readerContent: @Composable (paddingValues: PaddingValues) -> Unit
+    onScrollToChapter: suspend (Int) -> Unit,
+    chaptersContent: @Composable (paddingValues: PaddingValues) -> Unit
 ) {
     // Hide reader menu on back press.
     BackHandler(viewModel.state.showReaderMenu) {
@@ -118,9 +117,6 @@ fun ReaderScreen(
     FontChooserDialog(showFontDialog, viewModel)
 
     val snackBarHostState = remember { SnackbarHostState() }
-    val currentChapter =
-        viewModel.state.epubBook?.chapters?.getOrNull(viewModel.visibleChapterIndex.value)
-
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val chapters = viewModel.state.epubBook?.chapters
     val coroutineScope = rememberCoroutineScope()
@@ -144,7 +140,7 @@ fun ReaderScreen(
                     modifier = Modifier.padding(start = 16.dp, top = 12.dp),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.SemiBold,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
@@ -167,11 +163,11 @@ fun ReaderScreen(
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 },
-                                selected = idx == viewModel.visibleChapterIndex.value,
+                                selected = idx == viewModel.visibleChapterIndex.collectAsState().value,
                                 onClick = {
                                     coroutineScope.launch {
                                         drawerState.close()
-                                        lazyListState.scrollToItem(idx)
+                                        onScrollToChapter(idx)
                                     }
                                 }
                             )
@@ -180,77 +176,13 @@ fun ReaderScreen(
                 }
             }
         }) {
-
         Scaffold(
             snackbarHost = { SnackbarHost(snackBarHostState) },
             topBar = {
-                AnimatedVisibility(
-                    visible = viewModel.state.showReaderMenu,
-                    enter = expandVertically(initialHeight = { 0 }, expandFrom = Alignment.Top)
-                            + fadeIn(),
-                    exit = shrinkVertically(targetHeight = { 0 }, shrinkTowards = Alignment.Top)
-                            + fadeOut(),
-                ) {
-                    Surface(color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)) {
-                        Column(modifier = Modifier.displayCutoutPadding()) {
-                            TopAppBar(
-                                colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                        2.dp
-                                    ),
-                                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                        2.dp
-                                    ),
-                                ),
-                                title = {
-                                    viewModel.state.epubBook?.let {
-                                        Text(
-                                            text = it.title,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                            modifier = Modifier.animateContentSize(),
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            fontFamily = figeronaFont
-                                        )
-                                    }
-                                },
-                                actions = {
-                                    IconButton(onClick = { coroutineScope.launch { drawerState.open() } }) {
-                                        Icon(
-                                            Icons.Filled.Menu, null,
-                                            tint = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    }
-                                }
-                            )
-                            Column(
-                                modifier = Modifier
-                                    .padding(bottom = 8.dp)
-                                    .padding(horizontal = 16.dp),
-                            ) {
-                                currentChapter?.title?.let {
-                                    Text(
-                                        text = it,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontFamily = figeronaFont,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                }
-                            }
-                            val chapterProgressbarState = animateFloatAsState(
-                                targetValue = viewModel.chapterScrolledPercent.value,
-                                label = "chapter progress bar state animation"
-                            )
-                            LinearProgressIndicator(
-                                progress = { chapterProgressbarState.value },
-                                modifier = Modifier.fillMaxWidth(),
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                    }
-                }
+                ReaderTopAppBar(
+                    viewModel = viewModel,
+                    onChapterListClicked = { coroutineScope.launch { drawerState.open() } }
+                )
             },
             bottomBar = {
                 AnimatedVisibility(
@@ -277,10 +209,12 @@ fun ReaderScreen(
                                 .padding(bottom = 65.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                            if (viewModel.state.shouldShowLoader) {
+                                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                            }
                         }
                     } else {
-                        readerContent(paddingValues)
+                        chaptersContent(paddingValues)
                     }
                 }
             }
@@ -337,7 +271,7 @@ private fun FontChooserDialog(
                             text = text,
                             modifier = Modifier.padding(start = 16.dp),
                             color = MaterialTheme.colorScheme.onSurface,
-                            fontFamily = figeronaFont
+                            fontFamily = poppinsFont
                         )
                     }
                 }
@@ -364,6 +298,80 @@ private fun FontChooserDialog(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ReaderTopAppBar(
+    viewModel: ReaderViewModel,
+    onChapterListClicked: () -> Unit,
+) {
+    AnimatedVisibility(
+        visible = viewModel.state.showReaderMenu,
+        enter = expandVertically(initialHeight = { 0 }, expandFrom = Alignment.Top)
+                + fadeIn(),
+        exit = shrinkVertically(targetHeight = { 0 }, shrinkTowards = Alignment.Top)
+                + fadeOut(),
+    ) {
+        Surface(color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)) {
+            Column(modifier = Modifier.displayCutoutPadding()) {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                            2.dp
+                        ),
+                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                            2.dp
+                        ),
+                    ),
+                    title = {
+                        viewModel.state.epubBook?.let {
+                            Text(
+                                text = it.title,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.animateContentSize(),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontFamily = poppinsFont
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = onChapterListClicked) {
+                            Icon(
+                                Icons.Filled.Menu, null,
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+                )
+                Column(
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .padding(horizontal = 16.dp),
+                ) {
+                    viewModel.currentChapter.collectAsState().value?.let { chapter ->
+                        Text(
+                            text = chapter.title,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontFamily = poppinsFont,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+                val chapterProgressbarState = animateFloatAsState(
+                    targetValue = viewModel.chapterScrolledPercent.collectAsState().value,
+                    label = "chapter progress bar state animation"
+                )
+                LinearProgressIndicator(
+                    progress = { chapterProgressbarState.value },
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+    }
+}
 
 @Composable
 private fun BottomSheetContents(
@@ -398,43 +406,45 @@ private fun TextScaleControls(
     viewModel: ReaderViewModel,
     snackBarHostState: SnackbarHostState
 ) {
-    Row(
+    Box(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+        contentAlignment = Alignment.Center
     ) {
-        ReaderTextScaleButton(
-            buttonType = TextScaleButtonType.DECREASE,
-            fontSize = viewModel.state.fontSize,
-            snackBarHostState = snackBarHostState,
-            onFontSizeChanged = { viewModel.setFontSize(it) }
-        )
-
-        Spacer(modifier = Modifier.width(14.dp))
-
-        Box(
-            modifier = Modifier
-                .size(100.dp, 45.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(ButtonDefaults.filledTonalButtonColors().containerColor),
-            contentAlignment = Alignment.Center
+        Row(
+            modifier = Modifier.width(335.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = viewModel.state.fontSize.toString(),
-                fontFamily = figeronaFont,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(start = 2.dp, bottom = 1.dp)
+            ReaderTextScaleButton(
+                buttonType = TextScaleButtonType.DECREASE,
+                fontSize = viewModel.state.fontSize,
+                snackBarHostState = snackBarHostState,
+                onFontSizeChanged = { viewModel.setFontSize(it) }
+            )
+
+            Box(
+                modifier = Modifier
+                    .size(100.dp, 45.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(ButtonDefaults.filledTonalButtonColors().containerColor),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = viewModel.state.fontSize.toString(),
+                    fontFamily = poppinsFont,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(start = 2.dp, bottom = 1.dp)
+                )
+            }
+
+            ReaderTextScaleButton(
+                buttonType = TextScaleButtonType.INCREASE,
+                fontSize = viewModel.state.fontSize,
+                snackBarHostState = snackBarHostState,
+                onFontSizeChanged = { viewModel.setFontSize(it) }
             )
         }
-
-        Spacer(modifier = Modifier.width(14.dp))
-
-        ReaderTextScaleButton(
-            buttonType = TextScaleButtonType.INCREASE,
-            fontSize = viewModel.state.fontSize,
-            snackBarHostState = snackBarHostState,
-            onFontSizeChanged = { viewModel.setFontSize(it) }
-        )
     }
 }
 
@@ -443,24 +453,26 @@ private fun FontSelectionButton(
     readerFontFamily: ReaderFont,
     showFontDialog: MutableState<Boolean>
 ) {
-    FilledTonalButton(
-        onClick = { showFontDialog.value = true },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 14.dp),
-        shape = RoundedCornerShape(16.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_font),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = readerFontFamily.name,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        FilledTonalButton(
+            onClick = { showFontDialog.value = true },
+            modifier = Modifier
+                .width(365.dp)
+                .padding(horizontal = 14.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_font),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = readerFontFamily.name,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
     }
 }

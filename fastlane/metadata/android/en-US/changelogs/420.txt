@@ -1,0 +1,4 @@
+- Improved book opening speed in the reader by caching previously parsed EPUB files.
+- Updated UI fonts from Figerona to Poppins due to licensing issues.
+- Added Bengali translations.
+- Various small fixes and performance improvements.

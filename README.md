@@ -100,11 +100,12 @@ It is easiest to make a translation using the Android Studio XML editor, but you
   - [LiveData](https://developer.android.com/topic/libraries/architecture/livedata) - Data objects that notify views when the underlying database changes.
   - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - Stores UI-related data that isn't destroyed on UI changes.
 - [OkHttp3](https://square.github.io/okhttp/) - OkHttp is an HTTP client for Android that’s efficient by default.
-- [Gson](https://github.com/google/gson) - A Java serialization/deserialization library to convert Java Objects into JSON and back.
+- [Kotlinx.serialization](https://kotlinlang.org/docs/serialization.html) - Provides sets of libraries for various serialization formats – JSON, CBOR, protocol buffers, and others. 
 - [Jsoup](https://jsoup.org) - Jsoup is a Java library for working with HTML. It provides a convenient API for extracting and manipulating data, using the HTML5 DOM methods and CSS selectors.
 - [Coil](https://coil-kt.github.io/coil/compose/) - An image loading library for Android backed by Kotlin Coroutines.
 - [Dagger-Hilt](https://dagger.dev/hilt/) For [Dependency injection (DI)](https://developer.android.com/training/dependency-injection)
 - [Room database](https://developer.android.com/jetpack/androidx/releases/room) - Persistence library provides an abstraction layer over SQLite to allow for more robust database access while harnessing the full power of SQLite.
+- [Lottie](https://airbnb.design/lottie) - Lottie is an Android, iOS and React Native library that renders After Effects animations in real time.
 
 ------
 

@@ -61,7 +61,7 @@ import com.starry.myne.ui.theme.pacificoFont
 
 
 @Composable
-fun ReaderContent(
+fun ChaptersContent(
     state: ReaderScreenState,
     lazyListState: LazyListState,
     onToggleReaderMenu: () -> Unit
@@ -72,7 +72,7 @@ fun ReaderContent(
     ) {
         items(
             count = state.epubBook!!.chapters.size,
-            key = { index -> state.epubBook.chapters[index].hashCode() }
+            key = { index -> state.epubBook.chapters[index].chapterId }
         ) { index ->
             val chapter = state.epubBook.chapters[index]
             ChapterLazyItemItem(
@@ -194,9 +194,7 @@ private fun ChapterLazyItemItem(
                             onClick()
                         }
                     }
-
                 }
-            //  .noRippleClickable { onClick() }
         ) {
             Text(
                 modifier = Modifier.padding(start = 12.dp, end = 4.dp, top = 10.dp),

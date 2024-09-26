@@ -1,7 +1,7 @@
 buildscript {
     ext {
         kotlin_version = '2.0.0'
-        gradle_version = '8.5.1'
+        gradle_version = '8.6.1'
         hilt_version = '2.51.1'
         room_version = '2.6.1'
     }
@@ -26,4 +26,5 @@ plugins {
     id 'org.jetbrains.kotlin.android' version "$kotlin_version" apply false
     id 'org.jetbrains.kotlin.plugin.compose' version "$kotlin_version" apply false
     id 'com.google.devtools.ksp' version '2.0.0-1.0.23' apply false
+    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlin_version" apply false
 }

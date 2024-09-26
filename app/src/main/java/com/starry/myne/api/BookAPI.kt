@@ -17,13 +17,13 @@
 package com.starry.myne.api
 
 import android.content.Context
-import com.google.gson.Gson
 import com.starry.myne.BuildConfig
 import com.starry.myne.api.models.BookSet
 import com.starry.myne.api.models.ExtraInfo
 import com.starry.myne.helpers.book.BookLanguage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import okhttp3.Cache
 import okhttp3.Call
 import okhttp3.Callback
@@ -31,7 +31,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
@@ -74,8 +73,7 @@ class BookAPI(context: Context) {
         okHttpBuilder.build()
     }
 
-    private val gsonClient = Gson() // Gson client for parsing JSON responses.
-
+    private val json = Json { ignoreUnknownKeys = true }
 
     /**
      * This function fetches all the books from the API.
@@ -150,7 +148,10 @@ class BookAPI(context: Context) {
                     response.use {
                         continuation.resume(
                             Result.success(
-                                gsonClient.fromJson(response.body!!.string(), BookSet::class.java)
+                                json.decodeFromString(
+                                    BookSet.serializer(),
+                                    response.body!!.string()
+                                ).copy(isCached = response.cacheResponse != null)
                             )
                         )
                     }
@@ -172,44 +173,44 @@ class BookAPI(context: Context) {
 
             override fun onResponse(call: Call, response: Response) {
                 response.use {
-                    continuation.resume(parseExtraInfoJson(response.body!!.string()))
+                    continuation.resume(
+                        parseExtraInfoJson(
+                            response.body!!.string(),
+                            response.cacheResponse != null
+                        )
+                    )
                 }
             }
         })
     }
 
     // Helper function to parse extra info JSON.
-    private fun parseExtraInfoJson(jsonString: String): ExtraInfo? {
-        return try {
+    private fun parseExtraInfoJson(jsonString: String, isCached: Boolean): ExtraInfo? {
+        return runCatching {
             val jsonObj = JSONObject(jsonString)
-            val totalItems = jsonObj.getInt("totalItems")
+            val totalItems = jsonObj.optInt("totalItems", 0)
             if (totalItems != 0) {
-                val items = jsonObj.getJSONArray("items")
-                val item = items.getJSONObject(0)
-                val volumeInfo = item.getJSONObject("volumeInfo")
-                val imageLinks = volumeInfo.getJSONObject("imageLinks")
-                // Build Extra info.
-                val coverImage = imageLinks.getString("thumbnail").replace(
-                    "http://", "https://"
-                )
-                val pageCount = try {
-                    volumeInfo.getInt("pageCount")
-                } catch (exc: JSONException) {
-                    0
-                }
-                val description = try {
-                    volumeInfo.getString("description")
-                } catch (exc: JSONException) {
-                    ""
-                }
-                ExtraInfo(coverImage, pageCount, description)
+                jsonObj.optJSONArray("items")
+                    ?.optJSONObject(0)
+                    ?.optJSONObject("volumeInfo")
+                    ?.let { volumeInfo ->
+                        val coverImage = volumeInfo
+                            .optJSONObject("imageLinks")
+                            ?.optString("thumbnail", "")
+                            ?.replace("http://", "https://") ?: ""
+                        val pageCount = volumeInfo.optInt("pageCount", 0)
+                        val description = volumeInfo.optString("description", "")
+
+                        ExtraInfo(
+                            coverImage = coverImage,
+                            pageCount = pageCount,
+                            description = description,
+                            isCached = isCached
+                        )
+                    }
             } else {
                 null
             }
-        } catch (exc: JSONException) {
-            exc.printStackTrace()
-            null
-        }
+        }.getOrNull()
     }
-
 }

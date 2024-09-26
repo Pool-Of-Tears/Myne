@@ -21,49 +21,59 @@ import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.sp
 import com.starry.myne.R
 
 
-val figeronaFont = FontFamily(
+val poppinsFont = FontFamily(
     fonts = listOf(
         Font(
-            resId = R.font.figerona_black,
-            weight = FontWeight.Black
+            resId = R.font.poppins_black,
+            weight = FontWeight.Black,
+            style = FontStyle.Normal
         ),
         Font(
-            resId = R.font.figerona_bold,
-            weight = FontWeight.Bold
+            resId = R.font.poppins_bold,
+            weight = FontWeight.Bold,
+            style = FontStyle.Normal
         ),
         Font(
-            resId = R.font.figerona_extrabold,
-            weight = FontWeight.ExtraBold
+            resId = R.font.poppins_extrabold,
+            weight = FontWeight.ExtraBold,
+            style = FontStyle.Normal
         ),
         Font(
-            resId = R.font.figerona_extralight,
-            weight = FontWeight.ExtraLight
+            resId = R.font.poppins_extralight,
+            weight = FontWeight.ExtraLight,
+            style = FontStyle.Normal
         ),
         Font(
-            resId = R.font.figerona_light,
-            weight = FontWeight.Light
+            resId = R.font.poppins_light,
+            weight = FontWeight.Light,
+            style = FontStyle.Normal
         ),
         Font(
-            resId = R.font.figerona_medium,
-            weight = FontWeight.Medium
+            resId = R.font.poppins_medium,
+            weight = FontWeight.Medium,
+            style = FontStyle.Normal
         ),
         Font(
-            resId = R.font.figerona_regular,
-            weight = FontWeight.Normal
+            resId = R.font.poppins_regular,
+            weight = FontWeight.Normal,
+            style = FontStyle.Normal
         ),
         Font(
-            resId = R.font.figerona_semibold,
-            weight = FontWeight.SemiBold
+            resId = R.font.poppins_semibold,
+            weight = FontWeight.SemiBold,
+            style = FontStyle.Normal
         ),
         Font(
-            resId = R.font.figerona_thin,
-            weight = FontWeight.Thin
+            resId = R.font.poppins_thin,
+            weight = FontWeight.Thin,
+            style = FontStyle.Normal
         ),
     )
 )
@@ -73,7 +83,7 @@ val pacificoFont = FontFamily(Font(R.font.pacifico_regular))
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = figeronaFont,
+        fontFamily = poppinsFont,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,

@@ -75,7 +75,7 @@ import com.starry.myne.ui.screens.reader.activities.ReaderActivity
 import com.starry.myne.ui.screens.reader.activities.ReaderConstants
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailScreenState
 import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailViewModel
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 
 
 @Composable
@@ -211,22 +211,22 @@ private fun ChapterItem(chapterTitle: String, onClick: () -> Unit) {
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
         ),
         modifier = Modifier
-            .padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
+            .padding(horizontal = 8.dp, vertical = 2.dp)
             .fillMaxWidth()
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp)
+            modifier = Modifier.padding(vertical = 12.dp)
         ) {
             Text(
                 modifier = Modifier
                     .weight(3f)
                     .padding(start = 12.dp),
                 text = chapterTitle,
-                fontFamily = figeronaFont,
+                fontFamily = poppinsFont,
                 color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.SemiBold,
             )
 
             Icon(

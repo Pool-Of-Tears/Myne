@@ -73,7 +73,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.LottieAnimation
@@ -92,11 +91,9 @@ import com.starry.myne.ui.common.BookDetailTopUI
 import com.starry.myne.ui.common.NetworkError
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.screens.detail.viewmodels.BookDetailViewModel
-import com.starry.myne.ui.theme.figeronaFont
 import com.starry.myne.ui.theme.pacificoFont
-import kotlinx.coroutines.Dispatchers
+import com.starry.myne.ui.theme.poppinsFont
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -112,7 +109,7 @@ fun BookDetailScreen(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         content = { paddingValues ->
             LaunchedEffect(key1 = true, block = {
-                viewModel.getBookDetails(bookId)
+                if (state.isLoading) viewModel.getBookDetails(bookId)
             })
 
             Column(
@@ -204,18 +201,20 @@ private fun BookDetailContents(
                 context.getString(R.string.not_applicable)
             }
         }
+        var buttonText by remember { mutableStateOf("") }
 
-        // Check if this book is in downloadQueue.
-        val buttonTextValue =
-            if (viewModel.bookDownloader.isBookCurrentlyDownloading(book.id)) {
-                stringResource(id = R.string.cancel)
+        // Update button text based on download status.
+        LaunchedEffect(key1 = true) {
+            buttonText = if (viewModel.bookDownloader.isBookCurrentlyDownloading(book.id)) {
+                context.getString(R.string.cancel)
             } else {
-                if (state.bookLibraryItem != null) stringResource(id = R.string.read_book_button) else stringResource(
-                    id = R.string.download_book_button
-                )
+                when (state.bookLibraryItem) {
+                    null -> context.getString(R.string.download_book_button)
+                    else -> context.getString(R.string.read_book_button)
+                }
             }
+        }
 
-        var buttonText by remember { mutableStateOf(buttonTextValue) }
         var progressState by remember { mutableFloatStateOf(0f) }
         var showProgressBar by remember { mutableStateOf(false) }
 
@@ -258,7 +257,6 @@ private fun BookDetailContents(
         ) {
             when (buttonText) {
                 context.getString(R.string.read_book_button) -> {
-                    val bookLibraryItem = state.bookLibraryItem
                     /**
                      *  Library item could be null if we reload the screen
                      *  while some download was running, in that case we'll
@@ -266,11 +264,10 @@ private fun BookDetailContents(
                      *  will update library item and our new state will have
                      *  no library item, i.e. null.
                      */
-                    if (bookLibraryItem == null) {
-                        viewModel.viewModelScope.launch(Dispatchers.IO) {
-                            val libraryItem =
-                                viewModel.libraryDao.getItemByBookId(book.id)!!
-                            withContext(Dispatchers.Main) {
+                    if (state.bookLibraryItem == null) {
+                        viewModel.reFetchLibraryItem(
+                            bookId = book.id,
+                            onComplete = { libraryItem ->
                                 BookUtils.openBookFile(
                                     context = context,
                                     internalReader = viewModel.getInternalReaderSetting(),
@@ -278,12 +275,12 @@ private fun BookDetailContents(
                                     navController = navController
                                 )
                             }
-                        }
+                        )
                     } else {
                         BookUtils.openBookFile(
                             context = context,
                             internalReader = viewModel.getInternalReaderSetting(),
-                            libraryItem = bookLibraryItem,
+                            libraryItem = state.bookLibraryItem,
                             navController = navController
                         )
                     }
@@ -314,10 +311,10 @@ private fun BookDetailContents(
 
         Text(
             text = stringResource(id = R.string.book_synopsis),
-            modifier = Modifier.padding(start = 12.dp, end = 8.dp),
-            fontSize = 20.sp,
-            fontFamily = figeronaFont,
-            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(start = 13.dp, end = 8.dp),
+            fontSize = 18.sp,
+            fontFamily = poppinsFont,
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground,
         )
 
@@ -325,9 +322,9 @@ private fun BookDetailContents(
         if (synopsis != null) {
             Text(
                 text = synopsis,
-                modifier = Modifier.padding(14.dp),
-                fontFamily = figeronaFont,
-                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                fontFamily = poppinsFont,
+                fontWeight = FontWeight.Normal,
                 color = MaterialTheme.colorScheme.onBackground,
             )
         } else {
@@ -404,8 +401,8 @@ private fun MiddleBar(
                         Text(
                             text = bookLang,
                             modifier = Modifier.padding(top = 14.dp, bottom = 14.dp, start = 4.dp),
-                            fontSize = 18.sp,
-                            fontFamily = figeronaFont,
+                            fontSize = 16.sp,
+                            fontFamily = poppinsFont,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -433,8 +430,8 @@ private fun MiddleBar(
                         Text(
                             text = pageCount,
                             modifier = Modifier.padding(top = 14.dp, bottom = 14.dp, start = 4.dp),
-                            fontSize = 18.sp,
-                            fontFamily = figeronaFont,
+                            fontSize = 16.sp,
+                            fontFamily = poppinsFont,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -461,8 +458,8 @@ private fun MiddleBar(
                         Text(
                             text = downloadCount,
                             modifier = Modifier.padding(top = 14.dp, bottom = 14.dp, start = 4.dp),
-                            fontSize = 18.sp,
-                            fontFamily = figeronaFont,
+                            fontSize = 16.sp,
+                            fontFamily = poppinsFont,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -485,8 +482,8 @@ private fun MiddleBar(
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     text = buttonText,
-                    fontSize = 18.sp,
-                    fontFamily = figeronaFont,
+                    fontSize = 17.sp,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
@@ -580,7 +577,7 @@ private fun NoSynopsisUI() {
         Text(
             text = stringResource(id = R.string.book_synopsis_not_found),
             modifier = Modifier.padding(14.dp),
-            fontFamily = figeronaFont,
+            fontFamily = poppinsFont,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onBackground,
         )

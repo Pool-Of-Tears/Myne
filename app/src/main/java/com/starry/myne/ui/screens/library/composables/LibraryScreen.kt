@@ -24,7 +24,6 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,6 +35,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -111,7 +111,7 @@ import com.starry.myne.ui.screens.library.viewmodels.LibraryViewModel
 import com.starry.myne.ui.screens.main.bottomNavPadding
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.ThemeMode
-import com.starry.myne.ui.theme.figeronaFont
+import com.starry.myne.ui.theme.poppinsFont
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeAction
@@ -236,7 +236,7 @@ fun LibraryScreen(navController: NavController) {
                         Text(
                             text = stringResource(id = R.string.import_button_text),
                             fontWeight = FontWeight.Medium,
-                            fontFamily = figeronaFont,
+                            fontFamily = poppinsFont,
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -274,7 +274,7 @@ fun LibraryScreen(navController: NavController) {
                             Spacer(modifier = Modifier.width(24.dp))
                             Text(
                                 text = stringResource(id = R.string.epub_importing),
-                                fontFamily = figeronaFont,
+                                fontFamily = poppinsFont,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 17.sp,
                             )
@@ -287,7 +287,6 @@ fun LibraryScreen(navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LibraryContents(
     viewModel: LibraryViewModel,
@@ -341,7 +340,7 @@ private fun LibraryContents(
                     val item = libraryItems[i]
                     if (item.fileExist()) {
                         LibraryLazyItem(
-                            modifier = Modifier.animateItemPlacement(),
+                            modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
                             item = item,
                             snackBarHostState = snackBarHostState,
                             navController = navController,
@@ -522,8 +521,8 @@ private fun LibraryCard(
                 Text(
                     text = title,
                     fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
-                    fontSize = 20.sp,
-                    fontFamily = figeronaFont,
+                    fontSize = 18.sp,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -532,20 +531,20 @@ private fun LibraryCard(
 
                 Text(
                     text = author,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.85f),
                     maxLines = 1,
                     fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
-                    fontFamily = figeronaFont,
+                    fontFamily = poppinsFont,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.offset(y = (-8).dp)
                 )
 
-                Spacer(modifier = Modifier.height(2.dp))
-
-                Row {
+                Row(modifier = Modifier.offset(y = (-8).dp)) {
                     Text(
                         text = fileSize,
-                        fontFamily = figeronaFont,
+                        fontFamily = poppinsFont,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Light,
                         fontSize = 14.sp,
@@ -560,7 +559,7 @@ private fun LibraryCard(
                     )
                     Text(
                         text = date,
-                        fontFamily = figeronaFont,
+                        fontFamily = poppinsFont,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Light,
                         fontSize = 14.sp,
@@ -568,9 +567,7 @@ private fun LibraryCard(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Row {
+                Row(modifier = Modifier.offset(y = (-4).dp)) {
                     LibraryCardButton(text = stringResource(id = R.string.library_read_button),
                         icon = ImageVector.vectorResource(id = R.drawable.ic_library_read),
                         onClick = { onReadClick() })
@@ -581,7 +578,7 @@ private fun LibraryCard(
                         icon = Icons.Outlined.Delete,
                         onClick = { onDeleteClick() })
                 }
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(2.dp))
             }
         }
     }
@@ -593,30 +590,31 @@ private fun LibraryCardButton(
     icon: ImageVector,
     onClick: () -> Unit,
 ) {
-    Box(modifier = Modifier
-        .border(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.onSurface,
-            shape = RoundedCornerShape(8.dp)
-        )
-        .clickable { onClick() }) {
+    Box(
+        modifier = Modifier
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .clickable { onClick() }
+    ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(6.dp)
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.size(size = 14.dp),
-                tint = MaterialTheme.colorScheme.onSurface
+                contentDescription = "Favorite Icon",
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.size(14.dp)
             )
-
+            Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = text,
-                fontWeight = FontWeight.Medium,
-                fontFamily = figeronaFont,
-                fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(start = 2.dp),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium
             )
         }
     }
