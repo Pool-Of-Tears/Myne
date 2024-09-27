@@ -62,7 +62,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.starry.myne.MainActivity
 import com.starry.myne.R
-import com.starry.myne.database.reader.ReaderData
+import com.starry.myne.database.progress.ProgressData
 import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.helpers.getActivity
 import com.starry.myne.helpers.toToast
@@ -102,10 +102,10 @@ fun ReaderDetailScreen(
                 navController.navigateUp()
             } else {
                 // Collect saved reader progress for the current book.
-                val readerData = viewModel.readerData?.collectAsState(initial = null)?.value
+                val readerData = viewModel.progressData?.collectAsState(initial = null)?.value
                 ReaderDetailScaffold(
                     libraryItemId = libraryItemId,
-                    readerData = readerData,
+                    progressData = readerData,
                     state = state,
                     navController = navController
                 )
@@ -118,7 +118,7 @@ fun ReaderDetailScreen(
 @Composable
 private fun ReaderDetailScaffold(
     libraryItemId: String,
-    readerData: ReaderData?,
+    progressData: ProgressData?,
     state: ReaderDetailScreenState,
     navController: NavController
 ) {
@@ -131,7 +131,7 @@ private fun ReaderDetailScaffold(
         }
     }, floatingActionButton = {
         ExtendedFloatingActionButton(
-            text = { Text(text = stringResource(id = if (readerData != null) R.string.continue_reading_button else R.string.start_reading_button)) },
+            text = { Text(text = stringResource(id = if (progressData != null) R.string.continue_reading_button else R.string.start_reading_button)) },
             onClick = {
                 val intent = Intent(context, ReaderActivity::class.java)
                 intent.putExtra(
@@ -164,7 +164,7 @@ private fun ReaderDetailScaffold(
                 imageData = imageData,
                 currentThemeMode = settingsVM.getCurrentTheme(),
                 showReaderBackground = true,
-                progressPercent = readerData?.getProgressPercent(state.ebookData.epubBook.chapters.size),
+                progressPercent = progressData?.getProgressPercent(state.ebookData.epubBook.chapters.size),
             )
 
             HorizontalDivider(

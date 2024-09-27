@@ -24,12 +24,12 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
-import com.starry.myne.database.reader.ReaderDao
-import com.starry.myne.database.reader.ReaderData
+import com.starry.myne.database.progress.ProgressDao
+import com.starry.myne.database.progress.ProgressData
 import com.starry.myne.helpers.Constants
 
 @Database(
-    entities = [LibraryItem::class, ReaderData::class],
+    entities = [LibraryItem::class, ProgressData::class],
     version = 5,
     exportSchema = true,
     autoMigrations = [
@@ -41,7 +41,7 @@ import com.starry.myne.helpers.Constants
 abstract class MyneDatabase : RoomDatabase() {
 
     abstract fun getLibraryDao(): LibraryDao
-    abstract fun getReaderDao(): ReaderDao
+    abstract fun getReaderDao(): ProgressDao
 
     companion object {
 

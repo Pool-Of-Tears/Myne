@@ -28,7 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
-import com.starry.myne.database.reader.ReaderDao
+import com.starry.myne.database.progress.ProgressDao
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.welcome.viewmodels.WelcomeDataStore
@@ -43,7 +43,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val welcomeDataStore: WelcomeDataStore,
     private val libraryDao: LibraryDao,
-    private val readerDao: ReaderDao
+    private val progressDao: ProgressDao
 ) :
     ViewModel() {
     private val _isLoading: MutableState<Boolean> = mutableStateOf(true)
@@ -86,7 +86,7 @@ class MainViewModel @Inject constructor(
         onComplete: (List<ShortcutInfo>) -> Unit
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val libraryItems = readerDao.getAllReaderItems()
+            val libraryItems = progressDao.getAllReaderItems()
                 .sortedByDescending { it.lastReadTime }
                 .take(limit - 1).mapNotNull {
                     libraryDao.getItemById(it.libraryItemId)

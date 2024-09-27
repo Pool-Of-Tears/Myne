@@ -20,8 +20,8 @@ package com.starry.myne.ui.screens.reader.main.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
-import com.starry.myne.database.reader.ReaderDao
-import com.starry.myne.database.reader.ReaderData
+import com.starry.myne.database.progress.ProgressDao
+import com.starry.myne.database.progress.ProgressData
 import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.epub.models.EpubImage
@@ -60,7 +60,7 @@ data class ReaderScreenState(
 @HiltViewModel
 class ReaderViewModel @Inject constructor(
     private val libraryDao: LibraryDao,
-    private val readerDao: ReaderDao,
+    private val progressDao: ProgressDao,
     private val preferenceUtil: PreferenceUtil,
     private val epubParser: EpubParser
 ) : ViewModel() {
@@ -99,7 +99,7 @@ class ReaderViewModel @Inject constructor(
             _state.value = _state.value.copy(
                 shouldShowLoader = !epubParser.isBookCached(libraryItem!!.filePath)
             )
-            val readerData = readerDao.getReaderData(libraryItemId)
+            val readerData = progressDao.getReaderData(libraryItemId)
             // parse and create epub book
             var epubBook = epubParser.createEpubBook(libraryItem.filePath)
             // Gutenberg for some reason don't include proper navMap in chinese books
@@ -155,34 +155,44 @@ class ReaderViewModel @Inject constructor(
 
     fun updateReaderProgress(libraryItemId: Int, chapterIndex: Int, chapterOffset: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            val readerData = readerDao.getReaderData(libraryItemId)
-            // if the user is not on last chapter, save the progress.
-            if (state.value.hasProgressSaved && chapterIndex != state.value.chapters.size - 1) {
-                val newReaderData = readerData?.copy(
-                    lastChapterIndex = chapterIndex,
-                    lastChapterOffset = chapterOffset,
-                    lastReadTime = System.currentTimeMillis()
-                )
-                newReaderData?.let {
-                    it.id = readerData.id
-                    readerDao.update(it)
+            val isLastChapter = chapterIndex == state.value.chapters.size - 1
+            val hasSavedProgress = state.value.hasProgressSaved
+            val progressData = progressDao.getReaderData(libraryItemId)
+
+            when {
+                // Update progress for existing book
+                hasSavedProgress && !isLastChapter -> {
+                    progressData?.let {
+                        val updatedProgress = it.copy(
+                            lastChapterIndex = chapterIndex,
+                            lastChapterOffset = chapterOffset,
+                            lastReadTime = System.currentTimeMillis()
+                        )
+                        updatedProgress.id = it.id
+                        progressDao.update(updatedProgress)
+                    }
                 }
-            } else if (chapterIndex == state.value.chapters.size - 1) {
-                // if the user has reached last chapter, delete this book
-                // from reader database instead of saving it's progress.
-                readerData?.let { readerDao.delete(it.libraryItemId) }
-            } else {
-                // if the user is reading this book for the first time, save the progress.
-                readerDao.insert(
-                    readerData = ReaderData(
-                        libraryItemId,
-                        chapterIndex,
-                        chapterOffset
+
+                isLastChapter -> {
+                    // Delete progress for completed book
+                    progressData?.let { progressDao.delete(it.libraryItemId) }
+                }
+
+                else -> {
+                    // Insert new progress for new book
+                    progressDao.insert(
+                        ProgressData(
+                            libraryItemId = libraryItemId,
+                            lastChapterIndex = chapterIndex,
+                            lastChapterOffset = chapterOffset,
+                            lastReadTime = System.currentTimeMillis()
+                        )
                     )
-                )
+                }
             }
         }
     }
+
 
     fun setChapterScrollPercent(percent: Float) {
         _state.value = _state.value.copy(chapterScrollPercent = percent)

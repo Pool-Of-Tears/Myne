@@ -25,8 +25,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.api.BookAPI
 import com.starry.myne.database.library.LibraryDao
-import com.starry.myne.database.reader.ReaderDao
-import com.starry.myne.database.reader.ReaderData
+import com.starry.myne.database.progress.ProgressDao
+import com.starry.myne.database.progress.ProgressData
 import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubBook
 import com.starry.myne.helpers.NetworkObserver
@@ -55,13 +55,13 @@ data class ReaderDetailScreenState(
 class ReaderDetailViewModel @Inject constructor(
     private val bookAPI: BookAPI,
     private val libraryDao: LibraryDao,
-    private val readerDao: ReaderDao,
+    private val progressDao: ProgressDao,
     private val epubParser: EpubParser
 ) : ViewModel() {
 
     var state by mutableStateOf(ReaderDetailScreenState())
 
-    var readerData: Flow<ReaderData>? = null
+    var progressData: Flow<ProgressData>? = null
         private set
 
     fun loadEbookData(libraryItemId: String, networkStatus: NetworkObserver.Status) {
@@ -73,7 +73,7 @@ class ReaderDetailViewModel @Inject constructor(
                 return@launch
             }
             // Get reader data if it exists.
-            readerData = readerDao.getReaderDataAsFlow(libraryItemId.toInt())
+            progressData = progressDao.getReaderDataAsFlow(libraryItemId.toInt())
             val coverImage: String? = try {
                 if (!libraryItem.isExternalBook
                     && networkStatus == NetworkObserver.Status.Available
