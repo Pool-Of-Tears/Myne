@@ -15,7 +15,7 @@
  */
 
 
-package com.starry.myne.ui.screens.reader.viewmodels
+package com.starry.myne.ui.screens.reader.detail
 
 import android.util.Log
 import androidx.compose.runtime.getValue

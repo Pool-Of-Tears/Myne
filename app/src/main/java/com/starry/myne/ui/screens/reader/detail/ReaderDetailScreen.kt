@@ -15,7 +15,7 @@
  */
 
 
-package com.starry.myne.ui.screens.reader.composables
+package com.starry.myne.ui.screens.reader.detail
 
 import android.content.Intent
 import androidx.compose.animation.Crossfade
@@ -71,10 +71,8 @@ import com.starry.myne.ui.common.BookDetailTopUI
 import com.starry.myne.ui.common.CustomTopAppBar
 import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.common.simpleVerticalScrollbar
-import com.starry.myne.ui.screens.reader.activities.ReaderActivity
-import com.starry.myne.ui.screens.reader.activities.ReaderConstants
-import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailScreenState
-import com.starry.myne.ui.screens.reader.viewmodels.ReaderDetailViewModel
+import com.starry.myne.ui.screens.reader.main.activities.ReaderActivity
+import com.starry.myne.ui.screens.reader.main.activities.ReaderConstants
 import com.starry.myne.ui.theme.poppinsFont
 
 

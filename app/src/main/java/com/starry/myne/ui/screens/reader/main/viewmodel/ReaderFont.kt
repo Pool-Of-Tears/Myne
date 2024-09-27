@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.starry.myne.ui.screens.reader.others
+package com.starry.myne.ui.screens.reader.main.viewmodel
 
 import androidx.annotation.Keep
 import androidx.compose.ui.text.font.Font
@@ -26,9 +26,14 @@ import com.starry.myne.ui.theme.poppinsFont
 sealed class ReaderFont(val id: String, val name: String, val fontFamily: FontFamily) {
 
     companion object {
-        fun getAllFonts() =
-            ReaderFont::class.sealedSubclasses.mapNotNull { it.objectInstance }.sortedBy { it.name }
+        private val fontMap by lazy {
+            ReaderFont::class.sealedSubclasses
+                .mapNotNull { it.objectInstance }
+                .associateBy { it.id }
+        }
 
+        fun getAllFonts() = fontMap.values.toList()
+        fun getFontById(id: String) = fontMap[id]!!
         fun getFontByName(name: String) = getAllFonts().find { it.name == name }!!
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.starry.myne.ui.screens.reader.composables
+package com.starry.myne.ui.screens.reader.main.composables
 
 import android.app.SearchManager
 import android.content.ActivityNotFoundException
@@ -56,7 +56,7 @@ import com.starry.myne.epub.BookTextMapper
 import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.helpers.toToast
 import com.starry.myne.ui.common.MyneSelectionContainer
-import com.starry.myne.ui.screens.reader.viewmodels.ReaderScreenState
+import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderScreenState
 import com.starry.myne.ui.theme.pacificoFont
 
 
@@ -71,10 +71,10 @@ fun ChaptersContent(
         state = lazyListState
     ) {
         items(
-            count = state.epubBook!!.chapters.size,
-            key = { index -> state.epubBook.chapters[index].chapterId }
+            count = state.chapters.size,
+            key = { index -> state.chapters[index].chapterId }
         ) { index ->
-            val chapter = state.epubBook.chapters[index]
+            val chapter = state.chapters[index]
             ChapterLazyItemItem(
                 chapter = chapter,
                 state = state,
@@ -91,7 +91,6 @@ private fun ChapterLazyItemItem(
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
-    val epubBook = state.epubBook
     val paragraphs = remember { chunkText(chapter.body) }
 
     val targetFontSize = (state.fontSize / 10) * 1.8f
@@ -212,10 +211,10 @@ private fun ChapterLazyItemItem(
                 val imgEntry = BookTextMapper.ImgEntry.fromXMLString(para)
 
                 if (imgEntry == null) {
-                    // Accumulate text paragraphs with two newlines as separators
+                    // Accumulate text until an image is found
                     accumulatedText.append(para).append("\n\n")
                 } else {
-                    // If an image is encountered, display accumulated text first
+                    // If image is found, display the accumulated text before the image
                     if (accumulatedText.isNotEmpty()) {
                         Text(
                             text = accumulatedText.toString().trimEnd(),
@@ -226,9 +225,8 @@ private fun ChapterLazyItemItem(
                         )
                         accumulatedText.clear()
                     }
-
-                    // Handle the image
-                    val image = epubBook?.images?.find { it.absPath == imgEntry.path }
+                    // Image Handling
+                    val image = state.images.find { it.absPath == imgEntry.path }
                     image?.let {
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
@@ -253,6 +251,7 @@ private fun ChapterLazyItemItem(
                         fontFamily = state.fontFamily.fontFamily,
                         modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 8.dp),
                     )
+                    accumulatedText.clear()
                 }
             }
         }
