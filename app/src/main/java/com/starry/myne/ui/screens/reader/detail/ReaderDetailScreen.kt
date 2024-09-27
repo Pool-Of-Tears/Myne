@@ -154,17 +154,14 @@ private fun ReaderDetailScaffold(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(it)
         ) {
-            // Get the cover image data.
-            val imageData =
-                state.ebookData!!.coverImage ?: state.ebookData.epubBook.coverImage
-
             BookDetailTopUI(
-                title = state.ebookData.title,
-                authors = state.ebookData.authors,
-                imageData = imageData,
+                title = state.title,
+                authors = state.authors,
+                imageData = state.coverImage,
                 currentThemeMode = settingsVM.getCurrentTheme(),
                 showReaderBackground = true,
-                progressPercent = progressData?.getProgressPercent(state.ebookData.epubBook.chapters.size),
+                progressPercent = if (state.hasProgressSaved)
+                    progressData?.getProgressPercent(state.chapters.size) else ""
             )
 
             HorizontalDivider(
@@ -181,8 +178,8 @@ private fun ReaderDetailScaffold(
                     lazyListState, color = MaterialTheme.colorScheme.primary
                 )
             ) {
-                items(state.ebookData.epubBook.chapters.size) { idx ->
-                    val chapter = state.ebookData.epubBook.chapters[idx]
+                items(state.chapters.size) { idx ->
+                    val chapter = state.chapters[idx]
                     ChapterItem(chapterTitle = chapter.title, onClick = {
                         val intent = Intent(context, ReaderActivity::class.java)
                         intent.putExtra(

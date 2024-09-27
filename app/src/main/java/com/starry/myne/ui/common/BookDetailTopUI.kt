@@ -155,7 +155,7 @@ fun BookDetailTopUI(
                     color = MaterialTheme.colorScheme.onBackground,
                 )
 
-                progressPercent?.let {
+                if (!progressPercent.isNullOrBlank()) {
                     Text(
                         text = "$progressPercent% Completed",
                         modifier = Modifier.padding(start = 12.dp, end = 8.dp),
@@ -167,7 +167,6 @@ fun BookDetailTopUI(
                         color = MaterialTheme.colorScheme.onBackground,
                     )
                 }
-
                 Spacer(modifier = Modifier.height(50.dp))
             }
         }
