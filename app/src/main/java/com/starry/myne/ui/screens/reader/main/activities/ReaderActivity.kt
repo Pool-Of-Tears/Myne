@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.starry.myne.ui.screens.reader.activities
+package com.starry.myne.ui.screens.reader.main.activities
 
 import android.content.ContentResolver
 import android.content.Intent
@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
@@ -37,32 +38,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.starry.myne.R
 import com.starry.myne.helpers.Constants
 import com.starry.myne.helpers.toToast
-import com.starry.myne.ui.screens.reader.composables.ChaptersContent
-import com.starry.myne.ui.screens.reader.composables.ReaderScreen
-import com.starry.myne.ui.screens.reader.viewmodels.ReaderViewModel
+import com.starry.myne.ui.screens.reader.main.composables.ChaptersContent
+import com.starry.myne.ui.screens.reader.main.composables.ReaderScreen
+import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.theme.MyneTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
-
-object ReaderConstants {
-    const val EXTRA_LIBRARY_ITEM_ID = "reader_book_id"
-    const val EXTRA_CHAPTER_IDX = "reader_chapter_index"
-    const val DEFAULT_NONE = -100000
-
-}
-
-/**
- * Data class to hold intent information for ReaderActivity.
- *
- * @param libraryItemId Library item id.
- * @param chapterIndex Chapter index.
- * @param isExternalFile Is book opened from external file.
- */
-data class IntentData(
-    val libraryItemId: Int?, val chapterIndex: Int?, val isExternalFile: Boolean
-)
 
 @AndroidEntryPoint
 class ReaderActivity : AppCompatActivity() {
@@ -129,12 +112,13 @@ class ReaderActivity : AppCompatActivity() {
                         }
 
                         // Reader content lazy column.
+                        val state = viewModel.state.collectAsState().value
                         ChaptersContent(
-                            state = viewModel.state,
+                            state = state,
                             lazyListState = lazyListState,
                             onToggleReaderMenu = {
                                 viewModel.toggleReaderMenu()
-                                toggleSystemBars(viewModel.state.showReaderMenu)
+                                toggleSystemBars(state.showReaderMenu)
                             }
                         )
                     })
@@ -182,6 +166,23 @@ class ReaderActivity : AppCompatActivity() {
     }
 }
 
+object ReaderConstants {
+    const val EXTRA_LIBRARY_ITEM_ID = "reader_book_id"
+    const val EXTRA_CHAPTER_IDX = "reader_chapter_index"
+    const val DEFAULT_NONE = -100000
+
+}
+
+/**
+ * Data class to hold intent information for ReaderActivity.
+ *
+ * @param libraryItemId Library item id.
+ * @param chapterIndex Chapter index.
+ * @param isExternalFile Is book opened from external file.
+ */
+data class IntentData(
+    val libraryItemId: Int?, val chapterIndex: Int?, val isExternalFile: Boolean
+)
 
 /**
  * Handle intent and load epub book from given id or external file.
@@ -215,8 +216,8 @@ fun handleIntent(
         viewModel.loadEpubBook(libraryItemId = libraryItemId, onLoaded = {
             // if there is saved progress for this book, then scroll to
             // last page at exact position were used had left.
-            if (it.readerData != null && chapterIndex == ReaderConstants.DEFAULT_NONE) {
-                scrollToPosition(it.readerData.lastChapterIndex, it.readerData.lastChapterOffset)
+            if (it.hasProgressSaved && chapterIndex == ReaderConstants.DEFAULT_NONE) {
+                scrollToPosition(it.lastChapterIndex, it.lastChapterOffset)
             }
         })
         // if user clicked on specific chapter, then scroll to

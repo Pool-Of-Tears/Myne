@@ -15,7 +15,7 @@
  */
 
 
-package com.starry.myne.ui.screens.reader.viewmodels
+package com.starry.myne.ui.screens.reader.detail
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -25,10 +25,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.api.BookAPI
 import com.starry.myne.database.library.LibraryDao
-import com.starry.myne.database.reader.ReaderDao
-import com.starry.myne.database.reader.ReaderData
+import com.starry.myne.database.progress.ProgressDao
+import com.starry.myne.database.progress.ProgressData
 import com.starry.myne.epub.EpubParser
-import com.starry.myne.epub.models.EpubBook
+import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.helpers.NetworkObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -38,16 +38,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-data class EbookData(
-    val coverImage: String?,
-    val title: String,
-    val authors: String,
-    val epubBook: EpubBook,
-)
-
 data class ReaderDetailScreenState(
     val isLoading: Boolean = true,
-    val ebookData: EbookData? = null,
+    val title: String = "",
+    val authors: String = "",
+    val coverImage: Any? = null,
+    val chapters: List<EpubChapter> = emptyList(),
+    val hasProgressSaved: Boolean = false,
     val error: String? = null,
 )
 
@@ -55,13 +52,13 @@ data class ReaderDetailScreenState(
 class ReaderDetailViewModel @Inject constructor(
     private val bookAPI: BookAPI,
     private val libraryDao: LibraryDao,
-    private val readerDao: ReaderDao,
+    private val progressDao: ProgressDao,
     private val epubParser: EpubParser
 ) : ViewModel() {
 
     var state by mutableStateOf(ReaderDetailScreenState())
 
-    var readerData: Flow<ReaderData>? = null
+    var progressData: Flow<ProgressData>? = null
         private set
 
     fun loadEbookData(libraryItemId: String, networkStatus: NetworkObserver.Status) {
@@ -72,13 +69,15 @@ class ReaderDetailViewModel @Inject constructor(
                 state = state.copy(isLoading = false, error = "Library item not found.")
                 return@launch
             }
-            // Get reader data if it exists.
-            readerData = readerDao.getReaderDataAsFlow(libraryItemId.toInt())
+            // Get progress data for the current book.
+            progressData = progressDao.getReaderDataAsFlow(libraryItemId.toInt())
+            // Fetch cover image from google books api if available.
             val coverImage: String? = try {
                 if (!libraryItem.isExternalBook
                     && networkStatus == NetworkObserver.Status.Available
                 ) bookAPI.getExtraInfo(libraryItem.title)?.coverImage else null
             } catch (exc: Exception) {
+                Log.e("ReaderDetailViewModel", "Failed to fetch cover image.", exc)
                 null
             }
             // Gutenberg for some reason don't include proper navMap in chinese books
@@ -89,15 +88,15 @@ class ReaderDetailViewModel @Inject constructor(
                 Log.d("ReaderDetailViewModel", "Parsing book without toc for chinese book.")
                 epubBook = epubParser.createEpubBook(libraryItem.filePath, shouldUseToc = false)
             }
-            // Create ebook data.
-            val ebookData = EbookData(
-                coverImage = coverImage,
+            state = state.copy(
                 title = libraryItem.title,
                 authors = libraryItem.authors,
-                epubBook = epubBook
+                coverImage = coverImage ?: epubBook.coverImage,
+                chapters = epubBook.chapters,
+                hasProgressSaved = progressData != null
             )
-            delay(350) // Add delay to avoid flickering.
-            state = state.copy(isLoading = false, ebookData = ebookData)
+            delay(350) // Small delay for smooth transition.
+            state = state.copy(isLoading = false)
         }
     }
 }

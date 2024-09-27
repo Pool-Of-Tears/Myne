@@ -15,15 +15,23 @@
  */
 
 
-package com.starry.myne.database.reader
+package com.starry.myne.database.progress
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Locale
 
+/**
+ * Data class for storing the reading progress of a library item (book).
+ *
+ * @param libraryItemId The ID of the library item.
+ * @param lastChapterIndex The index of the last chapter read.
+ * @param lastChapterOffset The offset of the last chapter read.
+ * @param lastReadTime The time when the last chapter was read.
+ */
 @Entity(tableName = "reader_table")
-data class ReaderData(
+data class ProgressData(
     @ColumnInfo(name = "library_item_id") val libraryItemId: Int,
     @ColumnInfo(name = "last_chapter_index") val lastChapterIndex: Int,
     @ColumnInfo(name = "last_chapter_offset") val lastChapterOffset: Int,
