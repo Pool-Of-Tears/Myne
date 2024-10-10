@@ -93,7 +93,10 @@ private fun ChapterLazyItemItem(
     val context = LocalContext.current
     val paragraphs = remember { chunkText(chapter.body) }
 
-    val targetFontSize = (state.fontSize / 10) * 1.8f
+    val targetFontSize = remember(state.fontSize) {
+        (state.fontSize / 10) * 1.8f
+    }
+
     val fontSize by animateFloatAsState(
         targetValue = targetFontSize,
         animationSpec = tween(durationMillis = 300),

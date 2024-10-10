@@ -93,7 +93,7 @@ aboutLibraries {
 
 
 dependencies {
-    def composeBom = platform('androidx.compose:compose-bom:2024.09.02')
+    def composeBom = platform('androidx.compose:compose-bom:2024.09.03')
     implementation composeBom
     androidTestImplementation composeBom
 
@@ -111,7 +111,7 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata"
     implementation "androidx.compose.material3:material3"
     // Material icons.
-    implementation 'androidx.compose.material:material-icons-extended:1.7.2'
+    implementation 'androidx.compose.material:material-icons-extended:1.7.3'
     // Material theme for main activity.
     implementation 'com.google.android.material:material:1.12.0'
     // Android 12+ splash API.

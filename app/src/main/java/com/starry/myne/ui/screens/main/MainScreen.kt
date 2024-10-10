@@ -79,7 +79,8 @@ fun MainScreen(
     Scaffold(
         bottomBar = {
             BottomBar(navController = navController)
-        }, containerColor = MaterialTheme.colorScheme.background
+        },
+        containerColor = MaterialTheme.colorScheme.background,
     ) {
         NavGraph(
             startDestination = startDestination,

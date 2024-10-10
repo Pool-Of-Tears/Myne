@@ -53,6 +53,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -77,6 +78,13 @@ fun ReaderScreen(
     BackHandler(state.showReaderMenu) {
         viewModel.hideReaderInfo()
     }
+
+    val showFontDialog = remember { mutableStateOf(false) }
+    ReaderFontChooserDialog(
+        showFontDialog = showFontDialog,
+        fontFamily = state.fontFamily,
+        onFontFamilyChanged = { viewModel.setFontFamily(it) }
+    )
 
     val snackBarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -108,7 +116,12 @@ fun ReaderScreen(
                     enter = expandVertically(initialHeight = { 0 }) + fadeIn(),
                     exit = shrinkVertically(targetHeight = { 0 }) + fadeOut(),
                 ) {
-
+                    ReaderBottomBar(
+                        state = state,
+                        showFontDialog = showFontDialog,
+                        snackBarHostState = snackBarHostState,
+                        onFontSizeChanged = { viewModel.setFontSize(it) },
+                    )
                 }
             },
             content = { paddingValues ->
