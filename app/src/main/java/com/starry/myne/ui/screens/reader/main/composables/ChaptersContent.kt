@@ -94,7 +94,7 @@ private fun ChapterLazyItemItem(
     val paragraphs = remember { chunkText(chapter.body) }
 
     val targetFontSize = remember(state.fontSize) {
-        (state.fontSize / 10) * 1.8f
+        (state.fontSize / 5) * 0.9f
     }
 
     val fontSize by animateFloatAsState(
@@ -103,7 +103,7 @@ private fun ChapterLazyItemItem(
         label = "fontSize"
     )
     val titleFontSize by animateFloatAsState(
-        targetValue = targetFontSize * 1.4f,
+        targetValue = targetFontSize * 1.35f,
         animationSpec = tween(durationMillis = 300),
         label = "titleFontSize"
     )
@@ -202,7 +202,7 @@ private fun ChapterLazyItemItem(
                 modifier = Modifier.padding(start = 12.dp, end = 4.dp, top = 10.dp),
                 text = chapter.title,
                 fontSize = titleFontSize.sp,
-                lineHeight = 32.sp,
+                lineHeight = 1.3f.em,
                 fontFamily = pacificoFont,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.88f)

@@ -169,8 +169,8 @@ private fun ReaderTextScaleButton(
     val context = LocalContext.current
     val (iconRes, adjustment) = remember(buttonType) {
         when (buttonType) {
-            TextScaleButtonType.DECREASE -> Pair(R.drawable.ic_reader_text_minus, -10)
-            TextScaleButtonType.INCREASE -> Pair(R.drawable.ic_reader_text_plus, 10)
+            TextScaleButtonType.DECREASE -> Pair(R.drawable.ic_reader_text_minus, -5)
+            TextScaleButtonType.INCREASE -> Pair(R.drawable.ic_reader_text_plus, 5)
         }
     }
 
