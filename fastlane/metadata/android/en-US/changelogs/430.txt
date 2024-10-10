@@ -1,0 +1,6 @@
+- Fixed the translucent colors of the status bar and navigation bar.
+- Fixed an issue where the chapter title was duplicated multiple times in the reader in some cases.
+- Fixed an issue where chapters would jump to the previous chapter when opening the reader menu at the start of a new chapter.
+- Made the font size controls in the reader more granular.
+- Refactored state management in the reader to improve performance & stability.
+- Updated dependencies and AGP to the latest versions.
