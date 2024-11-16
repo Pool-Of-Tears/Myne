@@ -34,6 +34,7 @@ import kotlinx.serialization.protobuf.ProtoNumber
  * @param chapters The list of chapters in the book.
  * @param images The list of images in the book.
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class EpubBook @OptIn(ExperimentalSerializationApi::class) constructor(
     @ProtoNumber(1) val fileName: String,
