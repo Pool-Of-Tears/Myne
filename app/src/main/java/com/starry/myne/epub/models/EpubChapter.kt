@@ -28,6 +28,7 @@ import kotlinx.serialization.protobuf.ProtoNumber
  * @param title The title of the chapter.
  * @param body The body of the chapter.
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class EpubChapter @OptIn(ExperimentalSerializationApi::class) constructor(
     @ProtoNumber(1) val chapterId: String,

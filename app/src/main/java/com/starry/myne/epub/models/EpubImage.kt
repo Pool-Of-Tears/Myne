@@ -27,6 +27,7 @@ import kotlinx.serialization.protobuf.ProtoNumber
  * @param absPath The absolute path of the image.
  * @param image The image data.
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class EpubImage @OptIn(ExperimentalSerializationApi::class) constructor(
     @ProtoNumber(1) val absPath: String,
