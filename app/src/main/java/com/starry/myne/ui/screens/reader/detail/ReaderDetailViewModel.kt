@@ -58,7 +58,7 @@ class ReaderDetailViewModel @Inject constructor(
 
     var state by mutableStateOf(ReaderDetailScreenState())
 
-    var progressData: Flow<ProgressData>? = null
+    var progressData: Flow<ProgressData?>? = null
         private set
 
     fun loadEbookData(libraryItemId: String, networkStatus: NetworkObserver.Status) {
