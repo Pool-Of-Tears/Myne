@@ -104,6 +104,8 @@
     <string name="default_locale_setting">Výchozí lokalizace</string>
     <string name="default_locale_setting_desc">Vyberte svůj preferovaný jazyk.</string>
     <string name="locale_setting_not_found">Omlouváme se! Tato funkce zatím není podporována vaším operačním systémem.</string>
+    <string name="google_books_api_setting">Google Books API</string>
+    <string name="google_books_api_setting_desc">Použijte Google Books API k získání dalších informací o knize.</string>
     <string name="display_setting_header">Zobrazení</string>
     <string name="theme_setting">Výchozí motiv</string>
     <string name="theme_dialog_title">Změnit motiv</string>

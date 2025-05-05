@@ -104,6 +104,8 @@
     <string name="default_locale_setting">डिफ़ॉल्ट स्थानीयकरण</string>
     <string name="default_locale_setting_desc">अपनी पसंदीदा स्थानीयकरण का चयन करें।</string>
     <string name="locale_setting_not_found">क्षमा करें! यह सुविधा अभी तक आपके ऑपरेटिंग सिस्टम द्वारा समर्थित नहीं है।</string>
+    <string name="google_books_api_setting">Google Books API</string>
+    <string name="google_books_api_setting_desc">अतिरिक्त पुस्तक जानकारी प्राप्त करने के लिए Google Books API का उपयोग करें।</string>
     <string name="display_setting_header">डिस्प्ले</string>
     <string name="theme_setting">डिफ़ॉल्ट थीम</string>
     <string name="theme_dialog_title">थीम बदलें</string>

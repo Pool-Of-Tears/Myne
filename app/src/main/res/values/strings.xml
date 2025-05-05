@@ -105,6 +105,8 @@
     <string name="default_locale_setting">Default Locale</string>
     <string name="default_locale_setting_desc">Select your preferred locale.</string>
     <string name="locale_setting_not_found">Sorry! this feature is not yet supported by your OS.</string>
+    <string name="google_books_api_setting">Google Books API</string>
+    <string name="google_books_api_setting_desc">Use Google Books API to fetch additional book information.</string>
     <string name="display_setting_header">Display</string>
     <string name="theme_setting">Default Theme</string>
     <string name="theme_dialog_title">Change Theme</string>

@@ -105,6 +105,8 @@
     <string name="default_locale_setting">Varsayılan Bölge</string>
     <string name="default_locale_setting_desc">Tercih ettiğiniz bölgeyi seçin.</string>
     <string name="locale_setting_not_found">Üzgünüz! Bu özellik işletim sisteminiz tarafından henüz desteklenmiyor.</string>
+    <string name="google_books_api_setting">Google Kitaplar API</string>
+    <string name="google_books_api_setting_desc">Ek kitap bilgilerini almak için Google Kitaplar API\'sini kullan.</string>
     <string name="display_setting_header">Görünüm</string>
     <string name="theme_setting">Varsayılan Tema</string>
     <string name="theme_dialog_title">Temayı Değiştir</string>

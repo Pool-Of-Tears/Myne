@@ -105,6 +105,8 @@
     <string name="default_locale_setting">Limbă implicită</string>
     <string name="default_locale_setting_desc">Selectați limba preferată.</string>
     <string name="locale_setting_not_found">Ne pare rău! Această funcție nu este încă suportată de sistemul dvs. de operare.</string>
+    <string name="google_books_api_setting">API-ul Google Books</string>
+    <string name="google_books_api_setting_desc">Folosește API-ul Google Books pentru a obține informații suplimentare despre cărți.</string>
     <string name="display_setting_header">Afișare</string>
     <string name="theme_setting">Tema implicită</string>
     <string name="theme_dialog_title">Tema implicită</string>

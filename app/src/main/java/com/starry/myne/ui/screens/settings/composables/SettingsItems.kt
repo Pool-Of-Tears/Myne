@@ -23,13 +23,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
@@ -57,6 +56,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.starry.myne.helpers.weakHapticFeedback
 import com.starry.myne.ui.theme.poppinsFont
@@ -76,16 +76,19 @@ fun SettingItem(icon: ImageVector, mainText: String, subText: String, onClick: (
         modifier = Modifier
             .padding(bottom = 8.dp)
             .fillMaxWidth()
-            .height(69.dp),
+            .wrapContentHeight(),
     ) {
         Row(
             modifier = Modifier
                 .padding(vertical = 10.dp, horizontal = 14.dp)
-                .fillMaxSize(),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f, fill = false)
+            ) {
                 Box(
                     modifier = Modifier
                         .size(40.dp)
@@ -101,9 +104,7 @@ fun SettingItem(icon: ImageVector, mainText: String, subText: String, onClick: (
                 }
 
                 Spacer(modifier = Modifier.width(14.dp))
-                Column(
-                    modifier = Modifier.offset(y = (2).dp)
-                ) {
+                Column {
                     Text(
                         text = mainText,
                         fontFamily = poppinsFont,
@@ -119,18 +120,18 @@ fun SettingItem(icon: ImageVector, mainText: String, subText: String, onClick: (
                         fontFamily = poppinsFont,
                         color = Color.Gray,
                         fontSize = 13.sp,
+                        lineHeight = 1.3.em,
                         fontWeight = FontWeight.Medium,
-                        modifier = Modifier.offset(y = (-4).dp)
                     )
                 }
             }
+            Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                 contentDescription = "",
                 modifier = Modifier.size(15.dp),
                 tint = MaterialTheme.colorScheme.onSurface
             )
-
         }
     }
 }
@@ -151,16 +152,19 @@ fun SettingItemWIthSwitch(
         modifier = Modifier
             .padding(bottom = 8.dp)
             .fillMaxWidth()
-            .height(69.dp),
+            .wrapContentHeight(),
     ) {
         Row(
             modifier = Modifier
                 .padding(vertical = 10.dp, horizontal = 14.dp)
-                .fillMaxSize(),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f, fill = false)
+            ) {
                 Box(
                     modifier = Modifier
                         .size(40.dp)
@@ -176,9 +180,7 @@ fun SettingItemWIthSwitch(
                 }
 
                 Spacer(modifier = Modifier.width(14.dp))
-                Column(
-                    modifier = Modifier.offset(y = (2).dp)
-                ) {
+                Column {
                     Text(
                         text = mainText,
                         fontFamily = poppinsFont,
@@ -194,11 +196,12 @@ fun SettingItemWIthSwitch(
                         fontFamily = poppinsFont,
                         color = Color.Gray,
                         fontSize = 13.sp,
+                        lineHeight = 1.3.em,
                         fontWeight = FontWeight.Medium,
-                        modifier = Modifier.offset(y = (-4).dp)
                     )
                 }
             }
+            Spacer(modifier = Modifier.width(8.dp))
             Switch(
                 checked = switchState.value,
                 onCheckedChange = {
