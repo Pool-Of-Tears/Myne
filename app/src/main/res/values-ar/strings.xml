@@ -105,6 +105,8 @@
     <string name="default_locale_setting">اللغة الافتراضية</string>
     <string name="default_locale_setting_desc">حدد لغتك المفضلة.</string>
     <string name="locale_setting_not_found">عذرا! هذه الميزة ليست مدعومة حاليا من قبل نظام التشغيل الخاص بك.</string>
+    <string name="google_books_api_setting">واجهة برمجة تطبيقات كتب Google</string>
+    <string name="google_books_api_setting_desc">استخدم واجهة برمجة تطبيقات كتب Google لجلب معلومات إضافية عن الكتب.</string>
     <string name="display_setting_header">العرض</string>
     <string name="theme_setting">المظهر الافتراضى</string>
     <string name="theme_dialog_title">تغيير المظهر</string>

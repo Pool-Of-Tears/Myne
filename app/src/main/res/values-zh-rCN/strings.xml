@@ -106,6 +106,8 @@
     <string name="default_locale_setting">默认语言设置</string>
     <string name="default_locale_setting_desc">请选择您喜欢的语言。</string>
     <string name="locale_setting_not_found">抱歉！此功能目前尚不受您的操作系统支持。</string>
+    <string name="google_books_api_setting">Google 图书 API</string>
+    <string name="google_books_api_setting_desc">使用 Google 图书 API 获取更多图书信息。</string>
     <string name="display_setting_header">外观</string>
     <string name="theme_setting">默认主题</string>
     <string name="theme_dialog_title">更改主题</string>

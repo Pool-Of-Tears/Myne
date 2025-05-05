@@ -20,6 +20,7 @@ import android.content.Context
 import com.starry.myne.BuildConfig
 import com.starry.myne.api.models.BookSet
 import com.starry.myne.api.models.ExtraInfo
+import com.starry.myne.helpers.PreferenceUtil
 import com.starry.myne.helpers.book.BookLanguage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -44,8 +45,10 @@ import kotlin.coroutines.suspendCoroutine
  * This class is responsible for handling all the API requests related to books.
  * It uses OkHttp for making network requests and Gson for parsing JSON responses.
  * @param context The context of the application.
+ *
+ * Do not use this class directly. Use the [BookAPI] instance from dependency injection.
  */
-class BookAPI(context: Context) {
+class BookAPI(context: Context, private val preferenceUtil: PreferenceUtil) {
 
     private val baseApiUrl = "https://myne.krsh.dev/books"
     private val googleBooksUrl = "https://www.googleapis.com/books/v1/volumes"
@@ -162,6 +165,13 @@ class BookAPI(context: Context) {
     // Function to fetch extra info such as cover image, page count, and description of a book.
     // From Google Books API.
     suspend fun getExtraInfo(bookName: String): ExtraInfo? = suspendCoroutine { continuation ->
+        // Return null without making any network call to Google Books API
+        // if the use of Google API is disabled by the user.
+        if (!preferenceUtil.getBoolean(PreferenceUtil.USE_GOOGLE_API_BOOL, true)) {
+            continuation.resume(null)
+            return@suspendCoroutine
+        }
+
         val encodedName = URLEncoder.encode(bookName, "UTF-8")
         val url = "${googleBooksUrl}?q=$encodedName&startIndex=0&maxResults=1&key=$googleApiKey"
         val request = Request.Builder().get().url(url).build()

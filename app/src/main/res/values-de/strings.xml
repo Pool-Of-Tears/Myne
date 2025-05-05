@@ -105,6 +105,8 @@
     <string name="default_locale_setting">Standard-Sprache</string>
     <string name="default_locale_setting_desc">Wählen Sie Ihre bevorzugte Sprachumgebung.</string>
     <string name="locale_setting_not_found">Entschuldigung! Diese Funktion wird von Ihrem Betriebssystem noch nicht unterstützt.</string>
+    <string name="google_books_api_setting">Google Books API</string>
+    <string name="google_books_api_setting_desc">Verwende die Google Books API, um zusätzliche Buchinformationen abzurufen.</string>
     <string name="display_setting_header">Darstellung</string>
     <string name="theme_setting">Standard-Theme</string>
     <string name="theme_dialog_title">Theme ändern</string>

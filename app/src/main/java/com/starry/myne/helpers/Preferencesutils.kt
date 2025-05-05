@@ -18,6 +18,7 @@ package com.starry.myne.helpers
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 /**
  * A helper class to manage shared preferences
@@ -34,6 +35,7 @@ class PreferenceUtil(context: Context) {
         const val AMOLED_THEME_BOOL = "amoled_theme"
         const val MATERIAL_YOU_BOOL = "material_you"
         const val INTERNAL_READER_BOOL = "internal_reader"
+        const val USE_GOOGLE_API_BOOL = "use_google_books_api"
         const val READER_FONT_SIZE_INT = "reader_font_size"
         const val READER_FONT_STYLE_STR = "reader_font_style"
         const val PREFERRED_BOOK_LANG_STR = "preferred_book_language"
@@ -43,9 +45,17 @@ class PreferenceUtil(context: Context) {
         const val LIBRARY_SWIPE_TOOLTIP_BOOL = "show_library_tooltip"
     }
 
-    //
-    private var prefs: SharedPreferences =
+    // SharedPreferences instance
+    private val prefs: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    init {
+        // setup default values
+        prefs.edit {
+            putBoolean(INTERNAL_READER_BOOL, true)
+            putBoolean(USE_GOOGLE_API_BOOL, true)
+        }
+    }
 
     /**
      * Check if a key exists in the preferences
@@ -53,6 +63,7 @@ class PreferenceUtil(context: Context) {
      * @param key The key to check
      * @return True if the key exists, false otherwise
      */
+    @Suppress("unused")
     fun keyExists(key: String): Boolean = prefs.contains(key)
 
     /**
@@ -62,9 +73,7 @@ class PreferenceUtil(context: Context) {
      * @param value The value to insert
      */
     fun putString(key: String, value: String) {
-        val prefsEditor = prefs.edit()
-        prefsEditor.putString(key, value)
-        prefsEditor.apply()
+        prefs.edit { putString(key, value) }
     }
 
     /**
@@ -74,9 +83,7 @@ class PreferenceUtil(context: Context) {
      * @param value The value to insert
      */
     fun putInt(key: String, value: Int) {
-        val prefsEditor = prefs.edit()
-        prefsEditor.putInt(key, value)
-        prefsEditor.apply()
+        prefs.edit { putInt(key, value) }
     }
 
     /**
@@ -86,9 +93,7 @@ class PreferenceUtil(context: Context) {
      * @param value The value to insert
      */
     fun putBoolean(key: String, value: Boolean) {
-        val prefsEditor = prefs.edit()
-        prefsEditor.putBoolean(key, value)
-        prefsEditor.apply()
+        prefs.edit { putBoolean(key, value) }
     }
 
     /**

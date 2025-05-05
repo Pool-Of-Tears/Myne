@@ -17,7 +17,6 @@
 package com.starry.myne.ui.screens.settings.composables
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.compose.foundation.Image
@@ -78,6 +77,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.starry.myne.BuildConfig
@@ -207,6 +207,7 @@ private fun GeneralOptionsUI(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
+    val googleBooksApiSwitchState = remember { mutableStateOf(viewModel.getUseGoogleApiValue()) }
     val internalReaderValue = when (viewModel.getInternalReaderValue()) {
         true -> stringResource(id = R.string.reader_option_inbuilt)
         false -> stringResource(id = R.string.reader_option_external)
@@ -248,7 +249,7 @@ private fun GeneralOptionsUI(
                 // See: https://github.com/Pool-Of-Tears/GreenStash/issues/130 for more.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !Utils.isMiui()) {
                     val intent = Intent(Settings.ACTION_APP_LOCALE_SETTINGS).apply {
-                        data = Uri.parse("package:${context.packageName}")
+                        data = "package:${context.packageName}".toUri()
                     }
                     context.startActivity(intent)
                 } else {
@@ -260,8 +261,16 @@ private fun GeneralOptionsUI(
                 }
             }
         )
-
-
+        SettingItemWIthSwitch(
+            icon = ImageVector.vectorResource(id = R.drawable.ic_settings_google_api),
+            mainText = stringResource(id = R.string.google_books_api_setting),
+            subText = stringResource(id = R.string.google_books_api_setting_desc),
+            switchState = googleBooksApiSwitchState,
+            onCheckChange = {
+                viewModel.setUseGoogleApiValue(it)
+                googleBooksApiSwitchState.value = it
+            }
+        )
     }
 
     if (showReaderDialog.value) {

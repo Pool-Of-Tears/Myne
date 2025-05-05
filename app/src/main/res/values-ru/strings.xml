@@ -105,6 +105,8 @@
     <string name="default_locale_setting">Язык по умолчанию</string>
     <string name="default_locale_setting_desc">Выберите предпочитаемый язык.</string>
     <string name="locale_setting_not_found">Извините! Эта функция пока не поддерживается вашей операционной системой.</string>
+    <string name="google_books_api_setting">API Google Книг</string>
+    <string name="google_books_api_setting_desc">Используйте API Google Книг для получения дополнительной информации о книге.</string>
     <string name="display_setting_header">Дисплей</string>
     <string name="theme_setting">Тема по умолчанию</string>
     <string name="theme_dialog_title">Изменить тему</string>

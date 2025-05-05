@@ -36,6 +36,8 @@ import javax.inject.Singleton
 @Module
 class MainModule {
 
+    // Core application related. ==========================================================
+
     @Provides
     fun provideAppContext(@ApplicationContext context: Context) = context
 
@@ -52,15 +54,20 @@ class MainModule {
 
     @Singleton
     @Provides
-    fun provideBooksApi(@ApplicationContext context: Context) = BookAPI(context)
+    fun providePreferenceUtil(@ApplicationContext context: Context) = PreferenceUtil(context)
+
+    // Network & Books related. ==========================================================
+
+    @Singleton
+    @Provides
+    fun provideBooksApi(
+        @ApplicationContext context: Context,
+        preferenceUtil: PreferenceUtil
+    ) = BookAPI(context, preferenceUtil)
 
     @Singleton
     @Provides
     fun provideBookDownloader(@ApplicationContext context: Context) = BookDownloader(context)
-
-    @Singleton
-    @Provides
-    fun providePreferenceUtil(@ApplicationContext context: Context) = PreferenceUtil(context)
 
     @Singleton
     @Provides
