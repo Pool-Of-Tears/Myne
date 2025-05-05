@@ -80,14 +80,17 @@ class ReaderDetailViewModel @Inject constructor(
                 Log.e("ReaderDetailViewModel", "Failed to fetch cover image.", exc)
                 null
             }
-            // Gutenberg for some reason don't include proper navMap in chinese books
-            // in toc, so we need to parse the book based on spine, instead of toc.
-            // This is a workaround for internal chinese books.
-            var epubBook = epubParser.createEpubBook(libraryItem.filePath)
-            if (epubBook.language == "zh" && !libraryItem.isExternalBook) {
-                Log.d("ReaderDetailViewModel", "Parsing book without toc for chinese book.")
-                epubBook = epubParser.createEpubBook(libraryItem.filePath, shouldUseToc = false)
+            // Only use toc if the book is not an external book.
+            var shouldUseToc = !libraryItem.isExternalBook
+            // Gutenberg for some reason don't include proper navMap for chinese books
+            // in toc file, so we need to parse the book based on spine, instead of toc.
+            // This is special case for Chinese books.
+            if (shouldUseToc && epubParser.peekLanguage(libraryItem.filePath) == "zh") {
+                Log.d("ReaderDetailViewModel", "Parsing book without toc for Chinese book.")
+                shouldUseToc = false
             }
+            var epubBook = epubParser.createEpubBook(libraryItem.filePath, shouldUseToc)
+
             state = state.copy(
                 title = libraryItem.title,
                 authors = libraryItem.authors,

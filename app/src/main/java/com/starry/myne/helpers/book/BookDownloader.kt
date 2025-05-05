@@ -53,15 +53,19 @@ class BookDownloader(private val context: Context) {
          */
         fun createFileName(title: String): String {
             val sanitizedTitle = title
-                .replace(":", ";")
-                .replace("\"", "")
-                .replace("/", "-")
-                .replace("\\", "-")
-                .split(" ")
-                .joinToString(separator = "+") { word ->
-                    word.replace(Regex("[^\\p{ASCII}]"), "")
-                }.take(MAX_FILENAME_LENGTH).trim()
-            return "$sanitizedTitle.epub"
+                .replace(":", "；")         // full-width semicolon
+                .replace("\"", "")          // remove quotes
+                .replace("/", "／")         // full-width slash
+                .replace("\\", "＼")        // full-width backslash
+                .replace("?", "")           // remove question marks
+                .replace("*", "")           // remove asterisks
+                .replace("<", "")           // remove angle brackets
+                .replace(">", "")           // remove angle brackets
+                .replace("|", "")           // remove pipe
+                .trim()
+                .replace("\\s+".toRegex(), "_") // optional: replace whitespace with underscores
+                .take(MAX_FILENAME_LENGTH)
+            return if (sanitizedTitle.isNotEmpty()) "$sanitizedTitle.epub" else "unknown.epub"
         }
     }
 

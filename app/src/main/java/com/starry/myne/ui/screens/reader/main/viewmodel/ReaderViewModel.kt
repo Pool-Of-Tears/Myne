@@ -17,6 +17,7 @@
 
 package com.starry.myne.ui.screens.reader.main.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
@@ -100,14 +101,17 @@ class ReaderViewModel @Inject constructor(
                 shouldShowLoader = !epubParser.isBookCached(libraryItem!!.filePath)
             )
             val readerData = progressDao.getReaderData(libraryItemId)
-            // parse and create epub book
-            var epubBook = epubParser.createEpubBook(libraryItem.filePath)
-            // Gutenberg for some reason don't include proper navMap in chinese books
-            // in toc, so we need to parse the book based on spine, instead of toc.
-            // This is a workaround for internal chinese books.
-            if (epubBook.language == "zh" && !libraryItem.isExternalBook) {
-                epubBook = epubParser.createEpubBook(libraryItem.filePath, shouldUseToc = false)
+            // Only use toc if the book is not an external book.
+            var shouldUseToc = !libraryItem.isExternalBook
+            // Gutenberg for some reason don't include proper navMap for chinese books
+            // in toc file, so we need to parse the book based on spine, instead of toc.
+            // This is special case for Chinese books.
+            if (shouldUseToc && epubParser.peekLanguage(libraryItem.filePath) == "zh") {
+                Log.d("ReaderDetailViewModel", "Parsing book without toc for Chinese book.")
+                shouldUseToc = false
             }
+            var epubBook = epubParser.createEpubBook(libraryItem.filePath, shouldUseToc)
+
             _state.value = _state.value.copy(
                 title = libraryItem.title,
                 chapters = epubBook.chapters,

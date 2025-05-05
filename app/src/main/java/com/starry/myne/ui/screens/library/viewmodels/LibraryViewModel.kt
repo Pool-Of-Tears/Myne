@@ -92,7 +92,7 @@ class LibraryViewModel @Inject constructor(
                             throw IllegalArgumentException("File input stream is not valid.")
                         }
 
-                        val epubBook = epubParser.createEpubBook(fis)
+                        val epubBook = epubParser.createEpubBook(fis, false)
                         fis.channel.position(0)
 
                         val filePath = copyBookToInternalStorage(
