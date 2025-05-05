@@ -52,8 +52,8 @@ class PreferenceUtil(context: Context) {
     init {
         // setup default values
         prefs.edit {
-            putBoolean(INTERNAL_READER_BOOL, true)
-            putBoolean(USE_GOOGLE_API_BOOL, true)
+            if (!keyExists(INTERNAL_READER_BOOL)) putBoolean(INTERNAL_READER_BOOL, true)
+            if (!keyExists(USE_GOOGLE_API_BOOL)) putBoolean(USE_GOOGLE_API_BOOL, true)
         }
     }
 

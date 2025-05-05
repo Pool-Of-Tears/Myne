@@ -106,7 +106,7 @@
     <string name="default_locale_setting_desc">Seleziona la tua lingua preferita.</string>
     <string name="locale_setting_not_found">Spiacenti! Questa funzione non è ancora supportata dal tuo sistema operativo.</string>
     <string name="google_books_api_setting">API di Google Books</string>
-    <string name="google_books_api_setting_desc">Usa l'API di Google Books per ottenere ulteriori informazioni sui libri.</string>
+    <string name="google_books_api_setting_desc">Usa l\'API di Google Books per ottenere ulteriori informazioni sui libri.</string>
     <string name="display_setting_header">Mostra</string>
     <string name="theme_setting">Tema predefinito</string>
     <string name="theme_dialog_title">Cambia Tema</string>
