@@ -1,0 +1,5 @@
+- Added an option to disable the use of the Google Books API for fetching extra information.
+- Fixed a bug where all Chinese books ended up with the same filename, causing unpredictable behavior.
+- Improved internal filename generation to avoid conflicts.
+- Disabled TOC-based EPUB parsing for external/imported books due to inconsistent behavior and frequently broken chapter mapping.
+- Updated dependencies and other minor improvements & fixes.
