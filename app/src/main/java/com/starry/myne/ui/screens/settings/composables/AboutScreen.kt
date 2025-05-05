@@ -79,9 +79,10 @@ import com.starry.myne.ui.theme.poppinsFont
 @Composable
 fun AboutScreen(navController: NavController) {
     val context = LocalContext.current
-    Scaffold(modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background),
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
         topBar = {
             CustomTopAppBar(headerText = stringResource(id = R.string.about_header)) {
                 navController.navigateUp()
@@ -117,7 +118,8 @@ fun AboutScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Box(modifier = Modifier.padding(horizontal = 14.dp)) {
-                    SettingItem(ImageVector.vectorResource(id = R.drawable.ic_osi_logo),
+                    SettingItem(
+                        ImageVector.vectorResource(id = R.drawable.ic_osi_logo),
                         mainText = stringResource(id = R.string.project_contributors),
                         subText = stringResource(id = R.string.project_contributors_desc),
                         onClick = { Utils.openWebLink(context, Constants.PROJECT_CONTRIBUTORS) }
@@ -140,32 +142,38 @@ fun AboutScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(horizontal = 14.dp)
                 ) {
-                    SettingItem(icon = Icons.AutoMirrored.Filled.Notes,
+                    SettingItem(
+                        icon = Icons.AutoMirrored.Filled.Notes,
                         mainText = stringResource(id = R.string.link_readme),
                         subText = stringResource(id = R.string.link_readme_desc),
                         onClick = { Utils.openWebLink(context, Constants.GITHUB_REPO) }
                     )
-                    SettingItem(icon = Icons.Filled.Web,
+                    SettingItem(
+                        icon = Icons.Filled.Web,
                         mainText = stringResource(id = R.string.link_website),
                         subText = stringResource(id = R.string.link_website_desc),
                         onClick = { Utils.openWebLink(context, Constants.WEBSITE) }
                     )
-                    SettingItem(icon = Icons.Filled.PrivacyTip,
+                    SettingItem(
+                        icon = Icons.Filled.PrivacyTip,
                         mainText = stringResource(id = R.string.link_privacy_policy),
                         subText = stringResource(id = R.string.link_privacy_policy_desc),
                         onClick = { Utils.openWebLink(context, Constants.PRIVACY_POLICY) }
                     )
-                    SettingItem(icon = ImageVector.vectorResource(id = R.drawable.ic_github_logo),
+                    SettingItem(
+                        icon = ImageVector.vectorResource(id = R.drawable.ic_github_logo),
                         mainText = stringResource(id = R.string.link_gh_issue),
                         subText = stringResource(id = R.string.link_gh_issue_desc),
                         onClick = { Utils.openWebLink(context, Constants.GITHUB_ISSUE) }
                     )
-                    SettingItem(ImageVector.vectorResource(id = R.drawable.ic_telegram_logo),
+                    SettingItem(
+                        ImageVector.vectorResource(id = R.drawable.ic_telegram_logo),
                         mainText = stringResource(id = R.string.link_telegram),
                         subText = stringResource(id = R.string.link_telegram_desc),
                         onClick = { Utils.openWebLink(context, Constants.TELEGRAM_GROUP) }
                     )
-                    SettingItem(icon = Icons.Filled.Favorite,
+                    SettingItem(
+                        icon = Icons.Filled.Favorite,
                         mainText = stringResource(id = R.string.link_support),
                         subText = stringResource(id = R.string.link_support_desc),
                         onClick = { Utils.openWebLink(context, Constants.SUPPORT) }

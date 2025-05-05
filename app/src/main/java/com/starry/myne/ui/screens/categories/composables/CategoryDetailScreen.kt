@@ -75,7 +75,8 @@ fun CategoryDetailScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            CustomTopAppBar(headerText = stringResource(id = BookCategories.getNameRes(category)),
+            CustomTopAppBar(
+                headerText = stringResource(id = BookCategories.getNameRes(category)),
                 actionIcon = Icons.Filled.Translate,
                 onBackButtonClicked = { navController.navigateUp() },
                 onActionClicked = { showLanguageSheet.value = true }

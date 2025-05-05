@@ -111,7 +111,8 @@ private fun BottomBar(navController: NavHostController) {
     val currentDestination = navBackStackEntry?.destination
     val bottomBarDestination = screens.any { it.route == currentDestination?.route }
 
-    AnimatedVisibility(visible = bottomBarDestination,
+    AnimatedVisibility(
+        visible = bottomBarDestination,
         modifier = Modifier.fillMaxWidth(),
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it }),

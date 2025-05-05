@@ -38,7 +38,7 @@ class EpubCache(private val context: Context) {
         private const val CACHE_VERSION_FILE = "cache_version"
 
         // Increment this if the cache format changes.
-        private const val EPUB_CACHE_VERSION = 2
+        private const val EPUB_CACHE_VERSION = 5
     }
 
     init {
@@ -110,15 +110,15 @@ class EpubCache(private val context: Context) {
     /**
      * Inserts a book into the cache.
      *
-     * @param book The book to insert.
+     * @param epubBook The book to insert.
      * @param filepath The path to the book file.
      */
     @OptIn(ExperimentalSerializationApi::class)
-    fun put(book: EpubBook, filepath: String) {
-        Log.d(TAG, "Inserting book into cache: ${book.title}")
+    fun put(epubBook: EpubBook, filepath: String) {
+        Log.d(TAG, "Inserting book into cache: ${epubBook.title}")
         val fileName = File(filepath).nameWithoutExtension
         val bookFile = File(getPath(), "$fileName.protobuf")
-        val protoBytes = protobuf.encodeToByteArray(EpubBook.serializer(), book)
+        val protoBytes = protobuf.encodeToByteArray(EpubBook.serializer(), epubBook)
         bookFile.writeBytes(protoBytes)
     }
 
@@ -154,7 +154,10 @@ class EpubCache(private val context: Context) {
         val bookFile = File(getPath(), "$fileName.protobuf")
         return if (bookFile.exists()) {
             bookFile.delete()
+            Log.d(TAG, "Book removed from cache: $filepath")
+            true
         } else {
+            Log.d(TAG, "Book not found in cache: $filepath")
             false
         }
     }
@@ -166,6 +169,7 @@ class EpubCache(private val context: Context) {
      * @return True if the book is cached, false otherwise.
      */
     fun isCached(filepath: String): Boolean {
+        Log.d(TAG, "Checking if book is cached: $filepath")
         val fileName = File(filepath).nameWithoutExtension
         val bookFile = File(getPath(), "$fileName.protobuf")
         return bookFile.exists()

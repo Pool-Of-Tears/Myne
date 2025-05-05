@@ -187,7 +187,8 @@ private fun TopAppBarsPV() {
     Column(Modifier.fillMaxSize()) {
         CustomTopAppBar(headerText = "Something", iconRes = R.drawable.ic_nav_categories)
         CustomTopAppBar(headerText = "Something", onBackButtonClicked = {})
-        CustomTopAppBar(headerText = "Something",
+        CustomTopAppBar(
+            headerText = "Something",
             actionIcon = Icons.Default.Translate,
             onBackButtonClicked = { /*TODO*/ },
             onActionClicked = {})

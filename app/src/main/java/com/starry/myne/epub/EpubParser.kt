@@ -109,30 +109,31 @@ class EpubParser(private val context: Context) {
     private val epubCache = EpubCache(context)
 
     /**
-     * Creates an [EpubBook] object from an EPUB file.
+     * Creates an [EpubBook] object from an EPUB file and caches it.
      *
      * @param filePath The file path of the EPUB file.
      * @param shouldUseToc Whether to use the table of contents (ToC) file for parsing.
      * @return The [EpubBook] object.
      */
-    suspend fun createEpubBook(filePath: String, shouldUseToc: Boolean = true): EpubBook {
+    suspend fun createEpubBook(filePath: String, shouldUseToc: Boolean): EpubBook {
         return withContext(Dispatchers.IO) {
-            val epubBook = epubCache.get(filePath)
-            if (epubBook != null) {
+            val cachedEpubBook = epubCache.get(filePath)
+            if (cachedEpubBook != null) {
                 Log.d(TAG, "EpubBook found in cache")
-                return@withContext epubBook
+                return@withContext cachedEpubBook
             }
             Log.d(TAG, "Parsing EPUB file: $filePath")
             val files = getZipFilesFromFile(filePath)
             val document = createEpubDocument(files)
-            val book = parseAndCreateEbook(files, document, shouldUseToc)
-            epubCache.put(book, filePath)
-            return@withContext book
+            val epubBook = parseAndCreateEbook(files, document, shouldUseToc)
+            epubCache.put(epubBook, filePath)
+            return@withContext epubBook
         }
     }
 
     /**
      * Creates an [EpubBook] object from an EPUB input stream.
+     * This method does not cache the book.
      *
      * Note: Caller is responsible for closing the input stream.
      *
@@ -140,7 +141,7 @@ class EpubParser(private val context: Context) {
      * @param shouldUseToc Whether to use the table of contents (ToC) file for parsing.
      * @return The [EpubBook] object.
      */
-    suspend fun createEpubBook(inputStream: InputStream, shouldUseToc: Boolean = true): EpubBook {
+    suspend fun createEpubBook(inputStream: InputStream, shouldUseToc: Boolean): EpubBook {
         return withContext(Dispatchers.IO) {
             Log.d(TAG, "Parsing EPUB input stream")
             val (files, document) = getZipFilesAndDocument(inputStream)
@@ -165,6 +166,18 @@ class EpubParser(private val context: Context) {
      */
     fun removeBookFromCache(filePath: String): Boolean {
         return epubCache.remove(filePath)
+    }
+
+    /**
+     * Peeks the language of an EPUB file without parsing the entire book.
+     *
+     * @param filePath The file path of the EPUB file.
+     * @return The language of the EPUB file.
+     */
+    fun peekLanguage(filePath: String): String {
+        val files = getZipFilesFromFile(filePath)
+        val document = createEpubDocument(files)
+        return document.metadata.selectFirstChildTag("dc:language")?.textContent ?: "en"
     }
 
     /**
