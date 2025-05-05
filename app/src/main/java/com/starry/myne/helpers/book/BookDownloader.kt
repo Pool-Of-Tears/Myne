@@ -30,6 +30,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
+import java.security.MessageDigest
 
 
 /**
@@ -42,7 +43,7 @@ class BookDownloader(private val context: Context) {
         private const val TAG = "BookDownloader"
         const val BOOKS_FOLDER = "ebooks"
         const val TEMP_FOLDER = "temp_books"
-        private const val MAX_FILENAME_LENGTH = 200
+        private const val MAX_FILENAME_LENGTH = 100
 
         /**
          * Sanitizes book title by replacing forbidden chars which are not allowed
@@ -52,16 +53,29 @@ class BookDownloader(private val context: Context) {
          * @return [String] file name for the given book.
          */
         fun createFileName(title: String): String {
+            // Replace or remove illegal file system characters
             val sanitizedTitle = title
-                .replace(":", ";")
-                .replace("\"", "")
-                .replace("/", "-")
-                .replace("\\", "-")
-                .split(" ")
-                .joinToString(separator = "+") { word ->
-                    word.replace(Regex("[^\\p{ASCII}]"), "")
-                }.take(MAX_FILENAME_LENGTH).trim()
-            return "$sanitizedTitle.epub"
+                .replace(":", ";")   // Replace colon with semicolon.
+                .replace("\"", "")    // Remove double quotes
+                .replace("/", "／")   // Replace slash with full-width version
+                .replace("\\", "＼")  // Replace backslash with full-width version
+                .replace("?", "")     // Remove question mark
+                .replace("*", "")     // Remove asterisk
+                .replace("<", "")     // Remove angle brackets
+                .replace(">", "")     // Remove angle brackets
+                .replace("|", "")     // Remove pipe
+                .trim()
+                .replace("\\s+".toRegex(), "_") // Replace whitespace with underscores
+            // Create a short, deterministic hash from the original title
+            val digest = MessageDigest.getInstance("SHA-256")
+            val hashBytes = digest.digest(title.toByteArray(Charsets.UTF_8))
+            val hash = hashBytes.joinToString("") { "%02x".format(it) }.take(6)
+            // Combine and ensure total length fits within limit (accounting for "_$hash.epub")
+            val extension = "_$hash.epub"
+            val allowedTitleLength = MAX_FILENAME_LENGTH - extension.length
+            val safeTitle =
+                if (sanitizedTitle.isNotEmpty()) sanitizedTitle.take(allowedTitleLength) else "unknown"
+            return "$safeTitle$extension"
         }
     }
 

@@ -105,7 +105,8 @@ class BookDetailViewModel @Inject constructor(
     fun downloadBook(
         book: Book, downloadProgressListener: (Float, Int) -> Unit
     ) {
-        bookDownloader.downloadBook(book = book,
+        bookDownloader.downloadBook(
+            book = book,
             downloadProgressListener = downloadProgressListener,
             onDownloadSuccess = { filePath ->
                 insertIntoDB(book = book, filePath = filePath)

@@ -101,7 +101,8 @@ fun BookLanguageSheet(
                 ) {
                     items(languages.size) { idx ->
                         val language = languages[idx]
-                        BookLanguageButton(language = language,
+                        BookLanguageButton(
+                            language = language,
                             isSelected = language == selectedLanguage,
                             onClick = {
                                 view.weakHapticFeedback()

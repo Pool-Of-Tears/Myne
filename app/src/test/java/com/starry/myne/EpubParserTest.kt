@@ -34,7 +34,7 @@ import java.util.zip.ZipOutputStream
 import kotlin.random.Random
 
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE, sdk = [33]) // Run on Android 13
+@Config(manifest = Config.NONE, sdk = [34]) // Run on Android 14
 class EpubParserTest {
 
     private lateinit var epubParser: EpubParser
@@ -52,7 +52,7 @@ class EpubParserTest {
     @Test
     fun testCreateEpubBookFromInputStream() = runBlocking {
         val inputStream = ByteArrayInputStream(testEpubFile)
-        val epubBook = epubParser.createEpubBook(inputStream)
+        val epubBook = epubParser.createEpubBook(inputStream, true)
 
         assertThat(epubBook.title).isEqualTo("Test Book")
         assertThat(epubBook.author).isEqualTo("Test Author")
@@ -66,7 +66,7 @@ class EpubParserTest {
     @Test
     fun testCreateEpubBookFromFilePath(): Unit = runBlocking {
         val tempFile = createTempEpubFile(testEpubFile)
-        val epubBook = epubParser.createEpubBook(tempFile.absolutePath)
+        val epubBook = epubParser.createEpubBook(tempFile.absolutePath, true)
 
         assertThat(epubBook.title).isEqualTo("Test Book")
         assertThat(epubBook.author).isEqualTo("Test Author")
@@ -110,7 +110,7 @@ class EpubParserTest {
     @Test
     fun testParseImages() = runBlocking {
         val inputStream = ByteArrayInputStream(testEpubFile)
-        val epubBook = epubParser.createEpubBook(inputStream)
+        val epubBook = epubParser.createEpubBook(inputStream, true)
 
         assertThat(epubBook.images).isNotEmpty()
         assertThat(epubBook.images.map { it.absPath }).contains("image1.jpg")
@@ -120,7 +120,7 @@ class EpubParserTest {
     @Test
     fun testParseCoverImage() = runBlocking {
         val inputStream = ByteArrayInputStream(testEpubFile)
-        val epubBook = epubParser.createEpubBook(inputStream)
+        val epubBook = epubParser.createEpubBook(inputStream, true)
 
         assertThat(epubBook.coverImage).isNotNull()
         assertThat(epubBook.coverImage).isInstanceOf(Bitmap::class.java)

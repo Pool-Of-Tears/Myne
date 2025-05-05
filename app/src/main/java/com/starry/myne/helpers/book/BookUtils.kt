@@ -111,6 +111,7 @@ object BookUtils {
             try {
                 context.startActivity(chooser)
             } catch (exc: ActivityNotFoundException) {
+                exc.printStackTrace()
                 context.getString(R.string.no_app_to_handle_epub).toToast(context)
             }
         }

@@ -68,7 +68,8 @@ class ReaderActivity : AppCompatActivity() {
                 val coroutineScope = rememberCoroutineScope()
                 // Handle intent and load epub book.
                 val intentData = remember {
-                    handleIntent(intent = intent,
+                    handleIntent(
+                        intent = intent,
                         viewModel = viewModel,
                         contentResolver = contentResolver,
                         scrollToPosition = { index, offset ->
