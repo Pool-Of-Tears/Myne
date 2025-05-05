@@ -372,47 +372,49 @@ private fun LibraryLazyItem(
     val openDeleteDialog = remember { mutableStateOf(false) }
 
     // Swipe actions to show book details.
-    val detailsAction = SwipeAction(icon = painterResource(
-        id = if (settingsVm.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_info else R.drawable.ic_info_white
-    ), background = MaterialTheme.colorScheme.primary, onSwipe = {
-        viewModel.viewModelScope.launch {
-            delay(250L)
-            if (item.isExternalBook) {
-                snackBarHostState.showSnackbar(
-                    message = context.getString(R.string.external_book_info_unavailable),
-                    actionLabel = context.getString(R.string.ok),
-                    duration = SnackbarDuration.Short
-                )
-            } else {
-                navController.navigate(
-                    Screens.BookDetailScreen.withBookId(
-                        item.bookId.toString()
+    val detailsAction = SwipeAction(
+        icon = painterResource(
+            id = if (settingsVm.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_info else R.drawable.ic_info_white
+        ), background = MaterialTheme.colorScheme.primary, onSwipe = {
+            viewModel.viewModelScope.launch {
+                delay(250L)
+                if (item.isExternalBook) {
+                    snackBarHostState.showSnackbar(
+                        message = context.getString(R.string.external_book_info_unavailable),
+                        actionLabel = context.getString(R.string.ok),
+                        duration = SnackbarDuration.Short
                     )
-                )
+                } else {
+                    navController.navigate(
+                        Screens.BookDetailScreen.withBookId(
+                            item.bookId.toString()
+                        )
+                    )
+                }
             }
-        }
-    })
+        })
 
     // Swipe actions to share book.
-    val shareAction = SwipeAction(icon = painterResource(
-        id = if (settingsVm.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_share else R.drawable.ic_share_white
-    ), background = MaterialTheme.colorScheme.primary, onSwipe = {
-        val uri = FileProvider.getUriForFile(
-            context,
-            BuildConfig.APPLICATION_ID + ".provider",
-            File(item.filePath)
-        )
-        val intent = Intent(Intent.ACTION_SEND)
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        intent.type = context.contentResolver.getType(uri)
-        intent.putExtra(Intent.EXTRA_STREAM, uri)
-        context.startActivity(
-            Intent.createChooser(
-                intent,
-                context.getString(R.string.share_app_chooser)
+    val shareAction = SwipeAction(
+        icon = painterResource(
+            id = if (settingsVm.getCurrentTheme() == ThemeMode.Dark) R.drawable.ic_share else R.drawable.ic_share_white
+        ), background = MaterialTheme.colorScheme.primary, onSwipe = {
+            val uri = FileProvider.getUriForFile(
+                context,
+                BuildConfig.APPLICATION_ID + ".provider",
+                File(item.filePath)
             )
-        )
-    })
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.type = context.contentResolver.getType(uri)
+            intent.putExtra(Intent.EXTRA_STREAM, uri)
+            context.startActivity(
+                Intent.createChooser(
+                    intent,
+                    context.getString(R.string.share_app_chooser)
+                )
+            )
+        })
 
     SwipeableActionsBox(
         modifier = modifier.padding(vertical = 4.dp),
@@ -420,7 +422,8 @@ private fun LibraryLazyItem(
         endActions = listOf(detailsAction),
         swipeThreshold = 85.dp
     ) {
-        LibraryCard(title = item.title,
+        LibraryCard(
+            title = item.title,
             author = item.authors,
             item.getFileSize(),
             item.getDownloadDate(),
@@ -568,13 +571,15 @@ private fun LibraryCard(
                 }
 
                 Row(modifier = Modifier.offset(y = (-4).dp)) {
-                    LibraryCardButton(text = stringResource(id = R.string.library_read_button),
+                    LibraryCardButton(
+                        text = stringResource(id = R.string.library_read_button),
                         icon = ImageVector.vectorResource(id = R.drawable.ic_library_read),
                         onClick = { onReadClick() })
 
                     Spacer(modifier = Modifier.width(10.dp))
 
-                    LibraryCardButton(text = stringResource(id = R.string.library_delete_button),
+                    LibraryCardButton(
+                        text = stringResource(id = R.string.library_delete_button),
                         icon = Icons.Outlined.Delete,
                         onClick = { onDeleteClick() })
                 }
@@ -625,7 +630,8 @@ private fun LibraryCardButton(
 @Composable
 @Preview
 fun LibraryScreenPreview() {
-    LibraryCard(title = "The Idiot",
+    LibraryCard(
+        title = "The Idiot",
         author = "Fyodor Dostoevsky",
         fileSize = "5.9MB",
         date = "01- Jan -2020",

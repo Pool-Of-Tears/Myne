@@ -199,7 +199,8 @@ private fun HomeScreenScaffold(
                         })
                         sysBackButtonState.value = true
                     } else {
-                        HomeTopAppBar(bookLanguage = viewModel.language.value,
+                        HomeTopAppBar(
+                            bookLanguage = viewModel.language.value,
                             onSearchIconClicked = {
                                 viewModel.onAction(UserAction.SearchIconClicked)
                             }, onLanguageIconClicked = {

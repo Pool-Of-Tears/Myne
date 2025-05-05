@@ -529,14 +529,15 @@ private fun BookDetailTopBar(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Box(modifier = Modifier
-            .padding(22.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
-            .clickable {
-                view.weakHapticFeedback()
-                onShareClicked()
-            }) {
+        Box(
+            modifier = Modifier
+                .padding(22.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
+                .clickable {
+                    view.weakHapticFeedback()
+                    onShareClicked()
+                }) {
             Icon(
                 imageVector = Icons.Outlined.Share,
                 contentDescription = stringResource(id = R.string.back_button_desc),

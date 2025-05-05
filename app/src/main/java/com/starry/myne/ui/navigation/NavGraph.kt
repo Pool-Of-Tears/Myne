@@ -60,7 +60,8 @@ fun NavGraph(
         }
 
         /** Home Screen */
-        composable(route = BottomBarScreen.Home.route,
+        composable(
+            route = BottomBarScreen.Home.route,
             enterTransition = { bottomNavEnter() },
             exitTransition = {
                 if (initialState.destination.route == Screens.BookDetailScreen.route) {
@@ -94,7 +95,8 @@ fun NavGraph(
         }
 
         /** Categories Screen */
-        composable(route = BottomBarScreen.Categories.route,
+        composable(
+            route = BottomBarScreen.Categories.route,
             enterTransition = { bottomNavEnter() },
             exitTransition = {
                 if (initialState.destination.route == Screens.CategoryDetailScreen.route) {
@@ -126,7 +128,8 @@ fun NavGraph(
         }
 
         /** Library Screen */
-        composable(route = BottomBarScreen.Library.route,
+        composable(
+            route = BottomBarScreen.Library.route,
             enterTransition = { bottomNavEnter() },
             exitTransition = {
                 if (initialState.destination.route == Screens.BookDetailScreen.route
@@ -149,11 +152,12 @@ fun NavGraph(
         /** Reader Detail Screen */
         composable(
             route = Screens.ReaderDetailScreen.route,
-            arguments = listOf(navArgument(
-                LIBRARY_ITEM_ID_ARG_KEY
-            ) {
-                type = NavType.StringType
-            }),
+            arguments = listOf(
+                navArgument(
+                    LIBRARY_ITEM_ID_ARG_KEY
+                ) {
+                    type = NavType.StringType
+                }),
             enterTransition = { enterTransition() },
             exitTransition = { exitTransition() },
             popEnterTransition = { popEnterTransition() },
@@ -166,7 +170,8 @@ fun NavGraph(
         }
 
         /** Settings Screen */
-        composable(route = BottomBarScreen.Settings.route,
+        composable(
+            route = BottomBarScreen.Settings.route,
             enterTransition = { bottomNavEnter() },
             exitTransition = {
                 if (initialState.destination.route == Screens.OSLScreen.route || initialState.destination.route == Screens.AboutScreen.route) {
