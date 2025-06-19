@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Myne</string>
     <!-- Others Strings -->
-    <string name="not_applicable">N/D</string>
+    <string name="not_applicable">Non applicable</string>
     <string name="woops">Choubidouah !!</string>
     <string name="confirm">Confirmer</string>
     <string name="cancel">Annuler</string>
