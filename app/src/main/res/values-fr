@@ -6,11 +6,11 @@
     <string name="confirm">Confirmer</string>
     <string name="cancel">Annuler</string>
     <string name="ok">OK</string>
-    <string name="got_it">J'ai compris</string>
+    <string name="got_it">J\'ai compris</string>
     <string name="no_app_to_handle_epub">Aucune application trouvée pour ouvrir le fichier epub.</string>
     <string name="network_error">Flûte ! Échec de connexion au serveur.</string>
     <string name="network_error_retry">Réessayer</string>
-    <string name="error">Nom d'une pipe ! Une erreur s'est produite.</string>
+    <string name="error">Nom d\'une pipe ! Une erreur s\'est produite.</string>
     <string name="no_app_to_handle_content">Aucune application trouvée pour ouvrir ce contenu.</string>
 
     <!-- Navigation titles -->
@@ -75,7 +75,7 @@
     <string name="library_delete_dialog_title">Êtes-vous sûr ?</string>
 
     <!-- Reader Detail Screen -->
-    <string name="reader_detail_header">Lecteur d'ebook</string>
+    <string name="reader_detail_header">Lecteur d\'ebook</string>
     <string name="start_reading_button">Commencer</string>
     <string name="continue_reading_button">Reprendre</string>
     <string name="reader_chapters_list">Chapitres</string>
@@ -96,7 +96,7 @@
 
     <!-- Settings screen -->
     <string name="settings_header">Paramètres</string>
-    <string name="app_desc">Téléchargeur d'ebooks</string>
+    <string name="app_desc">Téléchargeur d\'ebooks</string>
     <string name="made_by">Fait avec ❤ par Shivam</string>
     <string name="general_settings_header">Paramètres généraux</string>
     <string name="default_reader_setting">Lecteur par défaut</string>
@@ -107,7 +107,7 @@
     <string name="default_locale_setting_desc">Sélectionnez votre langue préférée.</string>
     <string name="locale_setting_not_found">Désolé ! Cette fonctionnalité n’est pas encore prise en charge par votre OS.</string>
     <string name="google_books_api_setting">API Google Books</string>
-    <string name="google_books_api_setting_desc">Utiliser l'API Google Books pour récupérer des informations supplémentaires sur les livres.</string>
+    <string name="google_books_api_setting_desc">Utiliser l\'API Google Books pour récupérer des informations supplémentaires sur les livres.</string>
     <string name="display_setting_header">Affichage</string>
     <string name="theme_setting">Thème par défaut</string>
     <string name="theme_dialog_title">Changer le thème</string>
@@ -151,7 +151,7 @@
     <string name="project_contributors_desc">Découvrez nos formidables contributeurs.</string>
     <string name="useful_links">Liens utiles</string>
     <string name="link_readme">Lisez moi</string>
-    <string name="link_readme_desc">Consultez le README de l’app sur Github.</string>
+    <string name="link_readme_desc">Consultez le README de l\’app sur Github.</string>
     <string name="link_website">Site ouéb</string>
     <string name="link_website_desc">Visitez notre site pour plus d’informations.</string>
     <string name="link_privacy_policy">Politique de confidentialité</string>
