@@ -93,17 +93,17 @@ aboutLibraries {
 
 
 dependencies {
-    def composeBom = platform('androidx.compose:compose-bom:2025.04.01')
+    def composeBom = platform('androidx.compose:compose-bom:2025.06.01')
     implementation composeBom
     androidTestImplementation composeBom
 
     // Android core components.
     implementation 'androidx.core:core-ktx:1.16.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.9.1'
     implementation 'androidx.activity:activity-compose:1.10.1'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1"
     // TODO: Migrate to type-safe navigation.
-    implementation "androidx.navigation:navigation-compose:2.8.9"
+    implementation "androidx.navigation:navigation-compose:2.9.0"
     // Jetpack compose.
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.ui:ui-tooling-preview"
@@ -126,6 +126,7 @@ dependencies {
     // Coil Image loading library.
     implementation "io.coil-kt:coil-compose:2.6.0"
     // Room database components.
+    //noinspection GradleDependency
     implementation "androidx.room:room-ktx:$room_version"
     ksp "androidx.room:room-compiler:$room_version"
     androidTestImplementation "androidx.room:room-testing:$room_version"
@@ -141,7 +142,7 @@ dependencies {
     // TapTarget Compose
     implementation "com.pierfrancescosoffritti.taptargetcompose:core:1.1.2"
     // DataStore Preferences.
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
     // Open Source Libraries Screen.
     implementation "com.mikepenz:aboutlibraries-core:11.1.3"
     implementation "com.mikepenz:aboutlibraries-compose:11.1.3"
