@@ -217,9 +217,9 @@ class EpubParser(private val context: Context) {
         }
 
         // Determine the method of parsing chapters based on the presence of ToC and
-        // the shouldUseToc flag. We also check if the ToC file has more than one navPoint
+        // the shouldUseToc flag. We also check if the ToC file has more than two navPoint
         // to ensure that it is a valid ToC file.
-        val chapters = if (shouldUseToc && !tocNavPoints.isNullOrEmpty() && tocNavPoints.size > 1) {
+        val chapters = if (shouldUseToc && !tocNavPoints.isNullOrEmpty() && tocNavPoints.size > 2) {
             Log.d(TAG, "Parsing based on ToC file")
             parseUsingTocFile(tocNavPoints, files, hrefRootPath, document, manifestItems)
         } else {
