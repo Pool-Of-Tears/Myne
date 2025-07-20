@@ -11,3 +11,5 @@ Aspecte importante:
 - MAD: UI și logică scrise cu Kotlin pur. Activitate unică, fără fragmente, doar destinații compozibile.
 
 PS: *Numele aplicației este inspirat de personajul principal al unui anime numit Ascendance of a Bookworm.
+
+Notă: Aplicația utilizează, de asemenea, API-ul <a href='https://books.google.co.in/'>Google Books</a> pentru a obține unele date suplimentare, cum ar fi rezumatul cărții și numărul de pagini etc., deoarece proiectul GutenBerg nu include aceste valori în metadatele sale. Aplicația face tot posibilul pentru a corela datele primite de la Google Books cu metadatele Gutenberg, dar corelarea nu este 100% exactă și nu toate cărțile disponibile pe GutenBerg sunt disponibile și pe Google Books sau sunt disponibile dar cu un titlu diferit, astfel încât este posibil să găsiți unele cărți fără rezumat sau număr de pagini etc.
