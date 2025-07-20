@@ -11,3 +11,5 @@ Funkce:
 - MAD: uživatelské rozhraní a logika napsané v čistém jazyce Kotlin. Jedna aktivita, žádné fragmenty, pouze složitelné cíle.
 
 PS: *Název aplikace je inspirován hlavním hrdinou anime s názvem Ascendance of a Bookworm (Honzuki no gekokudžó).*
+
+Poznámka: Aplikace také využívá rozhraní <a href='https://books.google.co.in/'>Google Books</a> API k získání některých dalších údajů, jako je shrnutí knihy, počet stránek atd., protože projekt GutenBerg tyto hodnoty do svých metadat nezahrnuje. Snaží se co nejlépe mapovat data získaná z knih Google s metadaty Gutenbergu, ale mapování není 100% přesné a ne všechny knihy dostupné na GutenBerg jsou dostupné i na Google books nebo jsou dostupné, ale s jiným názvem, takže můžete najít některé knihy bez souhrnu nebo počtu stran atd.
