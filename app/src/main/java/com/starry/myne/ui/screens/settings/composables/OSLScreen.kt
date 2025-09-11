@@ -25,9 +25,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
-import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
+import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import com.starry.myne.R
 import com.starry.myne.ui.common.CustomTopAppBar
 
@@ -52,16 +52,12 @@ fun OSLScreen(navController: NavController) {
                 .padding(paddingValues)
         ) {
             LibrariesContainer(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 4.dp),
                 showAuthor = true,
                 showVersion = true,
                 showLicenseBadges = true,
-                colors = LibraryDefaults.libraryColors(
-                    backgroundColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.onBackground,
-                    badgeBackgroundColor = MaterialTheme.colorScheme.primary,
-                    badgeContentColor = MaterialTheme.colorScheme.onPrimary
-                )
             )
         }
     }
