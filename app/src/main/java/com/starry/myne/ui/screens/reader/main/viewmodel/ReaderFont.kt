@@ -53,8 +53,11 @@ sealed class ReaderFont(val id: String, val name: String, val fontFamily: FontFa
     data object Inter : ReaderFont("inter", "Inter", FontFamily(Font(R.font.reader_inter_font)))
 
     @Keep
-    data object Dyslexic :
-        ReaderFont("dyslexic", "OpenDyslexic", FontFamily(Font(R.font.reader_inter_font)))
+    data object Dyslexic : ReaderFont(
+        "dyslexic", "OpenDyslexic", FontFamily(
+            Font(R.font.reader_opendyslexic_font)
+        )
+    )
 
     @Keep
     data object Lora : ReaderFont("poppins", "Poppins", poppinsFont)
