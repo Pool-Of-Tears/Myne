@@ -1,0 +1,4 @@
+- Updated target SDK to Android 16 (API 36)
+- Added predictive back gesture support throughout the UI
+- Fixed an issue where the OpenDyslexic font was rendered incorrectly as Inter
+- Minor fixes and dependency updates for smoother, faster performance
