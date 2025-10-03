@@ -5,10 +5,10 @@
     <string name="woops">Упс!!</string>
     <string name="confirm">Подтвердить</string>
     <string name="cancel">Отменить</string>
-    <string name="ok">OK</string>
+    <string name="ok">Ладно</string>
     <string name="got_it">Понятно</string>
     <string name="no_app_to_handle_epub">Не удается найти ни одного приложения для открытия файла epub.</string>
-    <string name="network_error">Упс! Не удалось подключиться к серверу.</string>
+    <string name="network_error">Ой! Не удалось подключиться к серверу.</string>
     <string name="network_error_retry">Попытайтесь снова</string>
     <string name="error">Ой! Что-то пошло не так.</string>
     <string name="no_app_to_handle_content">Не удалось найти приложение для открытия этого содержимого.</string>
@@ -85,7 +85,7 @@
     <string name="dictionary">Значение</string>
     <!-- Settings screen. -->
     <string name="settings_header">Настройки</string>
-    <string name="app_desc">Установщик электронных книг</string>
+    <string name="app_desc">Скачиватель книг</string>
     <string name="made_by">"Сделано Shivam, с любовью ❤"</string>
     <string name="general_settings_header">Общие</string>
     <string name="default_reader_setting">Читалка по умолчанию</string>
@@ -102,11 +102,11 @@
     <string name="theme_dialog_title">Изменить тему</string>
     <string name="theme_option_light">Светлая</string>
     <string name="theme_option_dark">Тёмная</string>
-    <string name="theme_option_system">Системная</string>
+    <string name="theme_option_system">Как в системе</string>
     <string name="theme_dialog_apply_button">Применить</string>
     <string name="amoled_theme_setting">Тёмная тема</string>
-    <string name="amoled_theme_setting_disabled_desc">Включить тёмную тему AMOLED</string>
-    <string name="amoled_theme_setting_enabled_desc">Отключить тёмную тему AMOLED</string>
+    <string name="amoled_theme_setting_disabled_desc">Включить полностью тёмную тему</string>
+    <string name="amoled_theme_setting_enabled_desc">Отключить полностью тёмную тему</string>
     <string name="material_you_setting_disabled_desc">Включить Material You</string>
     <string name="material_you_setting_enabled_desc">Отключить Material You</string>
     <string name="material_you_error">Эта функция доступна только для устройств под управлением Android 12 или выше.</string>
@@ -123,28 +123,28 @@
     <string name="share_button_desc">Поделиться книгой.</string>
     <string name="share_intent_header">Поделиться через…</string>
     <string name="read_book_button">Начать чтение</string>
-    <string name="download_book_button">Загрузить</string>
-    <string name="download_started">Загрузка началась!</string>
+    <string name="download_book_button">Скачать</string>
+    <string name="download_started">Скачивание началось!</string>
     <string name="book_synopsis">Краткий обзор</string>
     <string name="book_synopsis_not_found">Недоступно</string>
     <!-- About Screen -->
     <string name="about_header">Описание</string>
     <string name="about_desc">Бесплатное приложение с открытым исходным кодом для загрузки электронных книг из проекта GutenBerg.</string>
     <string name="developed_by">Разработано</string>
-    <string name="project_contributors">Участники Проекта</string>
+    <string name="project_contributors">Участники</string>
     <string name="project_contributors_desc">Познакомьтесь с нашими замечательными участниками.</string>
-    <string name="useful_links">Полезные Ссылки</string>
-    <string name="link_readme">README</string>
+    <string name="useful_links">Полезные ссылки</string>
+    <string name="link_readme">ПРОЧТИ МЕНЯ</string>
     <string name="link_readme_desc">Информация о проекте на Github.</string>
     <string name="link_website">Веб-сайт</string>
     <string name="link_website_desc">Посетите наш веб-сайт для получения дополнительной информации.</string>
     <string name="link_privacy_policy">Политика Конфиденциальности</string>
     <string name="link_privacy_policy_desc">Прочтите нашу последнюю политику конфиденциальности.</string>
-    <string name="link_gh_issue">Темы на Github</string>
-    <string name="link_gh_issue_desc">Книга жалоб и предложений.</string>
-    <string name="link_telegram">Группа Telegram</string>
+    <string name="link_gh_issue">Список задач на Github</string>
+    <string name="link_gh_issue_desc">Напишите отчёт об ошибке или предложение на Гитхабе.</string>
+    <string name="link_telegram">Группа в Telegram</string>
     <string name="link_telegram_desc">Общайтесь с нами в Telegram!</string>
-    <string name="link_support">Поддержать Разработку</string>
+    <string name="link_support">Поддержать разработку</string>
     <string name="link_support_desc">На кофе с печеньками:)</string>
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">Лицензии</string>
