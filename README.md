@@ -82,14 +82,14 @@ Contributions are welcome!
 
 <h2 align="center">Translations</h2>
 
-Please help to translate the app on [Weblate](https://toolate.othing.xyz/projects/myne/).
+You can help to translate the app on [Weblate](https://toolate.othing.xyz/projects/myne/).
 
 <a href="https://toolate.othing.xyz/projects/myne/">
 <img src="https://toolate.othing.xyz/widget/myne/multi-auto.svg" alt="Translation status" />
 </a>
 
-You can also translate manually and create a pull request with
-your translation file. The base string resources can be found under:
+Alternatively, you can translate manually and create a pull request with your translation file.
+The base string resources can be found at:
 ```
 /app/src/main/res/values/strings.xml
 ```
