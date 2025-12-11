@@ -1,0 +1,4 @@
+- Added ability to open library screen at startup.
+- Some small optimizations and code cleanup.
+- Updated translations for several languages.
+- Updated dependencies, AGP & Kotlin versions.
