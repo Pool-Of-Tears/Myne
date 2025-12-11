@@ -108,6 +108,8 @@
     <string name="locale_setting_not_found">抱歉！此功能目前尚不受您的操作系统支持。</string>
     <string name="google_books_api_setting">Google 图书 API</string>
     <string name="google_books_api_setting_desc">使用 Google 图书 API 获取更多图书信息。</string>
+    <string name="open_library_at_start_setting">启动时打开书库</string>
+    <string name="open_library_at_start_setting_desc">启动应用时打开书库界面。</string>
     <string name="display_setting_header">外观</string>
     <string name="theme_setting">默认主题</string>
     <string name="theme_dialog_title">更改主题</string>

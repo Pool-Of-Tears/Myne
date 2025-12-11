@@ -107,6 +107,8 @@
     <string name="locale_setting_not_found">দুঃখিত! এই ফিচার এখনও আপনার ওএস এর জন্য আসেনি৷</string>
     <string name="google_books_api_setting">গুগল বই API</string>
     <string name="google_books_api_setting_desc">অতিরিক্ত বইয়ের তথ্য আনতে Google Books API ব্যবহার করুন।</string>
+    <string name="open_library_at_start_setting">স্টার্টে লাইব্রেরি খুলুন</string>
+    <string name="open_library_at_start_setting_desc">অ্যাপ শুরু হলে লাইব্রেরি স্ক্রিন খুলুন।</string>
     <string name="display_setting_header">ডিসপ্লে</string>
     <string name="theme_setting">ডিফল্ট থিম</string>
     <string name="theme_dialog_title">থিম বদলান</string>

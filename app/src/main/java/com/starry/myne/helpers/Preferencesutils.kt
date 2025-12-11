@@ -30,14 +30,21 @@ class PreferenceUtil(context: Context) {
     companion object {
         private const val PREFS_NAME = "myne_settings"
 
-        // Preference keys
+        // General settings preference keys
+        const val INTERNAL_READER_BOOL = "internal_reader"
+        const val USE_GOOGLE_API_BOOL = "use_google_books_api"
+        const val OPEN_LIBRARY_AT_START_BOOL = "launch_library_at_start"
+
+        // App theme preference keys
         const val APP_THEME_INT = "theme_settings"
         const val AMOLED_THEME_BOOL = "amoled_theme"
         const val MATERIAL_YOU_BOOL = "material_you"
-        const val INTERNAL_READER_BOOL = "internal_reader"
-        const val USE_GOOGLE_API_BOOL = "use_google_books_api"
+
+        // Reader preference keys
         const val READER_FONT_SIZE_INT = "reader_font_size"
         const val READER_FONT_STYLE_STR = "reader_font_style"
+
+        // Home screen preference keys
         const val PREFERRED_BOOK_LANG_STR = "preferred_book_language"
 
         // Temporary preference keys
@@ -54,6 +61,10 @@ class PreferenceUtil(context: Context) {
         prefs.edit {
             if (!keyExists(INTERNAL_READER_BOOL)) putBoolean(INTERNAL_READER_BOOL, true)
             if (!keyExists(USE_GOOGLE_API_BOOL)) putBoolean(USE_GOOGLE_API_BOOL, true)
+            if (!keyExists(OPEN_LIBRARY_AT_START_BOOL)) putBoolean(
+                OPEN_LIBRARY_AT_START_BOOL,
+                false
+            )
         }
     }
 

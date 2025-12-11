@@ -44,7 +44,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -141,7 +141,7 @@ fun SettingItemWIthSwitch(
     icon: ImageVector,
     mainText: String,
     subText: String,
-    switchState: MutableState<Boolean>,
+    switchState: State<Boolean>,
     onCheckChange: (Boolean) -> Unit
 ) {
     val view = LocalView.current

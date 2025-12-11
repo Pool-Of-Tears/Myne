@@ -29,6 +29,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.progress.ProgressDao
+import com.starry.myne.helpers.PreferenceUtil
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.navigation.Screens
 import com.starry.myne.ui.screens.welcome.viewmodels.WelcomeDataStore
@@ -43,7 +44,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val welcomeDataStore: WelcomeDataStore,
     private val libraryDao: LibraryDao,
-    private val progressDao: ProgressDao
+    private val progressDao: ProgressDao,
+    private val preferenceUtil: PreferenceUtil
 ) :
     ViewModel() {
     private val _isLoading: MutableState<Boolean> = mutableStateOf(true)
@@ -69,7 +71,13 @@ class MainViewModel @Inject constructor(
             // Check if user has completed onboarding.
             welcomeDataStore.readOnBoardingState().collect { completed ->
                 if (completed) {
-                    _startDestination.value = BottomBarScreen.Home.route
+                    val openLibrary =
+                        preferenceUtil.getBoolean(PreferenceUtil.OPEN_LIBRARY_AT_START_BOOL, false)
+                    if (openLibrary) {
+                        _startDestination.value = BottomBarScreen.Library.route
+                    } else {
+                        _startDestination.value = BottomBarScreen.Home.route
+                    }
                 } else {
                     _startDestination.value = Screens.WelcomeScreen.route
                 }
