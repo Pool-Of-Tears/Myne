@@ -106,6 +106,8 @@
     <string name="locale_setting_not_found">क्षमा करें! यह सुविधा अभी तक आपके ऑपरेटिंग सिस्टम द्वारा समर्थित नहीं है।</string>
     <string name="google_books_api_setting">Google Books API</string>
     <string name="google_books_api_setting_desc">अतिरिक्त पुस्तक जानकारी प्राप्त करने के लिए Google Books API का उपयोग करें।</string>
+    <string name="open_library_at_start_setting">स्टार्ट पर लाइब्रेरी खोलें</string>
+    <string name="open_library_at_start_setting_desc">ऐप शुरू होने पर लाइब्रेरी स्क्रीन खोलें।</string>
     <string name="display_setting_header">डिस्प्ले</string>
     <string name="theme_setting">डिफ़ॉल्ट थीम</string>
     <string name="theme_dialog_title">थीम बदलें</string>

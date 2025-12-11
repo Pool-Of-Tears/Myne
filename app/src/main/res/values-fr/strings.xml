@@ -108,6 +108,8 @@
     <string name="locale_setting_not_found">Désolé ! Cette fonctionnalité n’est pas encore prise en charge par votre OS.</string>
     <string name="google_books_api_setting">API Google Books</string>
     <string name="google_books_api_setting_desc">Utiliser l\'API Google Books pour récupérer des informations supplémentaires sur les livres.</string>
+    <string name="open_library_at_start_setting">Ouvrir la bibliothèque au démarrage</string>
+    <string name="open_library_at_start_setting_desc">Ouvrir l\'écran de la bibliothèque au démarrage de l\'application.</string>
     <string name="display_setting_header">Affichage</string>
     <string name="theme_setting">Thème par défaut</string>
     <string name="theme_dialog_title">Changer le thème</string>
