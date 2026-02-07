@@ -28,3 +28,6 @@
     public static *** w(...);
     public static *** e(...);
 }
+
+# fix for Jsoup/OkHttp3 error
+-dontwarn com.google.re2j.**
