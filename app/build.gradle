@@ -60,9 +60,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-    lintOptions {
-        abortOnError true
-    }
     kotlinOptions {
         jvmTarget = '17'
         freeCompilerArgs = ['-Xjvm-default=all-compatibility']
@@ -87,6 +84,9 @@ android {
         resources {
             pickFirsts += ['META-INF/versions/9/OSGI-INF/MANIFEST.MF']
         }
+    }
+    lint {
+        abortOnError true
     }
 }
 
