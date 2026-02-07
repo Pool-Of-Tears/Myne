@@ -27,7 +27,7 @@ object Constants {
     const val UNKNOWN_ERR = "unknown-error"
 
     // URLs
-    const val DEV_EMAIL = "starry@krsh.dev"
+    const val DEV_EMAIL = "loafy.hawk@gmail.com"
     const val DEV_GITHUB_URL = "https://github.com/starry-shivam"
     const val DEV_TELEGRAM_URL = "https://t.me/starryboi"
     const val PROJECT_CONTRIBUTORS = "https://github.com/Pool-Of-Tears/Myne/graphs/contributors"

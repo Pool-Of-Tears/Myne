@@ -352,7 +352,7 @@ private fun DeveloperCard(context: Context) {
 
                 Text(
                     text = Constants.DEV_EMAIL,
-                    fontSize = 16.sp,
+                    fontSize = 15.sp,
                     fontFamily = poppinsFont,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onBackground,
@@ -367,7 +367,7 @@ private fun DeveloperCard(context: Context) {
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                Row(modifier = Modifier.offset(x = (-4.dp))) {
+                Row(modifier = Modifier.offset(x = ((-4).dp))) {
                     LinkButton(
                         text = "Github",
                         icon = ImageVector.vectorResource(id = R.drawable.ic_github_logo)

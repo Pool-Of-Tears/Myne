@@ -50,7 +50,7 @@ import kotlin.coroutines.suspendCoroutine
  */
 class BookAPI(context: Context, private val preferenceUtil: PreferenceUtil) {
 
-    private val baseApiUrl = "https://myne.krsh.dev/books"
+    private val baseApiUrl = "https://myne.abyx.in/books"
     private val googleBooksUrl = "https://www.googleapis.com/books/v1/volumes"
 
     private val googleApiKey =
