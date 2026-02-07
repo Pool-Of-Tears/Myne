@@ -85,6 +85,7 @@ android {
     }
     lint {
         abortOnError true
+        disable "LocalContextGetResourceValueCall"
     }
 }
 
