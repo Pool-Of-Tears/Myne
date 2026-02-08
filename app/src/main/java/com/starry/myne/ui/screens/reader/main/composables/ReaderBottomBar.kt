@@ -61,16 +61,15 @@ fun ReaderBottomBar(
             .fillMaxWidth()
             .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
-            .padding(vertical = 24.dp, horizontal = 16.dp)
+            .padding(vertical = 24.dp, horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextScaleControls(
             fontSize = state.fontSize,
             snackBarHostState = snackBarHostState,
             onFontSizeChanged = onFontSizeChanged
         )
-
-        Spacer(modifier = Modifier.height(14.dp))
-
+        Spacer(modifier = Modifier.height(16.dp))
         FontSelectionButton(
             readerFontFamily = state.fontFamily,
             showFontDialog = showFontDialog
@@ -78,52 +77,45 @@ fun ReaderBottomBar(
     }
 }
 
-
 @Composable
 private fun TextScaleControls(
     fontSize: Int,
     snackBarHostState: SnackbarHostState,
     onFontSizeChanged: (newValue: Int) -> Unit
 ) {
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
+    Row(
+        modifier = Modifier.fillMaxWidth(0.9f),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.width(335.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        ReaderTextScaleButton(
+            buttonType = TextScaleButtonType.DECREASE,
+            fontSize = fontSize,
+            snackBarHostState = snackBarHostState,
+            onFontSizeChanged = onFontSizeChanged
+        )
+        Box(
+            modifier = Modifier
+                .height(45.dp)
+                .weight(1f)
+                .padding(horizontal = 8.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(ButtonDefaults.filledTonalButtonColors().containerColor),
+            contentAlignment = Alignment.Center
         ) {
-            ReaderTextScaleButton(
-                buttonType = TextScaleButtonType.DECREASE,
-                fontSize = fontSize,
-                snackBarHostState = snackBarHostState,
-                onFontSizeChanged = onFontSizeChanged
-            )
-
-            Box(
-                modifier = Modifier
-                    .size(100.dp, 45.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(ButtonDefaults.filledTonalButtonColors().containerColor),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = fontSize.toString(),
-                    fontFamily = poppinsFont,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(start = 2.dp, bottom = 1.dp)
-                )
-            }
-
-            ReaderTextScaleButton(
-                buttonType = TextScaleButtonType.INCREASE,
-                fontSize = fontSize,
-                snackBarHostState = snackBarHostState,
-                onFontSizeChanged = onFontSizeChanged
+            Text(
+                text = fontSize.toString(),
+                fontFamily = poppinsFont,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
+        ReaderTextScaleButton(
+            buttonType = TextScaleButtonType.INCREASE,
+            fontSize = fontSize,
+            snackBarHostState = snackBarHostState,
+            onFontSizeChanged = onFontSizeChanged
+        )
     }
 }
 
@@ -132,26 +124,24 @@ private fun FontSelectionButton(
     readerFontFamily: ReaderFont,
     showFontDialog: MutableState<Boolean>
 ) {
-    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-        FilledTonalButton(
-            onClick = { showFontDialog.value = true },
-            modifier = Modifier
-                .width(365.dp)
-                .padding(horizontal = 14.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_font),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = readerFontFamily.name,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
+    FilledTonalButton(
+        onClick = { showFontDialog.value = true },
+        modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .height(45.dp),
+        shape = RoundedCornerShape(16.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_reader_font),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = readerFontFamily.name,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }
