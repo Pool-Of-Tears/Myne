@@ -18,15 +18,17 @@ package com.starry.myne.ui.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -71,9 +73,9 @@ fun BookItemCard(
     onClick: () -> Unit
 ) {
     val view = LocalView.current
+
     Card(
         modifier = Modifier
-            .height(160.dp)
             .fillMaxWidth(),
         onClick = {
             view.weakHapticFeedback()
@@ -84,23 +86,33 @@ fun BookItemCard(
         ),
         shape = RoundedCornerShape(6.dp)
     ) {
-        Row(modifier = Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+                .heightIn(min = 140.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             val imageBackground = if (isSystemInDarkTheme()) {
                 MaterialTheme.colorScheme.onSurface
             } else {
                 MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
             }
+
             Box(
                 modifier = Modifier
                     .weight(1.5f)
+                    .fillMaxHeight()
                     .padding(10.dp)
                     .clip(RoundedCornerShape(6.dp))
                     .background(imageBackground)
                     .placeholder(isLoading = loadingEffect)
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current).data(coverImageUrl)
-                        .crossfade(true).build(),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(coverImageUrl)
+                        .crossfade(true)
+                        .build(),
                     placeholder = painterResource(id = R.drawable.placeholder_cat),
                     contentDescription = stringResource(id = R.string.cover_image_desc),
                     modifier = Modifier.fillMaxSize(),
@@ -112,20 +124,20 @@ fun BookItemCard(
                 modifier = Modifier
                     .weight(3f)
                     .fillMaxHeight()
+                    .padding(vertical = 10.dp),
+                verticalArrangement = Arrangement.Center
             ) {
-                Spacer(modifier = Modifier.weight(1f))
-
                 Text(
                     text = title,
                     modifier = Modifier
-                        .padding(start = 12.dp, end = 8.dp, top = 2.dp)
+                        .padding(horizontal = 12.dp)
                         .fillMaxWidth()
                         .placeholder(isLoading = loadingEffect),
                     fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
                     fontSize = 16.sp,
                     fontFamily = poppinsFont,
                     fontWeight = FontWeight.Bold,
-                    maxLines = 2,
+                    maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
@@ -133,9 +145,8 @@ fun BookItemCard(
                 Text(
                     text = author,
                     modifier = Modifier
-                        .padding(start = 12.dp, end = 8.dp)
-                        .placeholder(isLoading = loadingEffect)
-                        .offset(y = (-4).dp),
+                        .padding(start = 12.dp, end = 12.dp, top = 2.dp)
+                        .placeholder(isLoading = loadingEffect),
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
                     lineHeight = 20.sp,
@@ -144,10 +155,12 @@ fun BookItemCard(
                     fontSize = 14.sp,
                 )
 
+                Spacer(modifier = Modifier.height(12.dp))
+
                 Text(
                     text = language,
                     modifier = Modifier
-                        .padding(start = 12.dp, end = 8.dp)
+                        .padding(horizontal = 12.dp)
                         .placeholder(isLoading = loadingEffect),
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 15.sp,
@@ -159,7 +172,7 @@ fun BookItemCard(
                 Text(
                     text = subjects,
                     modifier = Modifier
-                        .padding(start = 12.dp, end = 8.dp, bottom = 2.dp)
+                        .padding(start = 12.dp, end = 12.dp, top = 2.dp)
                         .placeholder(isLoading = loadingEffect),
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
@@ -169,8 +182,6 @@ fun BookItemCard(
                     fontSize = 13.sp,
                     lineHeight = 18.sp
                 )
-
-                Spacer(modifier = Modifier.weight(1f))
             }
         }
     }

@@ -24,6 +24,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,7 +33,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -80,7 +81,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.starry.myne.BuildConfig
 import com.starry.myne.MainActivity
 import com.starry.myne.R
@@ -128,23 +128,28 @@ fun SettingsScreen(navController: NavController) {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-@ExperimentalMaterial3Api
 private fun SettingsCard() {
     Card(
         modifier = Modifier
-            .height(150.dp)
             .padding(10.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(6.dp)
     ) {
-        Row(
+        FlowRow(
             modifier = Modifier
                 .padding(20.dp)
-                .fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Center,
+            maxItemsInEachRow = Int.MAX_VALUE
         ) {
-            Column {
+            Column(
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .padding(bottom = 2.dp)
+            ) {
                 Text(
                     text = "${stringResource(id = R.string.app_name)} ${stringResource(id = R.string.app_desc)}",
                     fontFamily = poppinsFont,
@@ -165,8 +170,7 @@ private fun SettingsCard() {
                     modifier = Modifier.padding(top = 10.dp),
                     onClick = {},
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        disabledContainerColor = MaterialTheme.colorScheme.primary
+                        containerColor = MaterialTheme.colorScheme.primary
                     ),
                     contentPadding = PaddingValues(horizontal = 30.dp),
                 ) {
@@ -182,10 +186,8 @@ private fun SettingsCard() {
 
             Box(
                 modifier = Modifier
-                    .height(90.dp)
-                    .width(90.dp)
+                    .size(90.dp)
                     .clip(CircleShape)
-                    //  .padding(10.dp)
                     .background(MaterialTheme.colorScheme.surface),
                 contentAlignment = Alignment.Center
             ) {
@@ -563,5 +565,5 @@ private fun InformationUI(navController: NavController) {
 @Composable
 @Preview
 fun SettingsScreenPreview() {
-    SettingsScreen(rememberNavController())
+    SettingsCard()
 }
