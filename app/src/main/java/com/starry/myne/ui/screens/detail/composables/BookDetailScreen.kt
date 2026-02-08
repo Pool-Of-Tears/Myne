@@ -25,12 +25,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -74,7 +76,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionResult
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -373,63 +374,67 @@ private fun MiddleBar(
             }
         }
 
+
         Card(
             modifier = Modifier
-                .height(90.dp)
                 .fillMaxWidth()
                 .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 6.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                    2.dp
-                )
+                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
             )
         ) {
-            Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+                    .heightIn(min = 75.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Row {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_book_language),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.padding(top = 14.dp, bottom = 14.dp, end = 4.dp)
+                            modifier = Modifier.padding(end = 4.dp)
                         )
                         Text(
                             text = bookLang,
-                            modifier = Modifier.padding(top = 14.dp, bottom = 14.dp, start = 4.dp),
                             fontSize = 16.sp,
                             fontFamily = poppinsFont,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
                     }
-
                 }
+
                 VerticalDivider(
                     modifier = Modifier
                         .fillMaxHeight(0.6f)
-                        .width(2.dp)
+                        .width(1.dp),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
                 )
+
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Row {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_book_pages),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.padding(top = 13.dp, bottom = 15.dp, end = 4.dp)
+                            modifier = Modifier.padding(end = 4.dp)
                         )
                         Text(
                             text = pageCount,
-                            modifier = Modifier.padding(top = 14.dp, bottom = 14.dp, start = 4.dp),
                             fontSize = 16.sp,
                             fontFamily = poppinsFont,
                             fontWeight = FontWeight.SemiBold,
@@ -437,27 +442,29 @@ private fun MiddleBar(
                         )
                     }
                 }
+
                 VerticalDivider(
                     modifier = Modifier
                         .fillMaxHeight(0.6f)
-                        .width(2.dp)
+                        .width(1.dp),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
                 )
+
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Row {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_book_downloads),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.padding(top = 15.dp, bottom = 13.dp, end = 4.dp)
+                            modifier = Modifier.padding(end = 4.dp)
                         )
                         Text(
                             text = downloadCount,
-                            modifier = Modifier.padding(top = 14.dp, bottom = 14.dp, start = 4.dp),
                             fontSize = 16.sp,
                             fontFamily = poppinsFont,
                             fontWeight = FontWeight.SemiBold,
@@ -588,10 +595,25 @@ private fun NoSynopsisUI() {
 
 
 @Composable
+@Preview
+fun MiddleBarPreview(modifier: Modifier = Modifier) {
+    MiddleBar(
+        bookLang = "English",
+        pageCount = "256",
+        downloadCount = "1.2K",
+        progressValue = 0.5f,
+        buttonText = "Download",
+        showProgressBar = true,
+        onButtonClick = {}
+    )
+}
+
+/*
+@Composable
 @Preview(showBackground = true)
 fun BookDetailScreenPreview() {
     BookDetailScreen(
         bookId = "0",
         navController = rememberNavController(),
     )
-}
+}*/

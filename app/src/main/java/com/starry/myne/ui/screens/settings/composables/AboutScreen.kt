@@ -311,7 +311,6 @@ private fun AppInfoCard() {
 private fun DeveloperCard(context: Context) {
     Card(
         modifier = Modifier
-            .height(135.dp)
             .fillMaxWidth()
             .padding(horizontal = 14.dp),
         colors = CardDefaults.cardColors(
@@ -321,7 +320,10 @@ private fun DeveloperCard(context: Context) {
         ),
     ) {
         Row(
-            modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
