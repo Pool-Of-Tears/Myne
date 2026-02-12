@@ -1,0 +1,2 @@
+- Fixed scaling issues of UI elements on larger font sizes, improving accessibility for users with visual impairments.
+- Updated all of the dependencies and AGP to the latest versions.
