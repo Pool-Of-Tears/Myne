@@ -20,6 +20,7 @@ package com.starry.myne.ui.screens.reader.detail
 import android.content.Intent
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +31,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +45,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -57,6 +62,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
@@ -75,16 +81,36 @@ import com.starry.myne.ui.screens.reader.main.activities.ReaderActivity
 import com.starry.myne.ui.screens.reader.main.activities.ReaderConstants
 import com.starry.myne.ui.theme.poppinsFont
 
+@Composable
+fun ReaderDetailScreen(
+    libraryItemId: String,
+    navController: NavController,
+    networkStatus: NetworkObserver.Status,
+    viewModel: ReaderDetailViewModel = hiltViewModel(),
+) {
+    val state = viewModel.state
+    val readerData by (viewModel.progressData?.collectAsStateWithLifecycle(initialValue = null)
+        ?: remember { mutableStateOf(null) })
+
+    LaunchedEffect(key1 = true) { viewModel.loadEbookData(libraryItemId, networkStatus) }
+
+    ReaderDetailScreen(
+        libraryItemId = libraryItemId,
+        navController = navController,
+        state = state,
+        progressData = readerData,
+    )
+}
 
 @Composable
 fun ReaderDetailScreen(
-    libraryItemId: String, navController: NavController, networkStatus: NetworkObserver.Status
+    libraryItemId: String,
+    navController: NavController,
+    state: ReaderDetailScreenState,
+    progressData: ProgressData?
 ) {
     val context = LocalContext.current
-    val viewModel: ReaderDetailViewModel = hiltViewModel()
-    val state = viewModel.state
 
-    LaunchedEffect(key1 = true) { viewModel.loadEbookData(libraryItemId, networkStatus) }
 
     Crossfade(targetState = state.isLoading, label = "ReaderDetailLoadingCrossFade") { isLoading ->
         if (isLoading) {
@@ -101,16 +127,13 @@ fun ReaderDetailScreen(
                 stringResource(id = R.string.error).toToast(context)
                 navController.navigateUp()
             } else {
-                // Collect saved reader progress for the current book.
-                val readerData = viewModel.progressData?.collectAsState(initial = null)?.value
                 ReaderDetailScaffold(
                     libraryItemId = libraryItemId,
-                    progressData = readerData,
+                    progressData = progressData,
                     state = state,
                     navController = navController
                 )
             }
-
         }
     }
 }
@@ -180,14 +203,18 @@ private fun ReaderDetailScaffold(
             ) {
                 items(state.chapters.size) { idx ->
                     val chapter = state.chapters[idx]
-                    ChapterItem(chapterTitle = chapter.title, onClick = {
-                        val intent = Intent(context, ReaderActivity::class.java)
-                        intent.putExtra(
-                            ReaderConstants.EXTRA_LIBRARY_ITEM_ID, libraryItemId.toInt()
-                        )
-                        intent.putExtra(ReaderConstants.EXTRA_CHAPTER_IDX, idx)
-                        context.startActivity(intent)
-                    })
+                    ChapterItem(
+                        chapterTitle = chapter.title,
+                        isRead = idx < (progressData?.lastChapterIndex ?: 0),
+                        onClick = {
+                            val intent = Intent(context, ReaderActivity::class.java)
+                            intent.putExtra(
+                                ReaderConstants.EXTRA_LIBRARY_ITEM_ID, libraryItemId.toInt()
+                            )
+                            intent.putExtra(ReaderConstants.EXTRA_CHAPTER_IDX, idx)
+                            context.startActivity(intent)
+                        },
+                    )
                 }
             }
         }
@@ -195,7 +222,11 @@ private fun ReaderDetailScaffold(
 }
 
 @Composable
-private fun ChapterItem(chapterTitle: String, onClick: () -> Unit) {
+private fun ChapterItem(
+    chapterTitle: String,
+    isRead: Boolean,
+    onClick: () -> Unit,
+) {
     val view = LocalView.current
     Card(
         onClick = {
@@ -211,12 +242,11 @@ private fun ChapterItem(chapterTitle: String, onClick: () -> Unit) {
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(vertical = 12.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
         ) {
             Text(
-                modifier = Modifier
-                    .weight(3f)
-                    .padding(start = 12.dp),
+                modifier = Modifier.weight(3f),
                 text = chapterTitle,
                 fontFamily = poppinsFont,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -224,14 +254,26 @@ private fun ChapterItem(chapterTitle: String, onClick: () -> Unit) {
                 fontWeight = FontWeight.SemiBold,
             )
 
-            Icon(
-                modifier = Modifier
-                    .size(15.dp)
-                    .weight(0.4f),
-                painter = painterResource(id = R.drawable.ic_right_arrow),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                if (isRead) {
+                    Icon(
+                        modifier = Modifier.size(15.dp),
+                        imageVector = Icons.Default.CheckCircleOutline,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                Icon(
+                    modifier = Modifier.size(15.dp),
+                    painter = painterResource(id = R.drawable.ic_right_arrow),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
     }
 
@@ -245,6 +287,16 @@ private fun ChapterItem(chapterTitle: String, onClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun EpubDetailScreenPV() {
-    ReaderDetailScreen("", rememberNavController(), NetworkObserver.Status.Available)
+    ReaderDetailScreen(
+        "",
+        rememberNavController(),
+        state = ReaderDetailScreenState(),
+        progressData = ProgressData(
+            libraryItemId = 0,
+            lastChapterIndex = 0,
+            lastChapterOffset = 0,
+            lastReadTime = 0,
+        ),
+    )
     //ReaderError(rememberNavController())
 }
