@@ -44,6 +44,8 @@ import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.theme.MyneTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
 
@@ -88,28 +90,47 @@ class ReaderActivity : AppCompatActivity() {
                     onScrollToChapter = { lazyListState.scrollToItem(it) },
                     chaptersContent = {
                         LaunchedEffect(lazyListState) {
-                            snapshotFlow {
-                                lazyListState.firstVisibleItemScrollOffset
-                            }.collect { visibleChapterOffset ->
-                                // Get the currently visible chapter index.
-                                val visibleChapterIdx = lazyListState.firstVisibleItemIndex
-                                // Set currently visible chapter & index.
-                                viewModel.setVisibleChapterIndex(visibleChapterIdx)
-                                viewModel.setChapterScrollPercent(
-                                    calculateChapterPercentage(lazyListState)
-                                )
-                                // If book was not opened from external epub file, update the
-                                // reading progress into the database.
-                                if (!intentData.isExternalFile) {
-                                    viewModel.updateReaderProgress(
-                                        // Book ID is not null here since we are not opening
-                                        // an external book.
-                                        libraryItemId = intentData.libraryItemId!!,
-                                        chapterIndex = visibleChapterIdx,
-                                        chapterOffset = visibleChapterOffset
-                                    )
+                            snapshotFlow { lazyListState.firstVisibleItemIndex }
+                                .distinctUntilChanged()
+                                .collect { visibleChapterIdx ->
+                                    viewModel.setVisibleChapterIndex(visibleChapterIdx)
                                 }
-                            }
+                        }
+
+                        LaunchedEffect(lazyListState) {
+                            snapshotFlow {
+                                lazyListState.layoutInfo.visibleItemsInfo.map { it.index }
+                            }.distinctUntilChanged()
+                                .collect { indices ->
+                                    indices.forEach { idx ->
+                                        viewModel.loadChapterBody(idx)
+                                        viewModel.loadChapterBody(idx + 1)
+                                        viewModel.loadChapterBody(idx - 1)
+                                    }
+                                }
+                        }
+
+                        LaunchedEffect(lazyListState) {
+                            snapshotFlow {
+                                Pair(
+                                    lazyListState.firstVisibleItemIndex,
+                                    lazyListState.firstVisibleItemScrollOffset
+                                )
+                            }.filter { (idx, _) -> idx >= 0 }
+                                .collect { (visibleChapterIdx, visibleChapterOffset) ->
+                                    viewModel.setChapterScrollPercent(
+                                        calculateChapterPercentage(lazyListState)
+                                    )
+                                    // If book was not opened from external epub file, update the
+                                    // reading progress into the database.
+                                    if (!intentData.isExternalFile && intentData.libraryItemId != null) {
+                                        viewModel.updateReaderProgress(
+                                            libraryItemId = intentData.libraryItemId,
+                                            chapterIndex = visibleChapterIdx,
+                                            chapterOffset = visibleChapterOffset
+                                        )
+                                    }
+                                }
                         }
 
                         // Reader content lazy column.
@@ -117,7 +138,8 @@ class ReaderActivity : AppCompatActivity() {
                         ChaptersContent(
                             state = state,
                             lazyListState = lazyListState,
-                            onToggleReaderMenu = { viewModel.toggleReaderMenu() }
+                            onToggleReaderMenu = { viewModel.toggleReaderMenu() },
+                            onLoadImage = { viewModel.loadImageData(it) }
                         )
 
                         // Toggle system bars based on reader menu visibility.
@@ -219,16 +241,14 @@ fun handleIntent(
         viewModel.loadEpubBook(libraryItemId = libraryItemId, onLoaded = {
             // if there is saved progress for this book, then scroll to
             // last page at exact position were used had left.
-            if (it.hasProgressSaved && chapterIndex == ReaderConstants.DEFAULT_NONE) {
+            if (it.hasProgressSaved && (chapterIndex == null || chapterIndex == ReaderConstants.DEFAULT_NONE)) {
                 scrollToPosition(it.lastChapterIndex, it.lastChapterOffset)
+            } else if (chapterIndex != null && chapterIndex != ReaderConstants.DEFAULT_NONE) {
+                // if user clicked on specific chapter, then scroll to
+                // that chapter directly.
+                scrollToPosition(chapterIndex, 0)
             }
         })
-        // if user clicked on specific chapter, then scroll to
-        // that chapter directly.
-        if (chapterIndex != null && chapterIndex != ReaderConstants.DEFAULT_NONE) {
-            scrollToPosition(chapterIndex, 0)
-        }
-
 
     } else if (isExternalFile) {
         // External book from file.
@@ -272,4 +292,3 @@ fun calculateChapterPercentage(lazyListState: LazyListState): Float {
         ((1f - visiblePortion / firstVisibleItem.size.toFloat())).coerceIn(0f, 1f)
     }
 }
-

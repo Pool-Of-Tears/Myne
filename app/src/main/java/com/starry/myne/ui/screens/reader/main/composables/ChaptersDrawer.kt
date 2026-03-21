@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
@@ -69,6 +72,15 @@ fun ChaptersDrawer(
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis
                                 )
+                            },
+                            icon = {
+                                if (idx < currentChapterIndex) {
+                                    Icon(
+                                        imageVector = Icons.Filled.CheckCircleOutline,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             },
                             selected = idx == currentChapterIndex,
                             onClick = {

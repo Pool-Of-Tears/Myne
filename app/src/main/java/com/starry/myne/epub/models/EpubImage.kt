@@ -19,7 +19,6 @@ package com.starry.myne.epub.models
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.protobuf.ProtoNumber
 
 /**
  * Represents an image in an epub book.
@@ -30,8 +29,8 @@ import kotlinx.serialization.protobuf.ProtoNumber
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class EpubImage @OptIn(ExperimentalSerializationApi::class) constructor(
-    @ProtoNumber(1) val absPath: String,
-    @ProtoNumber(2) val image: ByteArray
+    val absPath: String,
+    val image: ByteArray? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -40,14 +39,17 @@ data class EpubImage @OptIn(ExperimentalSerializationApi::class) constructor(
         other as EpubImage
 
         if (absPath != other.absPath) return false
-        if (!image.contentEquals(other.image)) return false
+        if (image != null) {
+            if (other.image == null) return false
+            if (!image.contentEquals(other.image)) return false
+        } else if (other.image != null) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = absPath.hashCode()
-        result = 31 * result + image.contentHashCode()
+        result = 31 * result + (image?.contentHashCode() ?: 0)
         return result
     }
 }

@@ -53,6 +53,11 @@ class EpubXMLFileParser(
     // The parent folder of the XML file.
     private val fileParentFolder: File = File(fileAbsolutePath).parentFile ?: File("")
 
+    companion object {
+        private const val HEADER_SELECTORS =
+            "h1, h2, h3, h4, h5, h6, .title, .chapter-title, .header"
+    }
+
 
     /**
      * Parses the input data as an XML document and returns the title and body content.
@@ -76,8 +81,11 @@ class EpubXMLFileParser(
                     "EpubXMLFileParser",
                     "Fragment ID: $fragmentId represents a <div> tag. Using the fragment ID."
                 )
-                title = document.selectFirst("h1, h2, h3, h4, h5, h6")?.text() ?: ""
-                bodyElement.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
+                val header = bodyElement.selectFirst(HEADER_SELECTORS) ?: document.selectFirst(
+                    HEADER_SELECTORS
+                )
+                title = header?.text() ?: ""
+                header?.remove()
                 bodyContent = getNodeStructuredText(bodyElement)
             } else {
                 Log.d(
@@ -86,15 +94,25 @@ class EpubXMLFileParser(
                 )
                 // If the fragment ID doesn't represent a <div> tag, use the fragment and next fragment logic
                 val fragmentElement = document.selectFirst("#$fragmentId")
-                title = fragmentElement?.selectFirst("h1, h2, h3, h4, h5, h6")?.text() ?: ""
+                // Check if fragment itself is a header
+                val header = if (fragmentElement != null && fragmentElement.isHeader) {
+                    fragmentElement
+                } else {
+                    fragmentElement?.selectFirst(HEADER_SELECTORS)
+                }
+                title = header?.text() ?: ""
                 val bodyBuilder = StringBuilder()
-                var currentNode: Node? = fragmentElement?.nextSibling()
+                var currentNode: Node? = if (header != null && header == fragmentElement) {
+                    fragmentElement.nextSibling()
+                } else {
+                    fragmentElement
+                }
                 val nextFragmentIdElement = if (nextFragmentId != null) {
                     document.selectFirst("#$nextFragmentId")
                 } else {
                     null
                 }
-                fragmentElement?.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
+                header?.remove()
 
                 while (currentNode != null && currentNode != nextFragmentIdElement) {
                     bodyBuilder.append(getNodeStructuredText(currentNode, true) + "\n\n")
@@ -106,16 +124,21 @@ class EpubXMLFileParser(
             // If no fragment ID is provided, fetch the entire body content
             Log.d("EpubXMLFileParser", "No fragment ID provided. Fetching the entire body content.")
             bodyElement = document.body()
-            title = document.selectFirst("h1, h2, h3, h4, h5, h6")?.text() ?: ""
-            document.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
+            val header = document.selectFirst(HEADER_SELECTORS)
+            title = header?.text() ?: ""
+            header?.remove()
             bodyContent = getNodeStructuredText(bodyElement)
         }
 
         return Output(
-            title = title,
+            title = title.trim(),
             body = bodyContent
         )
     }
+
+    private val org.jsoup.nodes.Element.isHeader: Boolean
+        get() = tagName() in listOf("h1", "h2", "h3", "h4", "h5", "h6")
+                || hasClass("title") || hasClass("chapter-title") || hasClass("header")
 
     /**
      * Parses the input data as an image and returns the image path and aspect ratio.
@@ -172,7 +195,7 @@ class EpubXMLFileParser(
         return null
     }
 
-    // Rewrites the image node to xml for the next stage.
+    // Rewrites the image node to XML for the next stage.
     private fun declareImgEntry(node: Node): String {
         val attrs = node.attributes().associate { it.key to it.value }
         val relPathEncoded = attrs["src"] ?: attrs["xlink:href"] ?: ""

@@ -55,7 +55,6 @@ class LibraryViewModel @Inject constructor(
     val showOnboardingTapTargets: State<Boolean> = _showOnboardingTapTargets
 
     fun deleteItemFromDB(item: LibraryItem) {
-        epubParser.removeBookFromCache(item.filePath)
         viewModelScope.launch(Dispatchers.IO) { libraryDao.delete(item) }
     }
 

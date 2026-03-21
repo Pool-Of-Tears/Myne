@@ -21,7 +21,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import com.starry.myne.epub.cache.EpubCache
 import com.starry.myne.epub.models.EpubBook
 import com.starry.myne.epub.models.EpubChapter
 import com.starry.myne.epub.models.EpubImage
@@ -102,14 +101,20 @@ class EpubParser(private val context: Context) {
         }
     }
 
+    /**
+     * Represents the content of a chapter.
+     *
+     * @param title The title found in the chapter document.
+     * @param body The body content of the chapter.
+     */
+    data class ChapterContent(val title: String, val body: String)
+
     companion object {
         const val TAG = "EpubParser"
     }
 
-    private val epubCache = EpubCache(context)
-
     /**
-     * Creates an [EpubBook] object from an EPUB file and caches it.
+     * Creates an [EpubBook] object from an EPUB file.
      *
      * @param filePath The file path of the EPUB file.
      * @param shouldUseToc Whether to use the table of contents (ToC) file for parsing.
@@ -117,23 +122,15 @@ class EpubParser(private val context: Context) {
      */
     suspend fun createEpubBook(filePath: String, shouldUseToc: Boolean): EpubBook {
         return withContext(Dispatchers.IO) {
-            val cachedEpubBook = epubCache.get(filePath)
-            if (cachedEpubBook != null) {
-                Log.d(TAG, "EpubBook found in cache")
-                return@withContext cachedEpubBook
-            }
             Log.d(TAG, "Parsing EPUB file: $filePath")
             val files = getZipFilesFromFile(filePath)
             val document = createEpubDocument(files)
-            val epubBook = parseAndCreateEbook(files, document, shouldUseToc)
-            epubCache.put(epubBook, filePath)
-            return@withContext epubBook
+            return@withContext parseAndCreateEbook(files, document, shouldUseToc, filePath)
         }
     }
 
     /**
      * Creates an [EpubBook] object from an EPUB input stream.
-     * This method does not cache the book.
      *
      * Note: Caller is responsible for closing the input stream.
      *
@@ -145,27 +142,69 @@ class EpubParser(private val context: Context) {
         return withContext(Dispatchers.IO) {
             Log.d(TAG, "Parsing EPUB input stream")
             val (files, document) = getZipFilesAndDocument(inputStream)
-            parseAndCreateEbook(files, document, shouldUseToc)
+            parseAndCreateEbook(files, document, shouldUseToc, "")
         }
     }
 
     /**
-     * Checks if an EPUB book is cached.
+     * Loads the content of a chapter.
      *
      * @param filePath The file path of the EPUB file.
-     * @return True if the book is cached, false otherwise.
+     * @param chapter The chapter to load the content for.
+     * @return The [ChapterContent] of the chapter.
      */
-    fun isBookCached(filePath: String): Boolean {
-        return epubCache.isCached(filePath)
+    suspend fun getChapterBody(filePath: String, chapter: EpubChapter): ChapterContent {
+        return withContext(Dispatchers.IO) {
+            if (filePath.isEmpty()) return@withContext ChapterContent(chapter.title, chapter.body)
+            ZipFile(filePath).use { zipFile ->
+                val entries = zipFile.entries().asSequence()
+                    .filterNot { it.isDirectory }
+                    .associateBy { it.name }
+
+                val (fragmentPath, fragmentId) = if ('#' in chapter.absPath) {
+                    val (path, id) = chapter.absPath.split("#", limit = 2)
+                    path to id
+                } else {
+                    chapter.absPath to null
+                }
+
+                val entry = entries[fragmentPath] ?: return@withContext ChapterContent("", "")
+                val data = zipFile.getInputStream(entry).readBytes()
+                val epubFiles = entries.mapValues { (path, _) ->
+                    EpubFile(
+                        absPath = path,
+                        data = byteArrayOf()
+                    ) // Dummy data for structural mapping
+                }
+
+                val parser = EpubXMLFileParser(
+                    fileAbsolutePath = fragmentPath,
+                    data = data,
+                    zipFile = epubFiles,
+                    fragmentId = fragmentId,
+                    nextFragmentId = chapter.nextFragmentId
+                )
+                val res = parser.parseAsDocument()
+                return@withContext ChapterContent(res.title ?: "", res.body)
+            }
+        }
     }
 
     /**
-     * Removes an EPUB book from the cache.
+     * Loads the image data of an image.
      *
      * @param filePath The file path of the EPUB file.
+     * @param imagePath The absolute path of the image in the EPUB.
+     * @return The image data.
      */
-    fun removeBookFromCache(filePath: String): Boolean {
-        return epubCache.remove(filePath)
+    suspend fun getImageData(filePath: String, imagePath: String): ByteArray? {
+        return withContext(Dispatchers.IO) {
+            if (filePath.isEmpty()) return@withContext null
+            ZipFile(filePath).use { zipFile ->
+                val entry = zipFile.getEntry(imagePath) ?: return@withContext null
+                return@withContext zipFile.getInputStream(entry).readBytes()
+            }
+        }
     }
 
     /**
@@ -187,10 +226,14 @@ class EpubParser(private val context: Context) {
      * @param files The EPUB files.
      * @param document The EPUB document.
      * @param shouldUseToc Whether to use the table of contents (ToC) file for parsing.
+     * @param filePath The file path of the EPUB file.
      * @return The [EpubBook] object.
      */
     private suspend fun parseAndCreateEbook(
-        files: Map<String, EpubFile>, document: EpubDocument, shouldUseToc: Boolean
+        files: Map<String, EpubFile>,
+        document: EpubDocument,
+        shouldUseToc: Boolean,
+        filePath: String
     ): EpubBook = withContext(Dispatchers.IO) {
         val metadataTitle =
             document.metadata.selectFirstChildTag("dc:title")?.textContent ?: "Unknown Title"
@@ -221,16 +264,16 @@ class EpubParser(private val context: Context) {
         // to ensure that it is a valid ToC file.
         val chapters = if (shouldUseToc && !tocNavPoints.isNullOrEmpty() && tocNavPoints.size > 2) {
             Log.d(TAG, "Parsing based on ToC file")
-            parseUsingTocFile(tocNavPoints, files, hrefRootPath, document, manifestItems)
+            parseUsingTocFile(tocNavPoints, files, hrefRootPath, filePath)
         } else {
             Log.d(TAG, "Parsing based on spine; shouldUseToc: $shouldUseToc")
-            parseUsingSpine(document.spine, manifestItems, files)
+            parseUsingSpine(document.spine, manifestItems, files, filePath)
         }
 
         Log.d(TAG, "Parsing images")
         val images = parseImages(manifestItems, files)
         Log.d(TAG, "Parsing cover image")
-        val coverImage = parseCoverImage(metadataCoverId, manifestItems, files)
+        val coverImage = parseCoverImage(metadataCoverId, manifestItems, files, filePath)
 
         Log.d(TAG, "EpubBook created")
         return@withContext EpubBook(
@@ -240,7 +283,8 @@ class EpubParser(private val context: Context) {
             language = metadataLanguage,
             coverImage = coverImage,
             chapters = chapters,
-            images = images
+            images = images,
+            filePath = filePath
         )
     }
 
@@ -298,16 +342,26 @@ class EpubParser(private val context: Context) {
      * @param filePath The file path of the EPUB file.
      * @return The EPUB files.
      */
-    private fun getZipFilesFromFile(filePath: String): Map<String, EpubFile> {
+    private fun getZipFilesFromFile(
+        filePath: String
+    ): Map<String, EpubFile> {
         return ZipFile(filePath).use { zipFile ->
             zipFile.entries().asSequence()
                 .filterNot { it.isDirectory }
                 .map { entry ->
-                    val content = zipFile.getInputStream(entry).readBytes()
+                    val content = if (isMetadataFile(entry.name)) {
+                        zipFile.getInputStream(entry).readBytes()
+                    } else {
+                        byteArrayOf()
+                    }
                     EpubFile(absPath = entry.name, data = content)
                 }
                 .associateBy { it.absPath }
         }
+    }
+
+    private fun isMetadataFile(path: String): Boolean {
+        return path == "META-INF/container.xml" || path.endsWith(".opf") || path.endsWith(".ncx")
     }
 
     /**
@@ -359,10 +413,11 @@ class EpubParser(private val context: Context) {
         val container = files["META-INF/container.xml"]
             ?: throw EpubParserException("META-INF/container.xml file missing")
 
-        val opfFilePath = parseXMLFile(container.data)?.selectFirstTag("rootfile")
-            ?.getAttributeValue("full-path")?.decodedURL
+        val opfFilePathAttr = parseXMLFile(container.data)?.selectFirstTag("rootfile")
+            ?.getAttributeValue("full-path")
             ?: throw EpubParserException("Invalid container.xml file")
 
+        val opfFilePath = opfFilePathAttr.decodedURL
         val opfFile = files[opfFilePath] ?: throw EpubParserException(".opf file missing")
 
         val document = parseXMLFile(opfFile.data)
@@ -457,19 +512,17 @@ class EpubParser(private val context: Context) {
      * @param tocNavPoints The list of navPoints in the ToC file.
      * @param files The EPUB files.
      * @param hrefRootPath The root path of the href attribute.
-     * @param document The EPUB document.
-     * @param manifestItems The manifest items.
+     * @param filePath The file path of the EPUB file.
      * @return The list of parsed chapters.
      */
     private fun parseUsingTocFile(
         tocNavPoints: List<Element>,
         files: Map<String, EpubFile>,
         hrefRootPath: File,
-        document: EpubDocument,
-        manifestItems: Map<String, EpubManifestItem>
+        filePath: String
     ): List<EpubChapter> {
         // Parse each chapter entry.
-        val chapters = tocNavPoints.flatMapIndexed { index, navPoint ->
+        return tocNavPoints.mapIndexedNotNull { index, navPoint ->
             val title =
                 navPoint.selectFirstChildTag("navLabel")?.selectFirstChildTag("text")?.textContent
             val chapterSrc = navPoint.selectFirstChildTag("content")?.getAttributeValue("src")
@@ -484,10 +537,18 @@ class EpubParser(private val context: Context) {
                     chapterSrc to null
                 }
 
-                val nextNavPoint = navPoint.nextSibling
-                val nextFragmentId = nextNavPoint?.nextSibling?.selectFirstChildTag("content")
-                    ?.getAttributeValue("src")
-                    ?.let { src -> src.takeIf { '#' in it }?.substringAfterLast('#') }
+                // Find next fragment ID if it exists in the same file
+                var nextFragmentId: String? = null
+                if (index < tocNavPoints.size - 1) {
+                    val nextChapterSrc = tocNavPoints[index + 1].selectFirstChildTag("content")
+                        ?.getAttributeValue("src")?.decodedURL?.hrefAbsolutePath(hrefRootPath)
+                    if (nextChapterSrc != null && '#' in nextChapterSrc) {
+                        val (nextPath, nextId) = nextChapterSrc.split("#", limit = 2)
+                        if (nextPath == fragmentPath) {
+                            nextFragmentId = nextId
+                        }
+                    }
+                }
 
 
                 val chapterFile = files[fragmentPath]
@@ -501,36 +562,24 @@ class EpubParser(private val context: Context) {
                     )
                 }
 
-                val res = parser?.parseAsDocument()
-                if (res != null) {
-                    listOf(
-                        EpubChapter(
-                            chapterId = generateId(),
-                            absPath = chapterSrc,
-                            title = title?.takeIf { it.isNotEmpty() } ?: "Chapter $index",
-                            body = res.body
-                        )
-                    )
+                val res = if (filePath.isEmpty() && parser != null) {
+                    parser.parseAsDocument()
                 } else {
-                    emptyList()
+                    null
                 }
+
+                EpubChapter(
+                    chapterId = generateId(),
+                    absPath = chapterSrc,
+                    title = title?.takeIf { it.isNotEmpty() } ?: "Chapter ${index + 1}",
+                    body = res?.body ?: "",
+                    nextFragmentId = nextFragmentId
+                )
+
             } else {
-                emptyList()
+                null
             }
-        }.filter { it.body.isNotBlank() }.toList()
-
-        // If 25% or more chapters have empty bodies, that means the ToC file is not
-        // reliable and has incorrect references. In such cases, switch to spine-based parsing.
-        val emptyChapterThreshold = 0.25
-        val totalChapters = tocNavPoints.size
-        val emptyChapters = totalChapters - chapters.size
-
-        if (emptyChapters.toDouble() / totalChapters >= emptyChapterThreshold) {
-            Log.w(TAG, "25% or more chapters have empty bodies; switching to spine-based parsing")
-            return parseUsingSpine(document.spine, manifestItems, files)
-        }
-
-        return chapters // Return the parsed chapters from the ToC file.
+        }.toList()
     }
 
     /**
@@ -540,12 +589,14 @@ class EpubParser(private val context: Context) {
      * @param spine The spine of the EPUB document.
      * @param manifestItems The manifest items.
      * @param files The EPUB files.
+     * @param filePath The file path of the EPUB file.
      * @return The list of parsed chapters.
      */
     private fun parseUsingSpine(
         spine: Node,
         manifestItems: Map<String, EpubManifestItem>,
         files: Map<String, EpubFile>,
+        filePath: String
     ): List<EpubChapter> {
         var chapterIndex = 0
         val chapterExtensions = listOf("xhtml", "xml", "html", "htm").map { ".$it" }
@@ -564,21 +615,26 @@ class EpubParser(private val context: Context) {
                     TempEpubChapter(
                         url = "image_${file.absPath}",
                         title = null,
-                        body = parser.parseAsImage(item.absPath),
+                        body = if (filePath.isEmpty()) parser.parseAsImage(item.absPath) else "",
                         chapterIndex = chapterIndex,
                     )
                 } else {
-                    val res = parser.parseAsDocument()
+                    val res = if (filePath.isEmpty()) parser.parseAsDocument() else null
                     // A full chapter usually is split in multiple sequential entries,
                     // try to merge them and extract the main title of each one.
                     // Is is not perfect but better than nothing.
-                    val chapterTitle = res.title ?: if (chapterIndex == 0) "" else null
+                    val chapterTitle = if (filePath.isEmpty()) {
+                        res?.title ?: if (chapterIndex == 0) "" else null
+                    } else {
+                        // For on-demand loading, each XHTML file is treated as a chapter.
+                        "Chapter ${chapterIndex + 1}"
+                    }
                     if (chapterTitle != null) chapterIndex += 1
 
                     TempEpubChapter(
                         url = file.absPath,
                         title = chapterTitle,
-                        body = res.body,
+                        body = res?.body ?: "",
                         chapterIndex = chapterIndex,
                     )
                 }
@@ -591,8 +647,6 @@ class EpubParser(private val context: Context) {
                     title = list.first().title?.takeIf { it.isNotBlank() } ?: "Chapter $index",
                     body = list.joinToString("\n\n") { it.body }
                 )
-            }.filter {
-                it.body.isNotBlank()
             }
     }
 
@@ -612,14 +666,14 @@ class EpubParser(private val context: Context) {
         val unlistedImages = files.asSequence().filter { (_, file) ->
             imageExtensions.any { file.absPath.endsWith(it, ignoreCase = true) }
         }.map { (_, file) ->
-            EpubImage(absPath = file.absPath, image = file.data)
+            EpubImage(absPath = file.absPath, image = null)
         }
 
         val listedImages =
             manifestItems.asSequence()
                 .map { it.value }.filter { it.mediaType.startsWith("image") }
                 .mapNotNull { files[it.absPath] }
-                .map { EpubImage(absPath = it.absPath, image = it.data) }
+                .map { EpubImage(absPath = it.absPath, image = null) }
 
         return (listedImages + unlistedImages).distinctBy { it.absPath }.toList()
     }
@@ -631,18 +685,33 @@ class EpubParser(private val context: Context) {
      * @param metadataCoverId The cover ID from the EPUB metadata.
      * @param manifestItems The manifest items.
      * @param files The EPUB files.
+     * @param filePath The file path of the EPUB file.
      * @return The cover image.
      */
-    private fun parseCoverImage(
+    private suspend fun parseCoverImage(
         metadataCoverId: String?,
         manifestItems: Map<String, EpubManifestItem>,
-        files: Map<String, EpubFile>
-    ): Bitmap? {
-        val coverImage = manifestItems[metadataCoverId]?.let { files[it.absPath] }
-            ?.let { EpubImage(absPath = it.absPath, image = it.data) }
+        files: Map<String, EpubFile>,
+        filePath: String
+    ): Bitmap? = withContext(Dispatchers.IO) {
+        val coverImageItem = manifestItems[metadataCoverId]?.let { files[it.absPath] }
+        val coverImageData = if (coverImageItem != null) {
+            if (coverImageItem.data.isNotEmpty()) {
+                coverImageItem.data
+            } else if (filePath.isNotEmpty()) {
+                ZipFile(filePath).use { zipFile ->
+                    val entry = zipFile.getEntry(coverImageItem.absPath)
+                    zipFile.getInputStream(entry).readBytes()
+                }
+            } else {
+                null
+            }
+        } else {
+            null
+        }
 
-        return if (coverImage?.image != null) {
-            BitmapFactory.decodeByteArray(coverImage.image, 0, coverImage.image.size)
+        return@withContext if (coverImageData != null) {
+            BitmapFactory.decodeByteArray(coverImageData, 0, coverImageData.size)
         } else {
             Log.e(TAG, "Cover image not found"); null
         }
