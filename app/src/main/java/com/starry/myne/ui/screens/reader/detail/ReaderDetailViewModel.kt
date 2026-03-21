@@ -73,23 +73,21 @@ class ReaderDetailViewModel @Inject constructor(
             progressData = progressDao.getReaderDataAsFlow(libraryItemId.toInt())
             // Fetch cover image from google books api if available.
             val coverImage: String? = try {
-                if (!libraryItem.isExternalBook
+                if (!libraryItem.isImported
                     && networkStatus == NetworkObserver.Status.Available
                 ) bookAPI.getExtraInfo(libraryItem.title)?.coverImage else null
             } catch (exc: Exception) {
                 Log.e("ReaderDetailViewModel", "Failed to fetch cover image.", exc)
                 null
             }
-            // Only use toc if the book is not an external book.
-            var shouldUseToc = !libraryItem.isExternalBook
+
             // Gutenberg for some reason don't include proper navMap for chinese books
             // in toc file, so we need to parse the book based on spine, instead of toc.
             // This is special case for Chinese books.
-            if (shouldUseToc && epubParser.peekLanguage(libraryItem.filePath) == "zh") {
-                Log.d("ReaderDetailViewModel", "Parsing book without toc for Chinese book.")
-                shouldUseToc = false
-            }
-            var epubBook = epubParser.createEpubBook(libraryItem.filePath, shouldUseToc)
+            val isInternalChineseBook =
+                !libraryItem.isImported && epubParser.peekLanguage(libraryItem.filePath) == "zh"
+            val shouldUseToc = !isInternalChineseBook
+            val epubBook = epubParser.createEpubBook(libraryItem.filePath, shouldUseToc)
 
             state = state.copy(
                 title = libraryItem.title,

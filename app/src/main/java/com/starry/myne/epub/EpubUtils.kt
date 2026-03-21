@@ -57,7 +57,8 @@ fun Node.selectChildTag(tag: String) = childElements.filter { it.tagName == tag 
 fun Node.getAttributeValue(attribute: String): String? =
     attributes?.getNamedItem(attribute)?.textContent
 
-val NodeList.elements get() = (0..length).asSequence().mapNotNull { item(it) as? Element }
+val NodeList.elements
+    get() = (0 until length).asSequence().mapNotNull { item(it) as? Element }.toList()
 val Node.childElements get() = childNodes.elements
 
 fun JsoupNode.nextSiblingNodes(): List<JsoupNode> {

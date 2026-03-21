@@ -50,7 +50,7 @@ data class LibraryItem(
     val createdAt: Long,
     // Added in database schema version 3
     @ColumnInfo(name = "is_external_book", defaultValue = "false")
-    val isExternalBook: Boolean = false
+    val isImported: Boolean = false
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

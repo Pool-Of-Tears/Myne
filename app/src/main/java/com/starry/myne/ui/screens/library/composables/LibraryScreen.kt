@@ -378,7 +378,7 @@ private fun LibraryLazyItem(
         ), background = MaterialTheme.colorScheme.primary, onSwipe = {
             viewModel.viewModelScope.launch {
                 delay(250L)
-                if (item.isExternalBook) {
+                if (item.isImported) {
                     snackBarHostState.showSnackbar(
                         message = context.getString(R.string.external_book_info_unavailable),
                         actionLabel = context.getString(R.string.ok),
@@ -427,7 +427,7 @@ private fun LibraryLazyItem(
             author = item.authors,
             item.getFileSize(),
             item.getDownloadDate(),
-            isExternalBook = item.isExternalBook,
+            isExternalBook = item.isImported,
             onReadClick = {
                 BookUtils.openBookFile(
                     context = context,

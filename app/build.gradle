@@ -131,7 +131,6 @@ dependencies {
     implementation 'androidx.core:core-splashscreen:1.2.0'
     // KotlinX Serialization library.
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.10.0"
     // OkHttp library.
     implementation "com.squareup.okhttp3:okhttp:5.3.2"
     implementation "com.squareup.okhttp3:logging-interceptor:5.3.2"

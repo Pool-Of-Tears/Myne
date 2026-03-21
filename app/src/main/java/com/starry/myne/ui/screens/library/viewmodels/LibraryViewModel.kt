@@ -55,7 +55,6 @@ class LibraryViewModel @Inject constructor(
     val showOnboardingTapTargets: State<Boolean> = _showOnboardingTapTargets
 
     fun deleteItemFromDB(item: LibraryItem) {
-        epubParser.removeBookFromCache(item.filePath)
         viewModelScope.launch(Dispatchers.IO) { libraryDao.delete(item) }
     }
 
@@ -66,7 +65,7 @@ class LibraryViewModel @Inject constructor(
     fun shouldShowLibraryTooltip(): Boolean {
         return preferenceUtil.getBoolean(PreferenceUtil.LIBRARY_SWIPE_TOOLTIP_BOOL, true)
                 && allItems.value?.isNotEmpty() == true
-                && allItems.value?.any { !it.isExternalBook } == true
+                && allItems.value?.any { !it.isImported } == true
     }
 
     fun libraryTooltipDismissed() = preferenceUtil.putBoolean(
@@ -106,7 +105,7 @@ class LibraryViewModel @Inject constructor(
                             authors = epubBook.author,
                             filePath = filePath,
                             createdAt = System.currentTimeMillis(),
-                            isExternalBook = true
+                            isImported = true
                         )
 
                         libraryDao.insert(libraryItem)
