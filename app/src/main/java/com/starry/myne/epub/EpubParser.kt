@@ -259,14 +259,29 @@ class EpubParser(private val context: Context) {
             findNestedNavPoints((tocDocument?.selectFirstTag("navMap") as Element?))
         }
 
+        // Try to detect broken or incomplete TOC
+        val isTocReliable = tocNavPoints != null &&
+                tocNavPoints.size > 3 &&
+                tocNavPoints
+                    .map { it.selectFirstChildTag("content")?.getAttributeValue("src") }
+                    .distinct().size > 1
+
+        val spineItemCount = document.spine.childElements.filter { it.tagName.contains("itemref") }.size
+        val isTocIncomplete = tocNavPoints != null &&
+                tocNavPoints.size < (spineItemCount / 2) &&
+                spineItemCount > 10
+
         // Determine the method of parsing chapters based on the presence of ToC and
         // the shouldUseToc flag. We also check if the ToC file has more than two navPoint
         // to ensure that it is a valid ToC file.
-        val chapters = if (shouldUseToc && !tocNavPoints.isNullOrEmpty() && tocNavPoints.size > 2) {
+        val chapters = if (shouldUseToc && isTocReliable && !isTocIncomplete) {
             Log.d(TAG, "Parsing based on ToC file")
             parseUsingTocFile(tocNavPoints, files, hrefRootPath, filePath)
         } else {
-            Log.d(TAG, "Parsing based on spine; shouldUseToc: $shouldUseToc")
+            Log.d(
+                TAG,
+                "Parsing based on spine; shouldUseToc: $shouldUseToc, isTocReliable: $isTocReliable, isTocIncomplete: $isTocIncomplete"
+            )
             parseUsingSpine(document.spine, manifestItems, files, filePath)
         }
 
@@ -360,6 +375,11 @@ class EpubParser(private val context: Context) {
         }
     }
 
+    /**
+     * Check if the path is a metadata file.
+     * @param path The path to check.
+     * @return True if the path is a metadata file, false otherwise.
+     */
     private fun isMetadataFile(path: String): Boolean {
         return path == "META-INF/container.xml" || path.endsWith(".opf") || path.endsWith(".ncx")
     }
@@ -602,6 +622,7 @@ class EpubParser(private val context: Context) {
         val chapterExtensions = listOf("xhtml", "xml", "html", "htm").map { ".$it" }
         return spine.selectChildTag("itemref")
             .ifEmpty { spine.selectChildTag("opf:itemref") }
+            .asSequence() // as sequence to avoid creating a copy of the list
             .mapNotNull { manifestItems[it.getAttribute("idref")] }
             .filter { item ->
                 chapterExtensions.any {
@@ -622,7 +643,7 @@ class EpubParser(private val context: Context) {
                     val res = if (filePath.isEmpty()) parser.parseAsDocument() else null
                     // A full chapter usually is split in multiple sequential entries,
                     // try to merge them and extract the main title of each one.
-                    // Is is not perfect but better than nothing.
+                    // It is not perfect but better than nothing.
                     val chapterTitle = if (filePath.isEmpty()) {
                         res?.title ?: if (chapterIndex == 0) "" else null
                     } else {
@@ -648,6 +669,7 @@ class EpubParser(private val context: Context) {
                     body = list.joinToString("\n\n") { it.body }
                 )
             }
+            .toList()
     }
 
     /**
@@ -662,7 +684,7 @@ class EpubParser(private val context: Context) {
         manifestItems: Map<String, EpubManifestItem>, files: Map<String, EpubFile>
     ): List<EpubImage> {
         val imageExtensions =
-            listOf("png", "gif", "raw", "png", "jpg", "jpeg", "webp", "svg").map { ".$it" }
+            listOf("gif", "raw", "png", "jpg", "jpeg", "webp", "svg").map { ".$it" }
         val unlistedImages = files.asSequence().filter { (_, file) ->
             imageExtensions.any { file.absPath.endsWith(it, ignoreCase = true) }
         }.map { (_, file) ->

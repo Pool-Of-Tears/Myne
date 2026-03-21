@@ -17,7 +17,6 @@
 
 package com.starry.myne.ui.screens.reader.main.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
@@ -104,15 +103,14 @@ class ReaderViewModel @Inject constructor(
             val libraryItem = libraryDao.getItemById(libraryItemId)
             _state.update { it.copy(shouldShowLoader = true) }
             val readerData = progressDao.getReaderData(libraryItemId)
-            // Only use toc if the book is not an external book.
-            var shouldUseToc = !libraryItem!!.isExternalBook
+
             // Gutenberg for some reason don't include proper navMap for chinese books
             // in toc file, so we need to parse the book based on spine, instead of toc.
             // This is special case for Chinese books.
-            if (shouldUseToc && epubParser.peekLanguage(libraryItem.filePath) == "zh") {
-                Log.d("ReaderViewModel", "Parsing book without toc for Chinese book.")
-                shouldUseToc = false
-            }
+            val isInternalChineseBook =
+                !libraryItem!!.isImported && epubParser.peekLanguage(libraryItem.filePath) == "zh"
+            val shouldUseToc = !isInternalChineseBook
+
             val epubBook = epubParser.createEpubBook(libraryItem.filePath, shouldUseToc)
 
             val initialChapterIndex = readerData?.lastChapterIndex ?: 0
@@ -141,6 +139,7 @@ class ReaderViewModel @Inject constructor(
         }
     }
 
+    // Load epub book from file stream, used when opening books via file picker/intent
     fun loadEpubBookExternal(fileStream: FileInputStream) {
         viewModelScope.launch(Dispatchers.IO) {
             fileStream.use { fis ->
