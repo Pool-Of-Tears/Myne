@@ -22,6 +22,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -34,6 +35,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +46,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -56,8 +60,9 @@ import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.starry.myne.R
-import com.starry.myne.epub.BookTextMapper
+import com.starry.myne.epub.asAnnotatedString
 import com.starry.myne.epub.models.EpubChapter
+import com.starry.myne.epub.models.ReaderItem
 import com.starry.myne.helpers.toToast
 import com.starry.myne.ui.common.MyneSelectionContainer
 import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderScreenState
@@ -84,7 +89,7 @@ fun ChaptersContent(
             if (content != null) {
                 ChapterLazyItemItem(
                     chapter = chapter,
-                    chapterBody = content.body,
+                    readerItems = content.body,
                     state = state,
                     onClick = onToggleReaderMenu,
                     onLoadImage = onLoadImage
@@ -106,13 +111,12 @@ fun ChaptersContent(
 @Composable
 private fun ChapterLazyItemItem(
     chapter: EpubChapter,
-    chapterBody: String,
+    readerItems: List<ReaderItem>,
     state: ReaderScreenState,
     onClick: () -> Unit,
     onLoadImage: (String) -> Unit
 ) {
     val context = LocalContext.current
-    val paragraphs = remember(chapterBody) { chunkText(chapterBody) }
 
     val targetFontSize = remember(state.fontSize) {
         (state.fontSize / 5) * 0.9f
@@ -230,64 +234,94 @@ private fun ChapterLazyItemItem(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            val accumulatedText = remember { StringBuilder() }
-            paragraphs.forEachIndexed { index, para ->
-                val imgEntry = BookTextMapper.ImgEntry.fromXMLString(para)
-
-                if (imgEntry == null) {
-                    // Accumulate text until an image is found
-                    accumulatedText.append(para).append("\n\n")
-                } else {
-                    // If image is found, display the accumulated text before the image
-                    if (accumulatedText.isNotEmpty()) {
+            readerItems.forEach { item ->
+                when (item) {
+                    is ReaderItem.Text -> {
+                        val annotatedString = remember(item.spans, state.fontFamily.fontFamily) {
+                            item.spans.asAnnotatedString()
+                        }
                         Text(
-                            text = accumulatedText.toString().trimEnd(),
+                            text = annotatedString,
                             fontSize = fontSize.sp,
                             lineHeight = 1.3.em,
                             fontFamily = state.fontFamily.fontFamily,
                             modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 8.dp),
                         )
-                        accumulatedText.clear()
                     }
-                    // Image Handling
-                    val imageBytes = state.loadedImages[imgEntry.path]
-                    if (imageBytes != null) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(imageBytes)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(vertical = 6.dp)
-                        )
-                    } else {
-                        LaunchedEffect(imgEntry.path) {
-                            onLoadImage(imgEntry.path)
+
+                    is ReaderItem.Image -> {
+                        val imageBytes = state.loadedImages[item.path]
+                        if (imageBytes != null) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(imageBytes)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(vertical = 6.dp)
+                            )
+                        } else {
+                            LaunchedEffect(item.path) {
+                                onLoadImage(item.path)
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
                         }
+                    }
+
+                    is ReaderItem.CodeBlock -> {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(200.dp),
-                            contentAlignment = Alignment.Center
+                                .padding(horizontal = 14.dp, vertical = 8.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.LightGray.copy(alpha = 0.2f))
+                                .padding(12.dp)
                         ) {
-                            CircularProgressIndicator()
+                            val annotatedString = remember(item.code, state.fontFamily.fontFamily) {
+                                item.code.asAnnotatedString(collapseWhitespace = false)
+                            }
+                            Text(
+                                text = annotatedString,
+                                fontSize = (fontSize * 0.9f).sp,
+                                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                     }
-                }
 
-                // Display any remaining accumulated text after the last paragraph
-                if (index == paragraphs.lastIndex && accumulatedText.isNotEmpty()) {
-                    Text(
-                        text = accumulatedText.toString().trimEnd(),
-                        fontSize = fontSize.sp,
-                        lineHeight = 1.3.em,
-                        fontFamily = state.fontFamily.fontFamily,
-                        modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 8.dp),
-                    )
-                    accumulatedText.clear()
+                    is ReaderItem.Blockquote -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 14.dp, vertical = 8.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                                .padding(16.dp)
+                        ) {
+                            val annotatedString =
+                                remember(item.spans, state.fontFamily.fontFamily) {
+                                    item.spans.asAnnotatedString(collapseWhitespace = false)
+                                }
+                            Text(
+                                text = annotatedString,
+                                fontSize = fontSize.sp,
+                                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                                lineHeight = 1.3.em,
+                                fontFamily = state.fontFamily.fontFamily,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -297,11 +331,4 @@ private fun ChapterLazyItemItem(
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
         )
     }
-}
-
-// Helper function to chunk text into paragraphs
-private fun chunkText(text: String): List<String> {
-    return text.splitToSequence("\n\n")
-        .filter { it.isNotBlank() }
-        .toList()
 }

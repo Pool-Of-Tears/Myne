@@ -17,19 +17,18 @@
 
 package com.starry.myne.epub.models
 
-/**
- * Represents a chapter in an epub book.
- *
- * @param chapterId The unique ID of the chapter.
- * @param absPath The absolute path of the chapter.
- * @param title The title of the chapter.
- * @param body The body of the chapter as a list of [ReaderItem].
- * @param nextFragmentId The ID of the next fragment in the same file.
- */
-data class EpubChapter(
-    val chapterId: String,
-    val absPath: String,
-    val title: String,
-    val body: List<ReaderItem> = emptyList(),
-    val nextFragmentId: String? = null
-)
+sealed class ReaderItem {
+    data class Text(val spans: List<HtmlSpan>) : ReaderItem()
+    data class Image(val path: String, val yrel: Float) : ReaderItem()
+    data class CodeBlock(val code: String) : ReaderItem()
+    data class Blockquote(val spans: List<HtmlSpan>) : ReaderItem()
+}
+
+sealed class HtmlSpan {
+    data class Text(val text: String) : HtmlSpan()
+    data class Tag(
+        val name: String,
+        val attributes: Map<String, String>,
+        val children: List<HtmlSpan>
+    ) : HtmlSpan()
+}

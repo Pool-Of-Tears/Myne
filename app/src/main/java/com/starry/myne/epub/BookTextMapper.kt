@@ -17,60 +17,131 @@
 
 package com.starry.myne.epub
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.em
+import com.starry.myne.epub.models.HtmlSpan
 import org.jsoup.Jsoup
-import java.util.Locale
 
-object BookTextMapper {
+fun String.asAnnotatedString(collapseWhitespace: Boolean = true): AnnotatedString {
+    val document = Jsoup.parseBodyFragment(this)
+    document.outputSettings().prettyPrint(false)
+    val spans = document.body().childNodes().map { it.toHtmlSpan() }
+    return spans.asAnnotatedString(collapseWhitespace)
+}
 
-    // <img yrel="{float}"> {uri} </img>
-    data class ImgEntry(val path: String, val yrel: Float) {
+private fun org.jsoup.nodes.Node.toHtmlSpan(): HtmlSpan {
+    return when (this) {
+        is org.jsoup.nodes.TextNode -> HtmlSpan.Text(this.wholeText)
+        is org.jsoup.nodes.Element -> HtmlSpan.Tag(
+            name = this.tagName(),
+            attributes = this.attributes().associate { it.key to it.value },
+            children = this.childNodes().map { it.toHtmlSpan() }
+        )
 
-        /**
-         * Deprecated versions: v0
-         * Current versions: v1
-         */
-        companion object {
-
-            fun fromXMLString(text: String): ImgEntry? {
-                return fromXMLStringV0(text) ?: fromXMLStringV1(text)
-            }
-
-            private fun fromXMLStringV1(text: String): ImgEntry? {
-                return Jsoup.parse(text).selectFirst("img")?.let {
-                    ImgEntry(
-                        path = it.attr("src") ?: return null,
-                        yrel = it.attr("yrel").toFloatOrNull() ?: return null
-                    )
-                }
-            }
-
-            private val XMLForm_v0 = """^\W*<img .*>.+</img>\W*$""".toRegex()
-
-            private fun fromXMLStringV0(text: String): ImgEntry? {
-                // Fast discard filter
-                if (!text.matches(XMLForm_v0))
-                    return null
-                return parseXMLText(text)?.selectFirstTag("img")?.let {
-                    ImgEntry(
-                        path = it.textContent ?: return null,
-                        yrel = it.getAttributeValue("yrel")?.toFloatOrNull() ?: return null
-                    )
-                }
-            }
-        }
-
-        fun toXMLString(): String {
-            return toXMLStringV1()
-        }
-
-        private fun toXMLStringV1(): String {
-            return """<img src="$path" yrel="${"%.2f".format(Locale.US, yrel)}">"""
-        }
-
-        /*
-        private fun toXMLStringV0(): String {
-            return """<img yrel="${"%.2f".format(yrel)}">$path</img>"""
-        }
-        */
+        else -> HtmlSpan.Text("")
     }
+}
+
+fun List<HtmlSpan>.asAnnotatedString(collapseWhitespace: Boolean = true): AnnotatedString {
+    val builder = AnnotatedString.Builder()
+    var lastWasSpace = true // Start as true to trim leading space of the block
+
+    fun parseSpan(span: HtmlSpan) {
+        when (span) {
+            is HtmlSpan.Text -> {
+                if (collapseWhitespace) {
+                    // Collapse all whitespace sequences (including newlines) into a single space.
+                    // This prevents hard wrapped text from breaking mid-sentence.
+                    val normalized = span.text
+                        .replace("\u00A0", " ")
+                        .replace(Regex("\\s+"), " ")
+
+                    if (normalized.isEmpty()) return
+
+                    var toAppend = normalized
+                    if (lastWasSpace) {
+                        toAppend = toAppend.trimStart()
+                    }
+
+                    if (toAppend.isNotEmpty()) {
+                        builder.append(toAppend)
+                        lastWasSpace = toAppend.endsWith(" ")
+                    }
+                } else {
+                    builder.append(span.text)
+                }
+            }
+
+            is HtmlSpan.Tag -> {
+                val style = when (span.name) {
+                    "b", "strong" -> SpanStyle(fontWeight = FontWeight.Bold)
+                    "i", "em" -> SpanStyle(fontStyle = FontStyle.Italic)
+                    "u" -> SpanStyle(textDecoration = TextDecoration.Underline)
+                    "strike", "del", "s" -> SpanStyle(textDecoration = TextDecoration.LineThrough)
+                    "code" -> SpanStyle(
+                        fontFamily = FontFamily.Monospace,
+                        background = Color.LightGray.copy(alpha = 0.3f)
+                    )
+
+                    "sub" -> SpanStyle(
+                        baselineShift = BaselineShift.Subscript,
+                        fontSize = 0.75.em
+                    )
+
+                    "sup" -> SpanStyle(
+                        baselineShift = BaselineShift.Superscript,
+                        fontSize = 0.75.em
+                    )
+
+                    else -> null
+                }
+
+                when {
+                    span.name == "br" -> {
+                        builder.append("\n")
+                        lastWasSpace = true
+                    }
+
+                    span.name == "a" -> {
+                        val url = span.attributes["href"] ?: ""
+                        builder.pushStringAnnotation("URL", url)
+                        span.children.forEach { parseSpan(it) }
+                        builder.pop()
+                    }
+
+                    style != null -> {
+                        builder.pushStyle(style)
+                        span.children.forEach { parseSpan(it) }
+                        builder.pop()
+                    }
+
+                    else -> {
+                        span.children.forEach { parseSpan(it) }
+                    }
+                }
+            }
+        }
+    }
+
+    this.forEach { parseSpan(it) }
+
+    // Final cleanup of trailing space
+    return builder.toAnnotatedString().trimEnd()
+}
+
+private fun AnnotatedString.trimEnd(): AnnotatedString {
+    var lastIndex = text.length - 1
+    while (lastIndex >= 0 && (text[lastIndex].isWhitespace() || text[lastIndex] == '\u00A0')) {
+        lastIndex--
+    }
+    if (lastIndex == -1) return AnnotatedString("")
+    if (lastIndex == text.length - 1) return this
+    return subSequence(0, lastIndex + 1)
 }

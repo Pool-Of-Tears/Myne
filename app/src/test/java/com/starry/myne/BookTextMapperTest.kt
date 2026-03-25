@@ -17,7 +17,6 @@
 package com.starry.myne
 
 import com.google.common.truth.Truth.assertThat
-import com.starry.myne.epub.BookTextMapper
 import org.junit.Test
 
 

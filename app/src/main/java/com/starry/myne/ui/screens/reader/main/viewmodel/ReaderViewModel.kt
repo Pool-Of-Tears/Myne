@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 
@@ -43,7 +44,7 @@ data class ReaderScreenState(
     val shouldShowLoader: Boolean = false,
     val showReaderMenu: Boolean = false,
     val currentChapterIndex: Int = 0,
-    val currentChapter: EpubChapter = EpubChapter("", "", "", ""),
+    val currentChapter: EpubChapter = EpubChapter("", "", "", emptyList()),
     val chapterScrollPercent: Float = 0f,
     // Book data
     val epubBook: EpubBook? = null,
@@ -72,6 +73,10 @@ class ReaderViewModel @Inject constructor(
     // Mutable state flow to update the state.
     private val _state = MutableStateFlow(ReaderScreenState())
     val state = _state.asStateFlow()
+
+    // Tracking currently loading items to prevent duplicate requests.
+    private val loadingChapterIds = ConcurrentHashMap.newKeySet<String>()
+    private val loadingImagePaths = ConcurrentHashMap.newKeySet<String>()
 
     init {
         viewModelScope.launch {
@@ -144,7 +149,7 @@ class ReaderViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             fileStream.use { fis ->
                 // parse and create epub book
-                val epubBook = epubParser.createEpubBook(fis, shouldUseToc = false)
+                val epubBook = epubParser.createEpubBook(fis, shouldUseToc = true)
                 _state.update {
                     it.copy(
                         epubBook = epubBook,
@@ -174,24 +179,36 @@ class ReaderViewModel @Inject constructor(
         val currentState = state.value
         val chapter = currentState.chapters.getOrNull(index) ?: return
         if (currentState.loadedChapters.containsKey(chapter.chapterId)) return
+        if (loadingChapterIds.contains(chapter.chapterId)) return
 
+        loadingChapterIds.add(chapter.chapterId)
         viewModelScope.launch(Dispatchers.IO) {
-            val content = epubParser.getChapterBody(state.value.epubBook?.filePath ?: "", chapter)
-            _state.update {
-                it.copy(loadedChapters = it.loadedChapters + (chapter.chapterId to content))
+            try {
+                val content = epubParser.getChapterBody(state.value.epubBook?.filePath ?: "", chapter)
+                _state.update {
+                    it.copy(loadedChapters = it.loadedChapters + (chapter.chapterId to content))
+                }
+            } finally {
+                loadingChapterIds.remove(chapter.chapterId)
             }
         }
     }
 
     fun loadImageData(imagePath: String) {
         if (state.value.loadedImages.containsKey(imagePath)) return
+        if (loadingImagePaths.contains(imagePath)) return
 
+        loadingImagePaths.add(imagePath)
         viewModelScope.launch(Dispatchers.IO) {
-            val data = epubParser.getImageData(state.value.epubBook?.filePath ?: "", imagePath)
-            if (data != null) {
-                _state.update {
-                    it.copy(loadedImages = it.loadedImages + (imagePath to data))
+            try {
+                val data = epubParser.getImageData(state.value.epubBook?.filePath ?: "", imagePath)
+                if (data != null) {
+                    _state.update {
+                        it.copy(loadedImages = it.loadedImages + (imagePath to data))
+                    }
                 }
+            } finally {
+                loadingImagePaths.remove(imagePath)
             }
         }
     }
@@ -199,26 +216,27 @@ class ReaderViewModel @Inject constructor(
     fun updateReaderProgress(libraryItemId: Int, chapterIndex: Int, chapterOffset: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val isLastChapter = chapterIndex == state.value.chapters.size - 1
-            val hasSavedProgress = state.value.hasProgressSaved
             val progressData = progressDao.getReaderData(libraryItemId)
 
             when {
                 // Update progress for existing book
-                hasSavedProgress && !isLastChapter -> {
-                    progressData?.let {
-                        val updatedProgress = it.copy(
-                            lastChapterIndex = chapterIndex,
-                            lastChapterOffset = chapterOffset,
-                            lastReadTime = System.currentTimeMillis()
-                        )
-                        updatedProgress.id = it.id
-                        progressDao.update(updatedProgress)
-                    }
+                progressData != null && !isLastChapter -> {
+                    val updatedProgress = progressData.copy(
+                        lastChapterIndex = chapterIndex,
+                        lastChapterOffset = chapterOffset,
+                        lastReadTime = System.currentTimeMillis()
+                    )
+                    updatedProgress.id = progressData.id
+                    progressDao.update(updatedProgress)
+                    _state.update { it.copy(hasProgressSaved = true) }
                 }
 
                 isLastChapter -> {
                     // Delete progress for completed book
-                    progressData?.let { progressDao.delete(it.libraryItemId) }
+                    progressData?.let { it ->
+                        progressDao.delete(it.libraryItemId)
+                        _state.update { it.copy(hasProgressSaved = false) }
+                    }
                 }
 
                 else -> {
@@ -231,6 +249,7 @@ class ReaderViewModel @Inject constructor(
                             lastReadTime = System.currentTimeMillis()
                         )
                     )
+                    _state.update { it.copy(hasProgressSaved = true) }
                 }
             }
         }

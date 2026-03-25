@@ -44,7 +44,6 @@ data class ReaderDetailScreenState(
     val authors: String = "",
     val coverImage: Any? = null,
     val chapters: List<EpubChapter> = emptyList(),
-    val hasProgressSaved: Boolean = false,
     val error: String? = null,
 )
 
@@ -71,7 +70,7 @@ class ReaderDetailViewModel @Inject constructor(
             }
             // Get progress data for the current book.
             progressData = progressDao.getReaderDataAsFlow(libraryItemId.toInt())
-            // Fetch cover image from google books api if available.
+            // Fetch cover image from Google books api if available.
             val coverImage: String? = try {
                 if (!libraryItem.isImported
                     && networkStatus == NetworkObserver.Status.Available
@@ -94,7 +93,6 @@ class ReaderDetailViewModel @Inject constructor(
                 authors = libraryItem.authors,
                 coverImage = coverImage ?: epubBook.coverImage,
                 chapters = epubBook.chapters,
-                hasProgressSaved = progressData != null
             )
             delay(350) // Small delay for smooth transition.
             state = state.copy(isLoading = false)
