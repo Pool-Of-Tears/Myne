@@ -132,6 +132,11 @@ private fun ChapterLazyItemItem(
         animationSpec = tween(durationMillis = 300),
         label = "titleFontSize"
     )
+    val lineHeight by animateFloatAsState(
+        targetValue = state.lineHeight,
+        animationSpec = tween(durationMillis = 300),
+        label = "lineHeight"
+    )
 
     MyneSelectionContainer(
         onCopyRequested = {
@@ -243,7 +248,7 @@ private fun ChapterLazyItemItem(
                         Text(
                             text = annotatedString,
                             fontSize = fontSize.sp,
-                            lineHeight = 1.3.em,
+                            lineHeight = lineHeight.em,
                             fontFamily = state.fontFamily.fontFamily,
                             modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 8.dp),
                         )
@@ -267,6 +272,7 @@ private fun ChapterLazyItemItem(
                             LaunchedEffect(item.path) {
                                 onLoadImage(item.path)
                             }
+                            @Suppress("EXPECTED_CONDITION_ALWAYS_TRUE")
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -316,7 +322,7 @@ private fun ChapterLazyItemItem(
                                 text = annotatedString,
                                 fontSize = fontSize.sp,
                                 fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
-                                lineHeight = 1.3.em,
+                                lineHeight = lineHeight.em,
                                 fontFamily = state.fontFamily.fontFamily,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                             )
