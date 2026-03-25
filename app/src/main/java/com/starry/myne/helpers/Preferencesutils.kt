@@ -43,6 +43,7 @@ class PreferenceUtil(context: Context) {
         // Reader preference keys
         const val READER_FONT_SIZE_INT = "reader_font_size"
         const val READER_FONT_STYLE_STR = "reader_font_style"
+        const val READER_LINE_HEIGHT_FLOAT = "reader_line_height"
 
         // Home screen preference keys
         const val PREFERRED_BOOK_LANG_STR = "preferred_book_language"
@@ -108,6 +109,16 @@ class PreferenceUtil(context: Context) {
     }
 
     /**
+     * Insert a float value into the preferences
+     *
+     * @param key The key to insert the value into
+     * @param value The value to insert
+     */
+    fun putFloat(key: String, value: Float) {
+        prefs.edit { putFloat(key, value) }
+    }
+
+    /**
      * Get a string value from the preferences
      *
      * @param key The key to get the value from
@@ -135,5 +146,15 @@ class PreferenceUtil(context: Context) {
      */
     fun getBoolean(key: String, defValue: Boolean): Boolean {
         return prefs.getBoolean(key, defValue)
+    }
+
+    /**
+     * Get a float value from the preferences
+     *
+     * @param key The key to get the value from
+     * @param defValue The default value to return if the key does not exist
+     */
+    fun getFloat(key: String, defValue: Float): Float {
+        return prefs.getFloat(key, defValue)
     }
 }

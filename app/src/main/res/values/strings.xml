@@ -80,8 +80,10 @@
     <string name="reader_chapters_list">Chapters</string>
 
     <!--Reader Screen -->
-    <string name="reader_max_font_size_reached">Sorry, cannot go any higher than that!</string>
-    <string name="reader_min_font_size_reached">Sorry, cannot go any lower than that!</string>
+    <string name="reader_max_font_size_reached">Max font size reached</string>
+    <string name="reader_min_font_size_reached">Min font size reached</string>
+    <string name="reader_max_line_height_reached">Max line height reached</string>
+    <string name="reader_min_line_height_reached">Min line height reached</string>
     <string name="reader_font_style_chooser">Change FontStyle</string>
     <string name="reader_chapter_list_title">Chapters</string>
 
