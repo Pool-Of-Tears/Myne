@@ -17,23 +17,24 @@
 
 package com.starry.myne.ui.screens.reader.main.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.progress.ProgressDao
 import com.starry.myne.database.progress.ProgressData
 import com.starry.myne.epub.EpubParser
+import com.starry.myne.epub.models.EpubBook
 import com.starry.myne.epub.models.EpubChapter
-import com.starry.myne.epub.models.EpubImage
 import com.starry.myne.helpers.PreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 
@@ -43,12 +44,15 @@ data class ReaderScreenState(
     val shouldShowLoader: Boolean = false,
     val showReaderMenu: Boolean = false,
     val currentChapterIndex: Int = 0,
-    val currentChapter: EpubChapter = EpubChapter("", "", "", ""),
+    val currentChapter: EpubChapter = EpubChapter("", "", "", emptyList()),
     val chapterScrollPercent: Float = 0f,
     // Book data
-    val title: String = "",
+    val epubBook: EpubBook? = null,
     val chapters: List<EpubChapter> = emptyList(),
-    val images: List<EpubImage> = emptyList(),
+    // Loaded chapter content map: chapterId -> ChapterContent
+    val loadedChapters: Map<String, EpubParser.ChapterContent> = emptyMap(),
+    // Loaded images map: imagePath -> imageData
+    val loadedImages: Map<String, ByteArray> = emptyMap(),
     // Reader data
     val hasProgressSaved: Boolean = false,
     val lastChapterIndex: Int = 0,
@@ -70,26 +74,31 @@ class ReaderViewModel @Inject constructor(
     private val _state = MutableStateFlow(ReaderScreenState())
     val state = _state.asStateFlow()
 
+    // Tracking currently loading items to prevent duplicate requests.
+    private val loadingChapterIds = ConcurrentHashMap.newKeySet<String>()
+    private val loadingImagePaths = ConcurrentHashMap.newKeySet<String>()
+
     init {
         viewModelScope.launch {
-            _state.value = _state.value.copy(
-                fontSize = preferenceUtil.getInt(PreferenceUtil.READER_FONT_SIZE_INT, 100)
-            )
-            _state.value = _state.value.copy(
-                fontFamily = ReaderFont.getFontById(
-                    preferenceUtil.getString(
-                        PreferenceUtil.READER_FONT_STYLE_STR,
-                        ReaderFont.System.id
-                    )!!
+            _state.update {
+                it.copy(
+                    fontSize = preferenceUtil.getInt(PreferenceUtil.READER_FONT_SIZE_INT, 100),
+                    fontFamily = ReaderFont.getFontById(
+                        preferenceUtil.getString(
+                            PreferenceUtil.READER_FONT_STYLE_STR,
+                            ReaderFont.System.id
+                        )!!
+                    )
                 )
-            )
+            }
             // Collect the state to update the current chapter.
             _state.collect {
                 if (state.value.isLoading) return@collect
                 if (state.value.chapters.isEmpty()) return@collect
-                _state.value = _state.value.copy(
-                    currentChapter = _state.value.chapters[_state.value.currentChapterIndex]
-                )
+                val currentChapter = state.value.chapters.getOrNull(state.value.currentChapterIndex)
+                if (currentChapter != null && state.value.currentChapter != currentChapter) {
+                    _state.update { it.copy(currentChapter = currentChapter) }
+                }
             }
         }
     }
@@ -97,59 +106,37 @@ class ReaderViewModel @Inject constructor(
     fun loadEpubBook(libraryItemId: Int, onLoaded: (ReaderScreenState) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val libraryItem = libraryDao.getItemById(libraryItemId)
-            _state.value = _state.value.copy(
-                shouldShowLoader = !epubParser.isBookCached(libraryItem!!.filePath)
-            )
+            _state.update { it.copy(shouldShowLoader = true) }
             val readerData = progressDao.getReaderData(libraryItemId)
-            // Only use toc if the book is not an external book.
-            var shouldUseToc = !libraryItem.isExternalBook
+
             // Gutenberg for some reason don't include proper navMap for chinese books
             // in toc file, so we need to parse the book based on spine, instead of toc.
             // This is special case for Chinese books.
-            if (shouldUseToc && epubParser.peekLanguage(libraryItem.filePath) == "zh") {
-                Log.d("ReaderDetailViewModel", "Parsing book without toc for Chinese book.")
-                shouldUseToc = false
-            }
-            var epubBook = epubParser.createEpubBook(libraryItem.filePath, shouldUseToc)
+            val isInternalChineseBook =
+                !libraryItem!!.isImported && epubParser.peekLanguage(libraryItem.filePath) == "zh"
+            val shouldUseToc = !isInternalChineseBook
 
-            _state.value = _state.value.copy(
-                title = libraryItem.title,
-                chapters = epubBook.chapters,
-                images = epubBook.images,
-                hasProgressSaved = readerData != null,
-                lastChapterIndex = readerData?.lastChapterIndex ?: 0,
-                lastChapterOffset = readerData?.lastChapterOffset ?: 0,
-                currentChapterIndex = readerData?.lastChapterIndex ?: 0
-            )
-            onLoaded(state.value)
-            // Added some delay to avoid choppy animation.
-            if (state.value.shouldShowLoader) {
-                delay(200L)
-            }
-            _state.value = _state.value.copy(
-                isLoading = false,
-                shouldShowLoader = false
-            )
-        }
-    }
+            val epubBook = epubParser.createEpubBook(libraryItem.filePath, shouldUseToc)
 
-    fun loadEpubBookExternal(fileStream: FileInputStream) {
-        viewModelScope.launch(Dispatchers.IO) {
-            fileStream.use { fis ->
-                // parse and create epub book
-                val epubBook = epubParser.createEpubBook(fis, shouldUseToc = false)
-                _state.value = _state.value.copy(
-                    title = epubBook.title,
+            val initialChapterIndex = readerData?.lastChapterIndex ?: 0
+            _state.update {
+                it.copy(
+                    epubBook = epubBook,
                     chapters = epubBook.chapters,
-                    images = epubBook.images,
-                    hasProgressSaved = false,
-                    lastChapterIndex = 0,
-                    lastChapterOffset = 0,
-                    currentChapterIndex = 0
+                    hasProgressSaved = readerData != null,
+                    lastChapterIndex = readerData?.lastChapterIndex ?: 0,
+                    lastChapterOffset = readerData?.lastChapterOffset ?: 0,
+                    currentChapterIndex = initialChapterIndex
                 )
-                // Added some delay to avoid choppy animation.
-                delay(200L)
-                _state.value = _state.value.copy(
+            }
+            onLoaded(state.value)
+            // Load the initial chapter
+            loadChapterBody(initialChapterIndex)
+
+            // Added some delay to avoid choppy animation.
+            delay(200L)
+            _state.update {
+                it.copy(
                     isLoading = false,
                     shouldShowLoader = false
                 )
@@ -157,29 +144,99 @@ class ReaderViewModel @Inject constructor(
         }
     }
 
+    // Load epub book from file stream, used when opening books via file picker/intent
+    fun loadEpubBookExternal(fileStream: FileInputStream) {
+        viewModelScope.launch(Dispatchers.IO) {
+            fileStream.use { fis ->
+                // parse and create epub book
+                val epubBook = epubParser.createEpubBook(fis, shouldUseToc = true)
+                _state.update {
+                    it.copy(
+                        epubBook = epubBook,
+                        chapters = epubBook.chapters,
+                        hasProgressSaved = false,
+                        lastChapterIndex = 0,
+                        lastChapterOffset = 0,
+                        currentChapterIndex = 0
+                    )
+                }
+                // Load the initial chapter
+                loadChapterBody(0)
+
+                // Added some delay to avoid choppy animation.
+                delay(200L)
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        shouldShowLoader = false
+                    )
+                }
+            }
+        }
+    }
+
+    fun loadChapterBody(index: Int) {
+        val currentState = state.value
+        val chapter = currentState.chapters.getOrNull(index) ?: return
+        if (currentState.loadedChapters.containsKey(chapter.chapterId)) return
+        if (loadingChapterIds.contains(chapter.chapterId)) return
+
+        loadingChapterIds.add(chapter.chapterId)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val content = epubParser.getChapterBody(state.value.epubBook?.filePath ?: "", chapter)
+                _state.update {
+                    it.copy(loadedChapters = it.loadedChapters + (chapter.chapterId to content))
+                }
+            } finally {
+                loadingChapterIds.remove(chapter.chapterId)
+            }
+        }
+    }
+
+    fun loadImageData(imagePath: String) {
+        if (state.value.loadedImages.containsKey(imagePath)) return
+        if (loadingImagePaths.contains(imagePath)) return
+
+        loadingImagePaths.add(imagePath)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val data = epubParser.getImageData(state.value.epubBook?.filePath ?: "", imagePath)
+                if (data != null) {
+                    _state.update {
+                        it.copy(loadedImages = it.loadedImages + (imagePath to data))
+                    }
+                }
+            } finally {
+                loadingImagePaths.remove(imagePath)
+            }
+        }
+    }
+
     fun updateReaderProgress(libraryItemId: Int, chapterIndex: Int, chapterOffset: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val isLastChapter = chapterIndex == state.value.chapters.size - 1
-            val hasSavedProgress = state.value.hasProgressSaved
             val progressData = progressDao.getReaderData(libraryItemId)
 
             when {
                 // Update progress for existing book
-                hasSavedProgress && !isLastChapter -> {
-                    progressData?.let {
-                        val updatedProgress = it.copy(
-                            lastChapterIndex = chapterIndex,
-                            lastChapterOffset = chapterOffset,
-                            lastReadTime = System.currentTimeMillis()
-                        )
-                        updatedProgress.id = it.id
-                        progressDao.update(updatedProgress)
-                    }
+                progressData != null && !isLastChapter -> {
+                    val updatedProgress = progressData.copy(
+                        lastChapterIndex = chapterIndex,
+                        lastChapterOffset = chapterOffset,
+                        lastReadTime = System.currentTimeMillis()
+                    )
+                    updatedProgress.id = progressData.id
+                    progressDao.update(updatedProgress)
+                    _state.update { it.copy(hasProgressSaved = true) }
                 }
 
                 isLastChapter -> {
                     // Delete progress for completed book
-                    progressData?.let { progressDao.delete(it.libraryItemId) }
+                    progressData?.let { it ->
+                        progressDao.delete(it.libraryItemId)
+                        _state.update { it.copy(hasProgressSaved = false) }
+                    }
                 }
 
                 else -> {
@@ -192,6 +249,7 @@ class ReaderViewModel @Inject constructor(
                             lastReadTime = System.currentTimeMillis()
                         )
                     )
+                    _state.update { it.copy(hasProgressSaved = true) }
                 }
             }
         }
@@ -199,29 +257,37 @@ class ReaderViewModel @Inject constructor(
 
 
     fun setChapterScrollPercent(percent: Float) {
-        _state.value = _state.value.copy(chapterScrollPercent = percent)
+        _state.update { it.copy(chapterScrollPercent = percent) }
     }
 
     fun setVisibleChapterIndex(index: Int) {
-        _state.value = _state.value.copy(currentChapterIndex = index)
+        if (index >= 0 && index < state.value.chapters.size) {
+            if (index != state.value.currentChapterIndex) {
+                _state.update { it.copy(currentChapterIndex = index) }
+            }
+            // Always ensure current and adjacent chapters are loading/loaded.
+            loadChapterBody(index)
+            loadChapterBody(index + 1)
+            loadChapterBody(index - 1)
+        }
     }
 
     fun toggleReaderMenu() {
-        _state.value = _state.value.copy(showReaderMenu = !state.value.showReaderMenu)
+        _state.update { it.copy(showReaderMenu = !it.showReaderMenu) }
     }
 
     fun hideReaderInfo() {
-        _state.value = _state.value.copy(showReaderMenu = false)
+        _state.update { it.copy(showReaderMenu = false) }
     }
 
     fun setFontFamily(font: ReaderFont) {
         preferenceUtil.putString(PreferenceUtil.READER_FONT_STYLE_STR, font.id)
-        _state.value = _state.value.copy(fontFamily = font)
+        _state.update { it.copy(fontFamily = font) }
     }
 
     fun setFontSize(newValue: Int) {
         preferenceUtil.putInt(PreferenceUtil.READER_FONT_SIZE_INT, newValue)
-        _state.value = _state.value.copy(fontSize = newValue)
+        _state.update { it.copy(fontSize = newValue) }
     }
 
 }

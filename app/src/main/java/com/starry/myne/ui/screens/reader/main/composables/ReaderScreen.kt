@@ -175,7 +175,7 @@ private fun ReaderTopAppBar(
                     ),
                     title = {
                         Text(
-                            text = state.title,
+                            text = state.epubBook?.title ?: "",
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.animateContentSize(),

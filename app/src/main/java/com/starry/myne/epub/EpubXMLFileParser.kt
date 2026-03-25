@@ -19,7 +19,10 @@ package com.starry.myne.epub
 
 import android.graphics.BitmapFactory
 import android.util.Log
+import com.starry.myne.epub.models.HtmlSpan
+import com.starry.myne.epub.models.ReaderItem
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
 import java.io.File
@@ -46,12 +49,30 @@ class EpubXMLFileParser(
      * Represents the output of the XML document parsing.
      *
      * @property title The title of the XML document.
-     * @property body The body content of the XML document.
+     * @property body The body content of the XML document as a list of [ReaderItem].
      */
-    data class Output(val title: String?, val body: String)
+    data class Output(val title: String?, val body: List<ReaderItem>)
 
     // The parent folder of the XML file.
     private val fileParentFolder: File = File(fileAbsolutePath).parentFile ?: File("")
+
+    companion object {
+        const val TAG = "EpubXMLFileParser"
+
+        private const val HEADER_SELECTORS =
+            "h1, h2, h3, h4, h5, h6, .title, .chapter-title, .header"
+
+        /**
+         * List of tags that should be treated as inline elements.
+         * These tags will not trigger a line break (new ReaderItem.Text).
+         */
+        private val INLINE_TAGS = setOf(
+            "a", "abbr", "b", "bdi", "bdo", "big", "br", "cite", "code", "del", "dfn",
+            "em", "font", "i", "ins", "kbd", "mark", "q", "rp", "rt", "ruby", "s",
+            "samp", "small", "span", "strike", "strong", "sub", "sup", "time", "u",
+            "var", "wbr"
+        )
+    }
 
 
     /**
@@ -63,8 +84,8 @@ class EpubXMLFileParser(
         val document = Jsoup.parse(data.inputStream(), "UTF-8", "")
 
         val title: String
-        val bodyContent: String
-        val bodyElement: org.jsoup.nodes.Element?
+        val bodyContent: List<ReaderItem>
+        val bodyElement: Element?
 
         if (fragmentId != null) {
             // Check if the fragment ID represents a <div> tag
@@ -73,68 +94,94 @@ class EpubXMLFileParser(
             if (bodyElement != null) {
                 // If the fragment ID represents a <div> tag, fetch the entire body content
                 Log.d(
-                    "EpubXMLFileParser",
+                    TAG,
                     "Fragment ID: $fragmentId represents a <div> tag. Using the fragment ID."
                 )
-                title = document.selectFirst("h1, h2, h3, h4, h5, h6")?.text() ?: ""
-                bodyElement.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
-                bodyContent = getNodeStructuredText(bodyElement)
+                val header = bodyElement.selectFirst(HEADER_SELECTORS) ?: document.selectFirst(
+                    HEADER_SELECTORS
+                )
+                title = header?.text() ?: ""
+                header?.remove()
+                bodyContent = processNodes(bodyElement.childNodes())
             } else {
                 Log.d(
-                    "EpubXMLFileParser",
+                    TAG,
                     "Fragment ID: $fragmentId doesn't represent a <div> tag. Using the fragment and next fragment logic."
                 )
                 // If the fragment ID doesn't represent a <div> tag, use the fragment and next fragment logic
                 val fragmentElement = document.selectFirst("#$fragmentId")
-                title = fragmentElement?.selectFirst("h1, h2, h3, h4, h5, h6")?.text() ?: ""
-                val bodyBuilder = StringBuilder()
-                var currentNode: Node? = fragmentElement?.nextSibling()
+                // Check if fragment itself is a header
+                val header = if (fragmentElement != null && fragmentElement.isHeader) {
+                    fragmentElement
+                } else {
+                    fragmentElement?.selectFirst(HEADER_SELECTORS)
+                }
+                title = header?.text() ?: ""
+                val fragmentNodes = mutableListOf<Node>()
+                var currentNode: Node? = if (header != null && header == fragmentElement) {
+                    fragmentElement.nextSibling()
+                } else {
+                    fragmentElement
+                }
                 val nextFragmentIdElement = if (nextFragmentId != null) {
                     document.selectFirst("#$nextFragmentId")
                 } else {
                     null
                 }
-                fragmentElement?.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
+                header?.remove()
 
                 while (currentNode != null && currentNode != nextFragmentIdElement) {
-                    bodyBuilder.append(getNodeStructuredText(currentNode, true) + "\n\n")
+                    fragmentNodes.add(currentNode)
                     currentNode = getNextSibling(currentNode)
                 }
-                bodyContent = bodyBuilder.toString()
+                bodyContent = processNodes(fragmentNodes)
             }
         } else {
             // If no fragment ID is provided, fetch the entire body content
-            Log.d("EpubXMLFileParser", "No fragment ID provided. Fetching the entire body content.")
+            Log.d(TAG, "No fragment ID provided. Fetching the entire body content.")
             bodyElement = document.body()
-            title = document.selectFirst("h1, h2, h3, h4, h5, h6")?.text() ?: ""
-            document.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
-            bodyContent = getNodeStructuredText(bodyElement)
+            val header = document.selectFirst(HEADER_SELECTORS)
+            title = header?.text() ?: ""
+            header?.remove()
+            bodyContent = processNodes(bodyElement.childNodes())
+        }
+
+        // If the body is empty after fragment-based parsing, fallback to full file content.
+        // This handles some edge cases where the fragment ID points to a location at the
+        // very end of a file or just before a page break.
+        val finalBody = if (bodyContent.isEmpty() && fragmentId != null) {
+            Log.w(TAG, "Empty body content for fragment $fragmentId. Falling back to full file.")
+            processNodes(document.body().childNodes())
+        } else {
+            bodyContent
         }
 
         return Output(
-            title = title,
-            body = bodyContent
+            title = title.smartTrim(),
+            body = finalBody
         )
     }
 
+    private val Element.isHeader: Boolean
+        get() = tagName() in listOf("h1", "h2", "h3", "h4", "h5", "h6")
+                || hasClass("title") || hasClass("chapter-title") || hasClass("header")
+
     /**
-     * Parses the input data as an image and returns the image path and aspect ratio.
+     * Parses the input data as an image and returns the [ReaderItem.Image].
      *
      * @param absolutePathImage The absolute path of the image file.
-     * @return [String] The image path and aspect ratio.
+     * @return [ReaderItem.Image] The image path and aspect ratio.
      */
-    fun parseAsImage(absolutePathImage: String): String {
+    private fun parseAsImage(absolutePathImage: String): ReaderItem.Image {
         // Use run catching so it can be run locally without crash
         val bitmap = zipFile[absolutePathImage]?.data?.runCatching {
             BitmapFactory.decodeByteArray(this, 0, this.size)
         }?.getOrNull()
 
-        val text = BookTextMapper.ImgEntry(
+        return ReaderItem.Image(
             path = absolutePathImage,
             yrel = bitmap?.let { it.height.toFloat() / it.width.toFloat() } ?: 1.45f
-        ).toXMLString()
-
-        return "\n\n$text\n\n"
+        )
     }
 
     // Traverses the XML document to find the next sibling node.
@@ -172,8 +219,8 @@ class EpubXMLFileParser(
         return null
     }
 
-    // Rewrites the image node to xml for the next stage.
-    private fun declareImgEntry(node: Node): String {
+    // Rewrites the image node to XML for the next stage.
+    private fun declareImgEntry(node: Node): ReaderItem.Image {
         val attrs = node.attributes().associate { it.key to it.value }
         val relPathEncoded = attrs["src"] ?: attrs["xlink:href"] ?: ""
 
@@ -186,68 +233,110 @@ class EpubXMLFileParser(
         return parseAsImage(absolutePathImage)
     }
 
-    // Traverses the <p> tag to extract the text content.
-    private fun getPTraverse(node: Node): String {
-        fun innerTraverse(node: Node): String =
-            node.childNodes().joinToString("") { child ->
-                when {
-                    child.nodeName() == "br" -> "\n"
-                    child.nodeName() == "img" -> declareImgEntry(child)
-                    child.nodeName() == "image" -> declareImgEntry(child)
-                    child is TextNode -> child.text()
-                    else -> innerTraverse(child)
+    private fun processNodes(nodes: List<Node>): List<ReaderItem> {
+        val items = mutableListOf<ReaderItem>()
+        val inlineBuffer = mutableListOf<Node>()
+
+        fun flushInlineBuffer() {
+            if (inlineBuffer.isNotEmpty()) {
+                val spans = inlineBuffer.map { it.toHtmlSpan() }
+                if (spans.any { it.isNotBlank() }) {
+                    items.add(ReaderItem.Text(spans))
                 }
-            }
-
-        val paragraph = innerTraverse(node).trim()
-        return if (paragraph.isNotEmpty()) "$paragraph\n\n" else ""
-    }
-
-    // Traverses the node to extract the text content.
-    private fun getNodeTextTraverse(node: Node): String {
-        val children = node.childNodes()
-        if (children.isEmpty())
-            return ""
-
-        return children.joinToString("") { child ->
-            when {
-                child.nodeName() == "p" -> getPTraverse(child)
-                child.nodeName() == "br" -> "\n"
-                child.nodeName() == "hr" -> "\n\n"
-                child.nodeName() == "img" -> declareImgEntry(child)
-                child.nodeName() == "image" -> declareImgEntry(child)
-                child is TextNode -> {
-                    val text = child.text().trim()
-                    if (text.isEmpty()) "" else text + "\n\n"
-                }
-
-                else -> getNodeTextTraverse(child)
-            }
-        }
-    }
-
-    // Traverses the node to extract the structured text content
-    // based on the node type and its children.
-    private fun getNodeStructuredText(node: Node, singleNode: Boolean = false): String {
-        val nodeActions = mapOf(
-            "p" to { n: Node -> getPTraverse(n) },
-            "br" to { "\n" },
-            "hr" to { "\n\n" },
-            "img" to ::declareImgEntry,
-            "image" to ::declareImgEntry
-        )
-
-        val action: (Node) -> String = { n: Node ->
-            if (n is TextNode) {
-                n.text().trim()
-            } else {
-                getNodeTextTraverse(n)
+                inlineBuffer.clear()
             }
         }
 
-        val children = if (singleNode) listOf(node) else node.childNodes()
-        return children.joinToString("") { child ->
-            nodeActions[child.nodeName()]?.invoke(child) ?: action(child)
+        for (node in nodes) {
+            when (node) {
+                is TextNode -> {
+                    inlineBuffer.add(node)
+                }
+
+                is Element -> {
+                    val tagName = node.tagName()
+                    when (tagName) {
+                        in INLINE_TAGS -> {
+                            inlineBuffer.add(node)
+                        }
+
+                        "p" -> {
+                            flushInlineBuffer()
+                            val spans = node.childNodes().map { it.toHtmlSpan() }
+                            if (spans.any { it.isNotBlank() }) {
+                                items.add(ReaderItem.Text(spans))
+                            }
+                        }
+
+                        in listOf("img", "image") -> {
+                            flushInlineBuffer()
+                            items.add(declareImgEntry(node))
+                        }
+
+                        "pre" -> {
+                            flushInlineBuffer()
+                            // For code blocks, we want to preserve all whitespace.
+                            items.add(ReaderItem.CodeBlock(node.wholeText()))
+                        }
+
+                        "blockquote" -> {
+                            flushInlineBuffer()
+                            val spans = node.childNodes().map { it.toHtmlSpan() }
+                            if (spans.any { it.isNotBlank() }) {
+                                items.add(ReaderItem.Blockquote(spans))
+                            }
+                        }
+
+                        else -> {
+                            // Recursively process children of unknown blocks, but keep them as blocks
+                            flushInlineBuffer()
+                            items.addAll(processNodes(node.childNodes()))
+                        }
+                    }
+                }
+            }
+        }
+        flushInlineBuffer()
+
+        // Filter out leading and trailing empty items to avoid extra spacing
+        // at the start or bottom of chapters.
+        val finalItems = items.toMutableList()
+        while (finalItems.isNotEmpty() && finalItems.first().isTrulyEmpty()) {
+            finalItems.removeAt(0)
+        }
+        while (finalItems.isNotEmpty() && finalItems.last().isTrulyEmpty()) {
+            finalItems.removeAt(finalItems.size - 1)
+        }
+
+        return finalItems
+    }
+
+    private fun ReaderItem.isTrulyEmpty(): Boolean {
+        return when (this) {
+            is ReaderItem.Text -> spans.all { !it.isNotBlank() }
+            is ReaderItem.Blockquote -> spans.all { !it.isNotBlank() }
+            is ReaderItem.CodeBlock -> code.isEmpty()
+            is ReaderItem.Image -> false
+        }
+    }
+
+    private fun HtmlSpan.isNotBlank(): Boolean {
+        return when (this) {
+            is HtmlSpan.Text -> text.any { !it.isWhitespace() && it != '\u00A0' && it != '\u200B' }
+            is HtmlSpan.Tag -> name == "br" || children.any { it.isNotBlank() }
+        }
+    }
+
+    private fun Node.toHtmlSpan(): HtmlSpan {
+        return when (this) {
+            is TextNode -> HtmlSpan.Text(this.wholeText)
+            is Element -> HtmlSpan.Tag(
+                name = this.tagName(),
+                attributes = this.attributes().associate { it.key to it.value },
+                children = this.childNodes().map { it.toHtmlSpan() }
+            )
+
+            else -> HtmlSpan.Text("")
         }
     }
 }
