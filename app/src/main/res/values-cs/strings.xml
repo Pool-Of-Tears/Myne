@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Others Strings -->
     <string name="not_applicable">N/A</string>
@@ -11,27 +12,22 @@
     <string name="network_error_retry">Try Again</string>
     <string name="error">Jejda! Něco se pokazilo.</string>
     <string name="no_app_to_handle_content">Nelze najít aplikaci pro otevření tohoto obsahu.</string>
-
     <!-- Navigation titles -->
     <string name="navigation_home">Domů</string>
     <string name="navigation_categories">Kategorie</string>
     <string name="navigation_library">Knihovna</string>
     <string name="navigation_settings">Nastavení</string>
-
     <!-- ToolTips -->
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
-
     <!-- Welcome Screen -->
     <string name="welcome_screen_title">Děkujeme za instalaci Myne!</string>
     <string name="welcome_screen_desc">Vyberte si svůj preferovaný čtečku elektronických knih a vydejte se na cestu čtení.</string>
     <string name="welcome_screen_button">Get Started</string>
-
     <!-- Home screen. -->
     <string name="home_header">Všechny knihy</string>
     <string name="home_language_icon_desc">Sort by language</string>
     <string name="home_search_icon_desc">Hledat knihy</string>
     <string name="language_menu_title">Browse by language</string>
-
     <!-- Categories screen. -->
     <string name="categories_header">Kategorie</string>
     <string name="no_books_found_for_lang_and_cat">No books available in %s language for this category.</string>
@@ -54,7 +50,6 @@
     <string name="category_religion">Náboženství</string>
     <string name="category_romance">Romantika</string>
     <string name="category_science">Věda</string>
-
     <!-- Library screen. -->
     <string name="library_header">Knihovna</string>
     <string name="empty_library">Nic tu není!</string>
@@ -71,19 +66,16 @@
     <string name="library_read_button">Číst</string>
     <string name="library_delete_button">Odstranit</string>
     <string name="library_delete_dialog_title">Opravdu?</string>
-
     <!-- Reader Detail Screen -->
     <string name="reader_detail_header">Čtečka e-knih</string>
     <string name="start_reading_button">Začít</string>
     <string name="continue_reading_button">Pokračovat</string>
     <string name="reader_chapters_list">Kapitoly</string>
-
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Je nám líto, ale výš už to nejde!</string>
     <string name="reader_min_font_size_reached">Je nám líto, ale níž už to nejde!</string>
     <string name="reader_font_style_chooser">Change FontStyle</string>
     <string name="reader_chapter_list_title">Kapitoly</string>
-
     <!-- Text selection -->
     <string name="copy">Kopírovat</string>
     <string name="copied">Zkopírováno!</string>
@@ -91,7 +83,6 @@
     <string name="share">Sdílet</string>
     <string name="translate">Přeložit</string>
     <string name="dictionary">Význam</string>
-
     <!-- Settings screen. -->
     <string name="settings_header">Nastavení</string>
     <string name="app_desc">Stahování e-knih</string>
@@ -126,10 +117,8 @@
     <string name="license_setting_desc">Licence open source.</string>
     <string name="about_setting">Informace o aplikaci</string>
     <string name="about_setting_desc">Zobrazit informace o aplikaci a užitečné odkazy</string>
-
     <!-- Books card -->
     <string name="cover_image_desc">Obrázek na obálce knihy</string>
-
     <!-- Book Detail Screen -->
     <string name="book_detail_header">Podrobnosti o knize</string>
     <string name="back_button_desc">Vrátit se.</string>
@@ -140,7 +129,6 @@
     <string name="download_started">Stahování spuštěno!</string>
     <string name="book_synopsis">Stručný obsah knihy</string>
     <string name="book_synopsis_not_found">Nedostupné</string>
-
     <!-- About Screen -->
     <string name="about_header">O aplikaci</string>
     <string name="about_desc">Bezplatná aplikace pro Android s otevřeným zdrojovým kódem ke stahování elektronických knih z projektu GutenBerg.</string>
@@ -160,7 +148,6 @@
     <string name="link_telegram_desc">Pobavte se s námi na Telegramu!</string>
     <string name="link_support">Podpora vývoje</string>
     <string name="link_support_desc">Myslíte si, že si zasloužím sušenky? Klikněte sem!</string>
-
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">Licence</string>
 </resources>

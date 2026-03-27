@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Others Strings 其它字符-->
     <string name="not_applicable">不可用</string>
     <string name="woops">哎哟！</string>
@@ -13,27 +12,22 @@
     <string name="network_error_retry">重试</string>
     <string name="error">啊！出错了</string>
     <string name="no_app_to_handle_content">找不到可以打开此内容的应用程序。</string>
-
     <!-- Navigation titles 导航栏-->
     <string name="navigation_home">主页</string>
     <string name="navigation_categories">分类</string>
     <string name="navigation_library">书库</string>
     <string name="navigation_settings">设置</string>
-
     <!-- ToolTips 提示信息-->
     <string name="library_tooltip">提示：通过在图书条目上左右滑动可实现分享或者查看信息操作</string>
-
     <!-- Welcome Screen 欢迎屏幕-->
     <string name="welcome_screen_title">感谢安装 Myne！</string>
     <string name="welcome_screen_desc">选择您喜欢的电子书阅读器，开始您的阅读之旅。</string>
     <string name="welcome_screen_button">开始使用</string>
-
     <!-- Home screen. 主页-->
     <string name="home_header">全部书籍</string>
     <string name="home_language_icon_desc">按语言排序</string>
     <string name="home_search_icon_desc">搜索</string>
     <string name="language_menu_title">按语言浏览</string>
-
     <!-- Categories screen. 分类页面-->
     <string name="categories_header">分类</string>
     <string name="no_books_found_for_lang_and_cat">在这个分类里没有以%s为语言的书籍</string>
@@ -56,7 +50,6 @@
     <string name="category_religion">宗教</string>
     <string name="category_romance">浪漫</string>
     <string name="category_science">科学</string>
-
     <!-- Library screen. 书架/书库页面-->
     <string name="library_header">书库</string>
     <string name="empty_library">这里是空的</string>
@@ -73,19 +66,16 @@
     <string name="library_read_button">阅读</string>
     <string name="library_delete_button">删除</string>
     <string name="library_delete_dialog_title">确认？</string>
-
     <!-- Reader Detail Screen 阅读器详情页面-->
     <string name="reader_detail_header">电子书阅读器</string>
     <string name="start_reading_button">开始</string>
     <string name="continue_reading_button">继续</string>
     <string name="reader_chapters_list">章节</string>
-
     <!--Reader Screen 阅读界面-->
     <string name="reader_max_font_size_reached">抱歉，不能再大了</string>
     <string name="reader_min_font_size_reached">抱歉，不能再小了</string>
     <string name="reader_font_style_chooser">改变字体风格</string>
     <string name="reader_chapter_list_title">章节</string>
-
     <!-- Text selection 文本选择-->
     <string name="copy">复制</string>
     <string name="copied">已复制！</string>
@@ -93,7 +83,6 @@
     <string name="share">分享</string>
     <string name="translate">翻译</string>
     <string name="dictionary">意义</string>
-
     <!-- Settings screen. 设置页面-->
     <string name="settings_header">设置</string>
     <string name="app_desc">电子书下载器</string>
@@ -128,10 +117,8 @@
     <string name="license_setting_desc">开源许可证</string>
     <string name="about_setting">应用信息</string>
     <string name="about_setting_desc">应用信息和附加链接</string>
-
     <!-- Books card -->
     <string name="cover_image_desc">封面图片</string>
-
     <!-- Book Detail Screen 书籍详情-->
     <string name="book_detail_header">书籍信息</string>
     <string name="back_button_desc">返回</string>
@@ -142,7 +129,6 @@
     <string name="download_started">下载已开始</string>
     <string name="book_synopsis">概要</string>
     <string name="book_synopsis_not_found">不可用</string>
-
     <!-- About Screen 关于屏幕-->
     <string name="about_header">关于</string>
     <string name="about_desc">一个从Project GutenBerg下载电子书的自由开源安卓APP</string>
@@ -162,7 +148,6 @@
     <string name="link_telegram_desc">在Telegram上与我们一起交流！</string>
     <string name="link_support">支持开发</string>
     <string name="link_support_desc">认为我应该得到饼干吗？点击这里！</string>
-
     <!-- Open source libraries screen 开放源代码库界面-->
     <string name="open_source_licenses_header">许可证</string>
 </resources>

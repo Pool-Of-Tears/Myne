@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Myne</string>
     <!-- Others Strings -->
@@ -12,31 +13,25 @@
     <string name="network_error_retry">Réessayer</string>
     <string name="error">Nom d\'une pipe ! Une erreur s\'est produite.</string>
     <string name="no_app_to_handle_content">Aucune application trouvée pour ouvrir ce contenu.</string>
-
     <!-- Navigation titles -->
     <string name="navigation_home">Accueil</string>
     <string name="navigation_categories">Catégories</string>
     <string name="navigation_library">Bibliothèque</string>
     <string name="navigation_settings">Paramètres</string>
-
     <!-- ToolTips -->
     <string name="library_tooltip">Astuce ! Faites glisser les éléments de la bibliothèque vers la gauche ou la droite pour partager ou voir les détails du livre.</string>
-
     <!-- Welcome Screen -->
     <string name="welcome_screen_title">Merci d’avoir installé Myne !</string>
     <string name="welcome_screen_desc">Choisissez votre lecteur d’ebook préféré pour commencer votre aventure de lecture.</string>
     <string name="welcome_screen_button">Commencer</string>
-
     <!-- Home screen. -->
     <string name="home_header">Tous les livres</string>
     <string name="home_language_icon_desc">Trier par langue</string>
     <string name="home_search_icon_desc">Rechercher des livres</string>
     <string name="language_menu_title">Parcourir par langue</string>
-
     <!-- Categories screen. -->
     <string name="categories_header">Catégories</string>
     <string name="no_books_found_for_lang_and_cat">Aucun livre disponible en %s pour cette catégorie.</string>
-
     <!-- Categories -->
     <string name="category_animal">Animaux</string>
     <string name="category_children">Enfants</string>
@@ -56,7 +51,6 @@
     <string name="category_religion">Religion</string>
     <string name="category_romance">Romance</string>
     <string name="category_science">Science</string>
-
     <!-- Library screen. -->
     <string name="library_header">Bibliothèque</string>
     <string name="empty_library">Rien ici !</string>
@@ -73,19 +67,16 @@
     <string name="library_read_button">Lire</string>
     <string name="library_delete_button">Supprimer</string>
     <string name="library_delete_dialog_title">Êtes-vous sûr ?</string>
-
     <!-- Reader Detail Screen -->
     <string name="reader_detail_header">Lecteur d\'ebook</string>
     <string name="start_reading_button">Commencer</string>
     <string name="continue_reading_button">Reprendre</string>
     <string name="reader_chapters_list">Chapitres</string>
-
     <!-- Reader Screen -->
     <string name="reader_max_font_size_reached">Désolé, taille maximale atteinte !</string>
     <string name="reader_min_font_size_reached">Désolé, taille minimale atteinte !</string>
     <string name="reader_font_style_chooser">Changer la police</string>
     <string name="reader_chapter_list_title">Chapitres</string>
-
     <!-- Text selection -->
     <string name="copy">Copier</string>
     <string name="copied">Copié !</string>
@@ -93,7 +84,6 @@
     <string name="share">Partager</string>
     <string name="translate">Traduire</string>
     <string name="dictionary">Signification</string>
-
     <!-- Settings screen -->
     <string name="settings_header">Paramètres</string>
     <string name="app_desc">Téléchargeur d\'ebooks</string>
@@ -129,10 +119,8 @@
     <string name="license_setting_desc">Licences open source.</string>
     <string name="about_setting">Informations sur l’application</string>
     <string name="about_setting_desc">Afficher les infos et liens utiles</string>
-
     <!-- Books card -->
     <string name="cover_image_desc">Image de couverture</string>
-
     <!-- Book Detail Screen -->
     <string name="book_detail_header">Détails du livre</string>
     <string name="back_button_desc">Retour.</string>
@@ -143,7 +131,6 @@
     <string name="download_started">Téléchargement démarré !</string>
     <string name="book_synopsis">Synopsis</string>
     <string name="book_synopsis_not_found">Non disponible</string>
-
     <!-- About Screen -->
     <string name="about_header">À propos</string>
     <string name="about_desc">Une application Android gratuite et open source pour télécharger des ebooks du Projet Gutenberg.</string>
@@ -164,7 +151,6 @@
     <string name="link_telegram_desc">Rejoignez-nous sur Telegram !</string>
     <string name="link_support">Soutenir le développement</string>
     <string name="link_support_desc">Je mérite un cookie ? Cliquez ici !</string>
-
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">Licences</string>
 </resources>

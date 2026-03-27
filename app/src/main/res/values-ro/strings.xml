@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Myne</string>
     <!-- Others Strings -->
@@ -12,27 +13,22 @@
     <string name="network_error_retry">Încearcă din nou</string>
     <string name="error">Ups! Ceva a mers rău.</string>
     <string name="no_app_to_handle_content">Nu s-a găsit nicio aplicație pentru a deschide acest conținut.</string>
-
     <!-- Navigation titles -->
     <string name="navigation_home">Acasă</string>
     <string name="navigation_categories">Categorii</string>
     <string name="navigation_library">Librărie</string>
     <string name="navigation_settings">Setări</string>
-
     <!-- ToolTips -->
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
-
     <!-- Welcome Screen -->
     <string name="welcome_screen_title">Mulțumim pentru instalarea Myne!</string>
     <string name="welcome_screen_desc">Alegeți cititorul preferat de cărți electronice pentru a vă începe călătoria de citire.</string>
     <string name="welcome_screen_button">Începeți</string>
-
     <!-- Home screen. -->
     <string name="home_header">Toate Cărțile</string>
     <string name="home_language_icon_desc">Sortează după limbă</string>
     <string name="home_search_icon_desc">Caută cărți</string>
     <string name="language_menu_title">Răsfoiește după limbă</string>
-
     <!-- Categories screen. -->
     <string name="categories_header">Categorii</string>
     <string name="no_books_found_for_lang_and_cat">Nu există cărți disponibile în limba %s pentru această categorie.</string>
@@ -55,7 +51,6 @@
     <string name="category_religion">Religião</string>
     <string name="category_romance">Romance</string>
     <string name="category_science">Ciência</string>
-
     <!-- Library screen. -->
     <string name="library_header">Librărie</string>
     <string name="empty_library">Nimic aici!</string>
@@ -72,19 +67,16 @@
     <string name="library_read_button">Citește</string>
     <string name="library_delete_button">Șterge</string>
     <string name="library_delete_dialog_title">Ești sigur de asta?</string>
-
     <!-- Reader Detail Screen -->
     <string name="reader_detail_header">Ebook Reader</string>
     <string name="start_reading_button">Începe</string>
     <string name="continue_reading_button">Rezumă</string>
     <string name="reader_chapters_list">Capitole</string>
-
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Îmi pare rău, nu pot merge mai sus de atât!</string>
     <string name="reader_min_font_size_reached">Îmi pare rău, nu pot merge mai jos de atât!</string>
     <string name="reader_font_style_chooser">Schimbați FontStyle</string>
     <string name="reader_chapter_list_title">Capitole</string>
-
     <!-- Text selection -->
     <string name="copy">Copiază</string>
     <string name="copied">Copiat!</string>
@@ -92,7 +84,6 @@
     <string name="share">Partajează</string>
     <string name="translate">Tradu</string>
     <string name="dictionary">Semnificație</string>
-
     <!-- Settings screen. -->
     <string name="settings_header">Setări</string>
     <string name="app_desc">Descărcător de Ebook</string>
@@ -128,10 +119,8 @@
     <string name="license_setting_desc">Licențe de sursă deschisă.</string>
     <string name="about_setting">Informații despre aplicație</string>
     <string name="about_setting_desc">Afișează informații despre Aplicație &amp; link-uri utile</string>
-
     <!-- Books card -->
     <string name="cover_image_desc">Imaginea copertei cărții</string>
-
     <!-- Book Detail Screen -->
     <string name="book_detail_header">Detalii despre carte</string>
     <string name="back_button_desc">Înapoi.</string>
@@ -142,7 +131,6 @@
     <string name="download_started">Descărcarea începută!</string>
     <string name="book_synopsis">Sinopsis</string>
     <string name="book_synopsis_not_found">Indisponibil</string>
-
     <!-- About Screen -->
     <string name="about_header">Despre</string>
     <string name="about_desc">O aplicație Android gratuită &amp; sursă deschisă pentru a descărca ebook-uri de la Project GutenBerg.</string>
@@ -162,7 +150,6 @@
     <string name="link_telegram_desc">Petrece timp cu noi pe Telegram!</string>
     <string name="link_support">Susține Dezvoltarea</string>
     <string name="link_support_desc">Crezi că merit biscuiți? Dă clic aici!</string>
-
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">Licențe</string>
 </resources>

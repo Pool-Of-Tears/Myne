@@ -12,27 +12,22 @@
     <string name="network_error_retry">حاول ثانية</string>
     <string name="error">حدث خطأ ما</string>
     <string name="no_app_to_handle_content">لا يمكن العثور على تطبيق لفتح هذا المحتوى.</string>
-
     <!-- Navigation titles -->
     <string name="navigation_home">الرئيسية</string>
     <string name="navigation_categories">الفئات</string>
     <string name="navigation_library">المكتبة</string>
     <string name="navigation_settings">الاعدادات</string>
-
     <!-- ToolTips -->
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
-
     <!-- Welcome Screen -->
     <string name="welcome_screen_title">شكرًا لتثبيت Myne!</string>
     <string name="welcome_screen_desc">اختر قارئ الكتب الإلكترونية المفضل لديك للانطلاق في رحلتك في القراءة.</string>
     <string name="welcome_screen_button">البدء</string>
-
     <!-- Home screen. -->
     <string name="home_header">كل الكتب</string>
     <string name="home_language_icon_desc">الترتيب حسب اللغة</string>
     <string name="home_search_icon_desc">البحث عن كتاب</string>
     <string name="language_menu_title">تصفح حسب اللغة</string>
-
     <!-- Categories screen. -->
     <string name="categories_header">الفئات</string>
     <string name="no_books_found_for_lang_and_cat">لا توجد كتب متاحة باللغة %s لهذه الفئة.</string>
@@ -55,7 +50,6 @@
     <string name="category_religion">الديانة</string>
     <string name="category_romance">الرومانسية</string>
     <string name="category_science">العلوم</string>
-
     <!-- Library screen. -->
     <string name="library_header">المكتبة</string>
     <string name="empty_library">لا يوجد شئ هنا</string>
@@ -72,19 +66,16 @@
     <string name="library_read_button">اقرأ</string>
     <string name="library_delete_button">امسح</string>
     <string name="library_delete_dialog_title">هل انت متأكد ؟</string>
-
     <!-- Reader Detail Screen -->
     <string name="reader_detail_header">قارئ الكتاب الاليكتروني</string>
     <string name="start_reading_button">يبدأ</string>
     <string name="continue_reading_button">استمرار</string>
     <string name="reader_chapters_list">فصول</string>
-
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">آسف، لا يمكن أن تذهب إلى أعلى من ذلك!</string>
     <string name="reader_min_font_size_reached">آسف، لا يمكن أن تذهب إلى أقل من ذلك!</string>
     <string name="reader_font_style_chooser">تغيير نمط الخط</string>
     <string name="reader_chapter_list_title">الفصول</string>
-
     <!-- Text selection -->
     <string name="copy">نسخ</string>
     <string name="copied">تم النسخ!</string>
@@ -92,7 +83,6 @@
     <string name="share">مشاركة</string>
     <string name="translate">ترجمة</string>
     <string name="dictionary">معنى</string>
-
     <!-- Settings screen. -->
     <string name="settings_header">الاعدادات</string>
     <string name="app_desc">محمل الكتب الالكترونية</string>
@@ -127,10 +117,8 @@
     <string name="license_setting_desc">التراخيص مفتوحة المصدر</string>
     <string name="about_setting">معلومات التطبيق</string>
     <string name="about_setting_desc">عرض معلومات التطبيق والروابط المفيدة</string>
-
     <!-- Books card -->
     <string name="cover_image_desc">صورة الغلاف</string>
-
     <!-- Book Detail Screen -->
     <string name="book_detail_header">تفاصيل الكتاب</string>
     <string name="back_button_desc">ارجع للخلف</string>
@@ -141,7 +129,6 @@
     <string name="download_started">تم بدأ التحميل</string>
     <string name="book_synopsis">موجز</string>
     <string name="book_synopsis_not_found">غير متاح</string>
-
     <!-- About Screen -->
     <string name="about_header">لمحة</string>
     <string name="about_desc">تطبيق اندرويد لتحميل الكتب المجانية من GutenBerg</string>
@@ -161,7 +148,6 @@
     <string name="link_telegram_desc">استمتع بوقتك معنا على Telegram!</string>
     <string name="link_support">دعم التطوير</string>
     <string name="link_support_desc">تعتقد أنني أستحق الكوكيز؟ انقر هنا!</string>
-
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">التراخيص</string>
 </resources>

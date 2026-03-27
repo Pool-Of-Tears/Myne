@@ -12,27 +12,22 @@
     <string name="network_error_retry">আবার চেষ্টা করুন</string>
     <string name="error">উফফ! কোন ভুল হয়েছে।</string>
     <string name="no_app_to_handle_content">এই কন্টেন্ট খোলার জন্য কোনো অ্যাপ খুঁজে পাওয়া যায়নি।</string>
-
     <!-- Navigation titles -->
     <string name="navigation_home">হোম</string>
     <string name="navigation_categories">ক্যাটাগরি</string>
     <string name="navigation_library">লাইব্রেরি</string>
     <string name="navigation_settings">সেটিংস</string>
-
     <!-- ToolTips -->
     <string name="library_tooltip">টিপ! বইয়ের বিস্তারিত শেয়ার করতে বা দেখতে লাইব্রেরি আইটেমগুলিকে বাম বা ডানে সোয়াইপ করুন।</string>
-
     <!-- Welcome Screen -->
     <string name="welcome_screen_title">Myne ইনস্টল করার জন্য ধন্যবাদ!</string>
     <string name="welcome_screen_desc">আপনার পড়ার যাত্রা শুরু করতে আপনার পছন্দের ইবুক রিডার বেছে নিন।</string>
     <string name="welcome_screen_button">শুরু করুন</string>
-
     <!-- Home screen. -->
     <string name="home_header">সব বই</string>
     <string name="home_language_icon_desc">ভাষা অনুযায়ী সাজান</string>
     <string name="home_search_icon_desc">বই খুজুন</string>
     <string name="language_menu_title">ভাষা দ্বারা ব্রাউজ</string>
-
     <!-- Categories screen. -->
     <string name="categories_header">ক্যাটাগরি</string>
     <string name="no_books_found_for_lang_and_cat">এই ক্যাটাগরির জন্য %s ভাষায় কোনো বই পাওয়া যায়নি।</string>
@@ -55,7 +50,6 @@
     <string name="category_religion">ধর্ম</string>
     <string name="category_romance">রোমান্স</string>
     <string name="category_science">বিজ্ঞান</string>
-
     <!-- Library screen. -->
     <string name="library_header">লাইব্রেরি</string>
     <string name="empty_library">এখানে কিছুই নেই!</string>
@@ -72,19 +66,16 @@
     <string name="library_read_button">পড়ুন</string>
     <string name="library_delete_button">ডিলিট</string>
     <string name="library_delete_dialog_title">আপনি কি নিশ্চিত?</string>
-
     <!-- Reader Detail Screen -->
     <string name="reader_detail_header">ইবুক রিডার</string>
     <string name="start_reading_button">শুরু</string>
     <string name="continue_reading_button">চালিয়ে যান</string>
     <string name="reader_chapters_list">অধ্যায়</string>
-
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">দুঃখিত, এর চেয়ে বাড়ানো যাবে না!</string>
     <string name="reader_min_font_size_reached">দুঃখিত, এর চেয়ে কমানো যাবে না!</string>
     <string name="reader_font_style_chooser">ফন্ট স্টাইল পরিবর্তন করুন</string>
     <string name="reader_chapter_list_title">অধ্যায়</string>
-
     <!-- Text selection -->
     <string name="copy">কপি</string>
     <string name="copied">কপি হয়েছে!</string>
@@ -92,7 +83,6 @@
     <string name="share">শেয়ার</string>
     <string name="translate">অনুবাদ</string>
     <string name="dictionary">অর্থ</string>
-
     <!-- Settings screen. -->
     <string name="settings_header">সেটিংস</string>
     <string name="app_desc">ইবুক ডাউনলোডার</string>
@@ -128,10 +118,8 @@
     <string name="license_setting_desc">ওপেন সোর্স লাইসেন্স।</string>
     <string name="about_setting">অ্যাপ সম্পর্কে</string>
     <string name="about_setting_desc">অ্যাপ সম্পর্কে আরও জানুন &amp; দরকারি লিঙ্ক</string>
-
     <!-- Books card -->
     <string name="cover_image_desc">বইয়ের কভার ছবি</string>
-
     <!-- Book Detail Screen -->
     <string name="book_detail_header">বইয়ের বিস্তারিত</string>
     <string name="back_button_desc">ফিরে যান।</string>
@@ -142,7 +130,6 @@
     <string name="download_started">ডাউনলোড শুরু হয়েছে!</string>
     <string name="book_synopsis">সারমর্ম</string>
     <string name="book_synopsis_not_found">পাওয়া যায়নি</string>
-
     <!-- About Screen -->
     <string name="about_header">অ্যাপ সম্পর্কে</string>
     <string name="about_desc">একটি ফ্রি &amp; ওপেন সোর্স অ্যান্ড্রয়েড অ্যাপ্লিকেশন যা প্রজেক্ট গুটেনবার্গ থেকে ইবুক ডাউনলোড করে।</string>
@@ -163,7 +150,6 @@
     <string name="link_telegram_desc">টেলিগ্রামে আমাদের সাথে আড্ডা দিন!</string>
     <string name="link_support">সাপোর্ট ডেভেলপমেন্ট</string>
     <string name="link_support_desc">ডেভেলপমেন্টকে সাপোর্ট করতে এখানে ক্লিক করুন!</string>
-
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">লাইসেন্স</string>
 </resources>

@@ -12,27 +12,22 @@
     <string name="network_error_retry">Try Again</string>
     <string name="error">¡Ups! Algo ha ido mal.</string>
     <string name="no_app_to_handle_content">No se puede encontrar ninguna aplicación para abrir este contenido.</string>
-
     <!-- Navigation titles -->
     <string name="navigation_home">Inicio</string>
     <string name="navigation_categories">Categorías</string>
     <string name="navigation_library">Biblioteca</string>
     <string name="navigation_settings">Ajustes</string>
-
     <!-- ToolTips -->
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
-
     <!-- Welcome Screen -->
     <string name="welcome_screen_title">¡Gracias por instalar Myne!</string>
     <string name="welcome_screen_desc">Elige tu lector de libros electrónicos preferido para embarcarte en tu viaje de lectura.</string>
     <string name="welcome_screen_button">Get Started</string>
-
     <!-- Home screen. -->
     <string name="home_header">Todos los libros</string>
     <string name="home_language_icon_desc">Sort by language</string>
     <string name="home_search_icon_desc">Buscar libros</string>
     <string name="language_menu_title">Browse by language</string>
-
     <!-- Categories screen. -->
     <string name="categories_header">Categorías</string>
     <string name="no_books_found_for_lang_and_cat">No books available in %s language for this category.</string>
@@ -55,7 +50,6 @@
     <string name="category_religion">Religión</string>
     <string name="category_romance">Romance</string>
     <string name="category_science">Ciencia</string>
-
     <!-- Library screen. -->
     <string name="library_header">Biblioteca</string>
     <string name="empty_library">¡Nada por aquí!</string>
@@ -72,19 +66,16 @@
     <string name="library_read_button">Leer</string>
     <string name="library_delete_button">Eliminar</string>
     <string name="library_delete_dialog_title">¿Está seguro de eso?</string>
-
     <!-- Reader Detail Screen -->
     <string name="reader_detail_header">Lector de Ebook</string>
     <string name="start_reading_button">Comenzar</string>
     <string name="continue_reading_button">Continuar</string>
     <string name="reader_chapters_list">Capítulos</string>
-
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Lo sentimos, no puede subir más</string>
     <string name="reader_min_font_size_reached">Lo sentimos, no puede bajar más</string>
     <string name="reader_font_style_chooser">Change FontStyle</string>
     <string name="reader_chapter_list_title">Capítulos</string>
-
     <!-- Text selection -->
     <string name="copy">Copiar</string>
     <string name="copied">¡Copiado!</string>
@@ -92,7 +83,6 @@
     <string name="share">Compartir</string>
     <string name="translate">Traducir</string>
     <string name="dictionary">Significado</string>
-
     <!-- Settings screen. -->
     <string name="settings_header">Ajustes</string>
     <string name="app_desc">Descargador de Ebooks</string>
@@ -127,10 +117,8 @@
     <string name="license_setting_desc">Licencias de código abierto.</string>
     <string name="about_setting">Información de la aplicación</string>
     <string name="about_setting_desc">Mostrar información sobre la aplicación y enlaces útiles</string>
-
     <!-- Books card -->
     <string name="cover_image_desc">Imagen de la portada</string>
-
     <!-- Book Detail Screen -->
     <string name="book_detail_header">Detalles del libro</string>
     <string name="back_button_desc">Atrás.</string>
@@ -141,7 +129,6 @@
     <string name="download_started">¡Descarga iniciada!</string>
     <string name="book_synopsis">Sinopsis</string>
     <string name="book_synopsis_not_found">No disponible</string>
-
     <!-- About Screen -->
     <string name="about_header">A cerca de</string>
     <string name="about_desc">Una aplicación Android gratuita y de código abierto para descargar libros electrónicos del Proyecto GutenBerg.</string>
@@ -161,7 +148,6 @@
     <string name="link_telegram_desc">Hängen Sie bei uns auf Telegram ab!</string>
     <string name="link_support">Entwicklung unterstützen</string>
     <string name="link_support_desc">Denken Sie, ich verdiene Kekse? Klicken Sie hier!</string>
-
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">Licencias</string>
 </resources>
