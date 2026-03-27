@@ -1,0 +1,5 @@
+- Major performance improvements and bug fixes in the ebook reader.
+- Added proper text formatting support (bold, italic, underline, blockquote, and more) in the ebook reader.
+- Added an indicator for finished chapters in the ebook reader.
+- Added an option to adjust line height in the ebook reader.
+- Some other small fixes and dependency updates.
