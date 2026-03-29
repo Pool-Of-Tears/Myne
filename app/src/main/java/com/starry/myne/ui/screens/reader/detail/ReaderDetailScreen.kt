@@ -17,7 +17,12 @@
 
 package com.starry.myne.ui.screens.reader.detail
 
+import android.app.NotificationManager
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -42,10 +47,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -58,7 +67,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -75,6 +88,7 @@ import com.starry.myne.ui.common.ProgressDots
 import com.starry.myne.ui.common.simpleVerticalScrollbar
 import com.starry.myne.ui.screens.reader.main.activities.ReaderActivity
 import com.starry.myne.ui.screens.reader.main.activities.ReaderConstants
+import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.theme.poppinsFont
 
 @Composable
@@ -88,7 +102,9 @@ fun ReaderDetailScreen(
     val readerData by (viewModel.progressData?.collectAsStateWithLifecycle(initialValue = null)
         ?: remember { mutableStateOf(null) })
 
-    LaunchedEffect(key1 = true) { viewModel.loadEbookData(libraryItemId, networkStatus) }
+    LaunchedEffect(key1 = true) {
+        viewModel.loadEbookData(libraryItemId, networkStatus)
+    }
 
     ReaderDetailScreen(
         libraryItemId = libraryItemId,
@@ -107,6 +123,78 @@ fun ReaderDetailScreen(
 ) {
     val context = LocalContext.current
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    /*
+    * Cases
+    * zen mode | notification policy access permission | action
+    * true     | true                                  | 1) Set up lifecycle events observer for start and stop.
+    * true     | true                                  | 2) On toggling of dnd through quick setting panel, update original dnd filter
+    * true     | false                                 | 3) Disable Zen mode
+    * */
+
+    val notificationManager : NotificationManager = remember {
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
+
+    val viewModel = (context.getActivity() as MainActivity).settingsViewModel
+
+    val enableZenMode by viewModel.enableZenMode.observeAsState(false)
+
+    if (enableZenMode && notificationManager.isNotificationPolicyAccessGranted) {
+        DisposableEffect(lifecycleOwner) {
+            val observer = LifecycleEventObserver { _, event ->
+                if (notificationManager.isNotificationPolicyAccessGranted){
+                    when (event) {
+                        Lifecycle.Event.ON_START -> {
+                            viewModel.originalFilter = notificationManager.currentInterruptionFilter
+                            notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+                            viewModel.isChangedManually=true
+                            Log.d("TRACKER","Start hit")
+                        }
+                        Lifecycle.Event.ON_STOP -> {
+                            notificationManager.setInterruptionFilter(viewModel.originalFilter)
+                            viewModel.isChangedManually=true
+                            Log.d("TRACKER","Stop hit")
+                        }
+                        else -> {}
+                    }
+                }
+            }
+            lifecycleOwner.lifecycle.addObserver(observer)
+            onDispose {
+                lifecycleOwner.lifecycle.removeObserver(observer)
+                viewModel.isChangedManually=false
+            }
+        }
+        DisposableEffect(lifecycleOwner) {
+            val filterReceiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    if (viewModel.isChangedManually){
+                        viewModel.isChangedManually=false
+                    }else{
+                        if (notificationManager.isNotificationPolicyAccessGranted) {
+                            viewModel.originalFilter=notificationManager.currentInterruptionFilter
+                        }
+                    }
+                    Log.d("TRACKER","Receiver hit")
+                }
+            }
+            ContextCompat.registerReceiver(
+                context,
+                filterReceiver,
+                IntentFilter(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED),
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+            onDispose {
+                context.unregisterReceiver(filterReceiver)
+            }
+        }
+    }
+
+    if (enableZenMode && !notificationManager.isNotificationPolicyAccessGranted){
+        viewModel.setEnableZenMode(false)
+    }
 
     Crossfade(targetState = state.isLoading, label = "ReaderDetailLoadingCrossFade") { isLoading ->
         if (isLoading) {

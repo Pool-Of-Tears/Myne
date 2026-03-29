@@ -16,6 +16,7 @@
 
 package com.starry.myne
 
+import android.app.NotificationManager
 import android.content.pm.ShortcutManager
 import android.os.Bundle
 import android.util.Log
