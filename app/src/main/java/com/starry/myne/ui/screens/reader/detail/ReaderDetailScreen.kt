@@ -124,7 +124,6 @@ fun ReaderDetailScreen(
     val context = LocalContext.current
 
     val lifecycleOwner = LocalLifecycleOwner.current
-
     /*
     * Cases
     * zen mode | notification policy access permission | action

@@ -105,7 +105,7 @@ fun SettingsScreen(navController: NavController) {
 
     val snackBarHostState = remember { SnackbarHostState() }
 
-    val showAlertDialogBoxForRequestingNotificationPolicyAccess = viewModel.showAlertDialogBoxForRequestingNotificationPolicyAccess.observeAsState(initial = false).value
+    val showDndPermissionDialog = viewModel.showDndPermissionDialog.observeAsState(initial = false).value
 
     val notificationManager = remember { context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
 
@@ -132,28 +132,28 @@ fun SettingsScreen(navController: NavController) {
                 .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
         ) {
-            if (showAlertDialogBoxForRequestingNotificationPolicyAccess){
+            if (showDndPermissionDialog){
                 AlertDialog(
                     onDismissRequest = {
-                        viewModel.toggleAlertDialogBoxForRequestingNotificationPolicyAccess()
+                        viewModel.toggleShowDndPermissionDialog()
                     },
                     title = { Text(text = "Permission Required") },
                     text = {
-                        Text("To enable Zen Mode, this app needs 'Do Not Disturb' access. Please enable it in the system settings.")
+                        Text("To use Zen Mode, please grant \"Do Not Disturb\" access in your system settings.")
                     },
                     confirmButton = {
                         Button(
                             onClick = {
-                                viewModel.toggleAlertDialogBoxForRequestingNotificationPolicyAccess()
+                                viewModel.toggleShowDndPermissionDialog()
                                 val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
                                 context.startActivity(intent)
                             }
                         ) {
-                            Text("Go to Settings")
+                            Text("Open Settings")
                         }
                     },
                     dismissButton = {
-                        TextButton(onClick = { viewModel.toggleAlertDialogBoxForRequestingNotificationPolicyAccess() }) {
+                        TextButton(onClick = { viewModel.toggleShowDndPermissionDialog() }) {
                             Text("Cancel")
                         }
                     }
@@ -337,7 +337,7 @@ private fun GeneralOptionsUI(
             onCheckChange = {
                 val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 if (!notificationManager.isNotificationPolicyAccessGranted){
-                    viewModel.toggleAlertDialogBoxForRequestingNotificationPolicyAccess()
+                    viewModel.toggleShowDndPermissionDialog()
                 }else{
                     viewModel.setEnableZenMode(it)
                 }

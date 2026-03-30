@@ -50,7 +50,7 @@ class SettingsViewModel @Inject constructor(
     private val _openLibraryAtStart = MutableLiveData(false)
     private val _enableZenMode = MutableLiveData(false)
 
-    private val _showAlertDialogBoxForRequestingNotificationPolicyAccess = MutableLiveData(false)
+    private val _showDndPermissionDialog  = MutableLiveData(false)
 
     val theme: LiveData<ThemeMode> = _theme
     val amoledTheme: LiveData<Boolean> = _amoledTheme
@@ -60,7 +60,7 @@ class SettingsViewModel @Inject constructor(
     val openLibraryAtStart: LiveData<Boolean> = _openLibraryAtStart
     val enableZenMode : LiveData<Boolean> = _enableZenMode
 
-    val showAlertDialogBoxForRequestingNotificationPolicyAccess : LiveData<Boolean> = _showAlertDialogBoxForRequestingNotificationPolicyAccess
+    val showDndPermissionDialog  : LiveData<Boolean> = _showDndPermissionDialog
 
     init {
         _theme.value = ThemeMode.entries.toTypedArray()[getThemeValue()]
@@ -146,7 +146,7 @@ class SettingsViewModel @Inject constructor(
         } else theme.value!!
     }
 
-    fun toggleAlertDialogBoxForRequestingNotificationPolicyAccess(){
-        _showAlertDialogBoxForRequestingNotificationPolicyAccess.value=!_showAlertDialogBoxForRequestingNotificationPolicyAccess.value!!
+    fun toggleShowDndPermissionDialog(){
+        _showDndPermissionDialog.value=!_showDndPermissionDialog.value!!
     }
 }
