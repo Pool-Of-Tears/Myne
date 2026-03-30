@@ -16,9 +16,13 @@
 
 package com.starry.myne.ui.screens.settings.viewmodels
 
+import android.app.NotificationManager
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,12 +39,18 @@ class SettingsViewModel @Inject constructor(
     private val preferenceUtil: PreferenceUtil
 ) : ViewModel() {
 
+    var originalFilter: Int = NotificationManager.INTERRUPTION_FILTER_ALL
+    var isChangedManually by mutableStateOf(false)
+
     private val _theme = MutableLiveData(ThemeMode.Auto)
     private val _amoledTheme = MutableLiveData(false)
     private val _materialYou = MutableLiveData(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
     private val _internalReader = MutableLiveData(true)
     private val _useGoogleApi = MutableLiveData(true)
     private val _openLibraryAtStart = MutableLiveData(false)
+    private val _enableZenMode = MutableLiveData(false)
+
+    private val _showDndPermissionDialog  = MutableLiveData(false)
 
     val theme: LiveData<ThemeMode> = _theme
     val amoledTheme: LiveData<Boolean> = _amoledTheme
@@ -48,6 +58,9 @@ class SettingsViewModel @Inject constructor(
     val internalReader: LiveData<Boolean> = _internalReader
     val useGoogleApi: LiveData<Boolean> = _useGoogleApi
     val openLibraryAtStart: LiveData<Boolean> = _openLibraryAtStart
+    val enableZenMode : LiveData<Boolean> = _enableZenMode
+
+    val showDndPermissionDialog  : LiveData<Boolean> = _showDndPermissionDialog
 
     init {
         _theme.value = ThemeMode.entries.toTypedArray()[getThemeValue()]
@@ -56,6 +69,7 @@ class SettingsViewModel @Inject constructor(
         _internalReader.value = getInternalReaderValue()
         _useGoogleApi.value = getUseGoogleApiValue()
         _openLibraryAtStart.value = getOpenLibraryAtStartValue()
+        _enableZenMode.value = getEnableZenMode()
     }
 
     // Getters =============================================================================
@@ -90,6 +104,11 @@ class SettingsViewModel @Inject constructor(
         preferenceUtil.putBoolean(PreferenceUtil.OPEN_LIBRARY_AT_START_BOOL, newValue)
     }
 
+    fun setEnableZenMode(newValue: Boolean) {
+        _enableZenMode.postValue(newValue)
+        preferenceUtil.putBoolean(PreferenceUtil.ENABLE_ZEN_MODE_BOOL, newValue)
+    }
+
     // Getters ============================================================================
     // Used only during initialization except getCurrentTheme()
     private fun getThemeValue() = preferenceUtil.getInt(
@@ -116,10 +135,18 @@ class SettingsViewModel @Inject constructor(
         PreferenceUtil.OPEN_LIBRARY_AT_START_BOOL, false
     )
 
+    private fun getEnableZenMode() = preferenceUtil.getBoolean(
+        PreferenceUtil.ENABLE_ZEN_MODE_BOOL, false
+    )
+
     @Composable
     fun getCurrentTheme(): ThemeMode {
         return if (theme.value == ThemeMode.Auto) {
             if (isSystemInDarkTheme()) ThemeMode.Dark else ThemeMode.Light
         } else theme.value!!
+    }
+
+    fun toggleShowDndPermissionDialog(){
+        _showDndPermissionDialog.value=!_showDndPermissionDialog.value!!
     }
 }

@@ -16,6 +16,8 @@
 
 package com.starry.myne.ui.screens.settings.composables
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
@@ -61,6 +63,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -102,6 +105,17 @@ fun SettingsScreen(navController: NavController) {
 
     val snackBarHostState = remember { SnackbarHostState() }
 
+    val showDndPermissionDialog = viewModel.showDndPermissionDialog.observeAsState(initial = false).value
+
+    val notificationManager = remember { context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
+
+    // in case the user turns off the permission in the background when the zen mode was enabled
+    // he would have to manually turn it on and have to grant the permission to use the mode again
+    LaunchedEffect(Unit) {
+        if (viewModel.enableZenMode.value==true && !notificationManager.isNotificationPolicyAccessGranted){
+            viewModel.setEnableZenMode(false)
+        }
+    }
     Scaffold(
         modifier = Modifier.padding(bottom = bottomNavPadding),
         snackbarHost = { SnackbarHost(snackBarHostState) },
@@ -118,6 +132,33 @@ fun SettingsScreen(navController: NavController) {
                 .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
         ) {
+            if (showDndPermissionDialog){
+                AlertDialog(
+                    onDismissRequest = {
+                        viewModel.toggleShowDndPermissionDialog()
+                    },
+                    title = { Text(text = "Permission Required") },
+                    text = {
+                        Text("To use Zen Mode, please grant \"Do Not Disturb\" access in your system settings.")
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                viewModel.toggleShowDndPermissionDialog()
+                                val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+                                context.startActivity(intent)
+                            }
+                        ) {
+                            Text("Open Settings")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { viewModel.toggleShowDndPermissionDialog() }) {
+                            Text("Cancel")
+                        }
+                    }
+                )
+            }
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 SettingsCard()
                 GeneralOptionsUI(viewModel = viewModel, snackBarHostState = snackBarHostState)
@@ -213,6 +254,7 @@ private fun GeneralOptionsUI(
     val googleBooksApiSwitchState = viewModel.useGoogleApi.observeAsState(initial = true)
     val internalReaderState = viewModel.internalReader.observeAsState(initial = true)
     val openLibraryAtStartState = viewModel.openLibraryAtStart.observeAsState(initial = false)
+    val enableZenModeState = viewModel.enableZenMode.observeAsState(initial = false)
 
     val internalReaderValue = when (internalReaderState.value) {
         true -> stringResource(id = R.string.reader_option_inbuilt)
@@ -284,6 +326,21 @@ private fun GeneralOptionsUI(
             switchState = openLibraryAtStartState,
             onCheckChange = {
                 viewModel.setOpenLibraryAtStartValue(it)
+            }
+        )
+
+        SettingItemWIthSwitch(
+            icon = ImageVector.vectorResource(id = R.drawable.ic_book_pages),
+            mainText = "Enable Zen Mode",
+            subText = "Toggle DND when Reading",
+            switchState = enableZenModeState,
+            onCheckChange = {
+                val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                if (!notificationManager.isNotificationPolicyAccessGranted){
+                    viewModel.toggleShowDndPermissionDialog()
+                }else{
+                    viewModel.setEnableZenMode(it)
+                }
             }
         )
     }

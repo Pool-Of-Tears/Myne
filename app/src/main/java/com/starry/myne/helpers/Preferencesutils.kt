@@ -34,6 +34,7 @@ class PreferenceUtil(context: Context) {
         const val INTERNAL_READER_BOOL = "internal_reader"
         const val USE_GOOGLE_API_BOOL = "use_google_books_api"
         const val OPEN_LIBRARY_AT_START_BOOL = "launch_library_at_start"
+        const val ENABLE_ZEN_MODE_BOOL = "enable_zen_mode"
 
         // App theme preference keys
         const val APP_THEME_INT = "theme_settings"
@@ -66,6 +67,7 @@ class PreferenceUtil(context: Context) {
                 OPEN_LIBRARY_AT_START_BOOL,
                 false
             )
+            if (!keyExists(ENABLE_ZEN_MODE_BOOL)) putBoolean(ENABLE_ZEN_MODE_BOOL, false)
         }
     }
 
