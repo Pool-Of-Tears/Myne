@@ -46,15 +46,17 @@ import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderFont
 import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderScreenState
 import com.starry.myne.ui.theme.poppinsFont
 import kotlinx.coroutines.launch
+import java.util.Locale
 
-private enum class TextScaleButtonType { INCREASE, DECREASE }
+private enum class ControlButtonType { INCREASE, DECREASE }
 
 @Composable
 fun ReaderBottomBar(
     state: ReaderScreenState,
     showFontDialog: MutableState<Boolean>,
     snackBarHostState: SnackbarHostState,
-    onFontSizeChanged: (newValue: Int) -> Unit
+    onFontSizeChanged: (newValue: Int) -> Unit,
+    onLineHeightChanged: (newValue: Float) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -68,6 +70,12 @@ fun ReaderBottomBar(
             fontSize = state.fontSize,
             snackBarHostState = snackBarHostState,
             onFontSizeChanged = onFontSizeChanged
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        LineHeightControls(
+            lineHeight = state.lineHeight,
+            snackBarHostState = snackBarHostState,
+            onLineHeightChanged = onLineHeightChanged
         )
         Spacer(modifier = Modifier.height(16.dp))
         FontSelectionButton(
@@ -88,8 +96,8 @@ private fun TextScaleControls(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ReaderTextScaleButton(
-            buttonType = TextScaleButtonType.DECREASE,
+        ReaderFontSizeButton(
+            buttonType = ControlButtonType.DECREASE,
             fontSize = fontSize,
             snackBarHostState = snackBarHostState,
             onFontSizeChanged = onFontSizeChanged
@@ -110,11 +118,53 @@ private fun TextScaleControls(
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
-        ReaderTextScaleButton(
-            buttonType = TextScaleButtonType.INCREASE,
+        ReaderFontSizeButton(
+            buttonType = ControlButtonType.INCREASE,
             fontSize = fontSize,
             snackBarHostState = snackBarHostState,
             onFontSizeChanged = onFontSizeChanged
+        )
+    }
+}
+
+@Composable
+private fun LineHeightControls(
+    lineHeight: Float,
+    snackBarHostState: SnackbarHostState,
+    onLineHeightChanged: (newValue: Float) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(0.9f),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ReaderLineHeightButton(
+            buttonType = ControlButtonType.DECREASE,
+            lineHeight = lineHeight,
+            snackBarHostState = snackBarHostState,
+            onLineHeightChanged = onLineHeightChanged
+        )
+        Box(
+            modifier = Modifier
+                .height(45.dp)
+                .weight(1f)
+                .padding(horizontal = 8.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(ButtonDefaults.filledTonalButtonColors().containerColor),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = String.format(Locale.getDefault(), "%.1f", lineHeight),
+                fontFamily = poppinsFont,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+        ReaderLineHeightButton(
+            buttonType = ControlButtonType.INCREASE,
+            lineHeight = lineHeight,
+            snackBarHostState = snackBarHostState,
+            onLineHeightChanged = onLineHeightChanged
         )
     }
 }
@@ -148,8 +198,8 @@ private fun FontSelectionButton(
 
 
 @Composable
-private fun ReaderTextScaleButton(
-    buttonType: TextScaleButtonType,
+private fun ReaderFontSizeButton(
+    buttonType: ControlButtonType,
     fontSize: Int,
     snackBarHostState: SnackbarHostState,
     onFontSizeChanged: (newValue: Int) -> Unit
@@ -159,8 +209,8 @@ private fun ReaderTextScaleButton(
     val context = LocalContext.current
     val (iconRes, adjustment) = remember(buttonType) {
         when (buttonType) {
-            TextScaleButtonType.DECREASE -> Pair(R.drawable.ic_reader_text_minus, -5)
-            TextScaleButtonType.INCREASE -> Pair(R.drawable.ic_reader_text_plus, 5)
+            ControlButtonType.DECREASE -> Pair(R.drawable.ic_reader_text_minus, -5)
+            ControlButtonType.INCREASE -> Pair(R.drawable.ic_reader_text_plus, 5)
         }
     }
 
@@ -187,8 +237,66 @@ private fun ReaderTextScaleButton(
 
             else -> {
                 coroutineScope.launch {
-                    val adjustedSize = fontSize + adjustment
-                    onFontSizeChanged(adjustedSize)
+                    onFontSizeChanged(newSize)
+                }
+            }
+        }
+    }
+
+    FilledTonalButton(
+        onClick = { callback() },
+        modifier = Modifier.size(100.dp, 45.dp),
+        shape = RoundedCornerShape(18.dp),
+    ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(id = iconRes),
+            contentDescription = null,
+            modifier = Modifier.size(ButtonDefaults.IconSize)
+        )
+    }
+}
+
+@Composable
+private fun ReaderLineHeightButton(
+    buttonType: ControlButtonType,
+    lineHeight: Float,
+    snackBarHostState: SnackbarHostState,
+    onLineHeightChanged: (newValue: Float) -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+
+    val context = LocalContext.current
+    val (iconRes, adjustment) = remember(buttonType) {
+        when (buttonType) {
+            ControlButtonType.DECREASE -> Pair(R.drawable.ic_reader_line_height_minus, -0.1f)
+            ControlButtonType.INCREASE -> Pair(R.drawable.ic_reader_line_height_plus, 0.1f)
+        }
+    }
+
+    val callback: () -> Unit = {
+        val newValue = lineHeight + adjustment
+        when {
+            newValue < 1.0f -> {
+                coroutineScope.launch {
+                    snackBarHostState.showSnackbar(
+                        context.getString(R.string.reader_min_line_height_reached),
+                        null
+                    )
+                }
+            }
+
+            newValue > 3.0f -> {
+                coroutineScope.launch {
+                    snackBarHostState.showSnackbar(
+                        context.getString(R.string.reader_max_line_height_reached),
+                        null
+                    )
+                }
+            }
+
+            else -> {
+                coroutineScope.launch {
+                    onLineHeightChanged(newValue)
                 }
             }
         }

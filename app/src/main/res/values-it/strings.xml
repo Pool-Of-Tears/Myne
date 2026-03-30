@@ -12,27 +12,22 @@
     <string name="network_error_retry">Riprova</string>
     <string name="error">Ops! Qualcosa è andato storto.</string>
     <string name="no_app_to_handle_content">Nessuna app trovata per aprire questo contenuto.</string>
-
     <!-- Navigation titles -->
     <string name="navigation_home">Home</string>
     <string name="navigation_categories">Categorie</string>
     <string name="navigation_library">Libreria</string>
     <string name="navigation_settings">Impostazioni</string>
-
     <!-- ToolTips -->
     <string name="library_tooltip">TIP! Swipe library items left or right to share or view book details.</string>
-
     <!-- Welcome Screen -->
     <string name="welcome_screen_title">Grazie per aver installato Myne!</string>
     <string name="welcome_screen_desc">Scegli il tuo lettore di ebook preferito per intraprendere il tuo viaggio di lettura.</string>
     <string name="welcome_screen_button">Inizia</string>
-
     <!-- Home screen. -->
     <string name="home_header">Tutti i libri</string>
     <string name="home_language_icon_desc">Ordina per lingua</string>
     <string name="home_search_icon_desc">Cerca libri</string>
     <string name="language_menu_title">Sfoglia per lingua</string>
-
     <!-- Categories screen. -->
     <string name="categories_header">Categorie</string>
     <string name="no_books_found_for_lang_and_cat">Nessun libro disponibile in %s per questa categoria.</string>
@@ -55,7 +50,6 @@
     <string name="category_religion">Religione</string>
     <string name="category_romance">Romantico</string>
     <string name="category_science">Scienza</string>
-
     <!-- Library screen. -->
     <string name="library_header">Libreria</string>
     <string name="empty_library">Non c\'è nulla qui!</string>
@@ -72,19 +66,16 @@
     <string name="library_read_button">Leggi</string>
     <string name="library_delete_button">Elimina</string>
     <string name="library_delete_dialog_title">Sei sicuro?</string>
-
     <!-- Reader Detail Screen -->
     <string name="reader_detail_header">Ebook Reader</string>
     <string name="start_reading_button">Inizia</string>
     <string name="continue_reading_button">Riprendi</string>
     <string name="reader_chapters_list">Capitoli</string>
-
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">Spiacenti, non si può andare più in alto!</string>
     <string name="reader_min_font_size_reached">Spiacenti, non si può andare più in basso!</string>
     <string name="reader_font_style_chooser">Cambia Font</string>
     <string name="reader_chapter_list_title">Capitoli</string>
-
     <!-- Text selection -->
     <string name="copy">Copia</string>
     <string name="copied">Copiato!</string>
@@ -92,7 +83,6 @@
     <string name="share">Condividi</string>
     <string name="translate">Traduci</string>
     <string name="dictionary">Significato</string>
-
     <!-- Settings screen. -->
     <string name="settings_header">Impostazioni</string>
     <string name="app_desc">Ebook Downloader</string>
@@ -127,10 +117,8 @@
     <string name="license_setting_desc">Licenze open source.</string>
     <string name="about_setting">Info sull\'App</string>
     <string name="about_setting_desc">Mostra info sull\'App &amp; link utili</string>
-
     <!-- Books card -->
     <string name="cover_image_desc">Immagine di copertina</string>
-
     <!-- Book Detail Screen -->
     <string name="book_detail_header">Dettagli del libro</string>
     <string name="back_button_desc">Indietro.</string>
@@ -141,7 +129,6 @@
     <string name="download_started">Download iniziato!</string>
     <string name="book_synopsis">Riassunto del libro</string>
     <string name="book_synopsis_not_found">Non disponibile</string>
-
     <!-- About Screen -->
     <string name="about_header">Info</string>
     <string name="about_desc">Un\'applicazione Android gratis &amp; Open Source per scaricare ebooks dal Project GutenBerg.</string>
@@ -161,7 +148,6 @@
     <string name="link_telegram_desc">Chiacchiera con noi su Telegram!</string>
     <string name="link_support">Supporta lo Sviluppo</string>
     <string name="link_support_desc">Pensi che meriti dei biscotti? Clicca qui!</string>
-
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">Licenze</string>
 </resources>

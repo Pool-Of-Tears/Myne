@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Others Strings -->
     <string name="not_applicable">N/A</string>
@@ -11,27 +12,22 @@
     <string name="network_error_retry">फिर से कोशिश करें</string>
     <string name="error">उफ़! कुछ गड़बड़ हो गई।</string>
     <string name="no_app_to_handle_content">इस सामग्री को खोलने के लिए कोई ऐप नहीं मिला।</string>
-
     <!-- Navigation titles -->
     <string name="navigation_home">होम</string>
     <string name="navigation_categories">श्रेणियाँ</string>
     <string name="navigation_library">पुस्तकालय</string>
     <string name="navigation_settings">सेटिंग्स</string>
-
     <!-- ToolTips -->
     <string name="library_tooltip">संकेत! पुस्तकालय आइटम्स को साझा करने या पुस्तक विवरण देखने के लिए बाएँ या दाएँ स्वाइप करें।</string>
-
     <!-- Welcome Screen -->
     <string name="welcome_screen_title">Myne स्थापित करने के लिए धन्यवाद!</string>
     <string name="welcome_screen_desc">अपनी पसंदीदा ईबुक रीडर चुनें और अपनी पढ़ाई यात्रा शुरू करें।</string>
     <string name="welcome_screen_button">शुरू करें</string>
-
     <!-- Home screen. -->
     <string name="home_header">सभी पुस्तकें</string>
     <string name="home_language_icon_desc">भाषा के अनुसार क्रमबद्ध करें</string>
     <string name="home_search_icon_desc">पुस्तकें खोजें</string>
     <string name="language_menu_title">भाषा द्वारा ब्राउज़ करें</string>
-
     <!-- Categories screen. -->
     <string name="categories_header">श्रेणियाँ</string>
     <string name="no_books_found_for_lang_and_cat">%s भाषा में इस श्रेणी के लिए कोई पुस्तक उपलब्ध नहीं है।</string>
@@ -54,7 +50,6 @@
     <string name="category_religion">धर्म</string>
     <string name="category_romance">प्रेम</string>
     <string name="category_science">विज्ञान</string>
-
     <!-- Library screen. -->
     <string name="library_header">पुस्तकालय</string>
     <string name="empty_library">यहाँ कुछ भी नहीं है!</string>
@@ -71,19 +66,16 @@
     <string name="library_read_button">पढ़ें</string>
     <string name="library_delete_button">हटाएं</string>
     <string name="library_delete_dialog_title">क्या आप इसके बारे में सुनिश्चित हैं?</string>
-
     <!-- Reader Detail Screen -->
     <string name="reader_detail_header">ईबुक रीडर</string>
     <string name="start_reading_button">शुरू करें</string>
     <string name="continue_reading_button">पुनः आरंभ करें</string>
     <string name="reader_chapters_list">अध्याय</string>
-
     <!--Reader Screen -->
     <string name="reader_max_font_size_reached">क्षमा करें, इससे ज्यादा नहीं जा सकते!</string>
     <string name="reader_min_font_size_reached">क्षमा करें, इससे कम नहीं जा सकते!</string>
     <string name="reader_font_style_chooser">फ़ॉन्ट शैली बदलें</string>
     <string name="reader_chapter_list_title">अध्याय</string>
-
     <!-- Text selection -->
     <string name="copy">प्रतिलिपि करें</string>
     <string name="copied">प्रतिलिपि बनाई गई!</string>
@@ -91,7 +83,6 @@
     <string name="share">साझा करें</string>
     <string name="translate">अनुवाद करें</string>
     <string name="dictionary">अर्थ</string>
-
     <!-- Settings screen. -->
     <string name="settings_header">सेटिंग्स</string>
     <string name="app_desc">ई-बुक डाउनलोडर</string>
@@ -127,10 +118,8 @@
     <string name="license_setting_desc">ओपन सोर्स लाइसेंस।</string>
     <string name="about_setting">ऐप्लिकेशन जानकारी</string>
     <string name="about_setting_desc">ऐप जानकारी और उपयोगी लिंक दिखाएं</string>
-
     <!-- Books card -->
     <string name="cover_image_desc">पुस्तक के कवर की तस्वीर</string>
-
     <!-- Book Detail Screen -->
     <string name="book_detail_header">पुस्तक विवरण</string>
     <string name="back_button_desc">वापस जाएं।</string>
@@ -141,7 +130,6 @@
     <string name="download_started">डाउनलोड शुरू हुआ!</string>
     <string name="book_synopsis">सारांश</string>
     <string name="book_synopsis_not_found">उपलब्ध नहीं</string>
-
     <!-- About Screen -->
     <string name="about_header">के बारे में</string>
     <string name="about_desc">Project Gutenberg से ई-बुक डाउनलोड करने के लिए एक मुक्त और ओपन सोर्स एंड्रॉइड एप्लिकेशन।</string>
@@ -162,7 +150,6 @@
     <string name="link_telegram_desc">टेलीग्राम पर हमारे साथ आओ!</string>
     <string name="link_support">विकास का समर्थन करें</string>
     <string name="link_support_desc">मैं कुकीज़ के लायक हूं? यहां क्लिक करें!</string>
-
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">लाइसेंस</string>
 </resources>
