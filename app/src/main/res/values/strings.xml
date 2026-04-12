@@ -168,4 +168,9 @@
 
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">Licenses</string>
+    <string name="enable_zen_mode">Enable Zen Mode</string>
+    <string name="toggle_dnd_when_reading">Toggle DND when Reading</string>
+    <string name="permission_required">Permission Required</string>
+    <string name="permission_required_desc">To use Zen Mode, please grant \"Do Not Disturb\" access in your system settings.</string>
+    <string name="open_settings">Open Settings</string>
 </resources>

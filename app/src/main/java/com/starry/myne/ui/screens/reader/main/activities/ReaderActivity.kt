@@ -16,27 +16,42 @@
 
 package com.starry.myne.ui.screens.reader.main.activities
 
+import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.helpers.Constants
+import com.starry.myne.helpers.getActivity
 import com.starry.myne.helpers.toToast
 import com.starry.myne.ui.screens.reader.main.composables.ChaptersContent
 import com.starry.myne.ui.screens.reader.main.composables.ReaderScreen
@@ -66,6 +81,78 @@ class ReaderActivity : AppCompatActivity() {
         // Set UI contents.
         setContent {
             MyneTheme(settingsViewModel = settingsViewModel) {
+                val context = LocalContext.current
+
+                val lifecycleOwner = LocalLifecycleOwner.current
+                /*
+                * Cases
+                * zen mode | notification policy access permission | action
+                * true     | true                                  | 1) Set up lifecycle events observer for start and stop.
+                * true     | true                                  | 2) On toggling of dnd through quick setting panel, update original dnd filter
+                * true     | false                                 | 3) Disable Zen mode
+                * */
+
+                val notificationManager : NotificationManager = remember {
+                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                }
+
+                val enableZenMode by settingsViewModel.enableZenMode.observeAsState(false)
+
+                if (enableZenMode && notificationManager.isNotificationPolicyAccessGranted) {
+                    DisposableEffect(lifecycleOwner) {
+                        val observer = LifecycleEventObserver { _, event ->
+                            if (notificationManager.isNotificationPolicyAccessGranted){
+                                when (event) {
+                                    Lifecycle.Event.ON_START -> {
+                                        settingsViewModel.originalFilter = notificationManager.currentInterruptionFilter
+                                        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+                                        settingsViewModel.isChangedManually=true
+                                        Log.d("TRACKER","Start hit")
+                                    }
+                                    Lifecycle.Event.ON_STOP -> {
+                                        notificationManager.setInterruptionFilter(settingsViewModel.originalFilter)
+                                        settingsViewModel.isChangedManually=true
+                                        Log.d("TRACKER","Stop hit")
+                                    }
+                                    else -> {}
+                                }
+                            }
+                        }
+                        lifecycleOwner.lifecycle.addObserver(observer)
+                        onDispose {
+                            lifecycleOwner.lifecycle.removeObserver(observer)
+                            settingsViewModel.isChangedManually=false
+                        }
+                    }
+                    DisposableEffect(lifecycleOwner) {
+                        val filterReceiver = object : BroadcastReceiver() {
+                            override fun onReceive(context: Context?, intent: Intent?) {
+                                if (settingsViewModel.isChangedManually){
+                                    settingsViewModel.isChangedManually=false
+                                }else{
+                                    if (notificationManager.isNotificationPolicyAccessGranted) {
+                                        settingsViewModel.originalFilter=notificationManager.currentInterruptionFilter
+                                    }
+                                }
+                                Log.d("TRACKER","Receiver hit")
+                            }
+                        }
+                        ContextCompat.registerReceiver(
+                            context,
+                            filterReceiver,
+                            IntentFilter(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED),
+                            ContextCompat.RECEIVER_NOT_EXPORTED
+                        )
+                        onDispose {
+                            context.unregisterReceiver(filterReceiver)
+                        }
+                    }
+                }
+
+                if (enableZenMode && !notificationManager.isNotificationPolicyAccessGranted){
+                    settingsViewModel.setEnableZenMode(false)
+                }
+
                 val lazyListState = rememberLazyListState()
                 val coroutineScope = rememberCoroutineScope()
                 // Handle intent and load epub book.

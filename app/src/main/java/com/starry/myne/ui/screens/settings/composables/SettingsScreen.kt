@@ -137,9 +137,9 @@ fun SettingsScreen(navController: NavController) {
                     onDismissRequest = {
                         viewModel.toggleShowDndPermissionDialog()
                     },
-                    title = { Text(text = "Permission Required") },
+                    title = { Text(text = stringResource(id = R.string.permission_required)) },
                     text = {
-                        Text("To use Zen Mode, please grant \"Do Not Disturb\" access in your system settings.")
+                        Text(stringResource(id = R.string.permission_required_desc))
                     },
                     confirmButton = {
                         Button(
@@ -149,12 +149,12 @@ fun SettingsScreen(navController: NavController) {
                                 context.startActivity(intent)
                             }
                         ) {
-                            Text("Open Settings")
+                            Text(stringResource(id = R.string.open_settings))
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = { viewModel.toggleShowDndPermissionDialog() }) {
-                            Text("Cancel")
+                            Text(stringResource(id = R.string.cancel))
                         }
                     }
                 )
@@ -331,8 +331,8 @@ private fun GeneralOptionsUI(
 
         SettingItemWIthSwitch(
             icon = ImageVector.vectorResource(id = R.drawable.ic_book_pages),
-            mainText = "Enable Zen Mode",
-            subText = "Toggle DND when Reading",
+            mainText = stringResource(id = R.string.enable_zen_mode),
+            subText = stringResource(id = R.string.toggle_dnd_when_reading),
             switchState = enableZenModeState,
             onCheckChange = {
                 val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
