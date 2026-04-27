@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -46,7 +47,6 @@ import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderFont
 import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderScreenState
 import com.starry.myne.ui.theme.poppinsFont
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 private enum class ControlButtonType { INCREASE, DECREASE }
 
@@ -154,7 +154,7 @@ private fun LineHeightControls(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = String.format(Locale.getDefault(), "%.1f", lineHeight),
+                text = String.format(LocalConfiguration.current.locales[0], "%.1f", lineHeight),
                 fontFamily = poppinsFont,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface
