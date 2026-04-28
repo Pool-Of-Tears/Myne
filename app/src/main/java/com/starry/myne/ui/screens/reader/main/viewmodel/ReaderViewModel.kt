@@ -61,6 +61,9 @@ data class ReaderScreenState(
     val fontSize: Int = 100,
     val fontFamily: ReaderFont = ReaderFont.System,
     val lineHeight: Float = 1.2f,
+    // Auto scroll
+    val isAutoScrollActive: Boolean = false,
+    val autoScrollSpeed: Float = 1.0f,
 )
 
 @HiltViewModel
@@ -90,7 +93,8 @@ class ReaderViewModel @Inject constructor(
                             ReaderFont.System.id
                         )!!
                     ),
-                    lineHeight = preferenceUtil.getFloat(PreferenceUtil.READER_LINE_HEIGHT_FLOAT, 1.2f)
+                    lineHeight = preferenceUtil.getFloat(PreferenceUtil.READER_LINE_HEIGHT_FLOAT, 1.2f),
+                    autoScrollSpeed = preferenceUtil.getFloat(PreferenceUtil.READER_AUTO_SCROLL_SPEED_FLOAT, 1.0f)
                 )
             }
             // Collect the state to update the current chapter.
@@ -295,6 +299,15 @@ class ReaderViewModel @Inject constructor(
     fun setLineHeight(newValue: Float) {
         preferenceUtil.putFloat(PreferenceUtil.READER_LINE_HEIGHT_FLOAT, newValue)
         _state.update { it.copy(lineHeight = newValue) }
+    }
+
+    fun toggleAutoScroll() {
+        _state.update { it.copy(isAutoScrollActive = !it.isAutoScrollActive) }
+    }
+
+    fun setAutoScrollSpeed(newValue: Float) {
+        preferenceUtil.putFloat(PreferenceUtil.READER_AUTO_SCROLL_SPEED_FLOAT, newValue)
+        _state.update { it.copy(autoScrollSpeed = newValue) }
     }
 
 }

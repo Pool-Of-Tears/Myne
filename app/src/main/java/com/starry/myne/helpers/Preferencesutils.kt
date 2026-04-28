@@ -44,6 +44,7 @@ class PreferenceUtil(context: Context) {
         const val READER_FONT_SIZE_INT = "reader_font_size"
         const val READER_FONT_STYLE_STR = "reader_font_style"
         const val READER_LINE_HEIGHT_FLOAT = "reader_line_height"
+        const val READER_AUTO_SCROLL_SPEED_FLOAT = "reader_auto_scroll_speed"
 
         // Home screen preference keys
         const val PREFERRED_BOOK_LANG_STR = "preferred_book_language"

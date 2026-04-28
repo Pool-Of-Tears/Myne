@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -56,7 +60,9 @@ fun ReaderBottomBar(
     showFontDialog: MutableState<Boolean>,
     snackBarHostState: SnackbarHostState,
     onFontSizeChanged: (newValue: Int) -> Unit,
-    onLineHeightChanged: (newValue: Float) -> Unit
+    onLineHeightChanged: (newValue: Float) -> Unit,
+    onToggleAutoScroll: () -> Unit,
+    onAutoScrollSpeedChanged: (newValue: Float) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -78,9 +84,112 @@ fun ReaderBottomBar(
             onLineHeightChanged = onLineHeightChanged
         )
         Spacer(modifier = Modifier.height(16.dp))
+        AutoScrollControls(
+            isAutoScrollActive = state.isAutoScrollActive,
+            autoScrollSpeed = state.autoScrollSpeed,
+            onToggleAutoScroll = onToggleAutoScroll,
+            onAutoScrollSpeedChanged = onAutoScrollSpeedChanged
+        )
+        Spacer(modifier = Modifier.height(16.dp))
         FontSelectionButton(
             readerFontFamily = state.fontFamily,
             showFontDialog = showFontDialog
+        )
+    }
+}
+
+@Composable
+private fun AutoScrollControls(
+    isAutoScrollActive: Boolean,
+    autoScrollSpeed: Float,
+    onToggleAutoScroll: () -> Unit,
+    onAutoScrollSpeedChanged: (newValue: Float) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(0.9f),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        FilledTonalButton(
+            onClick = onToggleAutoScroll,
+            modifier = Modifier
+                .height(45.dp)
+                .weight(1.3f),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Text(
+                text = if (isAutoScrollActive) stringResource(id = R.string.reader_auto_scroll_stop)
+                else stringResource(id = R.string.reader_auto_scroll_start),
+                fontFamily = poppinsFont,
+                fontSize = 13.sp,
+                maxLines = 1,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End
+        ) {
+            ReaderAutoScrollSpeedButton(
+                buttonType = ControlButtonType.DECREASE,
+                autoScrollSpeed = autoScrollSpeed,
+                onAutoScrollSpeedChanged = onAutoScrollSpeedChanged
+            )
+            Box(
+                modifier = Modifier
+                    .height(45.dp)
+                    .width(45.dp)
+                    .padding(horizontal = 4.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(ButtonDefaults.filledTonalButtonColors().containerColor),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = String.format(LocalConfiguration.current.locales[0], "%.1f", autoScrollSpeed),
+                    fontFamily = poppinsFont,
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+            ReaderAutoScrollSpeedButton(
+                buttonType = ControlButtonType.INCREASE,
+                autoScrollSpeed = autoScrollSpeed,
+                onAutoScrollSpeedChanged = onAutoScrollSpeedChanged
+            )
+        }
+    }
+}
+
+@Composable
+private fun ReaderAutoScrollSpeedButton(
+    buttonType: ControlButtonType,
+    autoScrollSpeed: Float,
+    onAutoScrollSpeedChanged: (newValue: Float) -> Unit
+) {
+    val (icon, adjustment) = remember(buttonType) {
+        when (buttonType) {
+            ControlButtonType.DECREASE -> Pair(Icons.Default.Remove, -0.1f)
+            ControlButtonType.INCREASE -> Pair(Icons.Default.Add, 0.1f)
+        }
+    }
+
+    FilledTonalButton(
+        onClick = {
+            val newValue = (autoScrollSpeed + adjustment).coerceIn(0.1f, 10.0f)
+            onAutoScrollSpeedChanged(newValue)
+        },
+        modifier = Modifier.size(45.dp),
+        shape = RoundedCornerShape(12.dp),
+        contentPadding = PaddingValues(0.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(18.dp)
         )
     }
 }

@@ -24,6 +24,7 @@ import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.LaunchedEffect
@@ -44,8 +45,10 @@ import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.theme.MyneTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
 
@@ -135,6 +138,25 @@ class ReaderActivity : AppCompatActivity() {
 
                         // Reader content lazy column.
                         val state = viewModel.state.collectAsState().value
+
+                        LaunchedEffect(state.isAutoScrollActive, state.autoScrollSpeed) {
+                            if (state.isAutoScrollActive) {
+                                while (true) {
+                                    try {
+                                        if (!lazyListState.isScrollInProgress) {
+                                            lazyListState.scrollBy(state.autoScrollSpeed * 0.5f)
+                                        }
+                                    } catch (e: Exception) {
+                                        // Ignore cancellation or other errors to keep the loop running
+                                        if (e is kotlinx.coroutines.CancellationException && !isActive) {
+                                            throw e
+                                        }
+                                    }
+                                    delay(16)
+                                }
+                            }
+                        }
+
                         ChaptersContent(
                             state = state,
                             lazyListState = lazyListState,
