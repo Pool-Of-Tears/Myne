@@ -8,7 +8,7 @@
     <string name="ok">OK</string>
     <string name="got_it">Got it</string>
     <string name="no_app_to_handle_epub">Cannot find any app to open epub file.</string>
-    <string name="network_error">Oops! Failed to connect with the server.</string>
+    <string name="network_error">Oops! The server is temporarily unavailable. Please try again later.</string>
     <string name="network_error_retry">Try Again</string>
     <string name="error">Oops! Something went wrong.</string>
     <string name="no_app_to_handle_content">Can\'t find any app to open this content.</string>

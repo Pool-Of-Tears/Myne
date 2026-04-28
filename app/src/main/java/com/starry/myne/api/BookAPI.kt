@@ -149,14 +149,29 @@ class BookAPI(context: Context, private val preferenceUtil: PreferenceUtil) {
 
                 override fun onResponse(call: Call, response: Response) {
                     response.use {
-                        continuation.resume(
-                            Result.success(
-                                json.decodeFromString(
-                                    BookSet.serializer(),
-                                    response.body!!.string()
-                                ).copy(isCached = response.cacheResponse != null)
+                        if (!response.isSuccessful) {
+                            continuation.resume(Result.failure(IOException("Unexpected code $response")))
+                            return
+                        }
+
+                        val body = response.body?.string()
+                        if (body == null) {
+                            continuation.resume(Result.failure(IOException("Empty response body")))
+                            return
+                        }
+
+                        try {
+                            continuation.resume(
+                                Result.success(
+                                    json.decodeFromString(
+                                        BookSet.serializer(),
+                                        body
+                                    ).copy(isCached = response.cacheResponse != null)
+                                )
                             )
-                        )
+                        } catch (e: Exception) {
+                            continuation.resume(Result.failure(e))
+                        }
                     }
                 }
             })
@@ -183,9 +198,20 @@ class BookAPI(context: Context, private val preferenceUtil: PreferenceUtil) {
 
             override fun onResponse(call: Call, response: Response) {
                 response.use {
+                    if (!response.isSuccessful) {
+                        continuation.resume(null)
+                        return
+                    }
+
+                    val body = response.body?.string()
+                    if (body == null) {
+                        continuation.resume(null)
+                        return
+                    }
+
                     continuation.resume(
                         parseExtraInfoJson(
-                            response.body!!.string(),
+                            body,
                             response.cacheResponse != null
                         )
                     )
