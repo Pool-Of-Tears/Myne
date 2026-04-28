@@ -121,7 +121,9 @@ fun ReaderScreen(
                         showFontDialog = showFontDialog,
                         snackBarHostState = snackBarHostState,
                         onFontSizeChanged = { viewModel.setFontSize(it) },
-                        onLineHeightChanged = { viewModel.setLineHeight(it) }
+                        onLineHeightChanged = { viewModel.setLineHeight(it) },
+                        onToggleAutoScroll = { viewModel.toggleAutoScroll() },
+                        onAutoScrollSpeedChanged = { viewModel.setAutoScrollSpeed(it) }
                     )
                 }
             },

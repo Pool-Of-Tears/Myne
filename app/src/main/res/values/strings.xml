@@ -86,6 +86,8 @@
     <string name="reader_min_line_height_reached">Min line height reached</string>
     <string name="reader_font_style_chooser">Change FontStyle</string>
     <string name="reader_chapter_list_title">Chapters</string>
+    <string name="reader_auto_scroll_start">Start Auto Scroll</string>
+    <string name="reader_auto_scroll_stop">Stop Auto Scroll</string>
 
     <!-- Text selection -->
     <string name="copy">Copy</string>
