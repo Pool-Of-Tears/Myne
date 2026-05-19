@@ -113,6 +113,9 @@
     <string name="google_books_api_setting_desc">Use Google Books API to fetch additional book information.</string>
     <string name="open_library_at_start_setting">Open Library at Start</string>
     <string name="open_library_at_start_setting_desc">Launch Library screen when app starts.</string>
+    <string name="reader_dnd_setting">Do Not Disturb</string>
+    <string name="reader_dnd_setting_desc">Automatically enable DND mode when reading.</string>
+    <string name="reader_dnd_permission_error">Please grant Do Not Disturb access to use this feature.</string>
     <string name="display_setting_header">Display</string>
     <string name="theme_setting">Default Theme</string>
     <string name="theme_dialog_title">Change Theme</string>

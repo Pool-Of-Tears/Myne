@@ -41,6 +41,7 @@ class SettingsViewModel @Inject constructor(
     private val _internalReader = MutableLiveData(true)
     private val _useGoogleApi = MutableLiveData(true)
     private val _openLibraryAtStart = MutableLiveData(false)
+    private val _readerDND = MutableLiveData(false)
 
     val theme: LiveData<ThemeMode> = _theme
     val amoledTheme: LiveData<Boolean> = _amoledTheme
@@ -48,6 +49,7 @@ class SettingsViewModel @Inject constructor(
     val internalReader: LiveData<Boolean> = _internalReader
     val useGoogleApi: LiveData<Boolean> = _useGoogleApi
     val openLibraryAtStart: LiveData<Boolean> = _openLibraryAtStart
+    val readerDND: LiveData<Boolean> = _readerDND
 
     init {
         _theme.value = ThemeMode.entries.toTypedArray()[getThemeValue()]
@@ -56,6 +58,7 @@ class SettingsViewModel @Inject constructor(
         _internalReader.value = getInternalReaderValue()
         _useGoogleApi.value = getUseGoogleApiValue()
         _openLibraryAtStart.value = getOpenLibraryAtStartValue()
+        _readerDND.value = getReaderDNDValue()
     }
 
     // Getters =============================================================================
@@ -90,6 +93,11 @@ class SettingsViewModel @Inject constructor(
         preferenceUtil.putBoolean(PreferenceUtil.OPEN_LIBRARY_AT_START_BOOL, newValue)
     }
 
+    fun setReaderDNDValue(newValue: Boolean) {
+        _readerDND.postValue(newValue)
+        preferenceUtil.putBoolean(PreferenceUtil.READER_DND_BOOL, newValue)
+    }
+
     // Getters ============================================================================
     // Used only during initialization except getCurrentTheme()
     private fun getThemeValue() = preferenceUtil.getInt(
@@ -114,6 +122,10 @@ class SettingsViewModel @Inject constructor(
 
     private fun getOpenLibraryAtStartValue() = preferenceUtil.getBoolean(
         PreferenceUtil.OPEN_LIBRARY_AT_START_BOOL, false
+    )
+
+    private fun getReaderDNDValue() = preferenceUtil.getBoolean(
+        PreferenceUtil.READER_DND_BOOL, false
     )
 
     @Composable

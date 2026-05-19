@@ -22,6 +22,7 @@ import com.starry.myne.api.BookAPI
 import com.starry.myne.database.MyneDatabase
 import com.starry.myne.epub.EpubParser
 import com.starry.myne.helpers.PreferenceUtil
+import com.starry.myne.helpers.ZenModeManager
 import com.starry.myne.helpers.book.BookDownloader
 import com.starry.myne.ui.screens.welcome.viewmodels.WelcomeDataStore
 import dagger.Module
@@ -55,6 +56,10 @@ class MainModule {
     @Singleton
     @Provides
     fun providePreferenceUtil(@ApplicationContext context: Context) = PreferenceUtil(context)
+
+    @Singleton
+    @Provides
+    fun provideZenModeManager(@ApplicationContext context: Context) = ZenModeManager(context)
 
     // Network & Books related. ==========================================================
 
