@@ -1,0 +1,4 @@
+- Added auto-scroll functionality in the ebook reader with the ability to adjust scrolling speed.
+- Added the ability to automatically enable DND while reading and disable it when exiting the reader.
+- Fixed a crash caused by an "Unexpected JSON token" error when the API server returns a 5xx response.
+- Updated dependencies and AGP version, and general performance improvements.
