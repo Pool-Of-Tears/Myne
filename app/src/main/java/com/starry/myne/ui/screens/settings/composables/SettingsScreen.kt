@@ -47,6 +47,7 @@ import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LocalPolice
+import androidx.compose.material.icons.filled.NotificationsPaused
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -291,7 +292,7 @@ private fun GeneralOptionsUI(
         )
 
         SettingItemWIthSwitch(
-            icon = ImageVector.vectorResource(id = R.drawable.ic_settings_reader),
+            icon = Icons.Filled.NotificationsPaused,
             mainText = stringResource(id = R.string.reader_dnd_setting),
             subText = stringResource(id = R.string.reader_dnd_setting_desc),
             switchState = readerDNDState,
