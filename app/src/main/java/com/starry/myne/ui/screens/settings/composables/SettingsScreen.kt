@@ -16,6 +16,8 @@
 
 package com.starry.myne.ui.screens.settings.composables
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
@@ -213,6 +215,7 @@ private fun GeneralOptionsUI(
     val googleBooksApiSwitchState = viewModel.useGoogleApi.observeAsState(initial = true)
     val internalReaderState = viewModel.internalReader.observeAsState(initial = true)
     val openLibraryAtStartState = viewModel.openLibraryAtStart.observeAsState(initial = false)
+    val readerDNDState = viewModel.readerDND.observeAsState(initial = false)
 
     val internalReaderValue = when (internalReaderState.value) {
         true -> stringResource(id = R.string.reader_option_inbuilt)
@@ -284,6 +287,30 @@ private fun GeneralOptionsUI(
             switchState = openLibraryAtStartState,
             onCheckChange = {
                 viewModel.setOpenLibraryAtStartValue(it)
+            }
+        )
+
+        SettingItemWIthSwitch(
+            icon = ImageVector.vectorResource(id = R.drawable.ic_settings_reader),
+            mainText = stringResource(id = R.string.reader_dnd_setting),
+            subText = stringResource(id = R.string.reader_dnd_setting_desc),
+            switchState = readerDNDState,
+            onCheckChange = {
+                if (it) {
+                    val notificationManager =
+                        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    if (!notificationManager.isNotificationPolicyAccessGranted) {
+                        val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+                        context.startActivity(intent)
+                        coroutineScope.launch {
+                            snackBarHostState.showSnackbar(context.getString(R.string.reader_dnd_permission_error))
+                        }
+                    } else {
+                        viewModel.setReaderDNDValue(true)
+                    }
+                } else {
+                    viewModel.setReaderDNDValue(false)
+                }
             }
         )
     }

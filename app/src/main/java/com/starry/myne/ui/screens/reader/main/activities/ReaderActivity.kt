@@ -16,8 +16,12 @@
 
 package com.starry.myne.ui.screens.reader.main.activities
 
+import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
@@ -38,6 +42,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModelProvider
 import com.starry.myne.R
 import com.starry.myne.helpers.Constants
+import com.starry.myne.helpers.ZenModeManager
 import com.starry.myne.helpers.toToast
 import com.starry.myne.ui.screens.reader.main.composables.ChaptersContent
 import com.starry.myne.ui.screens.reader.main.composables.ReaderScreen
@@ -45,6 +50,7 @@ import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.theme.MyneTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -54,6 +60,19 @@ import java.io.FileInputStream
 
 @AndroidEntryPoint
 class ReaderActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var zenModeManager: ZenModeManager
+
+    private val filterReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val notificationManager =
+                context?.getSystemService(NOTIFICATION_SERVICE) as? NotificationManager
+            if (notificationManager != null && notificationManager.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_NONE) {
+                zenModeManager.updateOriginalFilter()
+            }
+        }
+    }
 
     private lateinit var settingsViewModel: SettingsViewModel
     private val viewModel: ReaderViewModel by viewModels()
@@ -169,6 +188,37 @@ class ReaderActivity : AppCompatActivity() {
                             toggleSystemBars(state.showReaderMenu)
                         }
                     })
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (settingsViewModel.readerDND.value == true) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                registerReceiver(
+                    filterReceiver,
+                    IntentFilter(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED),
+                    RECEIVER_EXPORTED
+                )
+            } else {
+                registerReceiver(
+                    filterReceiver,
+                    IntentFilter(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
+                )
+            }
+            zenModeManager.enable()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (settingsViewModel.readerDND.value == true) {
+            zenModeManager.disable()
+            try {
+                unregisterReceiver(filterReceiver)
+            } catch (_: IllegalArgumentException) {
+                // Receiver not registered.
             }
         }
     }
