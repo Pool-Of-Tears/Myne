@@ -87,7 +87,7 @@ class CategoryViewModel @Inject constructor(
                     state = state.copy(
                         items = (state.items + books),
                         page = newPage,
-                        endReached = books.isEmpty()
+                        endReached = bookSet.next == null
                     )
                 }
             )

@@ -108,7 +108,7 @@ class HomeViewModel @Inject constructor(
         allBooksState = allBooksState.copy(
             items = (allBooksState.items + books),
             page = newPage,
-            endReached = books.isEmpty()
+            endReached = bookSet.next == null
         )
     })
 
