@@ -41,6 +41,8 @@ data class Book(
     val mediaType: String,
     @SerialName("subjects")
     val subjects: List<String>,
+    @SerialName("summaries")
+    val summaries: List<String>,
     @SerialName("title")
     val title: String,
     @SerialName("translators")

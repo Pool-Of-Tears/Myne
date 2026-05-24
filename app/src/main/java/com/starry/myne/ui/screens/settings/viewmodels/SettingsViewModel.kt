@@ -39,7 +39,6 @@ class SettingsViewModel @Inject constructor(
     private val _amoledTheme = MutableLiveData(false)
     private val _materialYou = MutableLiveData(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
     private val _internalReader = MutableLiveData(true)
-    private val _useGoogleApi = MutableLiveData(true)
     private val _openLibraryAtStart = MutableLiveData(false)
     private val _readerDND = MutableLiveData(false)
 
@@ -47,7 +46,6 @@ class SettingsViewModel @Inject constructor(
     val amoledTheme: LiveData<Boolean> = _amoledTheme
     val materialYou: LiveData<Boolean> = _materialYou
     val internalReader: LiveData<Boolean> = _internalReader
-    val useGoogleApi: LiveData<Boolean> = _useGoogleApi
     val openLibraryAtStart: LiveData<Boolean> = _openLibraryAtStart
     val readerDND: LiveData<Boolean> = _readerDND
 
@@ -56,7 +54,6 @@ class SettingsViewModel @Inject constructor(
         _amoledTheme.value = getAmoledThemeValue()
         _materialYou.value = getMaterialYouValue()
         _internalReader.value = getInternalReaderValue()
-        _useGoogleApi.value = getUseGoogleApiValue()
         _openLibraryAtStart.value = getOpenLibraryAtStartValue()
         _readerDND.value = getReaderDNDValue()
     }
@@ -81,11 +78,6 @@ class SettingsViewModel @Inject constructor(
     fun setInternalReaderValue(newValue: Boolean) {
         _internalReader.postValue(newValue)
         preferenceUtil.putBoolean(PreferenceUtil.INTERNAL_READER_BOOL, newValue)
-    }
-
-    fun setUseGoogleApiValue(newValue: Boolean) {
-        _useGoogleApi.postValue(newValue)
-        preferenceUtil.putBoolean(PreferenceUtil.USE_GOOGLE_API_BOOL, newValue)
     }
 
     fun setOpenLibraryAtStartValue(newValue: Boolean) {
@@ -114,10 +106,6 @@ class SettingsViewModel @Inject constructor(
 
     private fun getInternalReaderValue() = preferenceUtil.getBoolean(
         PreferenceUtil.INTERNAL_READER_BOOL, true
-    )
-
-    private fun getUseGoogleApiValue() = preferenceUtil.getBoolean(
-        PreferenceUtil.USE_GOOGLE_API_BOOL, true
     )
 
     private fun getOpenLibraryAtStartValue() = preferenceUtil.getBoolean(

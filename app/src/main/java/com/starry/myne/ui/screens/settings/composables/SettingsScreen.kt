@@ -213,7 +213,6 @@ private fun GeneralOptionsUI(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    val googleBooksApiSwitchState = viewModel.useGoogleApi.observeAsState(initial = true)
     val internalReaderState = viewModel.internalReader.observeAsState(initial = true)
     val openLibraryAtStartState = viewModel.openLibraryAtStart.observeAsState(initial = false)
     val readerDNDState = viewModel.readerDND.observeAsState(initial = false)
@@ -269,15 +268,6 @@ private fun GeneralOptionsUI(
                         )
                     }
                 }
-            }
-        )
-        SettingItemWIthSwitch(
-            icon = ImageVector.vectorResource(id = R.drawable.ic_settings_google_api),
-            mainText = stringResource(id = R.string.google_books_api_setting),
-            subText = stringResource(id = R.string.google_books_api_setting_desc),
-            switchState = googleBooksApiSwitchState,
-            onCheckChange = {
-                viewModel.setUseGoogleApiValue(it)
             }
         )
 

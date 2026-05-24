@@ -19,7 +19,6 @@ package com.starry.myne.api
 import android.content.Context
 import com.starry.myne.BuildConfig
 import com.starry.myne.api.models.BookSet
-import com.starry.myne.api.models.ExtraInfo
 import com.starry.myne.helpers.PreferenceUtil
 import com.starry.myne.helpers.book.BookLanguage
 import kotlinx.coroutines.Dispatchers
@@ -48,13 +47,9 @@ import kotlin.coroutines.suspendCoroutine
  *
  * Do not use this class directly. Use the [BookAPI] instance from dependency injection.
  */
-class BookAPI(context: Context, private val preferenceUtil: PreferenceUtil) {
+class BookAPI(context: Context) {
 
     private val baseApiUrl = "https://myne.abyx.in/books"
-    private val googleBooksUrl = "https://www.googleapis.com/books/v1/volumes"
-
-    private val googleApiKey =
-        BuildConfig.GOOGLE_API_KEY ?: "AIzaSyBCaXx-U0sbEpGVPWylSggC4RaR4gCGkVE" // Backup API key
 
     private val okHttpClient by lazy {
         // Create an OkHttpClient with a cache and a network interceptor.
@@ -177,76 +172,4 @@ class BookAPI(context: Context, private val preferenceUtil: PreferenceUtil) {
             })
         }
 
-    // Function to fetch extra info such as cover image, page count, and description of a book.
-    // From Google Books API.
-    suspend fun getExtraInfo(bookName: String): ExtraInfo? = suspendCoroutine { continuation ->
-        // Return null without making any network call to Google Books API
-        // if the use of Google API is disabled by the user.
-        if (!preferenceUtil.getBoolean(PreferenceUtil.USE_GOOGLE_API_BOOL, true)) {
-            continuation.resume(null)
-            return@suspendCoroutine
-        }
-
-        val encodedName = URLEncoder.encode(bookName, "UTF-8")
-        val url = "${googleBooksUrl}?q=$encodedName&startIndex=0&maxResults=1&key=$googleApiKey"
-        val request = Request.Builder().get().url(url).build()
-        okHttpClient.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                continuation.resume(null)
-                e.printStackTrace()
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    if (!response.isSuccessful) {
-                        continuation.resume(null)
-                        return
-                    }
-
-                    val body = response.body?.string()
-                    if (body == null) {
-                        continuation.resume(null)
-                        return
-                    }
-
-                    continuation.resume(
-                        parseExtraInfoJson(
-                            body,
-                            response.cacheResponse != null
-                        )
-                    )
-                }
-            }
-        })
-    }
-
-    // Helper function to parse extra info JSON.
-    private fun parseExtraInfoJson(jsonString: String, isCached: Boolean): ExtraInfo? {
-        return runCatching {
-            val jsonObj = JSONObject(jsonString)
-            val totalItems = jsonObj.optInt("totalItems", 0)
-            if (totalItems != 0) {
-                jsonObj.optJSONArray("items")
-                    ?.optJSONObject(0)
-                    ?.optJSONObject("volumeInfo")
-                    ?.let { volumeInfo ->
-                        val coverImage = volumeInfo
-                            .optJSONObject("imageLinks")
-                            ?.optString("thumbnail", "")
-                            ?.replace("http://", "https://") ?: ""
-                        val pageCount = volumeInfo.optInt("pageCount", 0)
-                        val description = volumeInfo.optString("description", "")
-
-                        ExtraInfo(
-                            coverImage = coverImage,
-                            pageCount = pageCount,
-                            description = description,
-                            isCached = isCached
-                        )
-                    }
-            } else {
-                null
-            }
-        }.getOrNull()
-    }
 }

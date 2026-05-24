@@ -32,7 +32,6 @@ class PreferenceUtil(context: Context) {
 
         // General settings preference keys
         const val INTERNAL_READER_BOOL = "internal_reader"
-        const val USE_GOOGLE_API_BOOL = "use_google_books_api"
         const val OPEN_LIBRARY_AT_START_BOOL = "launch_library_at_start"
 
         // App theme preference keys
@@ -63,7 +62,6 @@ class PreferenceUtil(context: Context) {
         // setup default values
         prefs.edit {
             if (!keyExists(INTERNAL_READER_BOOL)) putBoolean(INTERNAL_READER_BOOL, true)
-            if (!keyExists(USE_GOOGLE_API_BOOL)) putBoolean(USE_GOOGLE_API_BOOL, true)
             if (!keyExists(OPEN_LIBRARY_AT_START_BOOL)) putBoolean(
                 OPEN_LIBRARY_AT_START_BOOL,
                 false

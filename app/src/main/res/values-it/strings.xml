@@ -95,8 +95,6 @@
     <string name="default_locale_setting">Impostazione lingua predefinita</string>
     <string name="default_locale_setting_desc">Seleziona la tua lingua preferita.</string>
     <string name="locale_setting_not_found">Spiacenti! Questa funzione non è ancora supportata dal tuo sistema operativo.</string>
-    <string name="google_books_api_setting">API di Google Books</string>
-    <string name="google_books_api_setting_desc">Usa l\'API di Google Books per ottenere ulteriori informazioni sui libri.</string>
     <string name="open_library_at_start_setting">Apri la libreria all\'avvio</string>
     <string name="open_library_at_start_setting_desc">Apri la schermata della libreria all\'avvio dell\'app.</string>
     <string name="display_setting_header">Mostra</string>

@@ -165,7 +165,7 @@ fun NavGraph(
         ) { backStackEntry ->
             val bookId = backStackEntry.arguments!!.getString(LIBRARY_ITEM_ID_ARG_KEY)!!
             ReaderDetailScreen(
-                libraryItemId = bookId, navController = navController, networkStatus = networkStatus
+                libraryItemId = bookId, navController = navController
             )
         }
 

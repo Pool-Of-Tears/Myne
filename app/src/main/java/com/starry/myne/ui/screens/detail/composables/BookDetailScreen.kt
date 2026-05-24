@@ -41,6 +41,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.filled.Copyright
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -191,15 +192,15 @@ private fun BookDetailContents(
         BookDetailTopUI(
             title = book.title,
             authors = authors,
-            imageData = state.extraInfo.coverImage.ifEmpty { book.formats.imagejpeg },
+            imageData = book.formats.imagejpeg,
             currentThemeMode = settingsVM.getCurrentTheme()
         )
 
-        val pageCount = remember {
-            if (state.extraInfo.pageCount > 0) {
-                state.extraInfo.pageCount.toString()
+        val copyright = remember {
+            if (book.copyright) {
+                context.getString(R.string.not_public_domain)
             } else {
-                context.getString(R.string.not_applicable)
+                context.getString(R.string.public_domain)
             }
         }
         var buttonText by remember { mutableStateOf("") }
@@ -250,7 +251,7 @@ private fun BookDetailContents(
 
         MiddleBar(
             bookLang = BookUtils.getLanguagesAsString(book.languages),
-            pageCount = pageCount,
+            copyright = copyright,
             downloadCount = Utils.prettyCount(book.downloadCount),
             progressValue = progressState,
             buttonText = buttonText,
@@ -319,7 +320,7 @@ private fun BookDetailContents(
             color = MaterialTheme.colorScheme.onBackground,
         )
 
-        val synopsis = state.extraInfo.description.ifEmpty { null }
+        val synopsis = book.summaries.firstOrNull()
         if (synopsis != null) {
             Text(
                 text = synopsis,
@@ -337,7 +338,7 @@ private fun BookDetailContents(
 @Composable
 private fun MiddleBar(
     bookLang: String,
-    pageCount: String,
+    copyright: String,
     downloadCount: String,
     progressValue: Float,
     buttonText: String,
@@ -428,14 +429,14 @@ private fun MiddleBar(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_book_pages),
+                            imageVector = Icons.Filled.Copyright,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.padding(end = 4.dp)
                         )
                         Text(
-                            text = pageCount,
-                            fontSize = 16.sp,
+                            text = copyright,
+                            fontSize = 14.sp,
                             fontFamily = poppinsFont,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onBackground,
@@ -599,7 +600,7 @@ private fun NoSynopsisUI() {
 fun MiddleBarPreview(modifier: Modifier = Modifier) {
     MiddleBar(
         bookLang = "English",
-        pageCount = "256",
+        copyright = "Public Domain",
         downloadCount = "1.2K",
         progressValue = 0.5f,
         buttonText = "Download",

@@ -81,14 +81,13 @@ import com.starry.myne.ui.theme.poppinsFont
 fun ReaderDetailScreen(
     libraryItemId: String,
     navController: NavController,
-    networkStatus: NetworkObserver.Status,
     viewModel: ReaderDetailViewModel = hiltViewModel(),
 ) {
     val state = viewModel.state
     val readerData by (viewModel.progressData?.collectAsStateWithLifecycle(initialValue = null)
         ?: remember { mutableStateOf(null) })
 
-    LaunchedEffect(key1 = true) { viewModel.loadEbookData(libraryItemId, networkStatus) }
+    LaunchedEffect(key1 = true) { viewModel.loadEbookData(libraryItemId) }
 
     ReaderDetailScreen(
         libraryItemId = libraryItemId,

@@ -17,19 +17,16 @@
 
 package com.starry.myne.ui.screens.reader.detail
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.starry.myne.api.BookAPI
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.progress.ProgressDao
 import com.starry.myne.database.progress.ProgressData
 import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubChapter
-import com.starry.myne.helpers.NetworkObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -49,7 +46,6 @@ data class ReaderDetailScreenState(
 
 @HiltViewModel
 class ReaderDetailViewModel @Inject constructor(
-    private val bookAPI: BookAPI,
     private val libraryDao: LibraryDao,
     private val progressDao: ProgressDao,
     private val epubParser: EpubParser
@@ -60,7 +56,7 @@ class ReaderDetailViewModel @Inject constructor(
     var progressData: Flow<ProgressData?>? = null
         private set
 
-    fun loadEbookData(libraryItemId: String, networkStatus: NetworkObserver.Status) {
+    fun loadEbookData(libraryItemId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val libraryItem = libraryDao.getItemById(libraryItemId.toInt())
             // Check if library item exists.
@@ -70,15 +66,6 @@ class ReaderDetailViewModel @Inject constructor(
             }
             // Get progress data for the current book.
             progressData = progressDao.getReaderDataAsFlow(libraryItemId.toInt())
-            // Fetch cover image from Google books api if available.
-            val coverImage: String? = try {
-                if (!libraryItem.isImported
-                    && networkStatus == NetworkObserver.Status.Available
-                ) bookAPI.getExtraInfo(libraryItem.title)?.coverImage else null
-            } catch (exc: Exception) {
-                Log.e("ReaderDetailViewModel", "Failed to fetch cover image.", exc)
-                null
-            }
 
             // Gutenberg for some reason don't include proper navMap for chinese books
             // in toc file, so we need to parse the book based on spine, instead of toc.
@@ -91,7 +78,7 @@ class ReaderDetailViewModel @Inject constructor(
             state = state.copy(
                 title = libraryItem.title,
                 authors = libraryItem.authors,
-                coverImage = coverImage ?: epubBook.coverImage,
+                coverImage = epubBook.coverImage,
                 chapters = epubBook.chapters,
             )
             delay(350) // Small delay for smooth transition.
