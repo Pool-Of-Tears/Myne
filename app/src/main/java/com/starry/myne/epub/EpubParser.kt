@@ -306,7 +306,8 @@ class EpubParser {
                 tocNavPoints.map { it.selectFirstChildTag("content")?.getAttributeValue("src") }
                     .distinct().size > 1
 
-        val spineItemCount = document.spine.childElements.filter { it.tagName.contains("itemref") }.size
+        val spineItemCount =
+            document.spine.childElements.filter { it.tagName.contains("itemref") }.size
         val isTocIncomplete = tocNavPoints != null &&
                 tocNavPoints.size < (spineItemCount / 2) &&
                 spineItemCount > 10

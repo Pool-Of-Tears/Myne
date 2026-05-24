@@ -19,9 +19,9 @@ package com.starry.myne.api
 import android.content.Context
 import com.starry.myne.BuildConfig
 import com.starry.myne.api.models.BookSet
-import com.starry.myne.helpers.PreferenceUtil
 import com.starry.myne.helpers.book.BookLanguage
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.Cache
@@ -31,13 +31,11 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 
 /**
@@ -136,7 +134,7 @@ class BookAPI(context: Context) {
 
     // Helper function to make API requests.
     private suspend fun makeApiRequest(request: Request): Result<BookSet> =
-        suspendCoroutine { continuation ->
+        suspendCancellableCoroutine { continuation ->
             okHttpClient.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     continuation.resume(Result.failure(exception = e))
@@ -148,13 +146,7 @@ class BookAPI(context: Context) {
                             continuation.resume(Result.failure(IOException("Unexpected code $response")))
                             return
                         }
-
-                        val body = response.body?.string()
-                        if (body == null) {
-                            continuation.resume(Result.failure(IOException("Empty response body")))
-                            return
-                        }
-
+                        val body = response.body.string()
                         try {
                             continuation.resume(
                                 Result.success(

@@ -65,7 +65,6 @@ import androidx.navigation.compose.rememberNavController
 import com.starry.myne.MainActivity
 import com.starry.myne.R
 import com.starry.myne.database.progress.ProgressData
-import com.starry.myne.helpers.NetworkObserver
 import com.starry.myne.helpers.getActivity
 import com.starry.myne.helpers.toToast
 import com.starry.myne.helpers.weakHapticFeedback
@@ -272,7 +271,6 @@ private fun ChapterItem(
     }
 
 }
-
 
 
 @Preview(showBackground = true)

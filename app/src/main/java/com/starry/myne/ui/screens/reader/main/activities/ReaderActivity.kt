@@ -50,13 +50,13 @@ import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderViewModel
 import com.starry.myne.ui.screens.settings.viewmodels.SettingsViewModel
 import com.starry.myne.ui.theme.MyneTheme
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ReaderActivity : AppCompatActivity() {
