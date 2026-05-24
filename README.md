@@ -23,11 +23,6 @@
 
 *The name of the app is inspired from the main character of an anime called [Ascendance of a Bookworm](https://myanimelist.net/anime/39468/Honzuki_no_Gekokujou__Shisho_ni_Naru_Tame_ni_wa_Shudan_wo_Erandeiraremasen)*.
 
-
->[!Note]
->
->The app also utilizes the Google Books API to retrieve additional data such as synopsis and page count. As the Gutenberg project does not include these values in their metadata. While the app attempts to map the data received from Google Books with Gutenberg's metadata, the mapping is not always 100% accurate. Additionally, not all books available on Gutenberg are accessible on Google Books, or they may be available under different titles. As a result, you may find some books without synopsis or page count, etc.
-
 ------
 
 <h2 align="center">Screenshots</h2>

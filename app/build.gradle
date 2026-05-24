@@ -10,17 +10,6 @@ plugins {
     id "com.mikepenz.aboutlibraries.plugin.android" version "14.0.1"
 }
 
-String getGoogleApiKey() {
-    def propFile = rootProject.file("./local.properties")
-    def properties = new Properties()
-    if (propFile.exists()) {
-        properties.load(new FileInputStream(propFile))
-        return properties.getProperty('GOOGLE_API_KEY', "null")
-    } else {
-        return "null"
-    }
-}
-
 android {
     namespace 'com.starry.myne'
     compileSdk = 36
@@ -40,8 +29,6 @@ android {
         ksp {
             arg('room.schemaLocation', "$projectDir/schemas")
         }
-
-        buildConfigField("String", "GOOGLE_API_KEY", getGoogleApiKey())
     }
 
     buildTypes {

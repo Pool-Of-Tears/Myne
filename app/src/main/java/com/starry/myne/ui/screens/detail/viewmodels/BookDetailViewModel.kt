@@ -24,7 +24,6 @@ import androidx.lifecycle.viewModelScope
 import com.starry.myne.api.BookAPI
 import com.starry.myne.api.models.Book
 import com.starry.myne.api.models.BookSet
-import com.starry.myne.api.models.ExtraInfo
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
 import com.starry.myne.helpers.Constants
@@ -41,7 +40,6 @@ import javax.inject.Inject
 data class BookDetailScreenState(
     val isLoading: Boolean = true,
     val bookSet: BookSet = BookSet(0, null, null, emptyList()),
-    val extraInfo: ExtraInfo = ExtraInfo(),
     val bookLibraryItem: LibraryItem? = null,
     val error: String? = null
 )
@@ -70,17 +68,13 @@ class BookDetailViewModel @Inject constructor(
                 // the request to show the loading indicator in the UI.
                 state = state.copy(isLoading = true)
                 val bookSet = bookAPI.getBookById(bookId).getOrNull()!!
-                val extraInfo = bookAPI.getExtraInfo(bookSet.books.first().title)
+
                 // If API response is cached, it will not show the loading
                 // indicator. So, we are adding a delay to show the loading
                 // indicator. This is just for better UX.
                 if (bookSet.isCached) delay(400)
-                state = if (extraInfo != null) {
-                    state.copy(bookSet = bookSet, extraInfo = extraInfo)
-                } else {
-                    state.copy(bookSet = bookSet)
-                }
                 state = state.copy(
+                    bookSet = bookSet,
                     bookLibraryItem = libraryDao.getItemByBookId(bookId.toInt()),
                     isLoading = false,
                     error = null

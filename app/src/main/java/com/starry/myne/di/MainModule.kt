@@ -66,9 +66,8 @@ class MainModule {
     @Singleton
     @Provides
     fun provideBooksApi(
-        @ApplicationContext context: Context,
-        preferenceUtil: PreferenceUtil
-    ) = BookAPI(context, preferenceUtil)
+        @ApplicationContext context: Context
+    ) = BookAPI(context)
 
     @Singleton
     @Provides

@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -90,7 +91,7 @@ fun BookItemCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min)
-                .heightIn(min = 140.dp),
+                .heightIn(min = 180.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             val imageBackground = if (isSystemInDarkTheme()) {
@@ -101,10 +102,10 @@ fun BookItemCard(
 
             Box(
                 modifier = Modifier
-                    .weight(1.5f)
-                    .fillMaxHeight()
                     .padding(10.dp)
-                    .clip(RoundedCornerShape(6.dp))
+                    .height(160.dp)
+                    .aspectRatio(118f / 160f)
+                    .clip(RoundedCornerShape(8.dp))
                     .background(imageBackground)
                     .placeholder(isLoading = loadingEffect)
             ) {
@@ -122,9 +123,10 @@ fun BookItemCard(
 
             Column(
                 modifier = Modifier
-                    .weight(3f)
+                    .weight(1f)
                     .fillMaxHeight()
-                    .padding(vertical = 10.dp),
+                    .padding(vertical = 10.dp)
+                    .padding(end = 10.dp),
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
