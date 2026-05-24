@@ -1,0 +1,5 @@
+- Update target SDK to Android 17 (API 37).
+- Remove the Google Books API dependency.
+- Fix weird sizing issues with book covers on the home screen.
+- Improve performance and speed, along with other minor fixes.
+- Update the Kotlin version and all major/minor dependencies.
