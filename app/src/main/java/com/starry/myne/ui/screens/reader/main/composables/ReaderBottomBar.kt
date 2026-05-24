@@ -149,7 +149,11 @@ private fun AutoScrollControls(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = String.format(LocalConfiguration.current.locales[0], "%.1f", autoScrollSpeed),
+                    text = String.format(
+                        LocalConfiguration.current.locales[0],
+                        "%.1f",
+                        autoScrollSpeed
+                    ),
                     fontFamily = poppinsFont,
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onSurface

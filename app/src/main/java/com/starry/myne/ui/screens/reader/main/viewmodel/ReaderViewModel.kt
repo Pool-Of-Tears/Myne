@@ -93,8 +93,14 @@ class ReaderViewModel @Inject constructor(
                             ReaderFont.System.id
                         )!!
                     ),
-                    lineHeight = preferenceUtil.getFloat(PreferenceUtil.READER_LINE_HEIGHT_FLOAT, 1.2f),
-                    autoScrollSpeed = preferenceUtil.getFloat(PreferenceUtil.READER_AUTO_SCROLL_SPEED_FLOAT, 1.0f)
+                    lineHeight = preferenceUtil.getFloat(
+                        PreferenceUtil.READER_LINE_HEIGHT_FLOAT,
+                        1.2f
+                    ),
+                    autoScrollSpeed = preferenceUtil.getFloat(
+                        PreferenceUtil.READER_AUTO_SCROLL_SPEED_FLOAT,
+                        1.0f
+                    )
                 )
             }
             // Collect the state to update the current chapter.
@@ -190,7 +196,8 @@ class ReaderViewModel @Inject constructor(
         loadingChapterIds.add(chapter.chapterId)
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val content = epubParser.getChapterBody(state.value.epubBook?.filePath ?: "", chapter)
+                val content =
+                    epubParser.getChapterBody(state.value.epubBook?.filePath ?: "", chapter)
                 _state.update {
                     it.copy(loadedChapters = it.loadedChapters + (chapter.chapterId to content))
                 }
