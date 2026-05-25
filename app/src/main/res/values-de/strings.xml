@@ -9,7 +9,7 @@
     <string name="ok">OK</string>
     <string name="got_it">Verstanden</string>
     <string name="no_app_to_handle_epub">Kann keine App zum Öffnen von Epub-Dateien finden.</string>
-    <string name="network_error">Hoppla! Konnte keine Verbindung zum Server aufbauen.</string>
+    <string name="network_error">Hoppla! Der Server ist aktuell nicht erreichbar. Bitte probiere es später erneut.</string>
     <string name="network_error_retry">Erneut versuchen</string>
     <string name="error">Hoppla! Etwas ist schiefgelaufen.</string>
     <string name="no_app_to_handle_content">Keine App gefunden, um diesen Inhalt zu öffnen.</string>
@@ -73,8 +73,8 @@
     <string name="continue_reading_button">Weiterlesen</string>
     <string name="reader_chapters_list">Kapitel</string>
     <!--Reader Screen -->
-    <string name="reader_max_font_size_reached">Entschuldige bitte, größer kann es nicht dargestellt werden!</string>
-    <string name="reader_min_font_size_reached">Entschuldige bitte, kleiner kann es nicht dargestellt werden!</string>
+    <string name="reader_max_font_size_reached">Die maximale Schriftgröße wurde erreicht</string>
+    <string name="reader_min_font_size_reached">Die kleinste Schriftgröße wurde erreicht</string>
     <string name="reader_font_style_chooser">Schriftart ändern</string>
     <string name="reader_chapter_list_title">Kapitel</string>
     <!-- Text selection -->
@@ -97,7 +97,7 @@
     <string name="default_locale_setting_desc">Wählen Sie Ihre bevorzugte Sprachumgebung.</string>
     <string name="locale_setting_not_found">Entschuldigung! Diese Funktion wird von Ihrem Betriebssystem noch nicht unterstützt.</string>
     <string name="open_library_at_start_setting">Bibliothek beim Start öffnen</string>
-    <string name="open_library_at_start_setting_desc">Öffne den Bibliotheksbildschirm beim Starten der App.</string>
+    <string name="open_library_at_start_setting_desc">Öffnet die Bibliotheksansicht beim Starten der App.</string>
     <string name="display_setting_header">Darstellung</string>
     <string name="theme_setting">Standard-Theme</string>
     <string name="theme_dialog_title">Theme ändern</string>
@@ -150,4 +150,11 @@
     <string name="link_support_desc">Denken Sie, ich verdiene Kekse? Klicken Sie hier!</string>
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">Lizenzen</string>
+    <string name="reader_max_line_height_reached">Die maximale Zeilenhöhe wurde erreicht</string>
+    <string name="reader_min_line_height_reached">Die kleinste Zeilenhöhe wurde erreicht</string>
+    <string name="reader_dnd_setting">Bitte nicht stören</string>
+    <string name="reader_dnd_setting_desc">Bitte nicht stören beim Lesen automatisch aktivieren.</string>
+    <string name="reader_auto_scroll_start">Automatischen Bildlauf beginnen</string>
+    <string name="reader_auto_scroll_stop">Automatischen Bildlauf beenden</string>
+    <string name="reader_dnd_permission_error">Bitte erlaube den Zugriff auf Bitte nicht stören um diese Funktionalität zu verwenden.</string>
 </resources>
