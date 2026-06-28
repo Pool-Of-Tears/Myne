@@ -72,8 +72,8 @@
     <string name="continue_reading_button">继续</string>
     <string name="reader_chapters_list">章节</string>
     <!--Reader Screen 阅读界面-->
-    <string name="reader_max_font_size_reached">抱歉，不能再大了</string>
-    <string name="reader_min_font_size_reached">抱歉，不能再小了</string>
+    <string name="reader_max_font_size_reached">已达到最大字体大小</string>
+    <string name="reader_min_font_size_reached">已达到最小字体大小</string>
     <string name="reader_font_style_chooser">改变字体风格</string>
     <string name="reader_chapter_list_title">章节</string>
     <!-- Text selection 文本选择-->
@@ -148,4 +148,8 @@
     <string name="link_support_desc">认为我应该得到饼干吗？点击这里！</string>
     <!-- Open source libraries screen 开放源代码库界面-->
     <string name="open_source_licenses_header">许可证</string>
+    <string name="reader_max_line_height_reached">已达到最大行高</string>
+    <string name="reader_min_line_height_reached">已达到最小行高</string>
+    <string name="reader_auto_scroll_start">开始自动滚动</string>
+    <string name="reader_auto_scroll_stop">停止自动滚动</string>
 </resources>
