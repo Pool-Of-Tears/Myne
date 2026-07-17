@@ -21,7 +21,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.starry.myne.database.progress.ProgressData
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -30,22 +29,22 @@ interface ReaderDao {
     // --- Progress related methods (moved from ProgressDao) ---
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(progressData: ProgressData)
+    fun insert(readerProgress: ReaderProgress)
 
     @Query("DELETE FROM reader_table WHERE library_item_id = :libraryItemId")
     fun delete(libraryItemId: Int)
 
     @Update
-    fun update(progressData: ProgressData)
+    fun update(readerProgress: ReaderProgress)
 
     @Query("SELECT * FROM reader_table WHERE library_item_id = :libraryItemId")
-    fun getReaderData(libraryItemId: Int): ProgressData?
+    fun getReaderData(libraryItemId: Int): ReaderProgress?
 
     @Query("SELECT * FROM reader_table")
-    fun getAllReaderItems(): List<ProgressData>
+    fun getAllReaderItems(): List<ReaderProgress>
 
     @Query("SELECT * FROM reader_table WHERE library_item_id = :libraryItemId")
-    fun getReaderDataAsFlow(libraryItemId: Int): Flow<ProgressData?>
+    fun getReaderDataAsFlow(libraryItemId: Int): Flow<ReaderProgress?>
 
     // --- Bookmark related methods ---
 

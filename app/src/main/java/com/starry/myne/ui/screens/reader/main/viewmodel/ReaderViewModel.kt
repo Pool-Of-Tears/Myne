@@ -20,7 +20,7 @@ package com.starry.myne.ui.screens.reader.main.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
-import com.starry.myne.database.progress.ProgressData
+import com.starry.myne.database.reader.ReaderProgress
 import com.starry.myne.database.reader.ReaderBookmark
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.epub.EpubParser
@@ -268,7 +268,7 @@ class ReaderViewModel @Inject constructor(
                 else -> {
                     // Insert new progress for new book
                     readerDao.insert(
-                        ProgressData(
+                        ReaderProgress(
                             libraryItemId = libraryItemId,
                             lastChapterIndex = chapterIndex,
                             lastChapterOffset = chapterOffset,

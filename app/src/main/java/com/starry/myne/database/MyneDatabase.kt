@@ -24,13 +24,13 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import com.starry.myne.database.library.LibraryDao
 import com.starry.myne.database.library.LibraryItem
-import com.starry.myne.database.progress.ProgressData
+import com.starry.myne.database.reader.ReaderProgress
 import com.starry.myne.database.reader.ReaderBookmark
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.helpers.Constants
 
 @Database(
-    entities = [LibraryItem::class, ProgressData::class, ReaderBookmark::class],
+    entities = [LibraryItem::class, ReaderProgress::class, ReaderBookmark::class],
     version = 6,
     exportSchema = true,
     autoMigrations = [

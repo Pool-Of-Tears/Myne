@@ -23,7 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
-import com.starry.myne.database.progress.ProgressData
+import com.starry.myne.database.reader.ReaderProgress
 import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubChapter
@@ -53,7 +53,7 @@ class ReaderDetailViewModel @Inject constructor(
 
     var state by mutableStateOf(ReaderDetailScreenState())
 
-    var progressData: Flow<ProgressData?>? = null
+    var readerProgress: Flow<ReaderProgress?>? = null
         private set
 
     fun loadEbookData(libraryItemId: String) {
@@ -65,7 +65,7 @@ class ReaderDetailViewModel @Inject constructor(
                 return@launch
             }
             // Get progress data for the current book.
-            progressData = readerDao.getReaderDataAsFlow(libraryItemId.toInt())
+            readerProgress = readerDao.getReaderDataAsFlow(libraryItemId.toInt())
 
             // Gutenberg for some reason don't include proper navMap for chinese books
             // in toc file, so we need to parse the book based on spine, instead of toc.

@@ -15,7 +15,7 @@
  */
 
 
-package com.starry.myne.database.progress
+package com.starry.myne.database.reader
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -31,7 +31,7 @@ import java.util.Locale
  * @param lastReadTime The time when the last chapter was read.
  */
 @Entity(tableName = "reader_table")
-data class ProgressData(
+data class ReaderProgress(
     @ColumnInfo(name = "library_item_id") val libraryItemId: Int,
     @ColumnInfo(name = "last_chapter_index") val lastChapterIndex: Int,
     @ColumnInfo(name = "last_chapter_offset") val lastChapterOffset: Int,

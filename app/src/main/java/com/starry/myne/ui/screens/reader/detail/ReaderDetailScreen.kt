@@ -64,7 +64,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.starry.myne.MainActivity
 import com.starry.myne.R
-import com.starry.myne.database.progress.ProgressData
+import com.starry.myne.database.reader.ReaderProgress
 import com.starry.myne.helpers.getActivity
 import com.starry.myne.helpers.toToast
 import com.starry.myne.helpers.weakHapticFeedback
@@ -83,7 +83,7 @@ fun ReaderDetailScreen(
     viewModel: ReaderDetailViewModel = hiltViewModel(),
 ) {
     val state = viewModel.state
-    val readerData by (viewModel.progressData?.collectAsStateWithLifecycle(initialValue = null)
+    val readerData by (viewModel.readerProgress?.collectAsStateWithLifecycle(initialValue = null)
         ?: remember { mutableStateOf(null) })
 
     LaunchedEffect(key1 = true) { viewModel.loadEbookData(libraryItemId) }
@@ -92,7 +92,7 @@ fun ReaderDetailScreen(
         libraryItemId = libraryItemId,
         navController = navController,
         state = state,
-        progressData = readerData,
+        readerProgress = readerData,
     )
 }
 
@@ -101,7 +101,7 @@ fun ReaderDetailScreen(
     libraryItemId: String,
     navController: NavController,
     state: ReaderDetailScreenState,
-    progressData: ProgressData?
+    readerProgress: ReaderProgress?
 ) {
     val context = LocalContext.current
 
@@ -123,7 +123,7 @@ fun ReaderDetailScreen(
             } else {
                 ReaderDetailScaffold(
                     libraryItemId = libraryItemId,
-                    progressData = progressData,
+                    readerProgress = readerProgress,
                     state = state,
                     navController = navController
                 )
@@ -135,7 +135,7 @@ fun ReaderDetailScreen(
 @Composable
 private fun ReaderDetailScaffold(
     libraryItemId: String,
-    progressData: ProgressData?,
+    readerProgress: ReaderProgress?,
     state: ReaderDetailScreenState,
     navController: NavController
 ) {
@@ -148,7 +148,7 @@ private fun ReaderDetailScaffold(
         }
     }, floatingActionButton = {
         ExtendedFloatingActionButton(
-            text = { Text(text = stringResource(id = if (progressData != null) R.string.continue_reading_button else R.string.start_reading_button)) },
+            text = { Text(text = stringResource(id = if (readerProgress != null) R.string.continue_reading_button else R.string.start_reading_button)) },
             onClick = {
                 val intent = Intent(context, ReaderActivity::class.java)
                 intent.putExtra(
@@ -177,7 +177,7 @@ private fun ReaderDetailScaffold(
                 imageData = state.coverImage,
                 currentThemeMode = settingsVM.getCurrentTheme(),
                 showReaderBackground = true,
-                progressPercent = progressData?.getProgressPercent(state.chapters.size) ?: ""
+                progressPercent = readerProgress?.getProgressPercent(state.chapters.size) ?: ""
             )
 
             HorizontalDivider(
@@ -198,7 +198,7 @@ private fun ReaderDetailScaffold(
                     val chapter = state.chapters[idx]
                     ChapterItem(
                         chapterTitle = chapter.title,
-                        isRead = idx < (progressData?.lastChapterIndex ?: 0),
+                        isRead = idx < (readerProgress?.lastChapterIndex ?: 0),
                         onClick = {
                             val intent = Intent(context, ReaderActivity::class.java)
                             intent.putExtra(
@@ -280,7 +280,7 @@ fun EpubDetailScreenPV() {
         "",
         rememberNavController(),
         state = ReaderDetailScreenState(),
-        progressData = ProgressData(
+        readerProgress = ReaderProgress(
             libraryItemId = 0,
             lastChapterIndex = 0,
             lastChapterOffset = 0,
