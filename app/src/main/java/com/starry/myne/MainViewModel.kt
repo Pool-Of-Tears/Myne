@@ -28,7 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
-import com.starry.myne.database.progress.ProgressDao
+import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.helpers.PreferenceUtil
 import com.starry.myne.ui.navigation.BottomBarScreen
 import com.starry.myne.ui.navigation.Screens
@@ -44,7 +44,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val welcomeDataStore: WelcomeDataStore,
     private val libraryDao: LibraryDao,
-    private val progressDao: ProgressDao,
+    private val readerDao: ReaderDao,
     private val preferenceUtil: PreferenceUtil
 ) :
     ViewModel() {
@@ -94,7 +94,7 @@ class MainViewModel @Inject constructor(
         onComplete: (List<ShortcutInfo>) -> Unit
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val libraryItems = progressDao.getAllReaderItems()
+            val libraryItems = readerDao.getAllReaderItems()
                 .sortedByDescending { it.lastReadTime }
                 .take(limit - 1).mapNotNull {
                     libraryDao.getItemById(it.libraryItemId)

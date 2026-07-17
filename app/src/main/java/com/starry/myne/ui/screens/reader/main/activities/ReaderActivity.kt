@@ -109,7 +109,7 @@ class ReaderActivity : AppCompatActivity() {
 
                 ReaderScreen(
                     viewModel = viewModel,
-                    onScrollToChapter = { lazyListState.scrollToItem(it) },
+                    onScrollToChapter = { index, offset -> lazyListState.scrollToItem(index, offset) },
                     chaptersContent = {
                         LaunchedEffect(lazyListState) {
                             snapshotFlow { lazyListState.firstVisibleItemIndex }

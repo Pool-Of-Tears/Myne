@@ -20,8 +20,9 @@ package com.starry.myne.ui.screens.reader.main.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starry.myne.database.library.LibraryDao
-import com.starry.myne.database.progress.ProgressDao
 import com.starry.myne.database.progress.ProgressData
+import com.starry.myne.database.reader.ReaderBookmark
+import com.starry.myne.database.reader.ReaderDao
 import com.starry.myne.epub.EpubParser
 import com.starry.myne.epub.models.EpubBook
 import com.starry.myne.epub.models.EpubChapter
@@ -44,9 +45,11 @@ data class ReaderScreenState(
     val shouldShowLoader: Boolean = false,
     val showReaderMenu: Boolean = false,
     val currentChapterIndex: Int = 0,
+    val currentChapterOffset: Int = 0,
     val currentChapter: EpubChapter = EpubChapter("", "", "", emptyList()),
     val chapterScrollPercent: Float = 0f,
     // Book data
+    val libraryItemId: Int? = null,
     val epubBook: EpubBook? = null,
     val chapters: List<EpubChapter> = emptyList(),
     // Loaded chapter content map: chapterId -> ChapterContent
@@ -57,6 +60,7 @@ data class ReaderScreenState(
     val hasProgressSaved: Boolean = false,
     val lastChapterIndex: Int = 0,
     val lastChapterOffset: Int = 0,
+    val bookmarks: List<ReaderBookmark> = emptyList(),
     // Typography
     val fontSize: Int = 100,
     val fontFamily: ReaderFont = ReaderFont.System,
@@ -69,7 +73,7 @@ data class ReaderScreenState(
 @HiltViewModel
 class ReaderViewModel @Inject constructor(
     private val libraryDao: LibraryDao,
-    private val progressDao: ProgressDao,
+    private val readerDao: ReaderDao,
     private val preferenceUtil: PreferenceUtil,
     private val epubParser: EpubParser
 ) : ViewModel() {
@@ -119,7 +123,7 @@ class ReaderViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val libraryItem = libraryDao.getItemById(libraryItemId)
             _state.update { it.copy(shouldShowLoader = true) }
-            val readerData = progressDao.getReaderData(libraryItemId)
+            val readerData = readerDao.getReaderData(libraryItemId)
 
             // Gutenberg for some reason don't include proper navMap for chinese books
             // in toc file, so we need to parse the book based on spine, instead of toc.
@@ -133,6 +137,7 @@ class ReaderViewModel @Inject constructor(
             val initialChapterIndex = readerData?.lastChapterIndex ?: 0
             _state.update {
                 it.copy(
+                    libraryItemId = libraryItemId,
                     epubBook = epubBook,
                     chapters = epubBook.chapters,
                     hasProgressSaved = readerData != null,
@@ -144,6 +149,13 @@ class ReaderViewModel @Inject constructor(
             onLoaded(state.value)
             // Load the initial chapter
             loadChapterBody(initialChapterIndex)
+
+            // Collect bookmarks for this book
+            viewModelScope.launch(Dispatchers.IO) {
+                readerDao.getBookmarksForBook(libraryItemId).collect { bookmarks ->
+                    _state.update { it.copy(bookmarks = bookmarks) }
+                }
+            }
 
             // Added some delay to avoid choppy animation.
             delay(200L)
@@ -227,9 +239,10 @@ class ReaderViewModel @Inject constructor(
     }
 
     fun updateReaderProgress(libraryItemId: Int, chapterIndex: Int, chapterOffset: Int) {
+        _state.update { it.copy(currentChapterOffset = chapterOffset) }
         viewModelScope.launch(Dispatchers.IO) {
             val isLastChapter = chapterIndex == state.value.chapters.size - 1
-            val progressData = progressDao.getReaderData(libraryItemId)
+            val progressData = readerDao.getReaderData(libraryItemId)
 
             when {
                 // Update progress for existing book
@@ -240,21 +253,21 @@ class ReaderViewModel @Inject constructor(
                         lastReadTime = System.currentTimeMillis()
                     )
                     updatedProgress.id = progressData.id
-                    progressDao.update(updatedProgress)
+                    readerDao.update(updatedProgress)
                     _state.update { it.copy(hasProgressSaved = true) }
                 }
 
                 isLastChapter -> {
                     // Delete progress for completed book
                     progressData?.let { it ->
-                        progressDao.delete(it.libraryItemId)
+                        readerDao.delete(it.libraryItemId)
                         _state.update { it.copy(hasProgressSaved = false) }
                     }
                 }
 
                 else -> {
                     // Insert new progress for new book
-                    progressDao.insert(
+                    readerDao.insert(
                         ProgressData(
                             libraryItemId = libraryItemId,
                             lastChapterIndex = chapterIndex,
@@ -265,6 +278,34 @@ class ReaderViewModel @Inject constructor(
                     _state.update { it.copy(hasProgressSaved = true) }
                 }
             }
+        }
+    }
+
+    fun toggleBookmark(libraryItemId: Int, chapterIndex: Int, chapterOffset: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val existingBookmark = state.value.bookmarks.find {
+                it.chapterIndex == chapterIndex
+            }
+
+            if (existingBookmark != null) {
+                readerDao.deleteBookmark(existingBookmark.id)
+            } else {
+                val chapter = state.value.chapters[chapterIndex]
+                readerDao.insertBookmark(
+                    ReaderBookmark(
+                        bookId = libraryItemId,
+                        chapterIndex = chapterIndex,
+                        chapterTitle = chapter.title,
+                        chapterOffset = chapterOffset
+                    )
+                )
+            }
+        }
+    }
+
+    fun deleteBookmark(bookmark: ReaderBookmark) {
+        viewModelScope.launch(Dispatchers.IO) {
+            readerDao.deleteBookmark(bookmark.id)
         }
     }
 

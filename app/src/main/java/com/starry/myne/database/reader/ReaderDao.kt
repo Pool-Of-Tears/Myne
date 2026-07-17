@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-
-package com.starry.myne.database.progress
+package com.starry.myne.database.reader
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.starry.myne.database.progress.ProgressData
 import kotlinx.coroutines.flow.Flow
 
-
 @Dao
-interface ProgressDao {
+interface ReaderDao {
+
+    // --- Progress related methods (moved from ProgressDao) ---
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(progressData: ProgressData)
@@ -45,4 +46,15 @@ interface ProgressDao {
 
     @Query("SELECT * FROM reader_table WHERE library_item_id = :libraryItemId")
     fun getReaderDataAsFlow(libraryItemId: Int): Flow<ProgressData?>
+
+    // --- Bookmark related methods ---
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertBookmark(bookmark: ReaderBookmark)
+
+    @Query("DELETE FROM bookmarks_table WHERE id = :id")
+    suspend fun deleteBookmark(id: Int)
+
+    @Query("SELECT * FROM bookmarks_table WHERE book_id = :bookId ORDER BY created_at DESC")
+    fun getBookmarksForBook(bookId: Int): Flow<List<ReaderBookmark>>
 }

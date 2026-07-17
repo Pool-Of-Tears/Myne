@@ -34,6 +34,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
@@ -58,9 +60,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.starry.myne.R
 import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderScreenState
 import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderViewModel
 import com.starry.myne.ui.theme.poppinsFont
@@ -70,9 +74,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun ReaderScreen(
     viewModel: ReaderViewModel,
-    onScrollToChapter: suspend (Int) -> Unit,
+    onScrollToChapter: suspend (Int, Int) -> Unit,
     chaptersContent: @Composable (paddingValues: PaddingValues) -> Unit
 ) {
+    val context = LocalContext.current
     val state = viewModel.state.collectAsState().value
     // Hide reader menu on back press.
     BackHandler(state.showReaderMenu) {
@@ -99,15 +104,42 @@ fun ReaderScreen(
     ChaptersDrawer(
         drawerState = drawerState,
         chapters = state.chapters,
+        bookmarks = state.bookmarks,
         currentChapterIndex = state.currentChapterIndex,
-        onScrollToChapter = { coroutineScope.launch { onScrollToChapter(it) } },
+        onScrollToChapter = { coroutineScope.launch { onScrollToChapter(it, 0) } },
+        onScrollToBookmark = { bookmark ->
+            coroutineScope.launch {
+                onScrollToChapter(bookmark.chapterIndex, bookmark.chapterOffset)
+            }
+        },
+        onDeleteBookmark = { viewModel.deleteBookmark(it) },
     ) {
         Scaffold(
             snackbarHost = { SnackbarHost(snackBarHostState) },
             topBar = {
                 ReaderTopAppBar(
                     state = state,
-                    onChapterListClicked = { coroutineScope.launch { drawerState.open() } }
+                    onChapterListClicked = { coroutineScope.launch { drawerState.open() } },
+                    onBookmarkClicked = {
+                        if (state.libraryItemId != null) {
+                            val isCurrentChapterBookmarked = state.bookmarks.any {
+                                it.chapterIndex == state.currentChapterIndex
+                            }
+                            viewModel.toggleBookmark(
+                                libraryItemId = state.libraryItemId,
+                                chapterIndex = state.currentChapterIndex,
+                                chapterOffset = state.currentChapterOffset
+                            )
+                            coroutineScope.launch {
+                                val message = if (isCurrentChapterBookmarked) {
+                                    context.getString(R.string.reader_bookmark_removed)
+                                } else {
+                                    context.getString(R.string.reader_bookmark_added)
+                                }
+                                snackBarHostState.showSnackbar(message)
+                            }
+                        }
+                    }
                 )
             },
             bottomBar = {
@@ -157,6 +189,7 @@ fun ReaderScreen(
 private fun ReaderTopAppBar(
     state: ReaderScreenState,
     onChapterListClicked: () -> Unit,
+    onBookmarkClicked: () -> Unit,
 ) {
     AnimatedVisibility(
         visible = state.showReaderMenu,
@@ -188,6 +221,18 @@ private fun ReaderTopAppBar(
 
                     },
                     actions = {
+                        if (state.libraryItemId != null) {
+                            val isCurrentChapterBookmarked = state.bookmarks.any {
+                                it.chapterIndex == state.currentChapterIndex
+                            }
+                            IconButton(onClick = onBookmarkClicked) {
+                                Icon(
+                                    imageVector = if (isCurrentChapterBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        }
                         IconButton(onClick = onChapterListClicked) {
                             Icon(
                                 Icons.Filled.Menu, null,
