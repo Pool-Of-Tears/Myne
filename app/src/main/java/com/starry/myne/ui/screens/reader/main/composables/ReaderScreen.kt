@@ -155,7 +155,8 @@ fun ReaderScreen(
                         onFontSizeChanged = { viewModel.setFontSize(it) },
                         onLineHeightChanged = { viewModel.setLineHeight(it) },
                         onToggleAutoScroll = { viewModel.toggleAutoScroll() },
-                        onAutoScrollSpeedChanged = { viewModel.setAutoScrollSpeed(it) }
+                        onAutoScrollSpeedChanged = { viewModel.setAutoScrollSpeed(it) },
+                        onToggleSepiaMode = { viewModel.toggleSepiaMode() }
                     )
                 }
             },

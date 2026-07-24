@@ -89,6 +89,8 @@
     <string name="reader_bookmarks_list_title">Bookmarks</string>
     <string name="reader_bookmark_added">Bookmark added</string>
     <string name="reader_bookmark_removed">Bookmark removed</string>
+    <string name="reader_sepia_mode_on">Sepia Mode: On</string>
+    <string name="reader_sepia_mode_off">Sepia Mode: Off</string>
     <string name="reader_auto_scroll_start">Start Auto Scroll</string>
     <string name="reader_auto_scroll_stop">Stop Auto Scroll</string>
 

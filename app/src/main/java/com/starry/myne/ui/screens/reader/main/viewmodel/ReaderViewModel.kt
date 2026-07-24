@@ -68,6 +68,8 @@ data class ReaderScreenState(
     // Auto scroll
     val isAutoScrollActive: Boolean = false,
     val autoScrollSpeed: Float = 1.0f,
+    // Reader page theme
+    val isSepiaModeEnabled: Boolean = false,
 )
 
 @HiltViewModel
@@ -104,6 +106,10 @@ class ReaderViewModel @Inject constructor(
                     autoScrollSpeed = preferenceUtil.getFloat(
                         PreferenceUtil.READER_AUTO_SCROLL_SPEED_FLOAT,
                         1.0f
+                    ),
+                    isSepiaModeEnabled = preferenceUtil.getBoolean(
+                        PreferenceUtil.READER_SEPIA_MODE_BOOL,
+                        false
                     )
                 )
             }
@@ -356,6 +362,12 @@ class ReaderViewModel @Inject constructor(
     fun setAutoScrollSpeed(newValue: Float) {
         preferenceUtil.putFloat(PreferenceUtil.READER_AUTO_SCROLL_SPEED_FLOAT, newValue)
         _state.update { it.copy(autoScrollSpeed = newValue) }
+    }
+
+    fun toggleSepiaMode() {
+        val newValue = !state.value.isSepiaModeEnabled
+        preferenceUtil.putBoolean(PreferenceUtil.READER_SEPIA_MODE_BOOL, newValue)
+        _state.update { it.copy(isSepiaModeEnabled = newValue) }
     }
 
 }

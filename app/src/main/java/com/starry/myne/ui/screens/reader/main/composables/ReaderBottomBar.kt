@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Tonality
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -62,7 +63,8 @@ fun ReaderBottomBar(
     onFontSizeChanged: (newValue: Int) -> Unit,
     onLineHeightChanged: (newValue: Float) -> Unit,
     onToggleAutoScroll: () -> Unit,
-    onAutoScrollSpeedChanged: (newValue: Float) -> Unit
+    onAutoScrollSpeedChanged: (newValue: Float) -> Unit,
+    onToggleSepiaMode: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -95,6 +97,44 @@ fun ReaderBottomBar(
             readerFontFamily = state.fontFamily,
             showFontDialog = showFontDialog
         )
+        Spacer(modifier = Modifier.height(16.dp))
+        SepiaModeButton(
+            isSepiaModeEnabled = state.isSepiaModeEnabled,
+            onToggleSepiaMode = onToggleSepiaMode
+        )
+    }
+}
+
+@Composable
+private fun SepiaModeButton(
+    isSepiaModeEnabled: Boolean,
+    onToggleSepiaMode: () -> Unit
+) {
+    FilledTonalButton(
+        onClick = onToggleSepiaMode,
+        modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .height(45.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = if (isSepiaModeEnabled) {
+            ButtonDefaults.filledTonalButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        } else {
+            ButtonDefaults.filledTonalButtonColors()
+        }
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(imageVector = Icons.Filled.Tonality, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = stringResource(
+                    id = if (isSepiaModeEnabled) R.string.reader_sepia_mode_on
+                    else R.string.reader_sepia_mode_off
+                )
+            )
+        }
     }
 }
 
