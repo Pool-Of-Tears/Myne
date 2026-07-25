@@ -93,29 +93,38 @@ fun ReaderBottomBar(
             onAutoScrollSpeedChanged = onAutoScrollSpeedChanged
         )
         Spacer(modifier = Modifier.height(16.dp))
-        FontSelectionButton(
-            readerFontFamily = state.fontFamily,
-            showFontDialog = showFontDialog
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        SepiaModeButton(
-            isSepiaModeEnabled = state.isSepiaModeEnabled,
-            onToggleSepiaMode = onToggleSepiaMode
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(0.9f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SepiaModeButton(
+                modifier = Modifier.size(45.dp),
+                isSepiaModeEnabled = state.isSepiaModeEnabled,
+                onToggleSepiaMode = onToggleSepiaMode
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            FontSelectionButton(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(45.dp),
+                readerFontFamily = state.fontFamily,
+                showFontDialog = showFontDialog
+            )
+        }
     }
 }
 
 @Composable
 private fun SepiaModeButton(
+    modifier: Modifier,
     isSepiaModeEnabled: Boolean,
     onToggleSepiaMode: () -> Unit
 ) {
     FilledTonalButton(
         onClick = onToggleSepiaMode,
-        modifier = Modifier
-            .fillMaxWidth(0.9f)
-            .height(45.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(16.dp),
+        contentPadding = PaddingValues(0.dp),
         colors = if (isSepiaModeEnabled) {
             ButtonDefaults.filledTonalButtonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -125,16 +134,14 @@ private fun SepiaModeButton(
             ButtonDefaults.filledTonalButtonColors()
         }
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(imageVector = Icons.Filled.Tonality, contentDescription = null)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = stringResource(
-                    id = if (isSepiaModeEnabled) R.string.reader_sepia_mode_on
-                    else R.string.reader_sepia_mode_off
-                )
-            )
-        }
+        Icon(
+            imageVector = Icons.Filled.Tonality,
+            contentDescription = stringResource(
+                id = if (isSepiaModeEnabled) R.string.reader_sepia_mode_on
+                else R.string.reader_sepia_mode_off
+            ),
+            modifier = Modifier.size(24.dp)
+        )
     }
 }
 
@@ -324,14 +331,13 @@ private fun LineHeightControls(
 
 @Composable
 private fun FontSelectionButton(
+    modifier: Modifier,
     readerFontFamily: ReaderFont,
     showFontDialog: MutableState<Boolean>
 ) {
     FilledTonalButton(
         onClick = { showFontDialog.value = true },
-        modifier = Modifier
-            .fillMaxWidth(0.9f)
-            .height(45.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(16.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -343,7 +349,8 @@ private fun FontSelectionButton(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = readerFontFamily.name,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1
             )
         }
     }
