@@ -91,3 +91,6 @@ val surfaceContainerLowDark = Color(0xFF171C1F)
 val surfaceContainerDark = Color(0xFF1B2023)
 val surfaceContainerHighDark = Color(0xFF252B2D)
 val surfaceContainerHighestDark = Color(0xFF303638)
+
+val readerSepiaBackground = Color(0xFFF4ECD8)
+val readerSepiaText = Color(0xFF5B4636)

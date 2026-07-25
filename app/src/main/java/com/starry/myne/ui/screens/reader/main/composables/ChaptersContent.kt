@@ -67,6 +67,8 @@ import com.starry.myne.helpers.toToast
 import com.starry.myne.ui.common.MyneSelectionContainer
 import com.starry.myne.ui.screens.reader.main.viewmodel.ReaderScreenState
 import com.starry.myne.ui.theme.pacificoFont
+import com.starry.myne.ui.theme.readerSepiaBackground
+import com.starry.myne.ui.theme.readerSepiaText
 
 
 @Composable
@@ -77,7 +79,11 @@ fun ChaptersContent(
     onLoadImage: (String) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .let {
+                if (state.isSepiaModeEnabled) it.background(readerSepiaBackground) else it
+            },
         state = lazyListState
     ) {
         items(
@@ -235,7 +241,8 @@ private fun ChapterLazyItemItem(
                 lineHeight = 1.3f.em,
                 fontFamily = pacificoFont,
                 fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.88f)
+                color = (if (state.isSepiaModeEnabled) readerSepiaText else MaterialTheme.colorScheme.onBackground)
+                    .copy(alpha = 0.88f)
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -251,6 +258,8 @@ private fun ChapterLazyItemItem(
                             lineHeight = lineHeight.em,
                             fontFamily = state.fontFamily.fontFamily,
                             modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 8.dp),
+                            color = if (state.isSepiaModeEnabled) readerSepiaText
+                            else Color.Unspecified,
                         )
                     }
 
@@ -300,7 +309,8 @@ private fun ChapterLazyItemItem(
                                 text = annotatedString,
                                 fontSize = (fontSize * 0.9f).sp,
                                 fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = if (state.isSepiaModeEnabled) readerSepiaText
+                                else MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -311,7 +321,10 @@ private fun ChapterLazyItemItem(
                                 .fillMaxWidth()
                                 .padding(horizontal = 14.dp, vertical = 8.dp)
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                                .background(
+                                    if (state.isSepiaModeEnabled) Color.Black.copy(alpha = 0.06f)
+                                    else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                                )
                                 .padding(16.dp)
                         ) {
                             val annotatedString =
@@ -324,7 +337,8 @@ private fun ChapterLazyItemItem(
                                 fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                                 lineHeight = lineHeight.em,
                                 fontFamily = state.fontFamily.fontFamily,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                                color = (if (state.isSepiaModeEnabled) readerSepiaText
+                                else MaterialTheme.colorScheme.onSurface).copy(alpha = 0.8f)
                             )
                         }
                     }
@@ -334,7 +348,8 @@ private fun ChapterLazyItemItem(
 
         HorizontalDivider(
             thickness = 2.dp,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
+            color = (if (state.isSepiaModeEnabled) readerSepiaText
+            else MaterialTheme.colorScheme.onBackground).copy(alpha = 0.2f)
         )
     }
 }
