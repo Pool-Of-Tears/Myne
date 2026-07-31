@@ -44,6 +44,7 @@ class BookDownloader(private val context: Context) {
         const val BOOKS_FOLDER = "ebooks"
         const val TEMP_FOLDER = "temp_books"
         private const val MAX_FILENAME_LENGTH = 100
+        private const val DOWNLOAD_POLL_INTERVAL_MS = 250L
 
         /**
          * Sanitizes book title by replacing forbidden chars which are not allowed
@@ -195,6 +196,7 @@ class BookDownloader(private val context: Context) {
                 downloadProgressListener(progress, status)
                 runningDownloads[book.id]?.progress?.value = progress
                 cursor.close()
+                if (!isDownloadFinished) delay(DOWNLOAD_POLL_INTERVAL_MS)
             }
             /**
             Remove download from running downloads when loop ends.
