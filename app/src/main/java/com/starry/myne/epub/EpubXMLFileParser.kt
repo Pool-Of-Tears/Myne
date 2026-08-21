@@ -59,9 +59,6 @@ class EpubXMLFileParser(
     companion object {
         const val TAG = "EpubXMLFileParser"
 
-        private const val HEADER_SELECTORS =
-            "h1, h2, h3, h4, h5, h6, .title, .chapter-title, .header"
-
         /**
          * List of tags that should be treated as inline elements.
          * These tags will not trigger a line break (new ReaderItem.Text).
@@ -82,67 +79,57 @@ class EpubXMLFileParser(
      */
     fun parseAsDocument(): Output {
         val document = Jsoup.parse(data.inputStream(), "UTF-8", "")
-
         val title: String
         val bodyContent: List<ReaderItem>
         val bodyElement: Element?
 
         if (fragmentId != null) {
-            // Check if the fragment ID represents a <div> tag
-            bodyElement = document.selectFirst("div#$fragmentId")
+            // Check if the fragment ID represents a tag
+            bodyElement = document.selectFirst("div#$fragmentId") ?: document.selectFirst("#$fragmentId")
 
-            if (bodyElement != null) {
-                // If the fragment ID represents a <div> tag, fetch the entire body content
-                Log.d(
-                    TAG,
-                    "Fragment ID: $fragmentId represents a <div> tag. Using the fragment ID."
-                )
-                val header = bodyElement.selectFirst(HEADER_SELECTORS) ?: document.selectFirst(
-                    HEADER_SELECTORS
-                )
-                title = header?.text() ?: ""
-                header?.remove()
+            if (bodyElement != null && bodyElement.tagName() == "div" && bodyElement.childrenSize() > 3) {
+                // If the fragment ID represents a <div> tag with multiple children,
+                // treat it as a container and look for headers at the start.
+                Log.d(TAG, "Fragment ID: $fragmentId represents a container <div>. Using its content.")
+                val headers = extractConsecutiveHeaders(bodyElement.firstElementChild())
+                title = headers.joinToString(" ") { it.text() }.smartTrim()
+                headers.forEach { it.remove() }
                 bodyContent = processNodes(bodyElement.childNodes())
-            } else {
-                Log.d(
-                    TAG,
-                    "Fragment ID: $fragmentId doesn't represent a <div> tag. Using the fragment and next fragment logic."
-                )
-                // If the fragment ID doesn't represent a <div> tag, use the fragment and next fragment logic
-                val fragmentElement = document.selectFirst("#$fragmentId")
-                // Check if fragment itself is a header
-                val header = if (fragmentElement != null && fragmentElement.isHeader) {
-                    fragmentElement
-                } else {
-                    fragmentElement?.selectFirst(HEADER_SELECTORS)
-                }
-                title = header?.text() ?: ""
-                val fragmentNodes = mutableListOf<Node>()
-                var currentNode: Node? = if (header != null && header == fragmentElement) {
-                    fragmentElement.nextSibling()
-                } else {
-                    fragmentElement
-                }
-                val nextFragmentIdElement = if (nextFragmentId != null) {
-                    document.selectFirst("#$nextFragmentId")
-                } else {
-                    null
-                }
-                header?.remove()
+            } else if (bodyElement != null) {
+                Log.d(TAG, "Fragment ID: $fragmentId represents a specific element. Using fragment and next fragment logic.")
+                // If the fragment ID represents a specific element, use the fragment and next fragment logic
+                val nextFragmentIdElement = nextFragmentId?.let { document.selectFirst("#$it") }
 
+                val headers = mutableListOf<Element>()
+                var currentNode: Node? = bodyElement
+
+                // Collect consecutive headers starting from the fragment element
+                while (currentNode is Element && currentNode != nextFragmentIdElement && (currentNode.isHeader || isLikelyHeader(currentNode))) {
+                    headers.add(currentNode)
+                    currentNode = getNextSibling(currentNode)
+                }
+
+                title = headers.joinToString(" ") { it.text() }.smartTrim()
+                // We don't remove headers here as we'll just skip them when collecting nodes.
+
+                val fragmentNodes = mutableListOf<Node>()
                 while (currentNode != null && currentNode != nextFragmentIdElement) {
                     fragmentNodes.add(currentNode)
                     currentNode = getNextSibling(currentNode)
                 }
                 bodyContent = processNodes(fragmentNodes)
+            } else {
+                Log.w(TAG, "Fragment ID: $fragmentId not found in document.")
+                title = ""
+                bodyContent = emptyList()
             }
         } else {
             // If no fragment ID is provided, fetch the entire body content
             Log.d(TAG, "No fragment ID provided. Fetching the entire body content.")
             bodyElement = document.body()
-            val header = document.selectFirst(HEADER_SELECTORS)
-            title = header?.text() ?: ""
-            header?.remove()
+            val headers = extractConsecutiveHeaders(bodyElement.firstElementChild())
+            title = headers.joinToString(" ") { it.text() }.smartTrim()
+            headers.forEach { it.remove() }
             bodyContent = processNodes(bodyElement.childNodes())
         }
 
@@ -163,8 +150,36 @@ class EpubXMLFileParser(
     }
 
     private val Element.isHeader: Boolean
-        get() = tagName() in listOf("h1", "h2", "h3", "h4", "h5", "h6")
-                || hasClass("title") || hasClass("chapter-title") || hasClass("header")
+        get() {
+            val headerClasses = setOf("title", "chapter", "header", "heading", "capitulo", "section")
+            return tagName() in listOf("h1", "h2", "h3", "h4", "h5", "h6") ||
+                    headerClasses.any { hasClass(it) || className().contains(it, ignoreCase = true) }
+        }
+
+    private fun isLikelyHeader(element: Element): Boolean {
+        val text = element.text().trim()
+        if (text.isEmpty() || text.length > 100) return false
+
+        // Heuristic: all caps and short (likely a title)
+        if (text.length in 2..60 && text == text.uppercase()) return true
+
+        // Heuristic: common chapter patterns
+        val patterns = listOf(
+            Regex("^(chapter|chapitre|capitulo|part|partie|section)\\s+\\d+", RegexOption.IGNORE_CASE),
+            Regex("^\\d+[.:]?\\s*$", RegexOption.IGNORE_CASE)
+        )
+        return patterns.any { it.containsMatchIn(text) }
+    }
+
+    private fun extractConsecutiveHeaders(firstElement: Element?): List<Element> {
+        val headers = mutableListOf<Element>()
+        var current = firstElement
+        while (current != null && (current.isHeader || isLikelyHeader(current))) {
+            headers.add(current)
+            current = current.nextElementSibling()
+        }
+        return headers
+    }
 
     /**
      * Parses the input data as an image and returns the [ReaderItem.Image].

@@ -216,8 +216,19 @@ class ReaderViewModel @Inject constructor(
             try {
                 val content =
                     epubParser.getChapterBody(state.value.epubBook?.filePath ?: "", chapter)
-                _state.update {
-                    it.copy(loadedChapters = it.loadedChapters + (chapter.chapterId to content))
+                _state.update { prevState ->
+                    val updatedChapters = prevState.chapters.map { c ->
+                        if (c.chapterId == chapter.chapterId &&
+                            (c.title.startsWith("Chapter ", ignoreCase = true) || c.title.isBlank()) &&
+                            content.title.isNotBlank()
+                        ) {
+                            c.copy(title = content.title)
+                        } else c
+                    }
+                    prevState.copy(
+                        chapters = updatedChapters,
+                        loadedChapters = prevState.loadedChapters + (chapter.chapterId to content)
+                    )
                 }
             } finally {
                 loadingChapterIds.remove(chapter.chapterId)
