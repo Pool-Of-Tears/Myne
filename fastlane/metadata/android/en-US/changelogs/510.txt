@@ -1,0 +1,5 @@
+- Added ability to create bookmarks in the ebook reader.
+- Added sepia theme in ebook the ebook reader.
+- Fixed reader screen readjusting/scrolling when opening reader menu.
+- Some optimization in progress polling when downloading books.
+- Updated German and Chinese translations.
