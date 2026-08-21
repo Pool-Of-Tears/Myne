@@ -57,7 +57,6 @@ fun ChaptersDrawer(
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     ModalNavigationDrawer(
-        modifier = Modifier.systemBarsPadding(),
         drawerState = drawerState,
         gesturesEnabled = drawerState.isOpen,
         drawerContent = {

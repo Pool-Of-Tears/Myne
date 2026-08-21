@@ -231,7 +231,6 @@ class ReaderActivity : AppCompatActivity() {
         controller.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         controller.hide(WindowInsetsCompat.Type.systemBars())
-        controller.hide(WindowInsetsCompat.Type.displayCutout())
 
         // Set layout in display cutout mode for Android P and above.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -253,13 +252,11 @@ class ReaderActivity : AppCompatActivity() {
     private fun showSystemBars() {
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.show(WindowInsetsCompat.Type.systemBars())
-        controller.show(WindowInsetsCompat.Type.displayCutout())
     }
 
     private fun hideSystemBars() {
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.hide(WindowInsetsCompat.Type.systemBars())
-        controller.hide(WindowInsetsCompat.Type.displayCutout())
     }
 }
 
