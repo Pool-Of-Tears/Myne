@@ -1,0 +1,181 @@
+<resources>
+    <string name="app_name" translatable="false">Myne</string>
+    <!-- Others Strings -->
+    <string name="not_applicable">Nie dotyczy</string>
+    <string name="woops">"Ops!!"</string>
+    <string name="confirm">Zatwierdź</string>
+    <string name="cancel">Anuluj</string>
+    <string name="ok">OK</string>
+    <string name="got_it">Rozumiem</string>
+    <string name="no_app_to_handle_epub">Nie mogę znaleźć żadnej aplikacji do otwarcia pliku epub.</string>
+    <string name="network_error">Oops! Serwer jest tymczasowo niedostępny. Spróbuj ponownie później.</string>
+    <string name="network_error_retry">Spróbuj ponownie</string>
+    <string name="error">Oops! Coś poszło nie tak.</string>
+    <string name="no_app_to_handle_content">Nie mogę znaleźć żadnej aplikacji do otwarcia tego pliku.</string>
+
+    <!-- Navigation titles -->
+    <string name="navigation_home">Start</string>
+    <string name="navigation_categories">Kategorie</string>
+    <string name="navigation_library">Biblioteka</string>
+    <string name="navigation_settings">Ustawienia</string>
+
+    <!-- ToolTips -->
+    <string name="library_tooltip">TIP! Obróć obiekty z biblioteki w prawo lub w lewo aby udostępnić lub zobaczyć szczegóły książki.</string>
+
+    <!-- Welcome Screen -->
+    <string name="welcome_screen_title">Dzięki za instalację Myne!</string>
+    <string name="welcome_screen_desc">Wybierz swój preferowany czytnik ebooków aby rozpocząć swoją przygodę z czytaniem.</string>
+    <string name="welcome_screen_button">Rozpocznij</string>
+
+    <!-- Home screen. -->
+    <string name="home_header">Wszystkie książki</string>
+    <string name="home_language_icon_desc">Sortuj według języka</string>
+    <string name="home_search_icon_desc">Szukaj książek</string>
+    <string name="language_menu_title">Szukaj według języka</string>
+
+    <!-- Categories screen. -->
+    <string name="categories_header">Kategorie</string>
+    <string name="no_books_found_for_lang_and_cat">Nie ma dostępnych książek w tym języku dla tej kategorii.</string>
+    <!-- Categories -->
+    <string name="category_animal">Zwierzęta</string>
+    <string name="category_children">Dla dzieci</string>
+    <string name="category_classics">Klasyki</string>
+    <string name="category_countries">Kraje</string>
+    <string name="category_crime">Kryminał</string>
+    <string name="category_education">Edukacja</string>
+    <string name="category_fiction">Fikcja</string>
+    <string name="category_geography">Geografia</string>
+    <string name="category_history">Historia</string>
+    <string name="category_literature">Literatura</string>
+    <string name="category_law">Prawo</string>
+    <string name="category_music">Muzyka</string>
+    <string name="category_periodicals">Czasopisma</string>
+    <string name="category_psychology">Psychologia</string>
+    <string name="category_philosophy">Filozofia</string>
+    <string name="category_religion">Religia</string>
+    <string name="category_romance">Romans</string>
+    <string name="category_science">Nauka</string>
+
+    <!-- Library screen. -->
+    <string name="library_header">Biblioteka</string>
+    <string name="empty_library">Tu nic nie ma!</string>
+    <string name="import_button_text">Importuj</string>
+    <string name="import_button_onboarding">Importuj swoje własne książki!</string>
+    <string name="import_button_onboarding_desc">Teraz możesz importować swoje własne książki w formacie EPUB i czytać je na Myne.</string>
+    <string name="import_button_desc">Importuj książkę w formacie epub</string>
+    <string name="external_book_info_unavailable">Dostępne wyłącznie dla książek wewnętrznych.</string>
+    <string name="epub_importing">Importujemy… \nProszę czekać.</string>
+    <string name="epub_imported">Import sukcesywny!</string>
+    <string name="epub_import_error">Nie udało się importować!</string>
+    <string name="open_app_chooser">Otwórz z…</string>
+    <string name="share_app_chooser">Udostępnij za pomocą…</string>
+    <string name="library_read_button">Czytaj</string>
+    <string name="library_delete_button">Usuń</string>
+    <string name="library_delete_dialog_title">Czy jesteś tego pewny/a?</string>
+
+    <!-- Reader Detail Screen -->
+    <string name="reader_detail_header">Czytnik Ebooków</string>
+    <string name="start_reading_button">Rozpocznij</string>
+    <string name="continue_reading_button">Wznów</string>
+    <string name="reader_chapters_list">Rozdziały</string>
+
+    <!--Reader Screen -->
+    <string name="reader_max_font_size_reached">Osiągnięto maksymalną czcionkę</string>
+    <string name="reader_min_font_size_reached">Osiągnięto minimalną czcionkę</string>
+    <string name="reader_max_line_height_reached">Osiągnięto maksymalną wysokość wiersza</string>
+    <string name="reader_min_line_height_reached">Osiągnięto minimalną wysokość wiersza</string>
+    <string name="reader_font_style_chooser">Zmień styl czcionki</string>
+    <string name="reader_chapter_list_title">Rozdziały</string>
+    <string name="reader_bookmarks_list_title">Zakładki</string>
+    <string name="reader_bookmark_added">Zakładka dodana</string>
+    <string name="reader_bookmark_removed">Zakładka usunięta</string>
+    <string name="reader_sepia_mode_on">Tryb sepii: Włączony</string>
+    <string name="reader_sepia_mode_off">Tryb sepii: Wyłączony</string>
+    <string name="reader_auto_scroll_start">Włącz automatyczne przewijanie</string>
+    <string name="reader_auto_scroll_stop">Wyłącz automatyczne przewijanie</string>
+
+    <!-- Text selection -->
+    <string name="copy">Kopiuj</string>
+    <string name="copied">Skopiowane!</string>
+    <string name="web_search">Wyszukaj w internecie</string>
+    <string name="share">Udostępnij</string>
+    <string name="translate">Przetłumacz</string>
+    <string name="dictionary">Znaczenie</string>
+
+    <!-- Settings screen. -->
+    <string name="settings_header">Ustawienia</string>
+    <string name="app_desc">Pobieracz Ebooków</string>
+    <string name="made_by">Zrobione z ❤ przez Shivama</string>
+    <string name="general_settings_header">Ogólne</string>
+    <string name="default_reader_setting">Standardowy czytnik</string>
+    <string name="default_reader_dialog_title">Otwieraj książki przez…</string>
+    <string name="reader_option_inbuilt">Wbudowany czytnik</string>
+    <string name="reader_option_external">Zewnętrzny czytnik</string>
+    <string name="default_locale_setting">Domyślny region</string>
+    <string name="default_locale_setting_desc">Ustaw swój preferowany region.</string>
+    <string name="locale_setting_not_found">Przepraszamy! Ta funkcja nie jest jeszcze wspierana przez twoje urządzenie.</string>
+    <string name="open_library_at_start_setting">Otwórz bibliotekę przy otwarciu</string>
+    <string name="open_library_at_start_setting_desc">Załaduj bibliotekę przy otwarciu aplikacji.</string>
+    <string name="reader_dnd_setting">Nie przeszkadzać</string>
+    <string name="reader_dnd_setting_desc">Automatycznie włącz tryb "Nie przeszkadzać" podczas czytania.</string>
+    <string name="reader_dnd_permission_error">Proszę przyznać dostęp do "Nie przeszkadzać" aby używać tej funkcji.</string>
+    <string name="display_setting_header">Motyw</string>
+    <string name="theme_setting">Domyślny motyw</string>
+    <string name="theme_dialog_title">Zmień motyw</string>
+    <string name="theme_option_light">Jasny</string>
+    <string name="theme_option_dark">Ciemny</string>
+    <string name="theme_option_system">Systemowy</string>
+    <string name="theme_dialog_apply_button">Apply</string>
+    <string name="amoled_theme_setting">Black Theme</string>
+    <string name="amoled_theme_setting_disabled_desc">Włącz czarny motyw AMOLED</string>
+    <string name="amoled_theme_setting_enabled_desc">Wyłącz czarny motyw AMOLED</string>
+    <string name="material_you_setting" translatable="false">Material You</string>
+    <string name="material_you_setting_disabled_desc">Włacz Material You</string>
+    <string name="material_you_setting_enabled_desc">Wyłacz Material You</string>
+    <string name="material_you_error">Ta funkcja jest tylko dla urządzeń z Androidem 12 lub wyższym.</string>
+    <string name="miscellaneous_setting_header">Różne</string>
+    <string name="license_setting">Licencje i podziękowania</string>
+    <string name="license_setting_desc">Licencje otwartoźródłowe.</string>
+    <string name="about_setting">Informacje o aplikacji</string>
+    <string name="about_setting_desc">Pokaż informacje o aplikacji i przydatne linki.</string>
+
+    <!-- Books card -->
+    <string name="cover_image_desc">Zdjęcie okładki książki</string>
+
+    <!-- Book Detail Screen -->
+    <string name="book_detail_header">Szczegóły książki</string>
+    <string name="back_button_desc">Wróć.</string>
+    <string name="share_button_desc">Udostępnij książkę.</string>
+    <string name="share_intent_header">Udostępnij ten nagłówek…</string>
+    <string name="read_book_button">Zacznij czytać</string>
+    <string name="download_book_button">Pobierz</string>
+    <string name="download_started">Pobieranie rozpoczęte!</string>
+    <string name="public_domain">W domenie publicznej</string>
+    <string name="not_public_domain">Poza domeną publiczną</string>
+    <string name="book_synopsis">Streszczenie</string>
+    <string name="book_synopsis_not_found">Niedostępna</string>
+
+    <!-- About Screen -->
+    <string name="about_header">O projekcie</string>
+    <string name="about_desc">Darmowa i otwartoźródłowa aplikacja na Androida do pobierania ebooków z Projektu Gutenberg.</string>
+    <string name="developed_by">Rozwijane przez</string>
+    <string name="dev_name" translatable="false">Starry Shivam</string>
+    <string name="project_contributors">Twórcy zaangażowani w projekt</string>
+    <string name="project_contributors_desc">Poznaj naszych wspaniałych twórców.</string>
+    <string name="useful_links">Przydatne linki</string>
+    <string name="link_readme">README</string>
+    <string name="link_readme_desc">Sprawdź opis projektu aplikacji na Githubie.</string>
+    <string name="link_website">Strona internetowa</string>
+    <string name="link_website_desc">Odwiedź naszą stronę dla więcej informacji.</string>
+    <string name="link_privacy_policy">Polityka prywatności</string>
+    <string name="link_privacy_policy_desc">Przeczytaj naszą najnowszą politykę prywatności.</string>
+    <string name="link_gh_issue">Omawiane problemy na Githubie</string>
+    <string name="link_gh_issue_desc">Zgłoś problem na Githubie.</string>
+    <string name="link_telegram">Grupa na Telegramie</string>
+    <string name="link_telegram_desc">Poznaj się z nami na Telegramie!</string>
+    <string name="link_support">Wsparcie rozwoju</string>
+    <string name="link_support_desc">Myślisz że potrzebuję ciasteczek? Kliknij tutaj!</string>
+
+    <!-- Open source libraries screen -->
+    <string name="open_source_licenses_header">Licencje</string>
+</resources>
