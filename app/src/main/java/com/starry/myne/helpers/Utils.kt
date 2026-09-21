@@ -17,6 +17,8 @@
 
 package com.starry.myne.helpers
 
+import android.util.Log
+
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -69,7 +71,7 @@ object Utils {
         try {
             context.startActivity(intent)
         } catch (exc: ActivityNotFoundException) {
-            exc.printStackTrace()
+            Log.e("Myne", "Error", exc)
             context.getString(R.string.error).toToast(context)
         }
     }
@@ -90,7 +92,7 @@ object Utils {
         try {
             context.startActivity(emailIntent)
         } catch (exc: ActivityNotFoundException) {
-            exc.printStackTrace()
+            Log.e("Myne", "Error", exc)
             context.getString(R.string.error).toToast(context)
         }
     }
@@ -121,7 +123,7 @@ object Utils {
                 BufferedReader(InputStreamReader(input), 1024).readLine()
             }
         } catch (e: IOException) {
-            e.printStackTrace()
+            Log.e("Myne", "Error", e)
             null
         }
     }
