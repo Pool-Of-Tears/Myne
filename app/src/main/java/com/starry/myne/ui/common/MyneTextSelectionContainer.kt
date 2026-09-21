@@ -97,7 +97,7 @@ private class MyneTextActionModeCallback(
     }
 
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+        when (item?.itemId) {
             MENU_ITEM_COPY -> onCopyRequested?.invoke()
             MENU_ITEM_SHARE -> onShareRequested?.invoke()
             MENU_ITEM_WEB -> onWebSearchRequested?.invoke()
