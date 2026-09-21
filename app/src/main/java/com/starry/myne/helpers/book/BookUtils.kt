@@ -16,6 +16,8 @@
 
 package com.starry.myne.helpers.book
 
+import android.util.Log
+
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -111,7 +113,7 @@ object BookUtils {
             try {
                 context.startActivity(chooser)
             } catch (exc: ActivityNotFoundException) {
-                exc.printStackTrace()
+                Log.e("Myne", "Error", exc)
                 context.getString(R.string.no_app_to_handle_epub).toToast(context)
             }
         }
