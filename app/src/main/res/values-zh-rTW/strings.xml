@@ -1,0 +1,178 @@
+<resources>
+    <!-- Others Strings -->
+    <string name="not_applicable">無</string>
+    <string name="woops">"哎呀！！"</string>
+    <string name="confirm">確認</string>
+    <string name="cancel">取消</string>
+    <string name="ok">確定</string>
+    <string name="got_it">知道了</string>
+    <string name="no_app_to_handle_epub">找不到可開啟 EPUB 檔案的應用程式。</string>
+    <string name="network_error">哎呀！伺服器暫時無法使用，請稍後再試。</string>
+    <string name="network_error_retry">重試</string>
+    <string name="error">哎呀！發生了一些問題。</string>
+    <string name="no_app_to_handle_content">找不到可開啟此內容的應用程式。</string>
+
+    <!-- Navigation titles -->
+    <string name="navigation_home">首頁</string>
+    <string name="navigation_categories">分類</string>
+    <string name="navigation_library">書庫</string>
+    <string name="navigation_settings">設定</string>
+
+    <!-- ToolTips -->
+    <string name="library_tooltip">小提示！將書庫中的書籍向左或向右滑動，即可分享或檢視書籍詳細資料。</string>
+
+    <!-- Welcome Screen -->
+    <string name="welcome_screen_title">感謝您安裝 Myne！</string>
+    <string name="welcome_screen_desc">選擇您慣用的電子書閱讀器，開始您的閱讀之旅。</string>
+    <string name="welcome_screen_button">開始使用</string>
+
+    <!-- Home screen. -->
+    <string name="home_header">所有書籍</string>
+    <string name="home_language_icon_desc">依語言排序</string>
+    <string name="home_search_icon_desc">搜尋書籍</string>
+    <string name="language_menu_title">依語言瀏覽</string>
+
+    <!-- Categories screen. -->
+    <string name="categories_header">分類</string>
+    <string name="no_books_found_for_lang_and_cat">此分類中沒有 %s 語言的書籍。</string>
+    <!-- Categories -->
+    <string name="category_animal">動物</string>
+    <string name="category_children">兒童</string>
+    <string name="category_classics">經典</string>
+    <string name="category_countries">國家</string>
+    <string name="category_crime">犯罪</string>
+    <string name="category_education">教育</string>
+    <string name="category_fiction">小說</string>
+    <string name="category_geography">地理</string>
+    <string name="category_history">歷史</string>
+    <string name="category_literature">文學</string>
+    <string name="category_law">法律</string>
+    <string name="category_music">音樂</string>
+    <string name="category_periodicals">期刊</string>
+    <string name="category_psychology">心理學</string>
+    <string name="category_philosophy">哲學</string>
+    <string name="category_religion">宗教</string>
+    <string name="category_romance">愛情</string>
+    <string name="category_science">科學</string>
+
+    <!-- Library screen. -->
+    <string name="library_header">書庫</string>
+    <string name="empty_library">這裡什麼都沒有！</string>
+    <string name="import_button_text">匯入</string>
+    <string name="import_button_onboarding">匯入您自己的書籍！</string>
+    <string name="import_button_onboarding_desc">現在您可以匯入自己的 EPUB 書籍，並在 Myne 中閱讀。</string>
+    <string name="import_button_desc">匯入 EPUB 書籍</string>
+    <string name="external_book_info_unavailable">僅適用於內建書籍。</string>
+    <string name="epub_importing">正在匯入… \n請稍候。</string>
+    <string name="epub_imported">匯入成功！</string>
+    <string name="epub_import_error">匯入失敗！</string>
+    <string name="open_app_chooser">開啟方式…</string>
+    <string name="share_app_chooser">分享方式…</string>
+    <string name="library_read_button">閱讀</string>
+    <string name="library_delete_button">刪除</string>
+    <string name="library_delete_dialog_title">您確定要這麼做嗎？</string>
+
+    <!-- Reader Detail Screen -->
+    <string name="reader_detail_header">電子書閱讀器</string>
+    <string name="start_reading_button">開始</string>
+    <string name="continue_reading_button">繼續</string>
+    <string name="reader_chapters_list">章節</string>
+
+    <!--Reader Screen -->
+    <string name="reader_max_font_size_reached">已達字體大小上限</string>
+    <string name="reader_min_font_size_reached">已達字體大小下限</string>
+    <string name="reader_max_line_height_reached">已達行高上限</string>
+    <string name="reader_min_line_height_reached">已達行高下限</string>
+    <string name="reader_font_style_chooser">變更字型樣式</string>
+    <string name="reader_chapter_list_title">章節</string>
+    <string name="reader_bookmarks_list_title">書籤</string>
+    <string name="reader_bookmark_added">已新增書籤</string>
+    <string name="reader_bookmark_removed">已移除書籤</string>
+    <string name="reader_sepia_mode_on">懷舊色調模式：開啟</string>
+    <string name="reader_sepia_mode_off">懷舊色調模式：關閉</string>
+    <string name="reader_auto_scroll_start">開始自動捲動</string>
+    <string name="reader_auto_scroll_stop">停止自動捲動</string>
+
+    <!-- Text selection -->
+    <string name="copy">複製</string>
+    <string name="copied">已複製！</string>
+    <string name="web_search">網頁搜尋</string>
+    <string name="share">分享</string>
+    <string name="translate">翻譯</string>
+    <string name="dictionary">字義</string>
+
+    <!-- Settings screen. -->
+    <string name="settings_header">設定</string>
+    <string name="app_desc">電子書下載器</string>
+    <string name="made_by">由 Shivam 用 ❤ 製作</string>
+    <string name="general_settings_header">一般</string>
+    <string name="default_reader_setting">預設閱讀器</string>
+    <string name="default_reader_dialog_title">開啟電子書的方式…</string>
+    <string name="reader_option_inbuilt">內建閱讀器</string>
+    <string name="reader_option_external">外部閱讀器</string>
+    <string name="default_locale_setting">預設語言</string>
+    <string name="default_locale_setting_desc">選擇您偏好的語言。</string>
+    <string name="locale_setting_not_found">抱歉！您的作業系統尚未支援此功能。</string>
+    <string name="open_library_at_start_setting">啟動時開啟書庫</string>
+    <string name="open_library_at_start_setting_desc">應用程式啟動時顯示書庫畫面。</string>
+    <string name="reader_dnd_setting">勿擾模式</string>
+    <string name="reader_dnd_setting_desc">閱讀時自動啟用勿擾模式。</string>
+    <string name="reader_dnd_permission_error">請授予勿擾模式的存取權限，以使用此功能。</string>
+    <string name="display_setting_header">顯示</string>
+    <string name="theme_setting">預設主題</string>
+    <string name="theme_dialog_title">變更主題</string>
+    <string name="theme_option_light">淺色</string>
+    <string name="theme_option_dark">深色</string>
+    <string name="theme_option_system">系統預設</string>
+    <string name="theme_dialog_apply_button">套用</string>
+    <string name="amoled_theme_setting">純黑主題</string>
+    <string name="amoled_theme_setting_disabled_desc">啟用 AMOLED 純黑主題</string>
+    <string name="amoled_theme_setting_enabled_desc">停用 AMOLED 純黑主題</string>
+    <string name="material_you_setting_disabled_desc">啟用 Material You</string>
+    <string name="material_you_setting_enabled_desc">停用 Material You</string>
+    <string name="material_you_error">此功能僅適用於 Android 12 以上的裝置。</string>
+    <string name="miscellaneous_setting_header">其他</string>
+    <string name="license_setting">授權條款與致謝</string>
+    <string name="license_setting_desc">開放原始碼授權條款。</string>
+    <string name="about_setting">應用程式資訊</string>
+    <string name="about_setting_desc">顯示應用程式資訊與實用連結</string>
+
+    <!-- Books card -->
+    <string name="cover_image_desc">書籍封面圖片</string>
+
+    <!-- Book Detail Screen -->
+    <string name="book_detail_header">書籍詳細資料</string>
+    <string name="back_button_desc">返回。</string>
+    <string name="share_button_desc">分享這本書。</string>
+    <string name="share_intent_header">分享方式…</string>
+    <string name="read_book_button">開始閱讀</string>
+    <string name="download_book_button">下載</string>
+    <string name="download_started">已開始下載！</string>
+    <string name="public_domain">公眾領域</string>
+    <string name="not_public_domain">非公眾領域</string>
+    <string name="book_synopsis">簡介</string>
+    <string name="book_synopsis_not_found">無法取得</string>
+
+    <!-- About Screen -->
+    <string name="about_header">關於</string>
+    <string name="about_desc">一款免費且開放原始碼的 Android 應用程式，可從 Project Gutenberg 下載電子書。</string>
+    <string name="developed_by">開發者</string>
+    <string name="project_contributors">專案貢獻者</string>
+    <string name="project_contributors_desc">認識我們了不起的貢獻者。</string>
+    <string name="useful_links">實用連結</string>
+    <string name="link_readme">README</string>
+    <string name="link_readme_desc">查看應用程式在 GitHub 上的 README。</string>
+    <string name="link_website">網站</string>
+    <string name="link_website_desc">造訪我們的網站以了解更多資訊。</string>
+    <string name="link_privacy_policy">隱私權政策</string>
+    <string name="link_privacy_policy_desc">閱讀我們最新的隱私權政策。</string>
+    <string name="link_gh_issue">GitHub Issues</string>
+    <string name="link_gh_issue_desc">在 GitHub 上建立 issue。</string>
+    <string name="link_telegram">Telegram 群組</string>
+    <string name="link_telegram_desc">來 Telegram 和我們一起聊聊吧！</string>
+    <string name="link_support">支持開發</string>
+    <string name="link_support_desc">覺得我值得一份餅乾嗎？點這裡！</string>
+
+    <!-- Open source libraries screen -->
+    <string name="open_source_licenses_header">授權條款</string>
+</resources>
