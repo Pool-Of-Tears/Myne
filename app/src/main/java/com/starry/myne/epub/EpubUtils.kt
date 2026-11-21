@@ -21,15 +21,19 @@ import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
+import org.xml.sax.InputSource
 import java.io.File
 import java.io.InputStream
+import java.io.StringReader
 import java.net.URLDecoder
 import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.io.path.invariantSeparatorsPathString
 import org.jsoup.nodes.Node as JsoupNode
 
 fun parseXMLFile(inputSteam: InputStream): Document? =
-    DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputSteam)
+    DocumentBuilderFactory.newInstance().newDocumentBuilder().apply {
+        setEntityResolver { _, _ -> InputSource(StringReader("")) }
+    }.parse(inputSteam)
 
 fun parseXMLFile(byteArray: ByteArray): Document? = parseXMLFile(byteArray.inputStream())
 

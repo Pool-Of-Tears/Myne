@@ -19,6 +19,7 @@ package com.starry.myne
 import android.graphics.Bitmap
 import com.google.common.truth.Truth.assertThat
 import com.starry.myne.epub.EpubParser
+import com.starry.myne.epub.parseXMLFile
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -104,6 +105,26 @@ class EpubParserTest {
 
         assertThat(epubBook.chapters).isNotEmpty()
         assertThat(epubBook.chapters.map { it.title }).containsExactly("Chapter 1", "Chapter 2")
+    }
+
+    @Test
+    fun testParseXmlDoesNotResolveExternalResources() {
+        val externalFile = File.createTempFile("epub-external", ".xml")
+        try {
+            externalFile.writeText("external content that is not a DTD")
+            val externalUri = externalFile.toURI()
+            val documentWithDtd = parseXMLFile(
+                """<!DOCTYPE ncx SYSTEM "$externalUri"><ncx><navMap/></ncx>""".toByteArray()
+            )
+            val documentWithEntity = parseXMLFile(
+                """<!DOCTYPE ncx [<!ENTITY external SYSTEM "$externalUri">]><ncx>&external;</ncx>""".toByteArray()
+            )
+
+            assertThat(documentWithDtd!!.getElementsByTagName("navMap").length).isEqualTo(1)
+            assertThat(documentWithEntity!!.documentElement.textContent).isEmpty()
+        } finally {
+            externalFile.delete()
+        }
     }
 
     @Test
