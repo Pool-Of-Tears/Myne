@@ -59,7 +59,7 @@
     <string name="import_button_onboarding_desc">Jetzt kannst du deine eigenen EPUB-Bücher importieren und sie in Myne lesen.</string>
     <string name="import_button_desc">EPUB-Buch importieren</string>
     <string name="external_book_info_unavailable">Nur für interne Bücher verfügbar.</string>
-    <string name="epub_importing">Importiere… Bitte warten.</string>
+    <string name="epub_importing">Importiere…\nBitte warten.</string>
     <string name="epub_imported">Erfolgreich importiert!</string>
     <string name="epub_import_error">Import fehlgeschlagen!</string>
     <string name="open_app_chooser">Öffnen mit …</string>
@@ -157,4 +157,11 @@
     <string name="reader_auto_scroll_start">Automatischen Bildlauf beginnen</string>
     <string name="reader_auto_scroll_stop">Automatischen Bildlauf beenden</string>
     <string name="reader_dnd_permission_error">Bitte erlaube den Zugriff auf Bitte nicht stören um diese Funktionalität zu verwenden.</string>
+    <string name="reader_bookmarks_list_title">Lesezeichen</string>
+    <string name="reader_bookmark_added">Lesezeichen hinzugefügt</string>
+    <string name="reader_bookmark_removed">Lesezeichen entfernt</string>
+    <string name="reader_sepia_mode_on">Sepia-Modus: Ein</string>
+    <string name="reader_sepia_mode_off">Sepia-Modus: Aus</string>
+    <string name="public_domain">PD</string>
+    <string name="not_public_domain">NPD</string>
 </resources>
