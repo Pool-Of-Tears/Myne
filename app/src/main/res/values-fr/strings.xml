@@ -9,7 +9,7 @@
     <string name="ok">OK</string>
     <string name="got_it">J\'ai compris</string>
     <string name="no_app_to_handle_epub">Aucune application trouvée pour ouvrir le fichier epub.</string>
-    <string name="network_error">Flûte ! Échec de connexion au serveur.</string>
+    <string name="network_error">Oups ! Le serveur est temporairement indisponible. Veuillez réessayer plus tard.</string>
     <string name="network_error_retry">Réessayer</string>
     <string name="error">Nom d\'une pipe ! Une erreur s\'est produite.</string>
     <string name="no_app_to_handle_content">Aucune application trouvée pour ouvrir ce contenu.</string>
@@ -73,8 +73,8 @@
     <string name="continue_reading_button">Reprendre</string>
     <string name="reader_chapters_list">Chapitres</string>
     <!-- Reader Screen -->
-    <string name="reader_max_font_size_reached">Désolé, taille maximale atteinte !</string>
-    <string name="reader_min_font_size_reached">Désolé, taille minimale atteinte !</string>
+    <string name="reader_max_font_size_reached">La taille maximale de la police a été atteinte</string>
+    <string name="reader_min_font_size_reached">Taille minimale de police atteinte</string>
     <string name="reader_font_style_chooser">Changer la police</string>
     <string name="reader_chapter_list_title">Chapitres</string>
     <!-- Text selection -->
@@ -97,7 +97,7 @@
     <string name="default_locale_setting_desc">Sélectionnez votre langue préférée.</string>
     <string name="locale_setting_not_found">Désolé ! Cette fonctionnalité n’est pas encore prise en charge par votre OS.</string>
     <string name="open_library_at_start_setting">Ouvrir la bibliothèque au démarrage</string>
-    <string name="open_library_at_start_setting_desc">Ouvrir l\'écran de la bibliothèque au démarrage de l\'application.</string>
+    <string name="open_library_at_start_setting_desc">Afficher l\'écran Bibliothèque au démarrage de l\'application.</string>
     <string name="display_setting_header">Affichage</string>
     <string name="theme_setting">Thème par défaut</string>
     <string name="theme_dialog_title">Changer le thème</string>
@@ -151,4 +151,18 @@
     <string name="link_support_desc">Je mérite un cookie ? Cliquez ici !</string>
     <!-- Open source libraries screen -->
     <string name="open_source_licenses_header">Licences</string>
+    <string name="reader_max_line_height_reached">Hauteur maximale de ligne atteinte</string>
+    <string name="reader_min_line_height_reached">Hauteur de ligne minimale atteinte</string>
+    <string name="reader_bookmarks_list_title">Signets</string>
+    <string name="reader_bookmark_added">Signet ajouté</string>
+    <string name="reader_bookmark_removed">Signet supprimé</string>
+    <string name="reader_sepia_mode_on">Mode sépia : activé</string>
+    <string name="reader_sepia_mode_off">Mode sépia : désactivé</string>
+    <string name="reader_auto_scroll_start">Lancer le défilement automatique</string>
+    <string name="reader_auto_scroll_stop">Désactiver le défilement automatique</string>
+    <string name="reader_dnd_setting">Ne pas déranger</string>
+    <string name="reader_dnd_setting_desc">Activer automatiquement le mode Ne pas déranger pendant la lecture.</string>
+    <string name="reader_dnd_permission_error">Veuillez autoriser l\'accès à la fonction Ne pas déranger pour pouvoir utiliser cette fonctionnalité.</string>
+    <string name="public_domain">DP</string>
+    <string name="not_public_domain">NDP</string>
 </resources>
